@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nubank/nuds/nuds.dart';
+import 'package:nuds/nuds.dart';
 import 'package:provider/provider.dart';
 
 import 'navigation_service.dart';
