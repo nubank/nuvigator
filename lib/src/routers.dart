@@ -96,7 +96,7 @@ class GroupRouter extends SimpleRouter {
     final thisDeepLinkPrefix = await getDeepLinkPrefix();
     final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
     if (prefixRegex.hasMatch(url)) {
-      final deepLinkFlow = super.getDeepLinkFlowForUrl(url);
+      final deepLinkFlow = await super.getDeepLinkFlowForUrl(url);
       if (deepLinkFlow != null) return deepLinkFlow;
 
       for (Router router in routers) {

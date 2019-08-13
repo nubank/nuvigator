@@ -23,7 +23,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
 
   @override
   Future<bool> canOpenDeepLink(Uri url) async {
-    return getDeepLinkFlowForUrl(url.host + url.path) != null;
+    return (await getDeepLinkFlowForUrl(url.host + url.path)) != null;
   }
 
   @override
