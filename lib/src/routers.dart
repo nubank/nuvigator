@@ -18,7 +18,7 @@ class DeepLinkFlow {
 abstract class Router {
   Screen getScreen({String routeName});
 
-  DeepLinkFlow getDeepLinkFlowForUrl(String url) => null;
+  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) => null;
 }
 
 // Application Router class. Provides a basic interface and helper to handle
@@ -37,8 +37,12 @@ abstract class AppRouter {
 abstract class SimpleRouter implements Router {
   final Map<String, Screen> screensMap = {};
   final Map<String, String> deepLinksMap = {};
-  final String deepLinkPrefix = '';
+  final String deepLinkPrefix = null;
   final ProvidersGeneratorFn generateProviders = null;
+
+  Future<String> getDeepLinkPrefix() async {
+    return deepLinkPrefix ?? '';
+  }
 
   @override
   Screen getScreen({String routeName}) {
@@ -48,9 +52,9 @@ abstract class SimpleRouter implements Router {
   }
 
   @override
-  DeepLinkFlow getDeepLinkFlowForUrl(String url) {
+  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) async {
     for (var deepLinkEntry in deepLinksMap.entries) {
-      final fullTemplate = deepLinkPrefix + deepLinkEntry.key;
+      final fullTemplate = (await getDeepLinkPrefix()) + deepLinkEntry.key;
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(url))
         return DeepLinkFlow(
@@ -88,17 +92,18 @@ class GroupRouter extends SimpleRouter {
   }
 
   @override
-  DeepLinkFlow getDeepLinkFlowForUrl(String url) {
-    final prefixRegex = RegExp('^$deepLinkPrefix.*');
+  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) async {
+    final thisDeepLinkPrefix = await getDeepLinkPrefix();
+    final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
     if (prefixRegex.hasMatch(url)) {
       final deepLinkFlow = super.getDeepLinkFlowForUrl(url);
       if (deepLinkFlow != null) return deepLinkFlow;
 
       for (Router router in routers) {
-        final newUrl = url.replaceFirst(deepLinkPrefix, '');
-        final subDeepLinkFlow = router.getDeepLinkFlowForUrl(newUrl);
+        final newUrl = url.replaceFirst(thisDeepLinkPrefix, '');
+        final subDeepLinkFlow = await router.getDeepLinkFlowForUrl(newUrl);
         if (subDeepLinkFlow != null) {
-          final fullTemplate = deepLinkPrefix + subDeepLinkFlow.template;
+          final fullTemplate = thisDeepLinkPrefix + subDeepLinkFlow.template;
           return DeepLinkFlow(
             template: fullTemplate,
             path: url,
@@ -142,6 +147,6 @@ class FlowRouter<T extends Object> implements Router {
   }
 
   @override
-  DeepLinkFlow getDeepLinkFlowForUrl(String url) =>
+  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) =>
       baseRouter.getDeepLinkFlowForUrl(url);
 }
