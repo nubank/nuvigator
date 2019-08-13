@@ -7,12 +7,12 @@ import 'errors.dart';
 import 'routers.dart';
 
 class GlobalRouter extends GroupRouter implements AppRouter {
-  GlobalRouter(this._navigatorKey);
+  GlobalRouter(this.navigatorKey);
 
   static GlobalRouter of(BuildContext context) =>
       Provider.of<GlobalRouter>(context);
 
-  final GlobalKey<NavigatorState> _navigatorKey;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   Route getRoute(RouteSettings settings) {
@@ -38,9 +38,9 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     final args = _extractParameters(url, deepLinkFlow);
     if (isFromNative) {
       final route = _buildNativeRoute(args, deepLinkFlow.routeName);
-      return _navigatorKey.currentState.push(route);
+      return navigatorKey.currentState.push(route);
     }
-    return _navigatorKey.currentState
+    return navigatorKey.currentState
         .pushNamed(deepLinkFlow.routeName, arguments: args);
   }
 
