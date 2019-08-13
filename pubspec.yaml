@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path_to_regexp: ^0.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
