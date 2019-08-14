@@ -16,10 +16,11 @@ class Navigation extends NavigationService {
   Navigation.of(BuildContext context) : super.of(context);
 
   bool pop<T>([T result]) {
-    if (!navigator.pop() && navigator != rootNavigator) {
+    final isPopped = navigator.pop<T>(result);
+    if (!isPopped && navigator != rootNavigator) {
       return parentPop<T>(result);
     }
-    return true;
+    return isPopped;
   }
 
   Future<T> openDeepLink<T>(Uri url) {
@@ -30,5 +31,5 @@ class Navigation extends NavigationService {
 
   bool parentPop<T>([T result]) => parent().pop<T>(result);
 
-  bool rootPop<T>([T result]) => rootNavigator.pop();
+  bool rootPop<T>([T result]) => rootNavigator.pop<T>(result);
 }

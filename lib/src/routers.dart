@@ -45,16 +45,18 @@ abstract class SimpleRouter implements Router {
   }
 
   @override
-  Screen getScreen({String routeName}) {
+  Screen getScreen({@required String routeName}) {
+    assert(routeName != null && routeName.isNotEmpty);
+
     final screen = screensMap[routeName];
-    if (screen != null) return screen.withProviders(generateProviders);
-    return null;
+    return screen?.withProviders(generateProviders);
   }
 
   @override
   Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) async {
+    final deepLinkPrefix = await getDeepLinkPrefix();
     for (var deepLinkEntry in deepLinksMap.entries) {
-      final fullTemplate = (await getDeepLinkPrefix()) + deepLinkEntry.key;
+      final fullTemplate = deepLinkPrefix + deepLinkEntry.key;
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(url))
         return DeepLinkFlow(
@@ -80,7 +82,9 @@ class GroupRouter extends SimpleRouter {
   List<Router> routers = [];
 
   @override
-  Screen getScreen({String routeName}) {
+  Screen getScreen({@required String routeName}) {
+    assert(routeName != null && routeName.isNotEmpty);
+
     final screen = super.getScreen(routeName: routeName);
     if (screen != null) return screen;
 
@@ -99,7 +103,7 @@ class GroupRouter extends SimpleRouter {
       final deepLinkFlow = await super.getDeepLinkFlowForUrl(url);
       if (deepLinkFlow != null) return deepLinkFlow;
 
-      for (Router router in routers) {
+      for (final Router router in routers) {
         final newUrl = url.replaceFirst(thisDeepLinkPrefix, '');
         final subDeepLinkFlow = await router.getDeepLinkFlowForUrl(newUrl);
         if (subDeepLinkFlow != null) {

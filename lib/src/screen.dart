@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nubank/nuds/src/navigation/card_stack_route.dart';
-import 'package:nubank/nuds/src/navigation/page_route.dart';
+import 'package:nubank/nuds/nuds.dart';
 import 'package:provider/provider.dart';
 
 import 'navigation.dart';
@@ -17,19 +16,19 @@ class ScreenContext {
 
 typedef ProvidersGeneratorFn = List<Provider> Function(
     ScreenContext screenContext);
-typedef ScreenBuilder<T> = Widget Function(ScreenContext screenContext);
+typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
 
 class Screen {
   const Screen(
-      {this.screenBuilder,
+      {@required this.screenBuilder,
       this.generateProviders,
-      this.transitionType = TransitionType.page});
+      this.transitionType = TransitionType.page}) : assert(screenBuilder != null);
 
-  const Screen.page(this.screenBuilder, {this.generateProviders})
-      : transitionType = TransitionType.page;
+  const Screen.page(ScreenBuilder screenBuilder, {ProvidersGeneratorFn generateProviders})
+      : this(screenBuilder: screenBuilder, generateProviders: generateProviders, transitionType: TransitionType.page);
 
-  const Screen.card(this.screenBuilder, {this.generateProviders})
-      : transitionType = TransitionType.card;
+  const Screen.card(ScreenBuilder screenBuilder, {ProvidersGeneratorFn generateProviders})
+      : this(screenBuilder: screenBuilder, generateProviders: generateProviders, transitionType: TransitionType.card);
 
   final ScreenBuilder screenBuilder;
   final TransitionType transitionType;

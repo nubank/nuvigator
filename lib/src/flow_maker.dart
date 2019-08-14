@@ -39,7 +39,7 @@ class FlowMaker<T extends Object> {
   }
 
   Widget _childNavigator(ScreenContext screenContext) {
-    final currentNavigatorKey = GlobalKey<NavigatorState>();
+    final currentNavigatorKey = GlobalKey<NavigatorState>(debugLabel: screenContext.settings.name);
     return WillPopScope(
       // We need to circuit break the pop behaviour to try to pop this navigator
       // before the parent
@@ -60,7 +60,7 @@ class FlowMaker<T extends Object> {
       RouteSettings routeSettings, ScreenContext screenContext) {
     // Try to find a child screen
     final screen = router.getScreen(routeName: routeSettings.name);
-    // If we can't find the route here, let's check if out parents now something :)
+    // If we can't find the route here, let's check out if its parents know something :)
     if (screen == null) {
       Navigator.of(screenContext.context)
           .pushNamed(routeSettings.name, arguments: routeSettings.arguments);

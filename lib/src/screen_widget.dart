@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:routing/routing.dart';
 
+import '../routing.dart';
 import 'navigation.dart';
 
 abstract class ScreenWidget extends StatelessWidget {

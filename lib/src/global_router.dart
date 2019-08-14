@@ -31,12 +31,11 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     return handleDeepLink(url, false);
   }
 
-  Future<dynamic> handleDeepLink(Uri url, [dynamic fromNative = false]) async {
+  Future<dynamic> handleDeepLink(Uri url, [dynamic isFromNative = false]) async {
     final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
-    final bool isFromNative = fromNative;
     if (deepLinkFlow == null) return null;
     final args = _extractParameters(url, deepLinkFlow);
-    if (isFromNative) {
+    if (isFromNative is bool) {
       final route = _buildNativeRoute(args, deepLinkFlow.routeName);
       return navigatorKey.currentState.push(route);
     }
@@ -51,7 +50,6 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     final route = getRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
-      // Maybe using a Custom channel here? (specially to make it work on iOS)
       await SystemNavigator.pop();
     });
     return route;
@@ -61,8 +59,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     final parameters = <String>[];
     final regExp = pathToRegExp(deepLinkFlow.template, parameters: parameters);
     final match = regExp.matchAsPrefix(url.host + url.path);
-    final args = extract(parameters, match);
-    args.addAll(url.queryParameters);
-    return args;
+    return extract(parameters, match)
+      ..addAll(url.queryParameters);
   }
 }
