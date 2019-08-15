@@ -22,13 +22,22 @@ class Screen {
   const Screen(
       {@required this.screenBuilder,
       this.generateProviders,
-      this.transitionType = TransitionType.page}) : assert(screenBuilder != null);
+      this.transitionType = TransitionType.page})
+      : assert(screenBuilder != null);
 
-  const Screen.page(ScreenBuilder screenBuilder, {ProvidersGeneratorFn generateProviders})
-      : this(screenBuilder: screenBuilder, generateProviders: generateProviders, transitionType: TransitionType.page);
+  const Screen.page(ScreenBuilder screenBuilder,
+      {ProvidersGeneratorFn generateProviders})
+      : this(
+            screenBuilder: screenBuilder,
+            generateProviders: generateProviders,
+            transitionType: TransitionType.page);
 
-  const Screen.card(ScreenBuilder screenBuilder, {ProvidersGeneratorFn generateProviders})
-      : this(screenBuilder: screenBuilder, generateProviders: generateProviders, transitionType: TransitionType.card);
+  const Screen.card(ScreenBuilder screenBuilder,
+      {ProvidersGeneratorFn generateProviders})
+      : this(
+            screenBuilder: screenBuilder,
+            generateProviders: generateProviders,
+            transitionType: TransitionType.card);
 
   final ScreenBuilder screenBuilder;
   final TransitionType transitionType;

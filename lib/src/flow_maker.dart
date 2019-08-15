@@ -39,7 +39,8 @@ class FlowMaker<T extends Object> {
   }
 
   Widget _childNavigator(ScreenContext screenContext) {
-    final currentNavigatorKey = GlobalKey<NavigatorState>(debugLabel: screenContext.settings.name);
+    final currentNavigatorKey =
+        GlobalKey<NavigatorState>(debugLabel: screenContext.settings.name);
     return WillPopScope(
       // We need to circuit break the pop behaviour to try to pop this navigator
       // before the parent

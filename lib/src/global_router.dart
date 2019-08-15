@@ -31,7 +31,8 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     return handleDeepLink(url, false);
   }
 
-  Future<dynamic> handleDeepLink(Uri url, [dynamic isFromNative = false]) async {
+  Future<dynamic> handleDeepLink(Uri url,
+      [dynamic isFromNative = false]) async {
     final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
     if (deepLinkFlow == null) return null;
     final args = _extractParameters(url, deepLinkFlow);
@@ -59,7 +60,6 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     final parameters = <String>[];
     final regExp = pathToRegExp(deepLinkFlow.template, parameters: parameters);
     final match = regExp.matchAsPrefix(url.host + url.path);
-    return extract(parameters, match)
-      ..addAll(url.queryParameters);
+    return extract(parameters, match)..addAll(url.queryParameters);
   }
 }
