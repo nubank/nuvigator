@@ -5,15 +5,15 @@ import 'global_router.dart';
 class NavigationService {
   NavigationService.of(this.context)
       : navigator = Navigator.of(context),
-        rootNavigator = Navigator.of(context, rootNavigator: true);
+        _rootNavigator = Navigator.of(context, rootNavigator: true);
 
   final BuildContext context;
   final NavigatorState navigator;
-  final NavigatorState rootNavigator;
+  final NavigatorState _rootNavigator;
 
   bool pop<T>([T result]) {
     final isPopped = navigator.pop<T>(result);
-    if (!isPopped && navigator != rootNavigator) {
+    if (!isPopped && navigator != _rootNavigator) {
       return parentPop<T>(result);
     }
     return isPopped;
@@ -29,12 +29,12 @@ class NavigationService {
     final possibleRoute = navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.pushNamed(routeName, arguments: arguments);
+      return parent.pushNamed<T>(routeName, arguments: arguments);
     }
-    return navigator.pushNamed(routeName, arguments: arguments);
+    return navigator.pushNamed<T>(routeName, arguments: arguments);
   }
 
   bool parentPop<T>([T result]) => parent.pop<T>(result);
 
-  bool rootPop<T>([T result]) => rootNavigator.pop<T>(result);
+  bool rootPop<T>([T result]) => _rootNavigator.pop<T>(result);
 }

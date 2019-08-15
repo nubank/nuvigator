@@ -18,7 +18,7 @@ typedef ProvidersGeneratorFn = List<Provider> Function(
     ScreenContext screenContext);
 typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
 
-class Screen {
+class Screen<T> {
   const Screen(
       {@required this.screenBuilder,
       this.generateProviders,
@@ -43,23 +43,23 @@ class Screen {
   final TransitionType transitionType;
   final ProvidersGeneratorFn generateProviders;
 
-  Screen withProviders(ProvidersGeneratorFn providersGeneratorFn) {
-    return Screen(
+  Screen<T> withProviders(ProvidersGeneratorFn providersGeneratorFn) {
+    return Screen<T>(
       transitionType: transitionType,
       screenBuilder: screenBuilder,
       generateProviders: providersGeneratorFn,
     );
   }
 
-  Route toRoute(RouteSettings settings) {
+  Route<T> toRoute(RouteSettings settings) {
     switch (transitionType) {
       case TransitionType.page:
-        return NuDSPageRoute<void>(
+        return NuDSPageRoute<T>(
           builder: (context) => _buildScreen(context, settings),
           settings: settings,
         );
       case TransitionType.card:
-        return NuDSCardStackPageRoute<void>(
+        return NuDSCardStackPageRoute<T>(
           builder: (context) => _buildScreen(context, settings),
           settings: settings,
         );

@@ -68,9 +68,9 @@ abstract class SimpleRouter implements Router {
     return null;
   }
 
-  FlowRouter flowRouter(
+  FlowRouter<T> flowRouter<T>(
       {ProvidersGeneratorFn generateProviders, String initialScreen}) {
-    return FlowRouter(this,
+    return FlowRouter<T>(this,
         generateFlowProviders: generateProviders, initialScreen: initialScreen);
   }
 }
@@ -128,12 +128,12 @@ class GroupRouter extends SimpleRouter {
 // this router already handles the pop mechanism for you. Also if it does not find
 // the route in itself it will dispatch to it's parent Navigator the opportunity
 // to match it.
-class FlowRouter<T extends Object> implements Router {
+class FlowRouter<T> implements Router {
   FlowRouter(this.baseRouter,
       {ProvidersGeneratorFn generateFlowProviders,
       String initialScreen,
       TransitionType transitionType = TransitionType.card})
-      : flowMaker = FlowMaker(baseRouter,
+      : flowMaker = FlowMaker<T>(baseRouter,
             generateProviders: generateFlowProviders,
             initialScreen: initialScreen,
             transitionType: transitionType);

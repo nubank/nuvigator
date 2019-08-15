@@ -4,7 +4,7 @@ import 'routers.dart';
 import 'screen.dart';
 import 'transition_type.dart';
 
-class FlowMaker<T extends Object> {
+class FlowMaker<T> {
   FlowMaker(this.router,
       {this.generateProviders,
       this.initialScreen,
@@ -21,13 +21,12 @@ class FlowMaker<T extends Object> {
 
   Screen getNavigatorScreen(String routeName) {
     // Matcher for the parent router
-
     final firstScreen = router.getScreen(routeName: routeName);
     if (firstScreen == null) return null;
 
     // Wraps everything into a Screen.card
     // flows usually are present this way, but we can work around this
-    return Screen(
+    return Screen<T>(
         generateProviders: generateProviders,
         transitionType: transitionType,
         screenBuilder: (screenContext) {
