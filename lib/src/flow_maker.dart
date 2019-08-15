@@ -61,15 +61,7 @@ class FlowMaker<T extends Object> {
       RouteSettings routeSettings, ScreenContext screenContext) {
     // Try to find a child screen
     final screen = router.getScreen(routeName: routeSettings.name);
-    // If we can't find the route here, let's check out if its parents know something :)
-    if (screen == null) {
-      Navigator.of(screenContext.context)
-          .pushNamed(routeSettings.name, arguments: routeSettings.arguments);
-      return null;
-    } else {
-      // If the screen is ours, let's build a regular Route for it!
-      return screen.toRoute(routeSettings);
-    }
+    return screen?.toRoute(routeSettings);
   }
 
   RouteSettings _getRouteSettings(

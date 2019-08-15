@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../routing.dart';
-import 'navigation.dart';
+import 'navigation_service.dart';
 
 abstract class ScreenWidget extends StatelessWidget {
   ScreenWidget(this.screenContext)
@@ -9,6 +9,6 @@ abstract class ScreenWidget extends StatelessWidget {
         args = screenContext.settings.arguments;
 
   final ScreenContext screenContext;
-  final Navigation navigation;
+  final NavigationService navigation;
   final Map<String, dynamic> args;
 }

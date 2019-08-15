@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:nubank/nuds/nuds.dart';
 import 'package:provider/provider.dart';
 
-import 'navigation.dart';
+import 'navigation_service.dart';
 import 'transition_type.dart';
 
 class ScreenContext {
   ScreenContext({this.context, this.settings})
-      : navigation = Navigation.of(context);
+      : navigation = NavigationService.of(context);
 
-  final Navigation navigation;
+  final NavigationService navigation;
   final RouteSettings settings;
   final BuildContext context;
 }

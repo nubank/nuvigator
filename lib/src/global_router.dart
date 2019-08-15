@@ -36,7 +36,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
     if (deepLinkFlow == null) return null;
     final args = _extractParameters(url, deepLinkFlow);
-    if (isFromNative is bool) {
+    if (isFromNative is bool && isFromNative) {
       final route = _buildNativeRoute(args, deepLinkFlow.routeName);
       return navigatorKey.currentState.push(route);
     }
