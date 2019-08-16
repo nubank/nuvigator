@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:routing/routing.dart';
 
 import 'navigator_screen.dart';
 import 'screen.dart';
@@ -38,9 +39,10 @@ abstract class SimpleRouter implements Router {
   final Map<String, Screen> screensMap = {};
   final Map<String, String> deepLinksMap = {};
   final String deepLinkPrefix = null;
-  final ProvidersGeneratorFn generateProviders = null;
 
-  final Widget Function(ScreenContext screenContex) screenWrapper = null;
+  Widget screenWrapper(
+          ScreenContext screenContext, ScreenWidget screenWidget) =>
+      defaultWrapperFn(screenContext, screenWidget);
 
   Future<String> getDeepLinkPrefix() async {
     return deepLinkPrefix ?? '';
@@ -51,7 +53,7 @@ abstract class SimpleRouter implements Router {
     assert(routeName != null && routeName.isNotEmpty);
 
     final screen = screensMap[routeName];
-    return screen?.withProviders(generateProviders);
+    return screen?.withWrappedScreen(screenWrapper);
   }
 
   @override
@@ -127,14 +129,16 @@ class GroupRouter extends SimpleRouter {
 mixin FlowRouter<T> on SimpleRouter {
   final String initialRouteName = null;
   final TransitionType transitionType = TransitionType.card;
-  final Widget Function(ScreenContext screenContext) flowWrapper = null;
+
+  Widget flowWrapper(ScreenContext screenContext, ScreenWidget screenWidget) =>
+      defaultWrapperFn(screenContext, screenWidget);
 
   @override
   Screen getScreen({String routeName}) {
     final firstScreen = super.getScreen(routeName: routeName);
     if (firstScreen == null) return null;
     return Screen<T>(
-        generateProviders: generateProviders,
+        wrapperFn: flowWrapper,
         transitionType: transitionType,
         screenBuilder: (screenContext) {
           final newScreenContext = ScreenContext(
@@ -146,5 +150,3 @@ mixin FlowRouter<T> on SimpleRouter {
 
   Screen get initialScreen => getScreen(routeName: initialRouteName);
 }
-
-
