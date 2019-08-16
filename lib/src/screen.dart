@@ -78,8 +78,8 @@ class Screen<T> {
     return wrapperFn(
         ScreenContext(context: context, settings: settings),
         Builder(
-          builder: (context) => screenBuilder(
-              ScreenContext(context: context, settings: settings)),
+          builder: (innerContext) => screenBuilder(
+              ScreenContext(context: innerContext, settings: settings)),
         ));
   }
 }

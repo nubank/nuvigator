@@ -40,8 +40,7 @@ abstract class SimpleRouter implements Router {
   final Map<String, String> deepLinksMap = {};
   final String deepLinkPrefix = null;
 
-  Widget screenWrapper(
-          ScreenContext screenContext, ScreenWidget screenWidget) =>
+  Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) =>
       defaultWrapperFn(screenContext, screenWidget);
 
   Future<String> getDeepLinkPrefix() async {
@@ -130,7 +129,7 @@ mixin FlowRouter<T> on SimpleRouter {
   final String initialRouteName = null;
   final TransitionType transitionType = TransitionType.card;
 
-  Widget flowWrapper(ScreenContext screenContext, ScreenWidget screenWidget) =>
+  Widget flowWrapper(ScreenContext screenContext, Widget screenWidget) =>
       defaultWrapperFn(screenContext, screenWidget);
 
   @override
