@@ -3,6 +3,7 @@ import 'package:nubank/nuds/nuds.dart';
 import 'package:provider/provider.dart';
 
 import 'navigation_service.dart';
+import 'screen_widget.dart';
 import 'transition_type.dart';
 
 class ScreenContext {
@@ -16,7 +17,7 @@ class ScreenContext {
 
 typedef ProvidersGeneratorFn = List<Provider> Function(
     ScreenContext screenContext);
-typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
+typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
 
 class Screen<T> {
   const Screen(
@@ -68,11 +69,17 @@ class Screen<T> {
   }
 
   Widget _buildScreen(BuildContext context, RouteSettings settings) {
-    final screenContext = ScreenContext(context: context, settings: settings);
     return MultiProvider(
-      providers:
-          generateProviders != null ? generateProviders(screenContext) : [],
-      child: screenBuilder(screenContext),
+      providers: _getProviders(context, settings),
+      child: Builder(
+        builder: (context) =>
+            screenBuilder(ScreenContext(context: context, settings: settings)),
+      ),
     );
+  }
+
+  List<Provider> _getProviders(BuildContext context, RouteSettings settings) {
+    final screenContext = ScreenContext(context: context, settings: settings);
+    return generateProviders != null ? generateProviders(screenContext) : [];
   }
 }

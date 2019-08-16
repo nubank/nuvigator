@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
-import 'flow_maker.dart';
+import 'navigator_screen.dart';
 import 'screen.dart';
 import 'transition_type.dart';
 
@@ -40,6 +40,8 @@ abstract class SimpleRouter implements Router {
   final String deepLinkPrefix = null;
   final ProvidersGeneratorFn generateProviders = null;
 
+  final Widget Function(ScreenContext screenContex) screenWrapper = null;
+
   Future<String> getDeepLinkPrefix() async {
     return deepLinkPrefix ?? '';
   }
@@ -66,12 +68,6 @@ abstract class SimpleRouter implements Router {
         );
     }
     return null;
-  }
-
-  FlowRouter<T> flowRouter<T>(
-      {ProvidersGeneratorFn generateProviders, String initialScreen}) {
-    return FlowRouter<T>(this,
-        generateFlowProviders: generateProviders, initialScreen: initialScreen);
   }
 }
 
@@ -128,29 +124,27 @@ class GroupRouter extends SimpleRouter {
 // this router already handles the pop mechanism for you. Also if it does not find
 // the route in itself it will dispatch to it's parent Navigator the opportunity
 // to match it.
-class FlowRouter<T> implements Router {
-  FlowRouter(this.baseRouter,
-      {ProvidersGeneratorFn generateFlowProviders,
-      String initialScreen,
-      TransitionType transitionType = TransitionType.card})
-      : flowMaker = FlowMaker<T>(baseRouter,
-            generateProviders: generateFlowProviders,
-            initialScreen: initialScreen,
-            transitionType: transitionType);
-
-  final Router baseRouter;
-  final FlowMaker flowMaker;
-
-  Screen start() {
-    return flowMaker.start();
-  }
+mixin FlowRouter<T> on SimpleRouter {
+  final String initialRouteName = null;
+  final TransitionType transitionType = TransitionType.card;
+  final Widget Function(ScreenContext screenContext) flowWrapper = null;
 
   @override
   Screen getScreen({String routeName}) {
-    return flowMaker.getNavigatorScreen(routeName);
+    final firstScreen = super.getScreen(routeName: routeName);
+    if (firstScreen == null) return null;
+    return Screen<T>(
+        generateProviders: generateProviders,
+        transitionType: transitionType,
+        screenBuilder: (screenContext) {
+          final newScreenContext = ScreenContext(
+              settings: screenContext.settings.copyWith(name: routeName),
+              context: screenContext.context);
+          return NavigatorScreen(newScreenContext, super.getScreen);
+        });
   }
 
-  @override
-  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) =>
-      baseRouter.getDeepLinkFlowForUrl(url);
+  Screen get initialScreen => getScreen(routeName: initialRouteName);
 }
+
+
