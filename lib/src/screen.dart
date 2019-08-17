@@ -43,19 +43,11 @@ class Screen<T> {
   final WrapperFn wrapperFn;
 
   Screen<T> withWrappedScreen(WrapperFn wrapperFn) {
-    if (wrapperFn != null) {
-      return Screen<T>(
-        transitionType: transitionType,
-        screenBuilder: screenBuilder,
-        wrapperFn: wrapperFn,
-      );
-    } else {
-      return Screen<T>(
-        transitionType: transitionType,
-        screenBuilder: screenBuilder,
-        wrapperFn: defaultWrapperFn,
-      );
-    }
+    return Screen<T>(
+      transitionType: transitionType,
+      screenBuilder: screenBuilder,
+      wrapperFn: wrapperFn ?? defaultWrapperFn,
+    );
   }
 
   Route<T> toRoute(RouteSettings settings) {
