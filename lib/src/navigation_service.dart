@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'global_router.dart';
-
 class NavigationService {
   NavigationService.of(this.context)
       : navigator = Navigator.of(context),
@@ -17,10 +15,6 @@ class NavigationService {
       return parentPop<T>(result);
     }
     return isPopped;
-  }
-
-  Future<T> openDeepLink<T>(Uri url) {
-    return GlobalRouter.of(context).openDeepLink<T>(url);
   }
 
   NavigationService get parent => NavigationService.of(navigator.context);

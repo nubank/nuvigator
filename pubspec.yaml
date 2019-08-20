@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   nuds:
     path: ../nuds
-  provider: ^3.0.0+1
   path_to_regexp: ^0.2.1
 
 dev_dependencies:

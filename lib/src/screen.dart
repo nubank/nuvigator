@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nuds/nuds.dart';
-import 'package:provider/provider.dart';
 
 import 'navigation_service.dart';
 import 'screen_widget.dart';
@@ -15,8 +14,6 @@ class ScreenContext {
   final BuildContext context;
 }
 
-typedef ProvidersGeneratorFn = List<Provider> Function(
-    ScreenContext screenContext);
 typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
 typedef WrapperFn = Widget Function(
     ScreenContext screenContext, Widget screenWidget);
