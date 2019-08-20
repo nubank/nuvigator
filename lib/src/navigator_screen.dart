@@ -7,18 +7,42 @@ import 'screen_widget.dart';
 typedef GetScreenFn = Screen Function({String routeName});
 
 class NavigatorScreen extends ScreenWidget {
-  NavigatorScreen(
-      this.currentNavigatorKey, ScreenContext screenContext, this.getScreenFn)
+  NavigatorScreen(ScreenContext screenContext, this.getScreenFn)
       : super(screenContext);
 
-  NavigatorScreen.fromRouter(
-    GlobalKey<NavigatorState> currentNavigatorKey,
-    ScreenContext screenContext,
-    Router router,
-  ) : this(currentNavigatorKey, screenContext, router.getScreen);
+  NavigatorScreen.fromRouter(ScreenContext screenContext, Router router)
+      : this(screenContext, router.getScreen);
 
   final GetScreenFn getScreenFn;
-  final GlobalKey<NavigatorState> currentNavigatorKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return _NestedNavigator(
+      screenContext: screenContext,
+      getScreenFn: getScreenFn,
+    );
+  }
+}
+
+class _NestedNavigator extends StatefulWidget {
+  const _NestedNavigator({this.screenContext, this.getScreenFn});
+
+  final ScreenContext screenContext;
+  final GetScreenFn getScreenFn;
+
+  @override
+  _NestedNavigatorState createState() => _NestedNavigatorState();
+}
+
+class _NestedNavigatorState extends State<_NestedNavigator> {
+  GlobalKey<NavigatorState> currentNavigatorKey;
+
+  @override
+  void initState() {
+    currentNavigatorKey = GlobalKey<NavigatorState>(
+        debugLabel: widget.screenContext.settings.name);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +50,11 @@ class NavigatorScreen extends ScreenWidget {
       onWillPop: () async =>
           !(await currentNavigatorKey.currentState.maybePop()),
       child: Navigator(
-        initialRoute: screenContext.settings.name,
+        initialRoute: widget.screenContext.settings.name,
         key: currentNavigatorKey,
         onGenerateRoute: (newSettings) {
           final routeSettings =
-              _getRouteSettings(screenContext.settings, newSettings);
+              _getRouteSettings(widget.screenContext.settings, newSettings);
           return _dispatchRoute(routeSettings);
         },
       ),
@@ -38,7 +62,7 @@ class NavigatorScreen extends ScreenWidget {
   }
 
   Route _dispatchRoute(RouteSettings routeSettings) {
-    final screen = getScreenFn(routeName: routeSettings.name);
+    final screen = widget.getScreenFn(routeName: routeSettings.name);
     return screen?.toRoute(routeSettings);
   }
 
