@@ -6,6 +6,8 @@ import 'screen_widget.dart';
 
 typedef GetScreenFn = Screen Function({String routeName});
 
+GlobalKey<NavigatorState> currentNavigatorKey;
+
 class NavigatorScreen extends ScreenWidget {
   NavigatorScreen(ScreenContext screenContext, this.getScreenFn)
       : super(screenContext);
@@ -18,19 +20,24 @@ class NavigatorScreen extends ScreenWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentNavigatorKey =
+    currentNavigatorKey ??=
         GlobalKey<NavigatorState>(debugLabel: screenContext.settings.name);
+
     return WillPopScope(
-      onWillPop: () async =>
-          !(await currentNavigatorKey.currentState.maybePop()),
+      onWillPop: () async {
+        final mayPop = !(await currentNavigatorKey.currentState.maybePop());
+        if (mayPop) currentNavigatorKey = null;
+        return mayPop;
+      },
       child: Navigator(
-          initialRoute: screenContext.settings.name,
-          key: currentNavigatorKey,
-          onGenerateRoute: (newSettings) {
-            final routeSettings =
-                _getRouteSettings(screenContext.settings, newSettings);
-            return _dispatchRoute(routeSettings);
-          }),
+        initialRoute: screenContext.settings.name,
+        key: currentNavigatorKey,
+        onGenerateRoute: (newSettings) {
+          final routeSettings =
+              _getRouteSettings(screenContext.settings, newSettings);
+          return _dispatchRoute(routeSettings);
+        },
+      ),
     );
   }
 
