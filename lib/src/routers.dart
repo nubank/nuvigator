@@ -132,6 +132,8 @@ mixin FlowRouter<T> on SimpleRouter {
   Widget flowWrapper(ScreenContext screenContext, Widget screenWidget) =>
       defaultWrapperFn(screenContext, screenWidget);
 
+  GlobalKey<NavigatorState> currentNavigatorKey;
+
   @override
   Screen getScreen({String routeName}) {
     final firstScreen = super.getScreen(routeName: routeName);
@@ -143,7 +145,10 @@ mixin FlowRouter<T> on SimpleRouter {
           final newScreenContext = ScreenContext(
               settings: screenContext.settings.copyWith(name: routeName),
               context: screenContext.context);
-          return NavigatorScreen(newScreenContext, super.getScreen);
+          currentNavigatorKey ??=
+              GlobalKey<NavigatorState>(debugLabel: routeName);
+          return NavigatorScreen(
+              currentNavigatorKey, newScreenContext, super.getScreen);
         });
   }
 
