@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nuds/nuds.dart';
-import 'package:provider/provider.dart';
 
 import 'navigation_service.dart';
+import 'screen_widget.dart';
 import 'transition_type.dart';
 
 class ScreenContext {
@@ -14,40 +14,36 @@ class ScreenContext {
   final BuildContext context;
 }
 
-typedef ProvidersGeneratorFn = List<Provider> Function(
-    ScreenContext screenContext);
-typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
+typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
+typedef WrapperFn = Widget Function(
+    ScreenContext screenContext, Widget screenWidget);
+
+Widget defaultWrapperFn(ScreenContext _, Widget screenWidget) => screenWidget;
 
 class Screen<T> {
   const Screen(
       {@required this.screenBuilder,
-      this.generateProviders,
+      this.wrapperFn = defaultWrapperFn,
       this.transitionType = TransitionType.page})
       : assert(screenBuilder != null);
 
-  const Screen.page(ScreenBuilder screenBuilder,
-      {ProvidersGeneratorFn generateProviders})
-      : this(
-            screenBuilder: screenBuilder,
-            generateProviders: generateProviders,
-            transitionType: TransitionType.page);
+  const Screen.page(
+    ScreenBuilder screenBuilder,
+  ) : this(screenBuilder: screenBuilder, transitionType: TransitionType.page);
 
-  const Screen.card(ScreenBuilder screenBuilder,
-      {ProvidersGeneratorFn generateProviders})
-      : this(
-            screenBuilder: screenBuilder,
-            generateProviders: generateProviders,
-            transitionType: TransitionType.card);
+  const Screen.card(
+    ScreenBuilder screenBuilder,
+  ) : this(screenBuilder: screenBuilder, transitionType: TransitionType.card);
 
   final ScreenBuilder screenBuilder;
   final TransitionType transitionType;
-  final ProvidersGeneratorFn generateProviders;
+  final WrapperFn wrapperFn;
 
-  Screen<T> withProviders(ProvidersGeneratorFn providersGeneratorFn) {
+  Screen<T> withWrappedScreen(WrapperFn wrapperFn) {
     return Screen<T>(
       transitionType: transitionType,
       screenBuilder: screenBuilder,
-      generateProviders: providersGeneratorFn,
+      wrapperFn: wrapperFn ?? defaultWrapperFn,
     );
   }
 
@@ -68,11 +64,11 @@ class Screen<T> {
   }
 
   Widget _buildScreen(BuildContext context, RouteSettings settings) {
-    final screenContext = ScreenContext(context: context, settings: settings);
-    return MultiProvider(
-      providers:
-          generateProviders != null ? generateProviders(screenContext) : [],
-      child: screenBuilder(screenContext),
-    );
+    return wrapperFn(
+        ScreenContext(context: context, settings: settings),
+        Builder(
+          builder: (innerContext) => screenBuilder(
+              ScreenContext(context: innerContext, settings: settings)),
+        ));
   }
 }

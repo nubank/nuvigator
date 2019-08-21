@@ -1,16 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:provider/provider.dart';
 
 import 'errors.dart';
 import 'routers.dart';
 
 class GlobalRouter extends GroupRouter implements AppRouter {
   GlobalRouter(this.navigatorKey);
-
-  static GlobalRouter of(BuildContext context) =>
-      Provider.of<GlobalRouter>(context);
 
   final GlobalKey<NavigatorState> navigatorKey;
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:routing/routing.dart';
 
-import 'flow_maker.dart';
+import 'navigator_screen.dart';
 import 'screen.dart';
 import 'transition_type.dart';
 
@@ -13,16 +14,16 @@ class DeepLinkFlow {
   final String routeName;
 }
 
-// Base Router class. Provide a basic interface and a helper to build Routes from
-// Screens.
+/// Base Router class. Provide a basic interface and a helper to build Routes from
+/// Screens.
 abstract class Router {
   Screen getScreen({String routeName});
 
   Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) => null;
 }
 
-// Application Router class. Provides a basic interface and helper to handle
-// deepLinks and get routes.
+/// Application Router class. Provides a basic interface and helper to handle
+/// deepLinks and get routes.
 abstract class AppRouter {
   Future<bool> canOpenDeepLink(Uri url);
 
@@ -31,14 +32,16 @@ abstract class AppRouter {
   Route getRoute(RouteSettings settings);
 }
 
-// Simplest type of router. It consists of two Maps, one for RouteName -> Screen
-// and one for DeepLinks => RouteName. It will try to match against those to find
-// a Screen.
+/// Simplest type of router. It consists of two Maps, one for RouteName -> Screen
+/// and one for DeepLinks => RouteName. It will try to match against those to find
+/// a Screen.
 abstract class SimpleRouter implements Router {
   final Map<String, Screen> screensMap = {};
   final Map<String, String> deepLinksMap = {};
   final String deepLinkPrefix = null;
-  final ProvidersGeneratorFn generateProviders = null;
+
+  Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) =>
+      defaultWrapperFn(screenContext, screenWidget);
 
   Future<String> getDeepLinkPrefix() async {
     return deepLinkPrefix ?? '';
@@ -49,7 +52,7 @@ abstract class SimpleRouter implements Router {
     assert(routeName != null && routeName.isNotEmpty);
 
     final screen = screensMap[routeName];
-    return screen?.withProviders(generateProviders);
+    return screen?.withWrappedScreen(screenWrapper);
   }
 
   @override
@@ -67,17 +70,11 @@ abstract class SimpleRouter implements Router {
     }
     return null;
   }
-
-  FlowRouter<T> flowRouter<T>(
-      {ProvidersGeneratorFn generateProviders, String initialScreen}) {
-    return FlowRouter<T>(this,
-        generateFlowProviders: generateProviders, initialScreen: initialScreen);
-  }
 }
 
-// More complex router that in addition to the features provided by the SimpleRouter
-// it can contains a list of delegate Routers, that will try to match against.
-// This router is used to create a "merge" Router of several other Routers.
+/// More complex router that in addition to the features provided by the SimpleRouter
+/// it can contains a list of delegate Routers, that will try to match against.
+/// This router is used to create a "merge" Router of several other Routers.
 class GroupRouter extends SimpleRouter {
   List<Router> routers = [];
 
@@ -120,37 +117,35 @@ class GroupRouter extends SimpleRouter {
   }
 }
 
-// Special type of Router that will try to find the screen in it's provided
-// baseRouter, but instead will return a nested Navigator.
-// The first screen being the found screen, and at each new push it will
-// look into for the new Screen again in it's baseRouter. This should be used when
-// you have a more complex flow, composed of multiple screens creating a "journey".
-// this router already handles the pop mechanism for you. Also if it does not find
-// the route in itself it will dispatch to it's parent Navigator the opportunity
-// to match it.
-class FlowRouter<T> implements Router {
-  FlowRouter(this.baseRouter,
-      {ProvidersGeneratorFn generateFlowProviders,
-      String initialScreen,
-      TransitionType transitionType = TransitionType.card})
-      : flowMaker = FlowMaker<T>(baseRouter,
-            generateProviders: generateFlowProviders,
-            initialScreen: initialScreen,
-            transitionType: transitionType);
+/// Special type of Router that will try to find the screen in it's provided
+/// baseRouter, but instead will return a nested Navigator.
+/// The first screen being the found screen, and at each new push it will
+/// look into for the new Screen again in it's baseRouter. This should be used when
+/// you have a more complex flow, composed of multiple screens creating a "journey".
+/// this router already handles the pop mechanism for you. Also if it does not find
+/// the route in itself it will dispatch to it's parent Navigator the opportunity
+/// to match it.
+mixin FlowRouter<T> on SimpleRouter {
+  final String initialRouteName = null;
+  final TransitionType transitionType = TransitionType.card;
 
-  final Router baseRouter;
-  final FlowMaker flowMaker;
-
-  Screen start() {
-    return flowMaker.start();
-  }
+  Widget flowWrapper(ScreenContext screenContext, Widget screenWidget) =>
+      defaultWrapperFn(screenContext, screenWidget);
 
   @override
   Screen getScreen({String routeName}) {
-    return flowMaker.getNavigatorScreen(routeName);
+    final firstScreen = super.getScreen(routeName: routeName);
+    if (firstScreen == null) return null;
+    return Screen<T>(
+        wrapperFn: flowWrapper,
+        transitionType: transitionType,
+        screenBuilder: (screenContext) {
+          final newScreenContext = ScreenContext(
+              settings: screenContext.settings.copyWith(name: routeName),
+              context: screenContext.context);
+          return NavigatorScreen(newScreenContext, super.getScreen);
+        });
   }
 
-  @override
-  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) =>
-      baseRouter.getDeepLinkFlowForUrl(url);
+  Screen get initialScreen => getScreen(routeName: initialRouteName);
 }
