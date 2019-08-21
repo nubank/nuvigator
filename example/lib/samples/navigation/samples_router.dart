@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
 import 'package:routing/routing.dart';
 
 import '../../main.dart';
@@ -15,6 +16,7 @@ class _SamplesRouter extends GroupRouter {
   @override
   List<Router> get routers => [
     sampleOneRouter,
+    sampleTwoRouter,
   ];
 }
 

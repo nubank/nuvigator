@@ -15,6 +15,10 @@ class _ScreenOne extends ExampleScreenWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => navigation.pop<String>('Backed from Screen One'),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -26,12 +30,16 @@ class _ScreenOne extends ExampleScreenWidget {
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: navigation.samples.sampleOne.screenTwo,
+            onPressed: () async {
+              final value = await navigation.samples.sampleTwo.screenTwo();
+              print('Return from sample two screen two with value: $value');
+            },
           ),
+          TextField()
         ],
       ),
     );
   }
 }
 
-const S1ScreenOnePage = Screen<void>.page(_ScreenOne.from);
+const S2ScreenOnePage = Screen<String>.page(_ScreenOne.from);

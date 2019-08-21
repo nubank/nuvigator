@@ -1,20 +1,19 @@
+import 'package:example/samples/navigation/samples_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
 
-import '../samples/modules/sample_one/navigation/sample_one_navigation.dart';
 import '../samples/navigation/samples_router.dart';
 
 class ExampleNavigation extends NavigationService {
   ExampleNavigation.of(BuildContext context) : super.of(context);
 
-  @override
   Future<T> openDeepLink<T>(Uri url) {
     return ExampleAppRouter.of(context).openDeepLink<T>(url);
   }
 
   // Define modules navigations
-  SampleOneNavigation get sampleOne => SampleOneNavigation.of(context);
+  SamplesNavigation get samples => SamplesNavigation.of(context);
 }
 
 abstract class ExampleScreenWidget extends ScreenWidget {

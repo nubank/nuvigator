@@ -13,8 +13,6 @@ dependencies:
   nuds:
     path: ../nuds
   path_to_regexp: ^0.2.1
-  nuds:
-    path: ../nuds
 
 dev_dependencies:
   flutter_test:

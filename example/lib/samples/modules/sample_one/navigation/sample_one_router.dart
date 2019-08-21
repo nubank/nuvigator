@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_one/screen/screen_two.dart';
 import 'package:routing/routing.dart';
 
 import '../screen/screen_one.dart';
@@ -11,7 +12,8 @@ class _SampleOneRouter extends SimpleRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-    SampleOneRoutes.screen_one: ScreenOneCard,
+    SampleOneRoutes.screen_one: S1ScreenOnePage,
+    SampleOneRoutes.screen_two: S1ScreenTwoPage,
   };
 
   @override

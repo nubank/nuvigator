@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_two/navigation/sample_two_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:routing/routing.dart';
 
@@ -8,4 +9,7 @@ class SamplesNavigation extends NavigationService {
 
   SampleOneNavigation get sampleOne =>
       SampleOneNavigation.of(context);
+
+  SampleTwoNavigation get sampleTwo =>
+      SampleTwoNavigation.of(context);
 }

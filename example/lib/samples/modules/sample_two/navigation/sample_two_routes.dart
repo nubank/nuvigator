@@ -1,6 +1,6 @@
-const _prefix = 'sample_one';
+const _prefix = 'sample_two';
 
-class SampleOneRoutes {
+class SampleTwoRoutes {
   static const screen_one = '$_prefix/screen_one';
   static const screen_two = '$_prefix/screen_two';
 }

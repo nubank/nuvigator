@@ -41,11 +41,18 @@ class HomeScreen extends ExampleScreenWidget {
         children: <Widget>[
           FlatButton(
             child: const Text('Go to sample one with flutter navigation'),
-            onPressed: () => navigation.sampleOne.start('id_1234'),
+            onPressed: () => navigation.samples.sampleOne.start('id_1234'),
           ),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
             onPressed: () => ExampleAppRouter.of(context).openDeepLink<void>(Uri.parse(screenOneDeepLink)),
+          ),
+          FlatButton(
+            child: const Text('Go to sample two with flow'),
+            onPressed: () async {
+              final value = await navigation.samples.sampleTwo.start('id_1234');
+              print('Return from sample two with value: $value');
+            },
           ),
         ],
       ),
