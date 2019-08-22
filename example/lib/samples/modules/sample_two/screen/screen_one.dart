@@ -1,12 +1,12 @@
-import 'package:example/samples/bloc/samples_bloc.dart';
-import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
-import 'package:example/samples/modules/sample_two/bloc/sample_two_bloc.dart';
-import 'package:example/samples/modules/sample_two/bloc/screen_one_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
 
 import '../../../../src/example_app_router.dart';
+import '../../../bloc/samples_bloc.dart';
+import '../bloc/sample_flow_bloc.dart';
+import '../bloc/sample_two_bloc.dart';
+import '../bloc/screen_one_bloc.dart';
 
 class _ScreenOne extends ExampleScreenWidget {
   _ScreenOne(ScreenContext screenContext) : super(screenContext);

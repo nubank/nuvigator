@@ -1,11 +1,11 @@
-import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
-import 'package:example/samples/modules/sample_two/bloc/sample_two_bloc.dart';
-import 'package:example/samples/modules/sample_two/screen/screen_two.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
 
+import '../bloc/sample_flow_bloc.dart';
+import '../bloc/sample_two_bloc.dart';
 import '../screen/screen_one.dart';
+import '../screen/screen_two.dart';
 import 'sample_two_routes.dart';
 
 class _SampleTwoRouter extends SimpleRouter with FlowRouter<String> {

@@ -1,8 +1,8 @@
-import 'package:example/samples/modules/sample_two/navigation/sample_two_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:routing/routing.dart';
 
 import '../modules/sample_one/navigation/sample_one_navigation.dart';
+import '../modules/sample_two/navigation/sample_two_navigation.dart';
 
 class SamplesNavigation extends NavigationService {
   SamplesNavigation.of(BuildContext context) : super.of(context);

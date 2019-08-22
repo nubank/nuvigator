@@ -1,8 +1,8 @@
-import 'package:example/samples/navigation/samples_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
 
+import '../samples/navigation/samples_navigation.dart';
 import '../samples/navigation/samples_router.dart';
 
 class ExampleNavigation extends NavigationService {
