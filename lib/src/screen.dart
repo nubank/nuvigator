@@ -20,7 +20,7 @@ typedef WrapperFn = Widget Function(
 
 Widget defaultWrapperFn(ScreenContext _, Widget screenWidget) => screenWidget;
 
-class Screen<T> {
+class Screen<T extends Object> {
   const Screen(
       {@required this.screenBuilder,
       this.wrapperFn = defaultWrapperFn,
