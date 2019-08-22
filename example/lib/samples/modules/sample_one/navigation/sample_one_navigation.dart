@@ -7,9 +7,9 @@ class SampleOneNavigation extends NavigationService {
   SampleOneNavigation.of(BuildContext context) : super.of(context);
 
   void start(String testId) =>
-      pushNamed<void>(SampleOneRoutes.screen_one,
-          arguments: <String, String>{'testId': testId,});
+      pushNamed<void>(SampleOneRoutes.screen_one, arguments: <String, String>{
+        'testId': testId,
+      });
 
-  void screenTwo() =>
-      pushNamed<void>(SampleOneRoutes.screen_two);
+  void screenTwo() => pushNamed<void>(SampleOneRoutes.screen_two);
 }

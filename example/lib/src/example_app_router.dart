@@ -20,19 +20,21 @@ abstract class ExampleScreenWidget extends ScreenWidget {
   ExampleScreenWidget(ScreenContext screenContext) : super(screenContext);
 
   @override
-  ExampleNavigation get navigation => ExampleNavigation.of(screenContext.context);
+  ExampleNavigation get navigation =>
+      ExampleNavigation.of(screenContext.context);
 }
 
 class ExampleAppRouter extends GlobalRouter {
-  ExampleAppRouter(GlobalKey<NavigatorState> navigatorKey) : super(navigatorKey);
+  ExampleAppRouter(GlobalKey<NavigatorState> navigatorKey)
+      : super(navigatorKey);
 
   static ExampleAppRouter of(BuildContext context) =>
       Provider.of<ExampleAppRouter>(context);
 
   @override
   List<Router> get routers => [
-    samplesRouter,
-  ];
+        samplesRouter,
+      ];
 
   @override
   Future<bool> canOpenDeepLink(Uri url) async {
@@ -41,7 +43,7 @@ class ExampleAppRouter extends GlobalRouter {
 
   @override
   Future<T> openDeepLink<T>(Uri url, [dynamic arguments]) async {
-      return super.openDeepLink<T>(url, arguments);
+    return super.openDeepLink<T>(url, arguments);
   }
 
   Future<dynamic> openInternalFromNative(Uri url, [dynamic arguments]) async {

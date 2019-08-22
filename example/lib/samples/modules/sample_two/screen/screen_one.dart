@@ -1,5 +1,10 @@
+import 'package:example/samples/bloc/samples_bloc.dart';
+import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
+import 'package:example/samples/modules/sample_two/bloc/sample_two_bloc.dart';
+import 'package:example/samples/modules/sample_two/bloc/screen_one_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:routing/src/screen.dart';
+import 'package:provider/provider.dart';
+import 'package:routing/routing.dart';
 
 import '../../../../src/example_app_router.dart';
 
@@ -12,6 +17,11 @@ class _ScreenOne extends ExampleScreenWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(Provider.of<ScreenOneBloc>(context).testText);
+    print(Provider.of<SampleTwoBloc>(context).testText);
+    print(Provider.of<SampleFlowBloc>(context).testText);
+    print(Provider.of<SamplesBloc>(context).testText);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
@@ -42,4 +52,10 @@ class _ScreenOne extends ExampleScreenWidget {
   }
 }
 
-const S2ScreenOnePage = Screen<String>.page(_ScreenOne.from);
+final s2ScreenOnePage = const Screen<String>.page(_ScreenOne.from)
+    .withWrappedScreen((screenContext, child) {
+  return Provider<ScreenOneBloc>.value(
+    value: ScreenOneBloc(),
+    child: child,
+  );
+});

@@ -7,9 +7,9 @@ class SampleTwoNavigation extends NavigationService {
   SampleTwoNavigation.of(BuildContext context) : super.of(context);
 
   Future<String> start(String testId) =>
-      pushNamed<String>(SampleTwoRoutes.screen_one,
-          arguments: <String, String>{'testId': testId,});
+      pushNamed<String>(SampleTwoRoutes.screen_one, arguments: <String, String>{
+        'testId': testId,
+      });
 
-  Future<String> screenTwo() =>
-      pushNamed<String>(SampleTwoRoutes.screen_two);
+  Future<String> screenTwo() => pushNamed<String>(SampleTwoRoutes.screen_two);
 }

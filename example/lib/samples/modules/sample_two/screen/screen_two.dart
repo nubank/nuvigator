@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:routing/src/screen.dart';
+import 'package:routing/routing.dart';
 
 import '../../../../src/example_app_router.dart';
 
@@ -26,7 +26,8 @@ class _ScreenTwo extends ExampleScreenWidget {
         children: <Widget>[
           FlatButton(
             child: const Text('Close entire flow'),
-            onPressed: () => navigation.rootPop<String>('Backed from Screen Two'),
+            onPressed: () =>
+                navigation.parentPop<String>('Backed from Screen Two'),
           ),
           FlatButton(
             child: const Text('Go to sample one'),
