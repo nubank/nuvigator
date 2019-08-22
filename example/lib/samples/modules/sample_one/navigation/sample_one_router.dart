@@ -1,7 +1,7 @@
-import 'package:example/samples/modules/sample_one/screen/screen_two.dart';
 import 'package:routing/routing.dart';
 
 import '../screen/screen_one.dart';
+import '../screen/screen_two.dart';
 import 'sample_one_routes.dart';
 
 const screenOneDeepLink =
