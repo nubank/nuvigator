@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nuds/nuds.dart';
 
 import 'navigation_service.dart';
 import 'screen_widget.dart';
@@ -24,6 +24,8 @@ class ScreenContext {
   final BuildContext context;
 }
 
+typedef ScreenFn<T> = Screen<T> Function<T>(
+    {WrapperFn wrapperFn, ScreenBuilder screenBuilder});
 typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
 typedef WrapperFn = Widget Function(
     ScreenContext screenContext, Widget screenWidget);
@@ -34,16 +36,20 @@ class Screen<T> {
   const Screen(
       {@required this.screenBuilder,
       this.wrapperFn = defaultWrapperFn,
-      this.transitionType = TransitionType.page})
+      this.transitionType = TransitionType.materialPage})
       : assert(screenBuilder != null);
 
   const Screen.page(
     ScreenBuilder screenBuilder,
-  ) : this(screenBuilder: screenBuilder, transitionType: TransitionType.page);
+  ) : this(
+            screenBuilder: screenBuilder,
+            transitionType: TransitionType.materialPage);
 
   const Screen.card(
     ScreenBuilder screenBuilder,
-  ) : this(screenBuilder: screenBuilder, transitionType: TransitionType.card);
+  ) : this(
+            screenBuilder: screenBuilder,
+            transitionType: TransitionType.cupertinoPage);
 
   final ScreenBuilder screenBuilder;
   final TransitionType transitionType;
@@ -53,17 +59,17 @@ class Screen<T> {
     return Screen<T>(
       transitionType: transitionType,
       screenBuilder: screenBuilder,
-      wrapperFn: _getComposedWrapper(wrapperFn),
+      wrapperFn: getComposedWrapper(wrapperFn),
     );
   }
 
-  WrapperFn _getComposedWrapper(WrapperFn wrapperFn) {
+  WrapperFn getComposedWrapper(WrapperFn wrapperFn) {
     if (wrapperFn != null) {
       return (ScreenContext sc, Widget child) => wrapperFn(
             sc,
             Builder(
               builder: (context) =>
-                  this.wrapperFn(sc.copyWith(context: context), child),
+                  this.wrapperFn(sc?.copyWith(context: context), child),
             ),
           );
     }
@@ -73,21 +79,21 @@ class Screen<T> {
 
   Route<T> toRoute(RouteSettings settings) {
     switch (transitionType) {
-      case TransitionType.page:
-        return NuDSPageRoute<T>(
-          builder: (context) => _buildScreen(context, settings),
+      case TransitionType.materialPage:
+        return MaterialPageRoute<T>(
+          builder: (context) => buildScreen(context, settings),
           settings: settings,
         );
-      case TransitionType.card:
-        return NuDSCardStackPageRoute<T>(
-          builder: (context) => _buildScreen(context, settings),
+      case TransitionType.cupertinoPage:
+        return CupertinoPageRoute<T>(
+          builder: (context) => buildScreen(context, settings),
           settings: settings,
         );
     }
     return null;
   }
 
-  Widget _buildScreen(BuildContext context, RouteSettings settings) {
+  Widget buildScreen(BuildContext context, RouteSettings settings) {
     return wrapperFn(
         ScreenContext(context: context, settings: settings),
         Builder(

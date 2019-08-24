@@ -52,7 +52,7 @@ class _ScreenOne extends ExampleScreenWidget {
   }
 }
 
-final s2ScreenOnePage = const Screen<String>.page(_ScreenOne.from)
+final s2ScreenOnePage = const ExScreen<String>.page(_ScreenOne.from)
     .withWrappedScreen((screenContext, child) {
   return Provider<ScreenOneBloc>.value(
     value: ScreenOneBloc(),

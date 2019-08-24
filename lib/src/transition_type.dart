@@ -1,4 +1,4 @@
 enum TransitionType {
-  page,
-  card,
+  materialPage,
+  cupertinoPage,
 }

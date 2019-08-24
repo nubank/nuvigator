@@ -34,4 +34,4 @@ class _ScreenOne extends ExampleScreenWidget {
   }
 }
 
-const S1ScreenOnePage = Screen<void>.page(_ScreenOne.from);
+const S1ScreenOnePage = ExScreen<void>.page(_ScreenOne.from);

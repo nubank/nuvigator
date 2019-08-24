@@ -10,8 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  nuds:
-    path: ../nuds
   path_to_regexp: ^0.2.1
 
 dev_dependencies:

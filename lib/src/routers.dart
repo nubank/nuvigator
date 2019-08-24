@@ -127,7 +127,8 @@ class GroupRouter extends SimpleRouter {
 /// to match it.
 mixin FlowRouter<T> on SimpleRouter {
   final String initialRouteName = null;
-  final TransitionType transitionType = TransitionType.card;
+  final TransitionType transitionType = TransitionType.cupertinoPage;
+  final ScreenFn<T> screenFn = null;
 
   Widget flowWrapper(ScreenContext screenContext, Widget screenWidget) =>
       defaultWrapperFn(screenContext, screenWidget);
@@ -136,6 +137,17 @@ mixin FlowRouter<T> on SimpleRouter {
   Screen getScreen({String routeName}) {
     final firstScreen = super.getScreen(routeName: routeName);
     if (firstScreen == null) return null;
+
+    if (screenFn != null)
+      return screenFn<T>(
+          wrapperFn: flowWrapper,
+          screenBuilder: (screenContext) {
+            final newScreenContext = ScreenContext(
+                settings: screenContext.settings.copyWith(name: routeName),
+                context: screenContext.context);
+            return NavigatorScreen(newScreenContext, super.getScreen);
+          });
+
     return Screen<T>(
         wrapperFn: flowWrapper,
         transitionType: transitionType,

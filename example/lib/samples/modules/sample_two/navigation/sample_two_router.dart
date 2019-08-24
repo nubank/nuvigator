@@ -1,3 +1,4 @@
+import 'package:example/src/example_app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
@@ -17,6 +18,9 @@ class _SampleTwoRouter extends SimpleRouter with FlowRouter<String> {
 
   @override
   String get initialRouteName => SampleTwoRoutes.screen_one;
+
+  @override
+  ScreenFn get screenFn => ExScreen.fromScreen(NuTransitionType.nuCard);
 
   @override
   Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) {

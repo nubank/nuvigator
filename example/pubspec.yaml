@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
 
   provider: ^3.0.0+1
+  nuds:
+    path: ../../nuds
   routing:
     path: ../
 

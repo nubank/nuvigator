@@ -39,4 +39,4 @@ class _ScreenTwo extends ExampleScreenWidget {
   }
 }
 
-const S2ScreenTwoPage = Screen<String>.page(_ScreenTwo.from);
+const S2ScreenTwoPage = ExScreen<String>.page(_ScreenTwo.from);
