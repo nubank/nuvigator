@@ -9,6 +9,16 @@ class ScreenContext {
   ScreenContext({this.context, this.settings})
       : navigation = NavigationService.of(context);
 
+  ScreenContext copyWith({
+    BuildContext context,
+    RouteSettings settings,
+  }) {
+    return ScreenContext(
+      context: context ?? this.context,
+      settings: settings ?? this.settings,
+    );
+  }
+
   final NavigationService navigation;
   final RouteSettings settings;
   final BuildContext context;
@@ -43,8 +53,22 @@ class Screen<T extends Object> {
     return Screen<T>(
       transitionType: transitionType,
       screenBuilder: screenBuilder,
-      wrapperFn: wrapperFn ?? defaultWrapperFn,
+      wrapperFn: _getComposedWrapper(wrapperFn),
     );
+  }
+
+  WrapperFn _getComposedWrapper(WrapperFn wrapperFn) {
+    if (wrapperFn != null) {
+      return (ScreenContext sc, Widget child) => wrapperFn(
+            sc,
+            Builder(
+              builder: (context) =>
+                  this.wrapperFn(sc.copyWith(context: context), child),
+            ),
+          );
+    }
+
+    return this.wrapperFn;
   }
 
   Route<T> toRoute(RouteSettings settings) {

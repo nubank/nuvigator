@@ -87,7 +87,7 @@ class GroupRouter extends SimpleRouter {
 
     for (Router router in routers) {
       final screen = router.getScreen(routeName: routeName);
-      if (screen != null) return screen;
+      if (screen != null) return screen.withWrappedScreen(screenWrapper);
     }
     return null;
   }
