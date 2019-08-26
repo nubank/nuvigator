@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nuds/nuds.dart';
 
 import 'navigation_service.dart';
-import 'screen_widget.dart';
 import 'transition_type.dart';
 
 class ScreenContext {
@@ -24,7 +23,7 @@ class ScreenContext {
   final BuildContext context;
 }
 
-typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
+typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
 typedef WrapperFn = Widget Function(
     ScreenContext screenContext, Widget screenWidget);
 

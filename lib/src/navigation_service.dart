@@ -11,7 +11,8 @@ class NavigationService {
 
   NavigationService get parent => NavigationService.of(_navigator.context);
 
-  Future<T> pushNamed<T extends Object>(String routeName, {Map<String, dynamic> arguments}) {
+  Future<T> pushNamed<T extends Object>(String routeName,
+      {Map<String, dynamic> arguments}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
@@ -20,31 +21,45 @@ class NavigationService {
     return _navigator.pushNamed<T>(routeName, arguments: arguments);
   }
 
-  Future<T> pushReplacementNamed<T extends Object, TO extends Object>(String routeName, {Map<String, dynamic> arguments, TO result}) {
+  Future<T> pushReplacementNamed<T extends Object, TO extends Object>(
+      String routeName,
+      {Map<String, dynamic> arguments,
+      TO result}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.pushReplacementNamed<T, TO>(routeName, arguments: arguments, result: result);
+      return parent.pushReplacementNamed<T, TO>(routeName,
+          arguments: arguments, result: result);
     }
-    return _navigator.pushReplacementNamed<T, TO>(routeName, arguments: arguments, result: result);
+    return _navigator.pushReplacementNamed<T, TO>(routeName,
+        arguments: arguments, result: result);
   }
 
-  Future<T> pushNamedAndRemoveUntil<T extends Object>(String routeName, RoutePredicate predicate, {Map<String, dynamic> arguments}) {
+  Future<T> pushNamedAndRemoveUntil<T extends Object>(
+      String routeName, RoutePredicate predicate,
+      {Map<String, dynamic> arguments}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.pushNamedAndRemoveUntil<T>(routeName, predicate, arguments: arguments);
+      return parent.pushNamedAndRemoveUntil<T>(routeName, predicate,
+          arguments: arguments);
     }
-    return _navigator.pushNamedAndRemoveUntil<T>(routeName, predicate, arguments: arguments);
+    return _navigator.pushNamedAndRemoveUntil<T>(routeName, predicate,
+        arguments: arguments);
   }
 
-  Future<T> popAndPushNamed<T extends Object, TO extends Object>(String routeName, {Map<String, dynamic> arguments, TO result}) {
+  Future<T> popAndPushNamed<T extends Object, TO extends Object>(
+      String routeName,
+      {Map<String, dynamic> arguments,
+      TO result}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.popAndPushNamed<T, TO>(routeName, arguments: arguments, result: result);
+      return parent.popAndPushNamed<T, TO>(routeName,
+          arguments: arguments, result: result);
     }
-    return _navigator.popAndPushNamed<T, TO>(routeName, arguments: arguments, result: result);
+    return _navigator.popAndPushNamed<T, TO>(routeName,
+        arguments: arguments, result: result);
   }
 
   bool pop<T extends Object>([T result]) {
