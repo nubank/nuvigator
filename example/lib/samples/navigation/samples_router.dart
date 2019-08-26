@@ -1,3 +1,4 @@
+import 'package:example/src/example_app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
@@ -13,7 +14,8 @@ class _SamplesRouter extends GroupRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-        'home': Screen<void>.page((screenContext) => HomeScreen(screenContext)),
+        'home':
+            NuScreenHelper.page((screenContext) => HomeScreen(screenContext)),
       };
 
   @override

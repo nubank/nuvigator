@@ -13,8 +13,8 @@ class _SampleOneRouter extends SimpleRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-        SampleOneRoutes.screen_one: S1ScreenOnePage,
-        SampleOneRoutes.screen_two: S1ScreenTwoPage,
+        SampleOneRoutes.screen_one: s1ScreenOnePage,
+        SampleOneRoutes.screen_two: s1ScreenTwoPage,
       };
 
   @override

@@ -4,7 +4,6 @@ import 'package:routing/routing.dart';
 
 import 'navigator_screen.dart';
 import 'screen.dart';
-import 'transition_type.dart';
 
 class DeepLinkFlow {
   DeepLinkFlow({this.template, this.path, this.routeName});
@@ -127,8 +126,7 @@ class GroupRouter extends SimpleRouter {
 /// to match it.
 mixin FlowRouter<T> on SimpleRouter {
   final String initialRouteName = null;
-  final TransitionType transitionType = TransitionType.cupertinoPage;
-  final ScreenFn<T> screenFn = null;
+  final ScreenType initialScreenType = null;
 
   Widget flowWrapper(ScreenContext screenContext, Widget screenWidget) =>
       defaultWrapperFn(screenContext, screenWidget);
@@ -138,25 +136,15 @@ mixin FlowRouter<T> on SimpleRouter {
     final firstScreen = super.getScreen(routeName: routeName);
     if (firstScreen == null) return null;
 
-    if (screenFn != null)
-      return screenFn<T>(
-          wrapperFn: flowWrapper,
-          screenBuilder: (screenContext) {
-            final newScreenContext = ScreenContext(
-                settings: screenContext.settings.copyWith(name: routeName),
-                context: screenContext.context);
-            return NavigatorScreen(newScreenContext, super.getScreen);
-          });
-
     return Screen<T>(
-        wrapperFn: flowWrapper,
-        transitionType: transitionType,
-        screenBuilder: (screenContext) {
-          final newScreenContext = ScreenContext(
-              settings: screenContext.settings.copyWith(name: routeName),
-              context: screenContext.context);
-          return NavigatorScreen(newScreenContext, super.getScreen);
-        });
+      wrapperFn: flowWrapper,
+      screenBuilder: (screenContext) {
+        final newScreenContext = ScreenContext(
+            settings: screenContext.settings.copyWith(name: routeName),
+            context: screenContext.context);
+        return NavigatorScreen(newScreenContext, super.getScreen);
+      },
+    );
   }
 
   Screen get initialScreen => getScreen(routeName: initialRouteName);

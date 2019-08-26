@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'navigation_service.dart';
+import 'screen_type.dart';
+import 'screen_types/cupertino_screen_type.dart';
+import 'screen_types/material_screen_type.dart';
 import 'screen_widget.dart';
-import 'transition_type.dart';
 
 class ScreenContext {
   ScreenContext({this.context, this.settings})
@@ -24,8 +26,6 @@ class ScreenContext {
   final BuildContext context;
 }
 
-typedef ScreenFn<T> = Screen<T> Function<T>(
-    {WrapperFn wrapperFn, ScreenBuilder screenBuilder});
 typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
 typedef WrapperFn = Widget Function(
     ScreenContext screenContext, Widget screenWidget);
@@ -36,28 +36,24 @@ class Screen<T> {
   const Screen(
       {@required this.screenBuilder,
       this.wrapperFn = defaultWrapperFn,
-      this.transitionType = TransitionType.materialPage})
+      this.screenType = materialScreenType})
       : assert(screenBuilder != null);
 
-  const Screen.page(
+  const Screen.material(
     ScreenBuilder screenBuilder,
-  ) : this(
-            screenBuilder: screenBuilder,
-            transitionType: TransitionType.materialPage);
+  ) : this(screenBuilder: screenBuilder, screenType: materialScreenType);
 
-  const Screen.card(
+  const Screen.cupertino(
     ScreenBuilder screenBuilder,
-  ) : this(
-            screenBuilder: screenBuilder,
-            transitionType: TransitionType.cupertinoPage);
+  ) : this(screenBuilder: screenBuilder, screenType: cupertinoScreenType);
 
   final ScreenBuilder screenBuilder;
-  final TransitionType transitionType;
+  final ScreenType screenType;
   final WrapperFn wrapperFn;
 
   Screen<T> withWrappedScreen(WrapperFn wrapperFn) {
     return Screen<T>(
-      transitionType: transitionType,
+      screenType: screenType,
       screenBuilder: screenBuilder,
       wrapperFn: getComposedWrapper(wrapperFn),
     );
@@ -78,20 +74,14 @@ class Screen<T> {
   }
 
   Route<T> toRoute(RouteSettings settings) {
-    switch (transitionType) {
-      case TransitionType.materialPage:
-        return MaterialPageRoute<T>(
-          builder: (context) => buildScreen(context, settings),
-          settings: settings,
-        );
-      case TransitionType.cupertinoPage:
-        return CupertinoPageRoute<T>(
-          builder: (context) => buildScreen(context, settings),
-          settings: settings,
-        );
-    }
-    return null;
+    return _toRouteType(
+      (BuildContext context) => buildScreen(context, settings),
+      settings,
+    );
   }
+
+  Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
+      screenType.toRoute<T>(builder, settings);
 
   Widget buildScreen(BuildContext context, RouteSettings settings) {
     return wrapperFn(

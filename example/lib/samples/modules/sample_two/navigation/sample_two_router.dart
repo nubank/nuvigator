@@ -13,14 +13,14 @@ class _SampleTwoRouter extends SimpleRouter with FlowRouter<String> {
   @override
   Map<String, Screen> get screensMap => {
         SampleTwoRoutes.screen_one: s2ScreenOnePage,
-        SampleTwoRoutes.screen_two: S2ScreenTwoPage,
+        SampleTwoRoutes.screen_two: s2ScreenTwoPage,
       };
 
   @override
   String get initialRouteName => SampleTwoRoutes.screen_one;
 
   @override
-  ScreenFn get screenFn => ExScreen.fromScreen(NuTransitionType.nuCard);
+  ScreenType get initialScreenType => nuCardScreenType;
 
   @override
   Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) {

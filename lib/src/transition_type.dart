@@ -1,4 +1,0 @@
-enum TransitionType {
-  materialPage,
-  cupertinoPage,
-}

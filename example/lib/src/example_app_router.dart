@@ -6,9 +6,42 @@ import 'package:routing/routing.dart';
 import '../samples/navigation/samples_navigation.dart';
 import '../samples/navigation/samples_router.dart';
 
-enum NuTransitionType {
-  nuPage,
-  nuCard,
+class NuCardScreenType extends ScreenType {
+  @override
+  Route<T> toRoute<T extends Object>(
+      WidgetBuilder builder, RouteSettings settings) {
+    return NuDSCardStackPageRoute(
+      builder: builder,
+      settings: settings,
+    );
+  }
+}
+
+final nuCardScreenType = NuCardScreenType();
+
+class NuPageScreenType extends ScreenType {
+  @override
+  Route<T> toRoute<T extends Object>(
+      WidgetBuilder builder, RouteSettings settings) {
+    return NuDSPageRoute(
+      builder: builder,
+      settings: settings,
+    );
+  }
+}
+
+final nuPageScreenType = NuPageScreenType();
+
+class NuScreenHelper {
+  static Screen page<T extends Object>(ScreenBuilder screenBuilder) {
+    return Screen<T>(
+        screenBuilder: screenBuilder, screenType: nuPageScreenType);
+  }
+
+  static Screen card<T extends Object>(ScreenBuilder screenBuilder) {
+    return Screen<T>(
+        screenBuilder: screenBuilder, screenType: nuCardScreenType);
+  }
 }
 
 class ExampleNavigation extends NavigationService {
@@ -28,64 +61,6 @@ abstract class ExampleScreenWidget extends ScreenWidget {
   @override
   ExampleNavigation get navigation =>
       ExampleNavigation.of(screenContext.context);
-}
-
-class ExScreen<T extends Object> extends Screen<T> {
-  const ExScreen(
-      {ScreenBuilder screenBuilder,
-      WrapperFn wrapperFn = defaultWrapperFn,
-      this.nuTransitionType})
-      : super(screenBuilder: screenBuilder, wrapperFn: wrapperFn);
-
-  const ExScreen.page(
-    ScreenBuilder screenBuilder,
-  ) : this(
-            screenBuilder: screenBuilder,
-            nuTransitionType: NuTransitionType.nuPage);
-
-  const ExScreen.card(
-    ScreenBuilder screenBuilder,
-  ) : this(
-            screenBuilder: screenBuilder,
-            nuTransitionType: NuTransitionType.nuCard);
-
-  static ScreenFn<T> fromScreen<T extends Object>(
-      NuTransitionType nuTransitionType) {
-    return <T>({WrapperFn wrapperFn, ScreenBuilder screenBuilder}) =>
-        ExScreen<T>(
-          nuTransitionType: NuTransitionType.nuCard,
-          wrapperFn: wrapperFn,
-          screenBuilder: screenBuilder,
-        );
-  }
-
-  final NuTransitionType nuTransitionType;
-
-  @override
-  Screen<T> withWrappedScreen(WrapperFn wrapperFn) {
-    return ExScreen<T>(
-      nuTransitionType: nuTransitionType,
-      screenBuilder: screenBuilder,
-      wrapperFn: getComposedWrapper(wrapperFn),
-    );
-  }
-
-  @override
-  Route<T> toRoute(RouteSettings settings) {
-    switch (nuTransitionType) {
-      case NuTransitionType.nuPage:
-        return NuDSPageRoute<T>(
-          builder: (context) => buildScreen(context, settings),
-          settings: settings,
-        );
-      case NuTransitionType.nuCard:
-        return NuDSCardStackPageRoute<T>(
-          builder: (context) => buildScreen(context, settings),
-          settings: settings,
-        );
-    }
-    return null;
-  }
 }
 
 class ExampleAppRouter extends GlobalRouter {
