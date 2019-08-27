@@ -138,6 +138,7 @@ mixin FlowRouter<T> on SimpleRouter {
 
     return Screen<T>(
       wrapperFn: flowWrapper,
+      screenType: initialScreenType ?? firstScreen.screenType,
       screenBuilder: (screenContext) {
         final newScreenContext = ScreenContext(
             settings: screenContext.settings.copyWith(name: routeName),

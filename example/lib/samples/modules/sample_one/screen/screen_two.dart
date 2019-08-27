@@ -30,4 +30,4 @@ class _ScreenTwo extends ExampleScreenWidget {
   }
 }
 
-final s1ScreenTwoPage = NuScreenHelper.page(_ScreenTwo.from);
+final s1ScreenTwoPage = NuScreen.page(_ScreenTwo.from);

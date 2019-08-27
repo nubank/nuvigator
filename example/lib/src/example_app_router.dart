@@ -32,7 +32,7 @@ class NuPageScreenType extends ScreenType {
 
 final nuPageScreenType = NuPageScreenType();
 
-class NuScreenHelper {
+class NuScreen {
   static Screen page<T extends Object>(ScreenBuilder screenBuilder) {
     return Screen<T>(
         screenBuilder: screenBuilder, screenType: nuPageScreenType);

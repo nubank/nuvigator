@@ -1,8 +1,8 @@
-import 'package:example/src/example_app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routing/routing.dart';
 
+import '../../../../src/example_app_router.dart';
 import '../bloc/sample_flow_bloc.dart';
 import '../bloc/sample_two_bloc.dart';
 import '../screen/screen_one.dart';
