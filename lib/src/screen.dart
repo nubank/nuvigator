@@ -5,7 +5,6 @@ import 'navigation_service.dart';
 import 'screen_type.dart';
 import 'screen_types/cupertino_screen_type.dart';
 import 'screen_types/material_screen_type.dart';
-import 'screen_widget.dart';
 
 class ScreenContext {
   ScreenContext({this.context, this.settings})
@@ -26,13 +25,13 @@ class ScreenContext {
   final BuildContext context;
 }
 
-typedef ScreenBuilder = ScreenWidget Function(ScreenContext screenContext);
+typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
 typedef WrapperFn = Widget Function(
     ScreenContext screenContext, Widget screenWidget);
 
 Widget defaultWrapperFn(ScreenContext _, Widget screenWidget) => screenWidget;
 
-class Screen<T> {
+class Screen<T extends Object> {
   const Screen(
       {@required this.screenBuilder,
       this.wrapperFn = defaultWrapperFn,
