@@ -4,6 +4,7 @@ import 'package:path_to_regexp/path_to_regexp.dart';
 
 import 'errors.dart';
 import 'routers.dart';
+import 'routers/group_router.dart';
 
 class GlobalRouter extends GroupRouter implements AppRouter {
   GlobalRouter(this.navigatorKey);
