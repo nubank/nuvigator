@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 class TestRouter extends SimpleRouter {
@@ -45,3 +46,10 @@ class GroupTestRouter extends GroupRouter {
 final testRouter = TestRouter();
 final testRouterWPrefix = TestRouterWPrefix();
 final testGroupRouter = GroupTestRouter();
+
+class TestWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return null;
+  }
+}
