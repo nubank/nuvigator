@@ -9,14 +9,21 @@ class DeepLinkFlow {
   final String routeName;
 
   @override
+  int get hashCode => hashList([
+        template.hashCode,
+        path.hashCode,
+        routeName.hashCode,
+      ]);
+
+  @override
   bool operator ==(dynamic other) {
     if (other is DeepLinkFlow) {
-      return other.routeName == routeName && other.path == path &&
+      return other.routeName == routeName &&
+          other.path == path &&
           other.routeName == routeName;
     }
     return false;
   }
-
 }
 
 /// Base Router class. Provide a basic interface to communicate with other Route
