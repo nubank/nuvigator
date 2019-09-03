@@ -1,4 +1,4 @@
-library routing;
+library nuvigator;
 
 export 'src/global_router.dart';
 export 'src/navigation_service.dart';

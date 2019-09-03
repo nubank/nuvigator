@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:routing/routing.dart';
+import 'package:nuvigator/nuvigator.dart';
 
 import '../../../../src/example_app_router.dart';
 

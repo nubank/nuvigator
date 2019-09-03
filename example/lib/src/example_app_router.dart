@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nuds/nuds.dart';
 import 'package:provider/provider.dart';
-import 'package:routing/routing.dart';
+import 'package:nuvigator/nuvigator.dart';
 
 import '../samples/navigation/samples_navigation.dart';
 import '../samples/navigation/samples_router.dart';
@@ -10,7 +10,7 @@ class NuCardScreenType extends ScreenType {
   @override
   Route<T> toRoute<T extends Object>(
       WidgetBuilder builder, RouteSettings settings) {
-    return NuDSCardStackPageRoute(
+    return MaterialPageRoute(
       builder: builder,
       settings: settings,
     );
@@ -23,7 +23,7 @@ class NuPageScreenType extends ScreenType {
   @override
   Route<T> toRoute<T extends Object>(
       WidgetBuilder builder, RouteSettings settings) {
-    return NuDSPageRoute(
+    return CupertinoPageRoute(
       builder: builder,
       settings: settings,
     );

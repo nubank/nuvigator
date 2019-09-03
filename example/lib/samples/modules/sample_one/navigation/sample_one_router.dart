@@ -1,4 +1,4 @@
-import 'package:routing/routing.dart';
+import 'package:nuvigator/nuvigator.dart';
 
 import '../screen/screen_one.dart';
 import '../screen/screen_two.dart';

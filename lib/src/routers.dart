@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:routing/routing.dart';
 
 import 'navigator_screen.dart';
 import 'screen.dart';
+import 'screen_type.dart';
 
 class DeepLinkFlow {
   DeepLinkFlow({this.template, this.path, this.routeName});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../routing.dart';
 import 'navigation_service.dart';
+import 'screen.dart';
 
 abstract class ScreenWidget extends StatelessWidget {
   ScreenWidget(this.screenContext)

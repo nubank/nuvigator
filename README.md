@@ -1,6 +1,6 @@
-# routing
+# Nuvigator
 
-Routing package.
+Routing and Navigation package.
 
 ## What
 

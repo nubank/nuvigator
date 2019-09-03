@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:routing/routing.dart';
+import 'package:nuvigator/nuvigator.dart';
 
 import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'src/example_app_router.dart';
@@ -33,7 +33,7 @@ class HomeScreen extends ExampleScreenWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Routing Example'),
+        title: const Text('nuvigator Example'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
