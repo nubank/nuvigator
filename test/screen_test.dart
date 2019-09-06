@@ -21,5 +21,13 @@ void main() {
     });
   });
 
+  group('withWrappedScreen', () {
+    final screen = Screen.material((sc) => null, debugKey: 'test');
+    final newScreen = screen.withWrappedScreen(defaultWrapperFn);
 
+    test('newScreen keeps properties from the original screen', () {
+      expect(newScreen.screenType, screen.screenType);
+      expect(newScreen.debugKey, screen.debugKey);
+    });
+  });
 }
