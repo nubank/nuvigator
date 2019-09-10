@@ -70,6 +70,10 @@ class NavigationService {
     return isPopped;
   }
 
+  void popUntil(RoutePredicate predicate) {
+    _navigator.popUntil(predicate);
+  }
+
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
   bool rootPop<T extends Object>([T result]) => _rootNavigator.pop<T>(result);
