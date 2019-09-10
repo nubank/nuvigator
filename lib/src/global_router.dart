@@ -24,16 +24,12 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   }
 
   @override
-  Future<T> openDeepLink<T>(Uri url, [dynamic arguments]) {
-    return handleDeepLink(url, false);
-  }
-
-  Future<dynamic> handleDeepLink(Uri url,
-      [dynamic isFromNative = false]) async {
+  Future<T> openDeepLink<T>(Uri url,
+      [dynamic arguments, bool isFromNative = false]) async {
     final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
     if (deepLinkFlow == null) return null;
     final args = _extractParameters(url, deepLinkFlow);
-    if (isFromNative is bool && isFromNative) {
+    if (isFromNative) {
       final route = _buildNativeRoute(args, deepLinkFlow.routeName);
       return navigatorKey.currentState.push(route);
     }

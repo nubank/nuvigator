@@ -39,7 +39,8 @@ abstract class Router {
 abstract class AppRouter {
   Future<bool> canOpenDeepLink(Uri url);
 
-  Future<T> openDeepLink<T>(Uri url, [dynamic arguments]);
+  Future<T> openDeepLink<T>(Uri url,
+      [dynamic arguments, bool isFromNative = false]);
 
   Route getRoute(RouteSettings settings);
 }
