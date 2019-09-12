@@ -74,18 +74,4 @@ class ExampleAppRouter extends GlobalRouter {
   List<Router> get routers => [
         samplesRouter,
       ];
-
-  @override
-  Future<bool> canOpenDeepLink(Uri url) async {
-    return await super.canOpenDeepLink(url);
-  }
-
-  @override
-  Future<T> openDeepLink<T>(Uri url, [dynamic arguments]) async {
-    return super.openDeepLink<T>(url, arguments);
-  }
-
-  Future<dynamic> openInternalFromNative(Uri url, [dynamic arguments]) async {
-    return handleDeepLink(url, true);
-  }
 }
