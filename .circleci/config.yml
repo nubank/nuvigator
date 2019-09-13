@@ -6,7 +6,7 @@ job_defaults: &defaults
 
 jobs:
   format-check:
-     <<: *defaults
+    <<: *defaults
     steps:
       - checkout
       - run: flutter format --dry-run --set-exit-if-changed .
