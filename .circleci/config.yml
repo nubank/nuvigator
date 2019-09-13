@@ -14,6 +14,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: flutter pub get
       - run: flutter analyze
   test:
     <<: *defaults
