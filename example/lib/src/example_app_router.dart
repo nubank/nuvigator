@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:provider/provider.dart';
 
 import '../samples/navigation/samples_navigation.dart';
 import '../samples/navigation/samples_router.dart';
@@ -55,7 +55,7 @@ class ExampleNavigation extends NavigationService {
   SamplesNavigation get samples => SamplesNavigation.of(context);
 }
 
-abstract class ExampleScreenWidget extends ScreenWidget {
+abstract class ExampleScreenWidget extends ScreenWidget<Map<String, String>> {
   ExampleScreenWidget(ScreenContext screenContext) : super(screenContext);
 
   @override

@@ -11,8 +11,7 @@ class NavigationService {
 
   NavigationService get parent => NavigationService.of(_navigator.context);
 
-  Future<T> pushNamed<T extends Object>(String routeName,
-      {Map<String, dynamic> arguments}) {
+  Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
@@ -23,7 +22,7 @@ class NavigationService {
 
   Future<T> pushReplacementNamed<T extends Object, TO extends Object>(
       String routeName,
-      {Map<String, dynamic> arguments,
+      {Object arguments,
       TO result}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
@@ -37,7 +36,7 @@ class NavigationService {
 
   Future<T> pushNamedAndRemoveUntil<T extends Object>(
       String routeName, RoutePredicate predicate,
-      {Map<String, dynamic> arguments}) {
+      {Object arguments}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
@@ -50,7 +49,7 @@ class NavigationService {
 
   Future<T> popAndPushNamed<T extends Object, TO extends Object>(
       String routeName,
-      {Map<String, dynamic> arguments,
+      {Object arguments,
       TO result}) {
     final possibleRoute = _navigator.widget
         .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));

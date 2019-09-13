@@ -13,7 +13,7 @@ import 'simple_router.dart';
 /// this router already handles the pop mechanism for you. Also if it does not find
 /// the route in itself it will dispatch to it's parent Navigator the opportunity
 /// to match it.
-mixin FlowRouter<T> on SimpleRouter {
+mixin FlowRouter<T extends Object> on SimpleRouter {
   final String initialRouteName = null;
   final ScreenType initialScreenType = null;
 
