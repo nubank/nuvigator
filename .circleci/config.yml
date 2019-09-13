@@ -1,9 +1,31 @@
 version: 2
-jobs:
-  build:
+
+job_defaults: &defaults
     docker:
       - image: cirrusci/flutter
+
+jobs:
+  format-check:
+     <<: *defaults
     steps:
       - checkout
-      - run: flutter doctor
+      - run: flutter format --dry-run --set-exit-if-changed .
+  analyze:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: flutter analyze
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: flutter pub get
       - run: flutter test 
+
+workflows:
+  version: 2
+  pull-request-validation:
+    jobs:
+      - test
+      - analyze
+      - format-check

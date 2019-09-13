@@ -1,5 +1,7 @@
 # Nuvigator
 
+[![CircleCI](https://circleci.com/gh/nubank/nuvigator/tree/master.svg?style=svg&circle-token=55aa922fdac1237c4a0081776e09431213884247)](https://circleci.com/gh/nubank/nuvigator/tree/master)
+
 Routing and Navigation package.
 
 ## What
