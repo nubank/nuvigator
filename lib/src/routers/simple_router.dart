@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/nuvigator.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../routers.dart';
@@ -41,5 +42,10 @@ abstract class SimpleRouter implements Router {
         );
     }
     return null;
+  }
+
+  @override
+  Route getRoute(RouteSettings settings) {
+    return getScreen(routeName: settings.name).toRoute(settings);
   }
 }

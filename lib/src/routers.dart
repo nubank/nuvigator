@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../nuvigator.dart';
 import 'screen.dart';
 
 class DeepLinkFlow {
@@ -26,12 +28,16 @@ class DeepLinkFlow {
   }
 }
 
+typedef NavigationFunction<T extends Object> = T Function(BuildContext context);
+
 /// Base Router class. Provide a basic interface to communicate with other Route
 /// components.
 abstract class Router {
   Screen getScreen({String routeName});
 
   Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) => null;
+
+  Route getRoute(RouteSettings settings);
 }
 
 /// Application Router class. Provides a basic interface and helper to handle

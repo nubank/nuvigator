@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:provider/provider.dart';
 
 import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'src/example_app_router.dart';
@@ -18,9 +18,12 @@ class MyApp extends StatelessWidget {
       value: router,
       child: MaterialApp(
         title: 'Nubank',
-        navigatorKey: rootNavigatorKey,
-        initialRoute: 'home',
-        onGenerateRoute: router.getRoute,
+//        initialRoute: 'home',
+        home: Nuvigator(
+          router: router,
+          key: rootNavigatorKey,
+          initialRoute: 'home',
+        ),
       ),
     );
   }
@@ -40,9 +43,11 @@ class HomeScreen extends ExampleScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           FlatButton(
-            child: const Text('Go to sample one with flutter navigation'),
-            onPressed: () => navigation.samples.sampleOne.start('id_1234'),
-          ),
+              child: const Text('Go to sample one with flutter navigation'),
+              onPressed: () {
+                ExampleAppRouter.of(context);
+                Nuvigator.of<ExampleAppRouter>(context).router.toX('aaa');
+              }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
             onPressed: () => ExampleAppRouter.of(context)
