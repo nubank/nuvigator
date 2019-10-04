@@ -21,6 +21,11 @@ class SampleOneRouter extends SimpleRouter {
   Map<String, String> get deepLinksMap => {
         'screenOne/:testId': SampleOneRoutes.screen_one,
       };
+
+  static ScreenRoute screenOne(String testId) =>
+      ScreenRoute(SampleOneRoutes.screen_one, {'testId': testId});
+
+  static ScreenRoute screenTwo() => ScreenRoute(SampleOneRoutes.screen_two);
 }
 
 final sampleOneRouter = SampleOneRouter();

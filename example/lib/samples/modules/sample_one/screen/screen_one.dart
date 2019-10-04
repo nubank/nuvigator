@@ -1,4 +1,4 @@
-import 'package:example/samples/modules/sample_one/navigation/sample_one_routes.dart';
+import 'package:example/samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
@@ -32,7 +32,7 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () => nuvigator.navigate(ScreenTwoRoute(name: 'aaaa')),
+            onPressed: () => nuvigator.navigate(SampleOneRouter.screenTwo()),
           ),
         ],
       ),

@@ -17,7 +17,7 @@ class _SamplesRouter extends GroupRouter {
         'home': Screen.material((screenContext) => HomeScreen(screenContext)),
         'second': Screen.cupertinoDialog<String>(
             NuvigatorScreen.fromScreenContext(
-                router: sampleOneRouter,
+                router: SampleOneRouter(),
                 initialRoute: SampleOneRoutes.screen_one))
       };
 

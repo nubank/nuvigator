@@ -116,7 +116,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   bool rootPop<T extends Object>([T result]) => _rootNavigator.pop<T>(result);
 
-  Future<R> navigate<R>(ScreenRoute<R> screenRoute) {
+  /// R is the return value
+  Future<R> navigate<R, T>(ScreenRoute<T, R> screenRoute) {
     return pushNamed<R>(screenRoute.routeName, arguments: screenRoute.params);
   }
 
@@ -132,7 +133,9 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   }
 }
 
-class ScreenRoute<T extends Object> {
-  String routeName;
-  Map<String, Object> params;
+class ScreenRoute<T extends Object, R extends Object> {
+  ScreenRoute(this.routeName, [this.params]);
+
+  final String routeName;
+  final T params;
 }

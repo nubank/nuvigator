@@ -1,4 +1,4 @@
-import 'package:example/samples/modules/sample_two/navigation/sample_two_routes.dart';
+import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +43,7 @@ class _ScreenOne extends ScreenWidget<Map<String, String>> {
             child: const Text('Go to screen two'),
             onPressed: () async {
               final value =
-                  await nuvigator.pushNamed(SampleTwoRoutes.screen_two);
+                  await nuvigator.navigate(SampleTwoRouter.screenTwo());
               print('Return from sample two screen two with value: $value');
             },
           ),

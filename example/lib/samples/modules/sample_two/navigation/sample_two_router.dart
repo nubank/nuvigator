@@ -8,7 +8,7 @@ import '../screen/screen_one.dart';
 import '../screen/screen_two.dart';
 import 'sample_two_routes.dart';
 
-class _SampleTwoRouter extends SimpleRouter {
+class SampleTwoRouter extends SimpleRouter {
   @override
   Map<String, Screen> get screensMap => {
         SampleTwoRoutes.screen_one: s2ScreenOnePage,
@@ -22,10 +22,15 @@ class _SampleTwoRouter extends SimpleRouter {
       child: screenWidget,
     );
   }
+
+  static ScreenRoute screenOne(String testId) =>
+      ScreenRoute(SampleTwoRoutes.screen_one, {'testId': testId});
+
+  static ScreenRoute screenTwo() => ScreenRoute(SampleTwoRoutes.screen_two);
 }
 
 final sampleTwoRouter = FlowRouter(
-    baseRouter: _SampleTwoRouter(),
+    baseRouter: SampleTwoRouter(),
     flowWrapper: (ScreenContext screenContext, Widget child) =>
         Provider<SampleFlowBloc>.value(
           value: SampleFlowBloc(),
