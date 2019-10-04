@@ -69,7 +69,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
 class NuvigatorState<T extends Router> extends NavigatorState {
   NuvigatorState get _rootNuvigator =>
-      Nuvigator.of(context, rootNuvigator: true);
+      Nuvigator.of(context, rootNuvigator: true) ?? this;
 
   @override
   Nuvigator get widget => super.widget;
@@ -78,7 +78,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
-    final possibleRoute = widget.router.getScreen(routeName: routeName);
+    final possibleRoute = router.getScreen(routeName: routeName);
     if (possibleRoute == null && parent != null) {
       return parent.pushNamed<T>(routeName, arguments: arguments);
     }
@@ -90,7 +90,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute = widget.router.getScreen(routeName: routeName);
+    final possibleRoute = router.getScreen(routeName: routeName);
     if (possibleRoute == null) {
       return parent.pushReplacementNamed<T, TO>(routeName,
           arguments: arguments, result: result);
@@ -103,7 +103,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   Future<T> pushNamedAndRemoveUntil<T extends Object>(
       String newRouteName, RoutePredicate predicate,
       {Object arguments}) {
-    final possibleRoute = widget.router.getScreen(routeName: newRouteName);
+    final possibleRoute = router.getScreen(routeName: newRouteName);
     if (possibleRoute == null) {
       return parent.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
           arguments: arguments);
@@ -117,7 +117,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute = widget.router.getScreen(routeName: routeName);
+    final possibleRoute = router.getScreen(routeName: routeName);
     if (possibleRoute == null) {
       return parent.popAndPushNamed<T, TO>(routeName,
           arguments: arguments, result: result);
@@ -159,11 +159,16 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   NuvigatorState get parent => Nuvigator.of(context);
 
+  bool get isNested => parent != null;
+
+  bool get isRoot => this == _rootNuvigator;
+
   @override
   Widget build(BuildContext context) {
     final settings = ModalRoute.of(context)?.settings;
+    print(settings);
     Widget child = super.build(context);
-    if (widget.router is GlobalRouter) {
+    if (router is GlobalRouter) {
       child = GlobalRouterProvider(globalRouter: widget.router, child: child);
     }
     if (widget.wrapperFn != null) {

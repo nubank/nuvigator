@@ -27,6 +27,12 @@ class HomeScreen extends ScreenWidget {
 
   @override
   Widget build(BuildContext context) {
+//    final rootNuvigator = Nuvigator.of(context, rootNuvigator: true);
+//    print(Nuvigator.of(context, rootNuvigator: true));
+//    print(nuvigator);
+//    print(nuvigator == rootNuvigator);
+//    print(nuvigator.isRoot);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('nuvigator Example'),
