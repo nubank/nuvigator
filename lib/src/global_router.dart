@@ -25,6 +25,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   GlobalRouter({
     @required List<Router> routers,
     GlobalKey<NuvigatorState> nuvigatorKey,
+    this.onScreenNotFound,
     this.deepLinkNotFound,
   }) {
     this.routers = routers;
@@ -37,6 +38,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   final Future<bool> Function(GlobalRouter globalRouter, Uri uri,
       [bool isFromNative, dynamic args]) deepLinkNotFound;
   GlobalKey<NuvigatorState> nuvigatorKey;
+  final Screen Function(RouteSettings settings) onScreenNotFound;
 
   static GlobalRouter of(BuildContext context) {
     // ignore: avoid_as
@@ -50,7 +52,12 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   @override
   Route getRoute(RouteSettings settings) {
     final screen = getScreen(routeName: settings.name);
-    if (screen == null) throw RouteNotFoundException(settings.name);
+    if (screen == null) {
+      if (onScreenNotFound != null)
+        return onScreenNotFound(settings).toRoute(settings);
+      throw RouteNotFoundException(settings.name);
+    }
+    ;
     return screen.toRoute(settings);
   }
 
