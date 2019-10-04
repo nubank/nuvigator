@@ -28,8 +28,6 @@ class DeepLinkFlow {
   }
 }
 
-typedef NavigationFunction<T extends Object> = T Function(BuildContext context);
-
 /// Base Router class. Provide a basic interface to communicate with other Route
 /// components.
 abstract class Router {

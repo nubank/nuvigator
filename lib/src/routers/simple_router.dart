@@ -25,7 +25,7 @@ abstract class SimpleRouter implements Router {
     assert(routeName != null && routeName.isNotEmpty);
 
     final screen = screensMap[routeName];
-    return screen?.withWrappedScreen(screenWrapper);
+    return screen?.wrapWith(screenWrapper);
   }
 
   @override

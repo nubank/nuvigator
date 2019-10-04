@@ -7,7 +7,7 @@ import 'simple_router.dart';
 /// More complex router that in addition to the features provided by the SimpleRouter
 /// it can contains a list of delegate Routers, that will try to match against.
 /// This router is used to create a "merge" Router of several other Routers.
-class GroupRouter extends SimpleRouter {
+abstract class GroupRouter extends SimpleRouter {
   List<Router> routers = [];
 
   @override
@@ -19,7 +19,7 @@ class GroupRouter extends SimpleRouter {
 
     for (Router router in routers) {
       final screen = router.getScreen(routeName: routeName);
-      if (screen != null) return screen.withWrappedScreen(screenWrapper);
+      if (screen != null) return screen.wrapWith(screenWrapper);
     }
     return null;
   }

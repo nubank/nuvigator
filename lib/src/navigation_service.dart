@@ -1,93 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:nuvigator/nuvigator.dart';
 
 import 'routers.dart';
 
-class NavigationService {
-  NavigationService.of(this.context)
-      : _navigator = Navigator.of(context),
-        _rootNavigator = Navigator.of(context, rootNavigator: true);
-
-  final BuildContext context;
-  final NavigatorState _navigator;
-  final NavigatorState _rootNavigator;
-
-  NavigationService get parent => NavigationService.of(_navigator.context);
-
-  Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
-    final possibleRoute = _navigator.widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null) {
-      return parent.pushNamed<T>(routeName, arguments: arguments);
-    }
-    return _navigator.pushNamed<T>(routeName, arguments: arguments);
-  }
-
-  Future<T> pushReplacementNamed<T extends Object, TO extends Object>(
-      String routeName,
-      {Object arguments,
-      TO result}) {
-    final possibleRoute = _navigator.widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null) {
-      return parent.pushReplacementNamed<T, TO>(routeName,
-          arguments: arguments, result: result);
-    }
-    return _navigator.pushReplacementNamed<T, TO>(routeName,
-        arguments: arguments, result: result);
-  }
-
-  Future<T> pushNamedAndRemoveUntil<T extends Object>(
-      String routeName, RoutePredicate predicate,
-      {Object arguments}) {
-    final possibleRoute = _navigator.widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null) {
-      return parent.pushNamedAndRemoveUntil<T>(routeName, predicate,
-          arguments: arguments);
-    }
-    return _navigator.pushNamedAndRemoveUntil<T>(routeName, predicate,
-        arguments: arguments);
-  }
-
-  Future<T> popAndPushNamed<T extends Object, TO extends Object>(
-      String routeName,
-      {Object arguments,
-      TO result}) {
-    final possibleRoute = _navigator.widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null) {
-      return parent.popAndPushNamed<T, TO>(routeName,
-          arguments: arguments, result: result);
-    }
-    return _navigator.popAndPushNamed<T, TO>(routeName,
-        arguments: arguments, result: result);
-  }
-
-  bool pop<T extends Object>([T result]) {
-    final isPopped = _navigator.pop<T>(result);
-    if (!isPopped && _navigator != _rootNavigator) {
-      return parentPop<T>(result);
-    }
-    return isPopped;
-  }
-
-  void popUntil(RoutePredicate predicate) {
-    _navigator.popUntil(predicate);
-  }
-
-  bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
-
-  bool rootPop<T extends Object>([T result]) => _rootNavigator.pop<T>(result);
-}
-
 class Nuvigator<T extends Router> extends Navigator {
-  Nuvigator({@required this.router, Key key, @required String initialRoute})
+  Nuvigator(
+      {@required this.router,
+      @required String initialRoute,
+      Key key,
+      this.initialArguments})
       : super(
-            onGenerateRoute: router.getRoute,
+            onGenerateRoute: (settings) {
+              if (settings.isInitialRoute &&
+                  settings.name == initialRoute &&
+                  settings.arguments == null) {
+                return router
+                    .getRoute(settings.copyWith(arguments: initialArguments));
+              }
+              return router.getRoute(settings);
+            },
             key: key,
             initialRoute: initialRoute);
 
   final T router;
+  final Object initialArguments;
 
   static NuvigatorState<T> of<T extends Router>(BuildContext context) {
     return context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
@@ -107,6 +43,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   Nuvigator get widget => super.widget;
 
   T get router => widget.router;
+
+//  RouterService get routerService => widget.router.service(context);
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
@@ -163,6 +101,13 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   }
 
   @override
+  Future<bool> maybePop<T extends Object>([T result]) async {
+    final willNotPop = await super.maybePop<T>(result);
+    if (!willNotPop) return parent?.maybePop<T>(result);
+    return willNotPop;
+  }
+
+  @override
   bool pop<T extends Object>([T result]) {
     final isPopped = super.pop<T>(result);
     if (!isPopped && super != _rootNavigator) {
@@ -175,5 +120,23 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   bool rootPop<T extends Object>([T result]) => _rootNavigator.pop<T>(result);
 
+  Future<R> navigate<R>(ScreenRoute<R> screenRoute) {
+    return pushNamed<R>(screenRoute.routeName, arguments: screenRoute.params);
+  }
+
   NuvigatorState get parent => Nuvigator.of(context);
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.router is GlobalRouter) {
+      return GlobalRouterProvider(
+          globalRouter: widget.router, child: super.build(context));
+    }
+    return super.build(context);
+  }
+}
+
+class ScreenRoute<T extends Object> {
+  String routeName;
+  Map<String, Object> params;
 }

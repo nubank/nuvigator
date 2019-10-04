@@ -2,14 +2,41 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
+import '../nuvigator.dart';
 import 'errors.dart';
-import 'routers.dart';
 import 'routers/group_router.dart';
+import 'routers.dart';
+
+class GlobalRouterProvider extends InheritedWidget {
+  const GlobalRouterProvider(
+      {@required this.globalRouter, @required Widget child})
+      : super(child: child);
+
+  final GlobalRouter globalRouter;
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return false;
+  }
+}
 
 class GlobalRouter extends GroupRouter implements AppRouter {
   GlobalRouter(this.navigatorKey);
 
-  final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<NuvigatorState> navigatorKey;
+
+  static GlobalRouter fromRouters(
+      {@required List<Router> routers,
+      @required GlobalKey<NuvigatorState> key}) {
+    return GlobalRouter(key)..routers = routers;
+  }
+
+  static GlobalRouter of(BuildContext context) {
+    // ignore: avoid_as
+    return (context.inheritFromWidgetOfExactType(GlobalRouterProvider)
+            as GlobalRouterProvider)
+        .globalRouter;
+  }
 
   @override
   Route getRoute(RouteSettings settings) {

@@ -23,7 +23,7 @@ void main() {
 
   group('withWrappedScreen', () {
     final screen = Screen.material((sc) => null, debugKey: 'test');
-    final newScreen = screen.withWrappedScreen(defaultWrapperFn);
+    final newScreen = screen.wrapWith(defaultWrapperFn);
 
     test('newScreen keeps properties from the original screen', () {
       expect(newScreen.screenType, screen.screenType);

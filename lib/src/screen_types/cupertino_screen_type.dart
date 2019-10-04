@@ -15,4 +15,19 @@ class CupertinoScreenType extends ScreenType {
   }
 }
 
+class CupertinoDialogScreenType extends ScreenType {
+  const CupertinoDialogScreenType();
+
+  @override
+  Route<T> toRoute<T extends Object>(
+      WidgetBuilder builder, RouteSettings settings) {
+    return CupertinoPageRoute(
+      builder: builder,
+      fullscreenDialog: true,
+      settings: settings,
+    );
+  }
+}
+
+const cupertinoDialogScreenType = CupertinoDialogScreenType();
 const cupertinoScreenType = CupertinoScreenType();

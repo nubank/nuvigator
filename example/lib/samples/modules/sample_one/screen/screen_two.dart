@@ -3,7 +3,7 @@ import 'package:nuvigator/nuvigator.dart';
 
 import '../../../../src/example_app_router.dart';
 
-class _ScreenTwo extends ExampleScreenWidget {
+class _ScreenTwo extends ScreenWidget {
   _ScreenTwo(ScreenContext screenContext) : super(screenContext);
 
   static _ScreenTwo from(ScreenContext screenContext) {
@@ -21,13 +21,13 @@ class _ScreenTwo extends ExampleScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           FlatButton(
-            child: const Text('Open sample two flow'),
-            onPressed: () => navigation.samples.sampleTwo.start('test_123'),
-          ),
+              child: const Text('Open sample two flow'), onPressed: () => null
+//                navigation.samples.sampleTwo.start('test_123'),
+              ),
         ],
       ),
     );
   }
 }
 
-final s1ScreenTwoPage = NuScreen.page(_ScreenTwo.from);
+final s1ScreenTwoPage = NuScreen.page<int>(_ScreenTwo.from);

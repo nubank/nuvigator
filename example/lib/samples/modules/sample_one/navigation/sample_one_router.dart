@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import '../screen/screen_one.dart';
@@ -7,7 +8,7 @@ import 'sample_one_routes.dart';
 const screenOneDeepLink =
     'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink';
 
-class _SampleOneRouter extends SimpleRouter {
+class SampleOneRouter extends SimpleRouter {
   @override
   String get deepLinkPrefix => '/sampleOne/';
 
@@ -23,4 +24,13 @@ class _SampleOneRouter extends SimpleRouter {
       };
 }
 
-final sampleOneRouter = _SampleOneRouter();
+final sampleOneRouter = SampleOneRouter();
+
+class ScreenTwoRoute extends ScreenRoute<int> {
+  ScreenTwoRoute({@required String name}) {
+    params = {'name': name};
+  }
+
+  @override
+  String get routeName => SampleOneRoutes.screen_two;
+}

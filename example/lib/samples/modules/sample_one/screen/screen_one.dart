@@ -1,20 +1,28 @@
+import 'package:example/samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import '../../../../src/example_app_router.dart';
 
-class _ScreenOne extends ExampleScreenWidget {
-  _ScreenOne(ScreenContext screenContext) : super(screenContext);
+class ScreenOne extends ScreenWidget<Map<String, String>> {
+  ScreenOne(ScreenContext screenContext) : super(screenContext);
 
-  static _ScreenOne from(ScreenContext screenContext) {
-    return _ScreenOne(screenContext);
+  static ScreenOne from(ScreenContext screenContext) {
+    return ScreenOne(screenContext);
   }
 
   @override
   Widget build(BuildContext context) {
+    final nuvigator = Nuvigator.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => nuvigator.maybePop(),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +34,7 @@ class _ScreenOne extends ExampleScreenWidget {
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: navigation.samples.sampleOne.screenTwo,
+            onPressed: () => nuvigator.navigate(ScreenTwoRoute(name: 'aaaa')),
           ),
         ],
       ),
@@ -34,4 +42,4 @@ class _ScreenOne extends ExampleScreenWidget {
   }
 }
 
-final s1ScreenOnePage = NuScreen.page(_ScreenOne.from);
+final s1ScreenOnePage = NuScreen.page(ScreenOne.from);

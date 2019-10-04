@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'navigation_service.dart';
 import 'screen_type.dart';
 import 'screen_types/cupertino_screen_type.dart';
 import 'screen_types/material_screen_type.dart';
 
 class ScreenContext {
-  ScreenContext({this.context, this.settings})
-      : navigation = NavigationService.of(context);
+  ScreenContext({this.context, this.settings});
 
   ScreenContext copyWith({
     BuildContext context,
@@ -20,7 +18,6 @@ class ScreenContext {
     );
   }
 
-  final NavigationService navigation;
   final RouteSettings settings;
   final BuildContext context;
 }
@@ -39,24 +36,31 @@ class Screen<T extends Object> {
     this.debugKey,
   }) : assert(screenBuilder != null);
 
-  const Screen.material(ScreenBuilder screenBuilder, {String debugKey})
-      : this(
-            screenBuilder: screenBuilder,
-            screenType: materialScreenType,
-            debugKey: debugKey);
+  static Screen material<T>(ScreenBuilder screenBuilder, {String debugKey}) =>
+      Screen<T>(
+          screenBuilder: screenBuilder,
+          screenType: materialScreenType,
+          debugKey: debugKey);
 
-  const Screen.cupertino(ScreenBuilder screenBuilder, {String debugKey})
-      : this(
-            screenBuilder: screenBuilder,
-            screenType: cupertinoScreenType,
-            debugKey: debugKey);
+  static Screen cupertino<T>(ScreenBuilder screenBuilder, {String debugKey}) =>
+      Screen<T>(
+          screenBuilder: screenBuilder,
+          screenType: cupertinoScreenType,
+          debugKey: debugKey);
+
+  static Screen cupertinoDialog<T>(ScreenBuilder screenBuilder,
+          {String debugKey}) =>
+      Screen<T>(
+          screenBuilder: screenBuilder,
+          screenType: cupertinoDialogScreenType,
+          debugKey: debugKey);
 
   final ScreenBuilder screenBuilder;
   final ScreenType screenType;
   final WrapperFn wrapperFn;
   final String debugKey;
 
-  Screen<T> withWrappedScreen(WrapperFn wrapperFn) {
+  Screen<T> wrapWith(WrapperFn wrapperFn) {
     if (wrapperFn == null) {
       return this;
     }

@@ -1,16 +1,17 @@
+import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
 
 import 'samples/modules/sample_one/navigation/sample_one_router.dart';
-import 'src/example_app_router.dart';
 
 void main() => runApp(MyApp());
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
-  static final ExampleAppRouter router = ExampleAppRouter(rootNavigatorKey);
+  static final GlobalRouter router =
+      GlobalRouter.fromRouters(key: rootNavigatorKey, routers: [samplesRouter]);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,6 @@ class MyApp extends StatelessWidget {
       value: router,
       child: MaterialApp(
         title: 'Nubank',
-//        initialRoute: 'home',
         home: Nuvigator(
           router: router,
           key: rootNavigatorKey,
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends ExampleScreenWidget {
+class HomeScreen extends ScreenWidget {
   HomeScreen(ScreenContext screenContext) : super(screenContext);
 
   @override
@@ -44,20 +44,21 @@ class HomeScreen extends ExampleScreenWidget {
         children: <Widget>[
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
-              onPressed: () {
-                ExampleAppRouter.of(context);
-                Nuvigator.of<ExampleAppRouter>(context).router.toX('aaa');
+              onPressed: () async {
+                final result = await nuvigator
+                    .pushNamed('second', arguments: {'testId': 'GO FOR IT'});
+                print(result);
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
-            onPressed: () => ExampleAppRouter.of(context)
+            onPressed: () => GlobalRouter.of(context)
                 .openDeepLink<void>(Uri.parse(screenOneDeepLink)),
           ),
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              final value = await navigation.samples.sampleTwo.start('id_1234');
-              print('Return from sample two with value: $value');
+//              final value = await navigation.samples.sampleTwo.start('id_1234');
+//              print('Return from sample two with value: $value');
             },
           ),
         ],
