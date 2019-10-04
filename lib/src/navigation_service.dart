@@ -8,22 +8,37 @@ class Nuvigator<T extends Router> extends Navigator {
       {@required this.router,
       @required String initialRoute,
       Key key,
+      this.screenType = materialScreenType,
       this.initialArguments})
       : super(
             onGenerateRoute: (settings) {
+              var finalSettings = settings;
               if (settings.isInitialRoute &&
                   settings.name == initialRoute &&
                   settings.arguments == null) {
-                return router
-                    .getRoute(settings.copyWith(arguments: initialArguments));
+                finalSettings = settings.copyWith(arguments: initialArguments);
               }
-              return router.getRoute(settings);
+              return router
+                  .getScreen(routeName: finalSettings.name)
+                  .fallbackScreenType(screenType)
+                  .toRoute(finalSettings);
             },
-            key: (router is GlobalRouter) ? router.navigatorKey : key,
+            key: (router is GlobalRouter) ? router.nuvigatorKey : key,
             initialRoute: initialRoute);
+
+//  static Nuvigator Function(ScreenContext sc) screen({
+//    @required Router router,
+//    @required String initialRoute,
+//    Key key,
+//    ScreenType screenType = materialScreenType,
+//  }) {
+//    return Nuvigator(
+//        router: router, initialRoute: initialRoute, screenType: screenType);
+//  }
 
   final T router;
   final Object initialArguments;
+  final ScreenType screenType;
 
   static NuvigatorState<T> of<T extends Router>(BuildContext context) {
     return context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
@@ -43,8 +58,6 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   Nuvigator get widget => super.widget;
 
   T get router => widget.router;
-
-//  RouterService get routerService => widget.router.service(context);
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {

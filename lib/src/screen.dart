@@ -32,7 +32,7 @@ class Screen<T extends Object> {
   const Screen(
     this.screenBuilder, {
     this.wrapperFn = defaultWrapperFn,
-    this.screenType = materialScreenType,
+    this.screenType,
     this.debugKey,
   }) : assert(screenBuilder != null);
 
@@ -55,6 +55,15 @@ class Screen<T extends Object> {
   final ScreenType screenType;
   final WrapperFn wrapperFn;
   final String debugKey;
+
+  Screen<T> fallbackScreenType(ScreenType fallbackScreenType) {
+    return Screen<T>(
+      screenBuilder,
+      debugKey: debugKey,
+      screenType: screenType ?? fallbackScreenType,
+      wrapperFn: _getComposedWrapper(wrapperFn),
+    );
+  }
 
   Screen<T> wrapWith(WrapperFn wrapperFn) {
     if (wrapperFn == null) {

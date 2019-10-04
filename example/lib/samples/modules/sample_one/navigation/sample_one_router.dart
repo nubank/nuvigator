@@ -13,13 +13,8 @@ class SampleOneRouter extends SimpleRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-        SampleOneRoutes.screen_one: s1ScreenOnePage,
+        SampleOneRoutes.screen_one: Screen(s1ScreenOnePage, deeplink: ''),
         SampleOneRoutes.screen_two: s1ScreenTwoPage,
-      };
-
-  @override
-  Map<String, String> get deepLinksMap => {
-        'screenOne/:testId': SampleOneRoutes.screen_one,
       };
 
   static ScreenRoute screenOne(String testId) =>

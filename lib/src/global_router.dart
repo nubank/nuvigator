@@ -21,11 +21,11 @@ class GlobalRouterProvider extends InheritedWidget {
 }
 
 class GlobalRouter extends GroupRouter implements AppRouter {
-  GlobalRouter(this.navigatorKey);
+  GlobalRouter({@required this.routers, this.nuvigatorKey});
 
   static final defaultKey =
       GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
-  final GlobalKey<NuvigatorState> navigatorKey;
+  final GlobalKey<NuvigatorState> nuvigatorKey;
 
   static GlobalRouter fromRouters(
       {@required List<Router> routers, GlobalKey<NuvigatorState> key}) {
@@ -38,6 +38,8 @@ class GlobalRouter extends GroupRouter implements AppRouter {
             as GlobalRouterProvider)
         .globalRouter;
   }
+
+  NuvigatorState get nuvigator => nuvigatorKey.currentState;
 
   @override
   Route getRoute(RouteSettings settings) {
@@ -59,9 +61,9 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     final args = _extractParameters(url, deepLinkFlow);
     if (isFromNative) {
       final route = _buildNativeRoute(args, deepLinkFlow.routeName);
-      return navigatorKey.currentState.push(route);
+      return nuvigatorKey.currentState.push(route);
     }
-    return navigatorKey.currentState
+    return nuvigatorKey.currentState
         .pushNamed(deepLinkFlow.routeName, arguments: args);
   }
 
