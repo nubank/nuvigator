@@ -21,16 +21,21 @@ class GlobalRouterProvider extends InheritedWidget {
 }
 
 class GlobalRouter extends GroupRouter implements AppRouter {
-  GlobalRouter({@required this.routers, this.nuvigatorKey});
+  GlobalRouter({
+    @required List<Router> routers,
+    GlobalKey<NuvigatorState> nuvigatorKey,
+    this.deepLinkNotFound,
+  }) {
+    this.routers = routers;
+    this.nuvigatorKey = nuvigatorKey ?? defaultKey;
+  }
 
   static final defaultKey =
       GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
-  final GlobalKey<NuvigatorState> nuvigatorKey;
 
-  static GlobalRouter fromRouters(
-      {@required List<Router> routers, GlobalKey<NuvigatorState> key}) {
-    return GlobalRouter(key ?? defaultKey)..routers = routers;
-  }
+  final Future<bool> Function(GlobalRouter globalRouter, Uri uri)
+      deepLinkNotFound;
+  GlobalKey<NuvigatorState> nuvigatorKey;
 
   static GlobalRouter of(BuildContext context) {
     // ignore: avoid_as
@@ -57,14 +62,17 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
     final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
-    if (deepLinkFlow == null) return null;
+    if (deepLinkFlow == null) {
+      if (deepLinkNotFound != null) await deepLinkNotFound(this, url);
+      return null;
+    }
     final args = _extractParameters(url, deepLinkFlow);
     if (isFromNative) {
       final route = _buildNativeRoute(args, deepLinkFlow.routeName);
-      return nuvigatorKey.currentState.push(route);
+      return nuvigatorKey.currentState.push<T>(route);
     }
     return nuvigatorKey.currentState
-        .pushNamed(deepLinkFlow.routeName, arguments: args);
+        .pushNamed<T>(deepLinkFlow.routeName, arguments: args);
   }
 
   // We need this special handling while interacting with native

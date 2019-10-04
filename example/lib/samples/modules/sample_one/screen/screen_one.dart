@@ -40,4 +40,4 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
   }
 }
 
-final s1ScreenOnePage = Screen.material(ScreenOne.from);
+const s1ScreenOnePage = Screen(ScreenOne.from);

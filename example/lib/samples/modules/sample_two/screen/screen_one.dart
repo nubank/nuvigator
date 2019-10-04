@@ -28,7 +28,7 @@ class _ScreenOne extends ScreenWidget<Map<String, String>> {
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => nuvigator.pop<String>('Backed from Screen One'),
+          onPressed: () => Nuvigator.of(context).pop(),
         ),
       ),
       body: Column(

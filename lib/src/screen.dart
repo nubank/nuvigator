@@ -23,15 +23,14 @@ class ScreenContext {
 }
 
 typedef ScreenBuilder = Widget Function(ScreenContext screenContext);
-typedef WrapperFn = Widget Function(
-    ScreenContext screenContext, Widget screenWidget);
+typedef WrapperFn = Widget Function(ScreenContext screenContext, Widget child);
 
 Widget defaultWrapperFn(ScreenContext _, Widget screenWidget) => screenWidget;
 
 class Screen<T extends Object> {
   const Screen(
     this.screenBuilder, {
-    this.wrapperFn = defaultWrapperFn,
+    this.wrapperFn,
     this.screenType,
     this.debugKey,
   }) : assert(screenBuilder != null);
@@ -61,7 +60,7 @@ class Screen<T extends Object> {
       screenBuilder,
       debugKey: debugKey,
       screenType: screenType ?? fallbackScreenType,
-      wrapperFn: _getComposedWrapper(wrapperFn),
+      wrapperFn: wrapperFn,
     );
   }
 
@@ -89,8 +88,9 @@ class Screen<T extends Object> {
       return (ScreenContext sc, Widget child) => wrapperFn(
             sc,
             Builder(
-              builder: (context) =>
-                  this.wrapperFn(sc?.copyWith(context: context), child),
+              builder: (context) => this.wrapperFn != null
+                  ? this.wrapperFn(sc?.copyWith(context: context), child)
+                  : child,
             ),
           );
     }

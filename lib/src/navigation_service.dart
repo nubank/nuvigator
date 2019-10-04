@@ -4,44 +4,56 @@ import 'package:nuvigator/nuvigator.dart';
 import 'routers.dart';
 
 class Nuvigator<T extends Router> extends Navigator {
-  Nuvigator(
-      {@required this.router,
-      @required String initialRoute,
-      Key key,
-      this.screenType = materialScreenType,
-      this.initialArguments})
-      : super(
-            onGenerateRoute: (settings) {
-              var finalSettings = settings;
-              if (settings.isInitialRoute &&
-                  settings.name == initialRoute &&
-                  settings.arguments == null) {
-                finalSettings = settings.copyWith(arguments: initialArguments);
-              }
-              return router
-                  .getScreen(routeName: finalSettings.name)
-                  .fallbackScreenType(screenType)
-                  .toRoute(finalSettings);
-            },
-            key: (router is GlobalRouter) ? router.nuvigatorKey : key,
-            initialRoute: initialRoute);
+  Nuvigator({
+    @required this.router,
+    @required String initialRoute,
+    Key key,
+    this.screenType = materialScreenType,
+    this.wrapperFn,
+    this.initialArguments,
+  }) : super(
+          onGenerateRoute: (settings) {
+            var finalSettings = settings;
+            if (settings.isInitialRoute &&
+                settings.name == initialRoute &&
+                settings.arguments == null &&
+                initialArguments != null) {
+              finalSettings = settings.copyWith(arguments: initialArguments);
+            }
+            return router
+                .getScreen(routeName: finalSettings.name)
+                .fallbackScreenType(screenType)
+                .toRoute(finalSettings);
+          },
+          key: (router is GlobalRouter) ? router.nuvigatorKey : key,
+          initialRoute: initialRoute,
+        );
 
-//  static Nuvigator Function(ScreenContext sc) screen({
-//    @required Router router,
-//    @required String initialRoute,
-//    Key key,
-//    ScreenType screenType = materialScreenType,
-//  }) {
-//    return Nuvigator(
-//        router: router, initialRoute: initialRoute, screenType: screenType);
-//  }
+  Nuvigator screenBuilder(ScreenContext screenContext) {
+    return withInitialArguments(screenContext.settings.arguments);
+  }
+
+  Nuvigator withInitialArguments(Object initialArguments) {
+    return Nuvigator(
+      initialRoute: initialRoute,
+      router: router,
+      screenType: screenType,
+      wrapperFn: wrapperFn,
+      initialArguments: initialArguments,
+      key: key,
+    );
+  }
 
   final T router;
   final Object initialArguments;
   final ScreenType screenType;
+  final WrapperFn wrapperFn;
 
-  static NuvigatorState<T> of<T extends Router>(BuildContext context) {
-    return context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
+  static NuvigatorState<T> of<T extends Router>(BuildContext context,
+      {bool rootNuvigator = false}) {
+    return rootNuvigator
+        ? context.rootAncestorStateOfType(const TypeMatcher<NuvigatorState>())
+        : context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
   }
 
   @override
@@ -51,8 +63,8 @@ class Nuvigator<T extends Router> extends Navigator {
 }
 
 class NuvigatorState<T extends Router> extends NavigatorState {
-  NavigatorState get _rootNavigator =>
-      Navigator.of(context, rootNavigator: true);
+  NuvigatorState get _rootNuvigator =>
+      Nuvigator.of(context, rootNuvigator: true);
 
   @override
   Nuvigator get widget => super.widget;
@@ -62,7 +74,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
     final possibleRoute = widget.router.getScreen(routeName: routeName);
-    if (possibleRoute == null) {
+    if (possibleRoute == null && parent != null) {
       return parent.pushNamed<T>(routeName, arguments: arguments);
     }
     return super.pushNamed<T>(routeName, arguments: arguments);
@@ -118,8 +130,14 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   @override
   bool pop<T extends Object>([T result]) {
-    final isPopped = super.pop<T>(result);
-    if (!isPopped && super != _rootNavigator) {
+    var isPopped = false;
+    if (canPop()) {
+      isPopped = super.pop<T>(result);
+    }
+    if (!isPopped &&
+        _rootNuvigator != null &&
+        this != _rootNuvigator &&
+        parent != null) {
       return parentPop<T>(result);
     }
     return isPopped;
@@ -127,7 +145,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
-  bool rootPop<T extends Object>([T result]) => _rootNavigator.pop<T>(result);
+  bool rootPop<T extends Object>([T result]) => _rootNuvigator.pop<T>(result);
 
   /// R is the return value
   Future<R> navigate<R, T>(ScreenRoute<T, R> screenRoute) {
@@ -138,11 +156,16 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ModalRoute.of(context)?.settings;
+    Widget child = super.build(context);
     if (widget.router is GlobalRouter) {
-      return GlobalRouterProvider(
-          globalRouter: widget.router, child: super.build(context));
+      child = GlobalRouterProvider(globalRouter: widget.router, child: child);
     }
-    return super.build(context);
+    if (widget.wrapperFn != null) {
+      child = widget.wrapperFn(
+          ScreenContext(context: context, settings: settings), child);
+    }
+    return child;
   }
 }
 

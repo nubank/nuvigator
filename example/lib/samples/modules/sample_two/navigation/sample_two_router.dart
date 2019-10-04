@@ -29,10 +29,20 @@ class SampleTwoRouter extends SimpleRouter {
   static ScreenRoute screenTwo() => ScreenRoute(SampleTwoRoutes.screen_two);
 }
 
-final sampleTwoRouter = FlowRouter(
-    baseRouter: SampleTwoRouter(),
-    flowWrapper: (ScreenContext screenContext, Widget child) =>
-        Provider<SampleFlowBloc>.value(
-          value: SampleFlowBloc(),
-          child: child,
-        ));
+final sampleTwoNuvigator = Nuvigator(
+  router: SampleTwoRouter(),
+  initialRoute: SampleTwoRoutes.screen_one,
+  wrapperFn: (ScreenContext screenContext, Widget child) =>
+      Provider<SampleFlowBloc>.value(
+    value: SampleFlowBloc(),
+    child: child,
+  ),
+);
+
+//final sampleTwoRouter = FlowRouter(
+//    baseRouter: SampleTwoRouter(),
+//    flowWrapper: (ScreenContext screenContext, Widget child) =>
+//        Provider<SampleFlowBloc>.value(
+//          value: SampleFlowBloc(),
+//          child: child,
+//        ));

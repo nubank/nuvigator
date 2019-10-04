@@ -1,4 +1,4 @@
-import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
+import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
@@ -22,11 +22,11 @@ class _ScreenTwo extends ScreenWidget {
           FlatButton(
               child: const Text('Open sample two flow'),
               onPressed: () => nuvigator
-                  .navigate(SampleTwoRouter.screenOne('From Sample 1'))),
+                  .navigate(SamplesRouter.sampleTwo('from sample one'))),
         ],
       ),
     );
   }
 }
 
-final s1ScreenTwoPage = Screen.material<int>(_ScreenTwo.from);
+const s1ScreenTwoPage = Screen<int>(_ScreenTwo.from);
