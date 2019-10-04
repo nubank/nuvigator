@@ -23,12 +23,13 @@ class GlobalRouterProvider extends InheritedWidget {
 class GlobalRouter extends GroupRouter implements AppRouter {
   GlobalRouter(this.navigatorKey);
 
+  static final defaultKey =
+      GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
   final GlobalKey<NuvigatorState> navigatorKey;
 
   static GlobalRouter fromRouters(
-      {@required List<Router> routers,
-      @required GlobalKey<NuvigatorState> key}) {
-    return GlobalRouter(key)..routers = routers;
+      {@required List<Router> routers, GlobalKey<NuvigatorState> key}) {
+    return GlobalRouter(key ?? defaultKey)..routers = routers;
   }
 
   static GlobalRouter of(BuildContext context) {

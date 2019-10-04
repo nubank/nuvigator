@@ -7,11 +7,9 @@ import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 
 void main() => runApp(MyApp());
 
-final rootNavigatorKey = GlobalKey<NavigatorState>();
-
 class MyApp extends StatelessWidget {
   static final GlobalRouter router =
-      GlobalRouter.fromRouters(key: rootNavigatorKey, routers: [samplesRouter]);
+      GlobalRouter.fromRouters(routers: [samplesRouter]);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,6 @@ class MyApp extends StatelessWidget {
         title: 'Nubank',
         home: Nuvigator(
           router: router,
-          key: rootNavigatorKey,
           initialRoute: 'home',
         ),
       ),
