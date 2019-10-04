@@ -13,8 +13,7 @@ abstract class SimpleRouter implements Router {
   final Map<String, String> deepLinksMap = {};
   final String deepLinkPrefix = null;
 
-  Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) =>
-      defaultWrapperFn(screenContext, screenWidget);
+  WrapperFn get screensWrapper => null;
 
   Future<String> getDeepLinkPrefix() async {
     return deepLinkPrefix ?? '';
@@ -25,7 +24,7 @@ abstract class SimpleRouter implements Router {
     assert(routeName != null && routeName.isNotEmpty);
 
     final screen = screensMap[routeName];
-    return screen?.wrapWith(screenWrapper);
+    return screen?.wrapWith(screensWrapper);
   }
 
   @override

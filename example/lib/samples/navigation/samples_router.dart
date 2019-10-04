@@ -13,9 +13,11 @@ class SamplesRouter extends GroupRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-        'home': Screen((screenContext) => HomeScreen(screenContext)),
+        'home': Screen(
+          builder: (screenContext) => HomeScreen(screenContext),
+        ),
         'second': Screen(
-          sampleTwoNuvigator.screenBuilder,
+          builder: sampleTwoNuvigator,
         ),
       };
 
@@ -25,12 +27,14 @@ class SamplesRouter extends GroupRouter {
       ];
 
   @override
-  Widget screenWrapper(ScreenContext screenContext, Widget child) {
-    return Provider<SamplesBloc>.value(
-      value: SamplesBloc(),
-      child: child,
-    );
-  }
+  WrapperFn get screensWrapper => (ScreenContext screenContext, Widget child) {
+        return Provider<SamplesBloc>.value(
+          value: SamplesBloc(),
+          child: child,
+        );
+      };
+
+  // Navigation Helpers
 
   static ScreenRoute sampleTwo(String testId) {
     return ScreenRoute('second', {'testId': testId});

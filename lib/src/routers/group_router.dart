@@ -19,7 +19,7 @@ abstract class GroupRouter extends SimpleRouter {
 
     for (Router router in routers) {
       final screen = router.getScreen(routeName: routeName);
-      if (screen != null) return screen.wrapWith(screenWrapper);
+      if (screen != null) return screen.wrapWith(screensWrapper);
     }
     return null;
   }

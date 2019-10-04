@@ -16,11 +16,11 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => nuvigator.maybePop(),
-        ),
+//        automaticallyImplyLeading: false,
+//        leading: IconButton(
+//          icon: Icon(Icons.arrow_back),
+//          onPressed: () => nuvigator.maybePop(),
+//        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -39,5 +39,3 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
     );
   }
 }
-
-const s1ScreenOnePage = Screen(ScreenOne.from);

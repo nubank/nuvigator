@@ -27,37 +27,44 @@ typedef WrapperFn = Widget Function(ScreenContext screenContext, Widget child);
 
 Widget defaultWrapperFn(ScreenContext _, Widget screenWidget) => screenWidget;
 
+/// [T] is the possible return type of this Screen
 class Screen<T extends Object> {
-  const Screen(
-    this.screenBuilder, {
+  const Screen({
+    @required this.builder,
     this.wrapperFn,
     this.screenType,
     this.debugKey,
-  }) : assert(screenBuilder != null);
+  }) : assert(builder != null);
 
   static Screen material<T extends Object>(ScreenBuilder screenBuilder,
           {String debugKey}) =>
-      Screen<T>(screenBuilder,
-          screenType: materialScreenType, debugKey: debugKey);
+      Screen<T>(
+          builder: screenBuilder,
+          screenType: materialScreenType,
+          debugKey: debugKey);
 
   static Screen cupertino<T extends Object>(ScreenBuilder screenBuilder,
           {String debugKey}) =>
-      Screen<T>(screenBuilder,
-          screenType: cupertinoScreenType, debugKey: debugKey);
+      Screen<T>(
+          builder: screenBuilder,
+          screenType: cupertinoScreenType,
+          debugKey: debugKey);
 
   static Screen cupertinoDialog<T extends Object>(ScreenBuilder screenBuilder,
           {String debugKey}) =>
-      Screen<T>(screenBuilder,
-          screenType: cupertinoDialogScreenType, debugKey: debugKey);
+      Screen<T>(
+          builder: screenBuilder,
+          screenType: cupertinoDialogScreenType,
+          debugKey: debugKey);
 
-  final ScreenBuilder screenBuilder;
+  final ScreenBuilder builder;
   final ScreenType screenType;
   final WrapperFn wrapperFn;
   final String debugKey;
 
   Screen<T> fallbackScreenType(ScreenType fallbackScreenType) {
     return Screen<T>(
-      screenBuilder,
+      builder: builder,
       debugKey: debugKey,
       screenType: screenType ?? fallbackScreenType,
       wrapperFn: wrapperFn,
@@ -69,7 +76,7 @@ class Screen<T extends Object> {
       return this;
     }
     return Screen<T>(
-      screenBuilder,
+      builder: builder,
       debugKey: debugKey,
       screenType: screenType,
       wrapperFn: _getComposedWrapper(wrapperFn),
@@ -104,8 +111,8 @@ class Screen<T extends Object> {
     return wrapperFn(
         ScreenContext(context: context, settings: settings),
         Builder(
-          builder: (innerContext) => screenBuilder(
-              ScreenContext(context: innerContext, settings: settings)),
+          builder: (innerContext) =>
+              builder(ScreenContext(context: innerContext, settings: settings)),
         ));
   }
 }

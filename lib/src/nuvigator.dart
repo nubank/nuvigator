@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import 'routers.dart';
+import 'screen_route.dart';
 
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
@@ -48,6 +49,10 @@ class Nuvigator<T extends Router> extends Navigator {
   final Object initialArguments;
   final ScreenType screenType;
   final WrapperFn wrapperFn;
+
+  Nuvigator call(ScreenContext screenContext) {
+    return screenBuilder(screenContext);
+  }
 
   static NuvigatorState<T> of<T extends Router>(BuildContext context,
       {bool rootNuvigator = false}) {
@@ -167,11 +172,4 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     }
     return child;
   }
-}
-
-class ScreenRoute<T extends Object, R extends Object> {
-  ScreenRoute(this.routeName, [this.params]);
-
-  final String routeName;
-  final T params;
 }

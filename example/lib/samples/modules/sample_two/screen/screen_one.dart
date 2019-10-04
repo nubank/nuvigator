@@ -8,11 +8,11 @@ import '../bloc/sample_flow_bloc.dart';
 import '../bloc/sample_two_bloc.dart';
 import '../bloc/screen_one_bloc.dart';
 
-class _ScreenOne extends ScreenWidget<Map<String, String>> {
-  _ScreenOne(ScreenContext screenContext) : super(screenContext);
+class ScreenOne extends ScreenWidget<Map<String, String>> {
+  ScreenOne(ScreenContext screenContext) : super(screenContext);
 
-  static _ScreenOne from(ScreenContext screenContext) {
-    return _ScreenOne(screenContext);
+  static ScreenOne from(ScreenContext screenContext) {
+    return ScreenOne(screenContext);
   }
 
   @override
@@ -25,11 +25,11 @@ class _ScreenOne extends ScreenWidget<Map<String, String>> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Nuvigator.of(context).pop(),
-        ),
+//        automaticallyImplyLeading: false,
+//        leading: IconButton(
+//          icon: Icon(Icons.arrow_back),
+//          onPressed: () => Nuvigator.of(context).pop(),
+//        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -53,11 +53,3 @@ class _ScreenOne extends ScreenWidget<Map<String, String>> {
     );
   }
 }
-
-final s2ScreenOnePage =
-    Screen.material<String>(_ScreenOne.from).wrapWith((screenContext, child) {
-  return Provider<ScreenOneBloc>.value(
-    value: ScreenOneBloc(),
-    child: child,
-  );
-});

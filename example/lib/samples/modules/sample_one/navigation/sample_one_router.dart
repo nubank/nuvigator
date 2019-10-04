@@ -13,8 +13,12 @@ class SampleOneRouter extends SimpleRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-        SampleOneRoutes.screen_one: s1ScreenOnePage,
-        SampleOneRoutes.screen_two: s1ScreenTwoPage,
+        SampleOneRoutes.screen_one: const Screen(
+          builder: ScreenOne.from,
+        ),
+        SampleOneRoutes.screen_two: const Screen<int>(
+          builder: ScreenTwo.from,
+        ),
       };
 
   @override

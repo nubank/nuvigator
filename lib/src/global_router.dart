@@ -4,6 +4,7 @@ import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../nuvigator.dart';
 import 'errors.dart';
+import 'nuvigator.dart';
 import 'routers/group_router.dart';
 import 'routers.dart';
 
@@ -33,8 +34,8 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   static final defaultKey =
       GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
 
-  final Future<bool> Function(GlobalRouter globalRouter, Uri uri)
-      deepLinkNotFound;
+  final Future<bool> Function(GlobalRouter globalRouter, Uri uri,
+      [bool isFromNative, dynamic args]) deepLinkNotFound;
   GlobalKey<NuvigatorState> nuvigatorKey;
 
   static GlobalRouter of(BuildContext context) {
@@ -63,7 +64,8 @@ class GlobalRouter extends GroupRouter implements AppRouter {
       [dynamic arguments, bool isFromNative = false]) async {
     final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
     if (deepLinkFlow == null) {
-      if (deepLinkNotFound != null) await deepLinkNotFound(this, url);
+      if (deepLinkNotFound != null)
+        await deepLinkNotFound(this, url, isFromNative, arguments);
       return null;
     }
     final args = _extractParameters(url, deepLinkFlow);

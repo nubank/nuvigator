@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
+import 'nuvigator.dart';
 import 'routers.dart';
 import 'screen.dart';
 import 'screen_widget.dart';

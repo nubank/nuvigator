@@ -2,11 +2,11 @@ import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class _ScreenTwo extends ScreenWidget {
-  _ScreenTwo(ScreenContext screenContext) : super(screenContext);
+class ScreenTwo extends ScreenWidget {
+  ScreenTwo(ScreenContext screenContext) : super(screenContext);
 
-  static _ScreenTwo from(ScreenContext screenContext) {
-    return _ScreenTwo(screenContext);
+  static ScreenTwo from(ScreenContext screenContext) {
+    return ScreenTwo(screenContext);
   }
 
   @override
@@ -28,5 +28,3 @@ class _ScreenTwo extends ScreenWidget {
     );
   }
 }
-
-const s1ScreenTwoPage = Screen<int>(_ScreenTwo.from);

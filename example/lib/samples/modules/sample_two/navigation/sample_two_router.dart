@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_two/bloc/screen_one_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -11,17 +12,27 @@ import 'sample_two_routes.dart';
 class SampleTwoRouter extends SimpleRouter {
   @override
   Map<String, Screen> get screensMap => {
-        SampleTwoRoutes.screen_one: s2ScreenOnePage,
-        SampleTwoRoutes.screen_two: s2ScreenTwoPage,
+        SampleTwoRoutes.screen_one: Screen<String>(
+          builder: ScreenOne.from,
+          wrapperFn: (screenContext, child) {
+            return Provider<ScreenOneBloc>.value(
+              value: ScreenOneBloc(),
+              child: child,
+            );
+          },
+        ),
+        SampleTwoRoutes.screen_two:
+            const Screen<String>(builder: ScreenTwo.from),
       };
 
   @override
-  Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) {
-    return Provider<SampleTwoBloc>.value(
-      value: SampleTwoBloc(),
-      child: screenWidget,
-    );
-  }
+  WrapperFn get screensWrapper =>
+      (ScreenContext screenContext, Widget screenWidget) {
+        return Provider<SampleTwoBloc>.value(
+          value: SampleTwoBloc(),
+          child: screenWidget,
+        );
+      };
 
   static ScreenRoute screenOne(String testId) =>
       ScreenRoute(SampleTwoRoutes.screen_one, {'testId': testId});
@@ -30,19 +41,11 @@ class SampleTwoRouter extends SimpleRouter {
 }
 
 final sampleTwoNuvigator = Nuvigator(
-  router: SampleTwoRouter(),
-  initialRoute: SampleTwoRoutes.screen_one,
-  wrapperFn: (ScreenContext screenContext, Widget child) =>
-      Provider<SampleFlowBloc>.value(
-    value: SampleFlowBloc(),
-    child: child,
-  ),
-);
-
-//final sampleTwoRouter = FlowRouter(
-//    baseRouter: SampleTwoRouter(),
-//    flowWrapper: (ScreenContext screenContext, Widget child) =>
-//        Provider<SampleFlowBloc>.value(
-//          value: SampleFlowBloc(),
-//          child: child,
-//        ));
+    router: SampleTwoRouter(),
+    initialRoute: SampleTwoRoutes.screen_one,
+    screenType: cupertinoScreenType,
+    wrapperFn: (ScreenContext screenContext, Widget child) =>
+        Provider<SampleFlowBloc>.value(
+          value: SampleFlowBloc(),
+          child: child,
+        ));
