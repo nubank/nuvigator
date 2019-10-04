@@ -1,8 +1,6 @@
-import 'package:example/samples/modules/sample_one/navigation/sample_one_router.dart';
+import 'package:example/samples/modules/sample_one/navigation/sample_one_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-
-import '../../../../src/example_app_router.dart';
 
 class ScreenOne extends ScreenWidget<Map<String, String>> {
   ScreenOne(ScreenContext screenContext) : super(screenContext);
@@ -42,4 +40,4 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
   }
 }
 
-final s1ScreenOnePage = NuScreen.page(ScreenOne.from);
+final s1ScreenOnePage = Screen.material(ScreenOne.from);

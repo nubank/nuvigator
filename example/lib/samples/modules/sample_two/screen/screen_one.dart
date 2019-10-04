@@ -1,8 +1,8 @@
+import 'package:example/samples/modules/sample_two/navigation/sample_two_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../src/example_app_router.dart';
 import '../../../bloc/samples_bloc.dart';
 import '../bloc/sample_flow_bloc.dart';
 import '../bloc/sample_two_bloc.dart';
@@ -42,8 +42,9 @@ class _ScreenOne extends ScreenWidget<Map<String, String>> {
           FlatButton(
             child: const Text('Go to screen two'),
             onPressed: () async {
-//              final value = await navigation.samples.sampleTwo.screenTwo();
-//              print('Return from sample two screen two with value: $value');
+              final value =
+                  await nuvigator.pushNamed(SampleTwoRoutes.screen_two);
+              print('Return from sample two screen two with value: $value');
             },
           ),
           TextField()
@@ -54,7 +55,7 @@ class _ScreenOne extends ScreenWidget<Map<String, String>> {
 }
 
 final s2ScreenOnePage =
-    NuScreen.card<String>(_ScreenOne.from).wrapWith((screenContext, child) {
+    Screen.material<String>(_ScreenOne.from).wrapWith((screenContext, child) {
   return Provider<ScreenOneBloc>.value(
     value: ScreenOneBloc(),
     child: child,

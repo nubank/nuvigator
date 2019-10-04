@@ -29,31 +29,27 @@ typedef WrapperFn = Widget Function(
 Widget defaultWrapperFn(ScreenContext _, Widget screenWidget) => screenWidget;
 
 class Screen<T extends Object> {
-  const Screen({
-    @required this.screenBuilder,
+  const Screen(
+    this.screenBuilder, {
     this.wrapperFn = defaultWrapperFn,
     this.screenType = materialScreenType,
     this.debugKey,
   }) : assert(screenBuilder != null);
 
-  static Screen material<T>(ScreenBuilder screenBuilder, {String debugKey}) =>
-      Screen<T>(
-          screenBuilder: screenBuilder,
-          screenType: materialScreenType,
-          debugKey: debugKey);
-
-  static Screen cupertino<T>(ScreenBuilder screenBuilder, {String debugKey}) =>
-      Screen<T>(
-          screenBuilder: screenBuilder,
-          screenType: cupertinoScreenType,
-          debugKey: debugKey);
-
-  static Screen cupertinoDialog<T>(ScreenBuilder screenBuilder,
+  static Screen material<T extends Object>(ScreenBuilder screenBuilder,
           {String debugKey}) =>
-      Screen<T>(
-          screenBuilder: screenBuilder,
-          screenType: cupertinoDialogScreenType,
-          debugKey: debugKey);
+      Screen<T>(screenBuilder,
+          screenType: materialScreenType, debugKey: debugKey);
+
+  static Screen cupertino<T extends Object>(ScreenBuilder screenBuilder,
+          {String debugKey}) =>
+      Screen<T>(screenBuilder,
+          screenType: cupertinoScreenType, debugKey: debugKey);
+
+  static Screen cupertinoDialog<T extends Object>(ScreenBuilder screenBuilder,
+          {String debugKey}) =>
+      Screen<T>(screenBuilder,
+          screenType: cupertinoDialogScreenType, debugKey: debugKey);
 
   final ScreenBuilder screenBuilder;
   final ScreenType screenType;
@@ -65,9 +61,9 @@ class Screen<T extends Object> {
       return this;
     }
     return Screen<T>(
+      screenBuilder,
       debugKey: debugKey,
       screenType: screenType,
-      screenBuilder: screenBuilder,
       wrapperFn: _getComposedWrapper(wrapperFn),
     );
   }

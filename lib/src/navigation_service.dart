@@ -19,7 +19,7 @@ class Nuvigator<T extends Router> extends Navigator {
               }
               return router.getRoute(settings);
             },
-            key: key,
+            key: (router is GlobalRouter) ? router.navigatorKey : key,
             initialRoute: initialRoute);
 
   final T router;
@@ -48,8 +48,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
-    final possibleRoute = widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
+    final possibleRoute = widget.router.getScreen(routeName: routeName);
     if (possibleRoute == null) {
       return parent.pushNamed<T>(routeName, arguments: arguments);
     }
@@ -61,8 +60,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute = widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
+    final possibleRoute = widget.router.getScreen(routeName: routeName);
     if (possibleRoute == null) {
       return parent.pushReplacementNamed<T, TO>(routeName,
           arguments: arguments, result: result);
@@ -75,8 +73,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   Future<T> pushNamedAndRemoveUntil<T extends Object>(
       String newRouteName, RoutePredicate predicate,
       {Object arguments}) {
-    final possibleRoute = widget.onGenerateRoute(
-        RouteSettings(name: newRouteName, arguments: arguments));
+    final possibleRoute = widget.router.getScreen(routeName: newRouteName);
     if (possibleRoute == null) {
       return parent.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
           arguments: arguments);
@@ -90,8 +87,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute = widget
-        .onGenerateRoute(RouteSettings(name: routeName, arguments: arguments));
+    final possibleRoute = widget.router.getScreen(routeName: routeName);
     if (possibleRoute == null) {
       return parent.popAndPushNamed<T, TO>(routeName,
           arguments: arguments, result: result);

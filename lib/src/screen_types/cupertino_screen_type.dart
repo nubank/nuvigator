@@ -3,31 +3,20 @@ import 'package:flutter/cupertino.dart';
 import '../screen_type.dart';
 
 class CupertinoScreenType extends ScreenType {
-  const CupertinoScreenType();
+  const CupertinoScreenType({this.fullscreenDialog = false});
+
+  final bool fullscreenDialog;
 
   @override
   Route<T> toRoute<T extends Object>(
       WidgetBuilder builder, RouteSettings settings) {
     return CupertinoPageRoute(
       builder: builder,
+      fullscreenDialog: fullscreenDialog,
       settings: settings,
     );
   }
 }
 
-class CupertinoDialogScreenType extends ScreenType {
-  const CupertinoDialogScreenType();
-
-  @override
-  Route<T> toRoute<T extends Object>(
-      WidgetBuilder builder, RouteSettings settings) {
-    return CupertinoPageRoute(
-      builder: builder,
-      fullscreenDialog: true,
-      settings: settings,
-    );
-  }
-}
-
-const cupertinoDialogScreenType = CupertinoDialogScreenType();
+const cupertinoDialogScreenType = CupertinoScreenType(fullscreenDialog: true);
 const cupertinoScreenType = CupertinoScreenType();

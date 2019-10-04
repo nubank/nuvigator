@@ -1,7 +1,6 @@
+import 'package:example/samples/modules/sample_two/navigation/sample_two_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-
-import '../../../../src/example_app_router.dart';
 
 class _ScreenTwo extends ScreenWidget {
   _ScreenTwo(ScreenContext screenContext) : super(screenContext);
@@ -21,13 +20,13 @@ class _ScreenTwo extends ScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           FlatButton(
-              child: const Text('Open sample two flow'), onPressed: () => null
-//                navigation.samples.sampleTwo.start('test_123'),
-              ),
+              child: const Text('Open sample two flow'),
+              onPressed: () => nuvigator.pushNamed(SampleTwoRoutes.screen_one,
+                  arguments: {'testId': 'fromSampleOne'})),
         ],
       ),
     );
   }
 }
 
-final s1ScreenTwoPage = NuScreen.page<int>(_ScreenTwo.from);
+final s1ScreenTwoPage = Screen.material<int>(_ScreenTwo.from);

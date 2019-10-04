@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import '../screen/screen_one.dart';
@@ -25,12 +24,3 @@ class SampleOneRouter extends SimpleRouter {
 }
 
 final sampleOneRouter = SampleOneRouter();
-
-class ScreenTwoRoute extends ScreenRoute<int> {
-  ScreenTwoRoute({@required String name}) {
-    params = {'name': name};
-  }
-
-  @override
-  String get routeName => SampleOneRoutes.screen_two;
-}

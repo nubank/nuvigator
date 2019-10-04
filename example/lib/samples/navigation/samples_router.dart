@@ -4,7 +4,6 @@ import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../../src/example_app_router.dart';
 import '../bloc/samples_bloc.dart';
 import '../modules/sample_one/navigation/sample_one_router.dart';
 import '../modules/sample_two/navigation/sample_two_router.dart';
@@ -15,7 +14,7 @@ class _SamplesRouter extends GroupRouter {
 
   @override
   Map<String, Screen> get screensMap => {
-        'home': NuScreen.page((screenContext) => HomeScreen(screenContext)),
+        'home': Screen.material((screenContext) => HomeScreen(screenContext)),
         'second': Screen.cupertinoDialog<String>(
             NuvigatorScreen.fromScreenContext(
                 router: sampleOneRouter,

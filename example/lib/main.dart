@@ -1,7 +1,7 @@
+import 'package:example/samples/modules/sample_two/navigation/sample_two_routes.dart';
 import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:provider/provider.dart';
 
 import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 
@@ -13,14 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.value(
-      value: router,
-      child: MaterialApp(
-        title: 'Nubank',
-        home: Nuvigator(
-          router: router,
-          initialRoute: 'home',
-        ),
+    return MaterialApp(
+      title: 'Nubank',
+      home: Nuvigator(
+        router: router,
+        initialRoute: 'home',
       ),
     );
   }
@@ -54,8 +51,10 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-//              final value = await navigation.samples.sampleTwo.start('id_1234');
-//              print('Return from sample two with value: $value');
+              final value = await nuvigator.pushNamed(
+                  SampleTwoRoutes.screen_one,
+                  arguments: {'testId': 'aaa'});
+              print('Return from sample two with value: $value');
             },
           ),
         ],

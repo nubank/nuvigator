@@ -1,7 +1,6 @@
+import 'package:example/samples/modules/sample_one/navigation/sample_one_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-
-import '../../../../src/example_app_router.dart';
 
 class _ScreenTwo extends ScreenWidget {
   _ScreenTwo(ScreenContext screenContext) : super(screenContext);
@@ -30,13 +29,13 @@ class _ScreenTwo extends ScreenWidget {
                 nuvigator.parentPop<String>('Backed from Screen Two'),
           ),
           FlatButton(
-              child: const Text('Go to sample one'), onPressed: () => null
-//                navigation.samples.sampleOne.start('test_123'),
-              ),
+              child: const Text('Go to sample one'),
+              onPressed: () => nuvigator.pushNamed(SampleOneRoutes.screen_one,
+                  arguments: {'testId': 'fromSample2'})),
         ],
       ),
     );
   }
 }
 
-final s2ScreenTwoPage = NuScreen.page<String>(_ScreenTwo.from);
+final s2ScreenTwoPage = Screen.material<String>(_ScreenTwo.from);
