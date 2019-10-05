@@ -5,7 +5,7 @@ import 'package:nuvigator/nuvigator.dart';
 class ScreenTwo extends ScreenWidget {
   ScreenTwo(ScreenContext screenContext) : super(screenContext);
 
-  static ScreenTwo from(ScreenContext screenContext) {
+  static ScreenTwo builder(ScreenContext screenContext) {
     return ScreenTwo(screenContext);
   }
 

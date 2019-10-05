@@ -13,7 +13,7 @@ class SampleTwoRouter extends SimpleRouter {
   @override
   Map<String, Screen> get screensMap => {
         SampleTwoRoutes.screen_one: Screen<String>(
-          builder: ScreenOne.from,
+          builder: ScreenOne.builder,
           wrapperFn: (screenContext, child) {
             return Provider<ScreenOneBloc>.value(
               value: ScreenOneBloc(),
@@ -22,7 +22,7 @@ class SampleTwoRouter extends SimpleRouter {
           },
         ),
         SampleTwoRoutes.screen_two:
-            const Screen<String>(builder: ScreenTwo.from),
+            const Screen<String>(builder: ScreenTwo.builder),
       };
 
   @override

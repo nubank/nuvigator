@@ -5,7 +5,7 @@ import 'package:nuvigator/nuvigator.dart';
 class ScreenOne extends ScreenWidget<Map<String, String>> {
   ScreenOne(ScreenContext screenContext) : super(screenContext);
 
-  static ScreenOne from(ScreenContext screenContext) {
+  static ScreenOne builder(ScreenContext screenContext) {
     return ScreenOne(screenContext);
   }
 
