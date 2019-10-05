@@ -10,7 +10,6 @@ import '../screen.dart';
 /// a Screen.
 abstract class SimpleRouter implements Router {
   final Map<String, Screen> screensMap = {};
-  final Map<String, String> deepLinksMap = {};
   final String deepLinkPrefix = null;
 
   WrapperFn get screensWrapper => null;
@@ -30,14 +29,16 @@ abstract class SimpleRouter implements Router {
   @override
   Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) async {
     final deepLinkPrefix = await getDeepLinkPrefix();
-    for (var deepLinkEntry in deepLinksMap.entries) {
-      final fullTemplate = deepLinkPrefix + deepLinkEntry.key;
+    for (var screenEntry in screensMap.entries) {
+      final currentDeepLink = screenEntry.value.deepLink;
+      if (currentDeepLink == null) break;
+      final fullTemplate = deepLinkPrefix + currentDeepLink;
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(url))
         return DeepLinkFlow(
           path: url,
           template: fullTemplate,
-          routeName: deepLinkEntry.value,
+          routeName: screenEntry.key,
         );
     }
     return null;

@@ -34,6 +34,7 @@ class Screen<T extends Object> {
     this.wrapperFn,
     this.screenType,
     this.debugKey,
+    this.deepLink,
   }) : assert(builder != null);
 
   static Screen material<T extends Object>(ScreenBuilder screenBuilder,
@@ -61,6 +62,7 @@ class Screen<T extends Object> {
   final ScreenType screenType;
   final WrapperFn wrapperFn;
   final String debugKey;
+  final String deepLink;
 
   Screen<T> fallbackScreenType(ScreenType fallbackScreenType) {
     return Screen<T>(

@@ -15,15 +15,11 @@ class SampleOneRouter extends SimpleRouter {
   Map<String, Screen> get screensMap => {
         SampleOneRoutes.screen_one: const Screen(
           builder: ScreenOne.from,
+          deepLink: 'screenOne/:testId',
         ),
         SampleOneRoutes.screen_two: const Screen<int>(
           builder: ScreenTwo.from,
         ),
-      };
-
-  @override
-  Map<String, String> get deepLinksMap => {
-        'screenOne/:testId': SampleOneRoutes.screen_one,
       };
 
   static ScreenRoute screenOne(String testId) =>
