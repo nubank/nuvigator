@@ -23,6 +23,12 @@ class ScreenTwo extends ScreenWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          Hero(
+            child: FlutterLogo(
+              size: 100,
+            ),
+            tag: 'HERO',
+          ),
           FlatButton(
             child: const Text('Close entire flow'),
             onPressed: () =>

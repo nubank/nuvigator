@@ -47,7 +47,13 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
               print('Return from sample two screen two with value: $value');
             },
           ),
-          TextField()
+          TextField(),
+          Hero(
+            child: FlutterLogo(
+              size: 100,
+            ),
+            tag: 'HERO',
+          ),
         ],
       ),
     );

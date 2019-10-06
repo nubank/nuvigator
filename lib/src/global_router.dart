@@ -8,6 +8,10 @@ import 'nuvigator.dart';
 import 'routers/group_router.dart';
 import 'routers.dart';
 
+typedef HandleDeepLinkFn = Future<bool> Function(
+    GlobalRouter globalRouter, Uri uri,
+    [bool isFromNative, dynamic args]);
+
 class GlobalRouterProvider extends InheritedWidget {
   const GlobalRouterProvider(
       {@required this.globalRouter, @required Widget child})
@@ -35,9 +39,10 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   static final defaultKey =
       GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
 
-  final Future<bool> Function(GlobalRouter globalRouter, Uri uri,
-      [bool isFromNative, dynamic args]) deepLinkNotFound;
+  final HandleDeepLinkFn deepLinkNotFound;
+
   GlobalKey<NuvigatorState> nuvigatorKey;
+
   final Screen Function(RouteSettings settings) onScreenNotFound;
 
   static GlobalRouter of(BuildContext context) {

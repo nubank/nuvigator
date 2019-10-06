@@ -7,12 +7,13 @@ import 'screen_route.dart';
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
-    @required String initialRoute,
+    String initialRoute = '/',
     Key key,
     this.screenType = materialScreenType,
     this.wrapperFn,
     this.initialArguments,
   }) : super(
+          observers: [HeroController()],
           onGenerateRoute: (settings) {
             var finalSettings = settings;
             if (settings.isInitialRoute &&

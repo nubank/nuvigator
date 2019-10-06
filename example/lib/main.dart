@@ -13,11 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nubank',
-      home: Nuvigator(
-        screenType: cupertinoDialogScreenType,
-        router: router,
-        initialRoute: 'home',
-      ),
+      builder: (context, widget) {
+        return Nuvigator(
+          screenType: cupertinoDialogScreenType,
+          router: router,
+          initialRoute: 'home',
+        );
+      },
     );
   }
 }
@@ -41,6 +43,10 @@ class HomeScreen extends ScreenWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          Hero(
+            child: FlutterLogo(),
+            tag: 'HERO',
+          ),
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
               onPressed: () async {
