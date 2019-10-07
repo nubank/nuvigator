@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends ScreenWidget {
-  HomeScreen(ScreenContext screenContext) : super(screenContext);
+  HomeScreen(BuildContext context) : super(context);
 
   @override
   Widget build(BuildContext context) {

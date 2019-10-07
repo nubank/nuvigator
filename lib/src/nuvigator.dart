@@ -32,8 +32,9 @@ class Nuvigator<T extends Router> extends Navigator {
           initialRoute: initialRoute,
         );
 
-  Nuvigator screenBuilder(ScreenContext screenContext) {
-    return withInitialArguments(screenContext.settings.arguments);
+  Nuvigator screenBuilder(BuildContext context) {
+    final settings = ModalRoute.of(context).settings;
+    return withInitialArguments(settings.arguments);
   }
 
   Nuvigator withInitialArguments(Object initialArguments) {
@@ -52,8 +53,8 @@ class Nuvigator<T extends Router> extends Navigator {
   final ScreenType screenType;
   final WrapperFn wrapperFn;
 
-  Nuvigator call(ScreenContext screenContext) {
-    return screenBuilder(screenContext);
+  Nuvigator call(BuildContext context) {
+    return screenBuilder(context);
   }
 
   static NuvigatorState<T> of<T extends Router>(BuildContext context,
@@ -180,8 +181,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       child = GlobalRouterProvider(globalRouter: widget.router, child: child);
     }
     if (widget.wrapperFn != null) {
-      child = widget.wrapperFn(
-          ScreenContext(context: context, settings: settings), child);
+      child = widget.wrapperFn(context, child);
     }
     return child;
   }

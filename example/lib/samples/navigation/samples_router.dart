@@ -27,7 +27,7 @@ class SamplesRouter extends GroupRouter {
       ];
 
   @override
-  WrapperFn get screensWrapper => (ScreenContext screenContext, Widget child) {
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
         return Provider<SamplesBloc>.value(
           value: SamplesBloc(),
           child: child,

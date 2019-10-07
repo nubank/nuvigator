@@ -26,8 +26,7 @@ class SampleTwoRouter extends SimpleRouter {
       };
 
   @override
-  WrapperFn get screensWrapper =>
-      (ScreenContext screenContext, Widget screenWidget) {
+  WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {
         return Provider<SampleTwoBloc>.value(
           value: SampleTwoBloc(),
           child: screenWidget,
@@ -44,7 +43,7 @@ final sampleTwoNuvigator = Nuvigator(
     router: SampleTwoRouter(),
     initialRoute: SampleTwoRoutes.screen_one,
     screenType: cupertinoScreenType,
-    wrapperFn: (ScreenContext screenContext, Widget child) =>
+    wrapperFn: (BuildContext context, Widget child) =>
         Provider<SampleFlowBloc>.value(
           value: SampleFlowBloc(),
           child: child,

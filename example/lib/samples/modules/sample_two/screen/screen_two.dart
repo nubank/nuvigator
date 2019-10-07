@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 class ScreenTwo extends ScreenWidget {
-  ScreenTwo(ScreenContext screenContext) : super(screenContext);
+  ScreenTwo(BuildContext context) : super(context);
 
-  static ScreenTwo builder(ScreenContext screenContext) {
-    return ScreenTwo(screenContext);
+  static ScreenTwo builder(BuildContext context) {
+    return ScreenTwo(context);
   }
 
   @override

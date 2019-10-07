@@ -2,7 +2,6 @@ library nuvigator;
 
 export 'src/global_router.dart';
 export 'src/nuvigator.dart';
-export 'src/nuvigator_screen.dart';
 export 'src/routers.dart';
 export 'src/routers/group_router.dart';
 export 'src/routers/simple_router.dart';

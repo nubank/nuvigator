@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 class ScreenOne extends ScreenWidget<Map<String, String>> {
-  ScreenOne(ScreenContext screenContext) : super(screenContext);
+  ScreenOne(BuildContext context) : super(context);
 
-  static ScreenOne builder(ScreenContext screenContext) {
-    return ScreenOne(screenContext);
+  static ScreenOne builder(BuildContext context) {
+    return ScreenOne(context);
   }
 
   @override
