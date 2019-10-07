@@ -53,7 +53,7 @@ class Nuvigator<T extends Router> extends Navigator {
   final ScreenType screenType;
   final WrapperFn wrapperFn;
 
-  Nuvigator call(BuildContext context) {
+  Nuvigator call(BuildContext context, [Widget child]) {
     return screenBuilder(context);
   }
 

@@ -13,13 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nubank',
-      builder: (context, widget) {
-        return Nuvigator(
-          screenType: cupertinoDialogScreenType,
-          router: router,
-          initialRoute: 'home',
-        );
-      },
+      builder: Nuvigator(
+        screenType: cupertinoDialogScreenType,
+        router: router,
+        initialRoute: 'home',
+      ),
     );
   }
 }
