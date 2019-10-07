@@ -37,7 +37,7 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
             onPressed: () => nuvigator.navigate(SampleOneRouter.screenTwo()),
           ),
           Hero(
-            child: FlutterLogo(),
+            child: const FlutterLogo(),
             tag: 'HERO',
           ),
         ],

@@ -24,7 +24,7 @@ class ScreenTwo extends ScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Hero(
-            child: FlutterLogo(
+            child: const FlutterLogo(
               size: 100,
             ),
             tag: 'HERO',

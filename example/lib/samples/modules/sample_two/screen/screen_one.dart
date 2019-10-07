@@ -49,7 +49,7 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
           ),
           TextField(),
           Hero(
-            child: FlutterLogo(
+            child: const FlutterLogo(
               size: 100,
             ),
             tag: 'HERO',

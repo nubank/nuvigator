@@ -44,7 +44,7 @@ class HomeScreen extends ScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Hero(
-            child: FlutterLogo(),
+            child: const FlutterLogo(),
             tag: 'HERO',
           ),
           FlatButton(
@@ -64,6 +64,7 @@ class HomeScreen extends ScreenWidget {
             onPressed: () async {
               final result = await nuvigator
                   .pushNamed('second', arguments: {'testId': 'GO FOR IT'});
+              print('RESULT $result');
             },
           ),
         ],

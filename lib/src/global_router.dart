@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/src/routers.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../nuvigator.dart';
 import 'errors.dart';
 import 'nuvigator.dart';
 import 'routers/group_router.dart';
-import 'routers.dart';
 
 typedef HandleDeepLinkFn = Future<bool> Function(
     GlobalRouter globalRouter, Uri uri,
@@ -62,7 +62,6 @@ class GlobalRouter extends GroupRouter implements AppRouter {
         return onScreenNotFound(settings).toRoute(settings);
       throw RouteNotFoundException(settings.name);
     }
-    ;
     return screen.toRoute(settings);
   }
 
