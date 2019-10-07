@@ -13,7 +13,8 @@ class Nuvigator<T extends Router> extends Navigator {
     this.screenType = materialScreenType,
     this.wrapperFn,
     this.initialArguments,
-  }) : super(
+  })  : assert(router != null),
+        super(
           observers: [HeroController(), ...observers],
           onGenerateRoute: (settings) {
             var finalSettings = settings;
@@ -32,12 +33,12 @@ class Nuvigator<T extends Router> extends Navigator {
           initialRoute: initialRoute,
         );
 
-  Nuvigator screenBuilder(BuildContext context) {
+  Nuvigator _screenBuilder(BuildContext context) {
     final settings = ModalRoute.of(context)?.settings;
-    return withInitialArguments(settings?.arguments);
+    return _withInitialArguments(settings?.arguments);
   }
 
-  Nuvigator withInitialArguments(Object initialArguments) {
+  Nuvigator _withInitialArguments(Object initialArguments) {
     return Nuvigator(
       initialRoute: initialRoute,
       router: router,
@@ -54,7 +55,7 @@ class Nuvigator<T extends Router> extends Navigator {
   final WrapperFn wrapperFn;
 
   Nuvigator call(BuildContext context, [Widget child]) {
-    return screenBuilder(context);
+    return _screenBuilder(context);
   }
 
   static NuvigatorState<T> of<T extends Router>(BuildContext context,
