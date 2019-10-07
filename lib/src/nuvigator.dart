@@ -33,8 +33,8 @@ class Nuvigator<T extends Router> extends Navigator {
         );
 
   Nuvigator screenBuilder(BuildContext context) {
-    final settings = ModalRoute.of(context).settings;
-    return withInitialArguments(settings.arguments);
+    final settings = ModalRoute.of(context)?.settings;
+    return withInitialArguments(settings?.arguments);
   }
 
   Nuvigator withInitialArguments(Object initialArguments) {
@@ -166,19 +166,34 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     return pushNamed<R>(screenRoute.routeName, arguments: screenRoute.params);
   }
 
+  Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
+    return globalRouter.openDeepLink<R>(deepLink, arguments, false);
+  }
+
   NuvigatorState get parent => Nuvigator.of(context);
 
   bool get isNested => parent != null;
 
   bool get isRoot => this == _rootNuvigator;
 
+  GlobalRouter get globalRouter {
+    if (isRoot && widget.router is GlobalRouter) {
+      return widget.router;
+    }
+    return _rootNuvigator.globalRouter;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final settings = ModalRoute.of(context)?.settings;
-    print(settings);
     Widget child = super.build(context);
+    final existingGlobalRouter = GlobalRouter.of(context);
     if (router is GlobalRouter) {
+      if (existingGlobalRouter != null)
+        throw Exception('There is already a GlobalRouter in the widget tree!');
       child = GlobalRouterProvider(globalRouter: widget.router, child: child);
+    } else {
+      if (existingGlobalRouter == null && isRoot)
+        throw Exception('The root Nuvigator should have a GlobalRouter!');
     }
     if (widget.wrapperFn != null) {
       child = widget.wrapperFn(context, child);

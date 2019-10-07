@@ -8,8 +8,8 @@ Routing and Navigation package.
 
 This package aims to provide a powerful routing abstraction over Flutter
 Navigators. Using a most declarative and concise approach you will be able
-to model complex navigation flows without needing to worry about several
-complex aspects and tricky behaviours that the framework will handle for you.
+to model complex navigation flows without needing to worry about several tricky 
+behaviours that the framework will handle for you.
 
 Below you will find a description of the main components of this frameworks,
 and how you can use they in your project.
@@ -28,7 +28,7 @@ class MyRouter extends SimpleRouter {
   };
 }
 
-final router = MyGlobalRouter(routers: [MyRouter()]);
+final router = GlobalRouter(routers: [MyRouter()]);
 
 Widget build(BuildContext context) {
   return MaterialApp(

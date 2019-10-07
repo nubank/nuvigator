@@ -49,7 +49,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     // ignore: avoid_as
     return (context.inheritFromWidgetOfExactType(GlobalRouterProvider)
             as GlobalRouterProvider)
-        .globalRouter;
+        ?.globalRouter;
   }
 
   NuvigatorState get nuvigator => nuvigatorKey.currentState;
