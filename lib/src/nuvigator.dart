@@ -9,11 +9,12 @@ class Nuvigator<T extends Router> extends Navigator {
     @required this.router,
     String initialRoute = '/',
     Key key,
+    List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
     this.wrapperFn,
     this.initialArguments,
   }) : super(
-          observers: [HeroController()],
+          observers: [HeroController(), ...observers],
           onGenerateRoute: (settings) {
             var finalSettings = settings;
             if (settings.isInitialRoute &&
@@ -152,6 +153,12 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
   bool rootPop<T extends Object>([T result]) => _rootNuvigator.pop<T>(result);
+
+  void closeFlow<T extends Object>([T result]) {
+    if (isNested) {
+      parentPop(result);
+    }
+  }
 
   /// R is the return value
   Future<R> navigate<R, T>(ScreenRoute<T, R> screenRoute) {
