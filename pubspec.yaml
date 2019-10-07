@@ -1,6 +1,6 @@
 name: nuvigator
 description: Routing and Navigation package.
-version: 0.0.3
+version: 0.1.0
 author:
 homepage:
 
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   path_to_regexp: ^0.2.1
-
+  
 dev_dependencies:
   mockito: ^4.1.0
   flutter_test:
