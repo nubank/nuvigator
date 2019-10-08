@@ -31,7 +31,6 @@ abstract class GroupRouter extends SimpleRouter {
     if (prefixRegex.hasMatch(deepLink)) {
       final screen = await super.getRouteEntryForDeepLink(deepLink);
       if (screen != null) return screen;
-
       for (final Router router in routers) {
         final newUrl = deepLink.replaceFirst(thisDeepLinkPrefix, '');
         final subRouterEntry = await router.getRouteEntryForDeepLink(newUrl);

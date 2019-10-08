@@ -84,9 +84,11 @@ class GlobalRouter extends GroupRouter {
         .pushNamed<T>(routeEntry.routeName, arguments: routeEntry.arguments);
   }
 
-  // We need this special handling while interacting with native
+  // We need this special handling while interacting with native for having
+  // right animation and closing the Flutter Activity correctly when we reach
+  // the end of our main Route stack.
   Route _buildNativeRoute(RouteEntry routeEntry) {
-    final routeSettings = routeEntry.settings.copyWith(isInitialRoute: true);
+    final routeSettings = routeEntry.settings.copyWith(isInitialRoute: false);
     final route = routeEntry.screen.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
