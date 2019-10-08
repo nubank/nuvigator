@@ -22,7 +22,10 @@ class Nuvigator<T extends Router> extends Navigator {
                 settings.name == initialRoute &&
                 settings.arguments == null &&
                 initialArguments != null) {
-              finalSettings = settings.copyWith(arguments: initialArguments);
+              finalSettings = settings.copyWith(
+                arguments: initialArguments,
+                isInitialRoute: false,
+              );
             }
             return router
                 .getScreen(routeName: finalSettings.name)
