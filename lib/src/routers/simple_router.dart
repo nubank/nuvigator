@@ -27,19 +27,22 @@ abstract class SimpleRouter implements Router {
   }
 
   @override
-  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) async {
+  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) async {
     final deepLinkPrefix = await getDeepLinkPrefix();
     for (var screenEntry in screensMap.entries) {
+      final screen = screenEntry.value;
       final currentDeepLink = screenEntry.value.deepLink;
       if (currentDeepLink == null) break;
       final fullTemplate = deepLinkPrefix + currentDeepLink;
       final regExp = pathToRegExp(fullTemplate);
-      if (regExp.hasMatch(url))
-        return DeepLinkFlow(
-          path: url,
+      if (regExp.hasMatch(deepLink)) {
+        return RouteEntry(
+          deepLink: deepLink,
           template: fullTemplate,
+          screen: screen,
           routeName: screenEntry.key,
         );
+      }
     }
     return null;
   }

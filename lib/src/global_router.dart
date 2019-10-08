@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/src/routers.dart';
-import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../nuvigator.dart';
 import 'errors.dart';
@@ -20,17 +19,17 @@ class GlobalRouterProvider extends InheritedWidget {
   final GlobalRouter globalRouter;
 
   @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return false;
+  bool updateShouldNotify(GlobalRouterProvider oldWidget) {
+    return oldWidget.globalRouter != globalRouter;
   }
 }
 
-class GlobalRouter extends GroupRouter implements AppRouter {
+class GlobalRouter extends GroupRouter {
   GlobalRouter({
     @required List<Router> routers,
     GlobalKey<NuvigatorState> nuvigatorKey,
     this.onScreenNotFound,
-    this.deepLinkNotFound,
+    this.onDeepLinkNotFound,
   }) {
     this.routers = routers;
     this.nuvigatorKey = nuvigatorKey ?? defaultKey;
@@ -39,7 +38,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
   static final defaultKey =
       GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
 
-  final HandleDeepLinkFn deepLinkNotFound;
+  final HandleDeepLinkFn onDeepLinkNotFound;
 
   GlobalKey<NuvigatorState> nuvigatorKey;
 
@@ -65,45 +64,34 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     return screen.toRoute(settings);
   }
 
-  @override
   Future<bool> canOpenDeepLink(Uri url) async {
-    return (await getDeepLinkFlowForUrl(url.host + url.path)) != null;
+    return (await getRouteEntryForDeepLink(url.host + url.path)) != null;
   }
 
-  @override
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
-    final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
-    if (deepLinkFlow == null) {
-      if (deepLinkNotFound != null)
-        await deepLinkNotFound(this, url, isFromNative, arguments);
+    final routeEntry = await getRouteEntryForDeepLink(url.host + url.path);
+    if (routeEntry == null) {
+      if (onDeepLinkNotFound != null)
+        await onDeepLinkNotFound(this, url, isFromNative, arguments);
       return null;
     }
-    final args = _extractParameters(url, deepLinkFlow);
     if (isFromNative) {
-      final route = _buildNativeRoute(args, deepLinkFlow.routeName);
+      final route = _buildNativeRoute(routeEntry);
       return nuvigatorKey.currentState.push<T>(route);
     }
     return nuvigatorKey.currentState
-        .pushNamed<T>(deepLinkFlow.routeName, arguments: args);
+        .pushNamed<T>(routeEntry.routeName, arguments: routeEntry.arguments);
   }
 
   // We need this special handling while interacting with native
-  Route _buildNativeRoute(Map<String, dynamic> args, String routeName) {
-    final routeSettings =
-        RouteSettings(arguments: args, name: routeName, isInitialRoute: true);
-    final route = getRoute(routeSettings);
+  Route _buildNativeRoute(RouteEntry routeEntry) {
+    final routeSettings = routeEntry.settings.copyWith(isInitialRoute: true);
+    final route = routeEntry.screen.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
       await SystemNavigator.pop();
     });
     return route;
-  }
-
-  Map<String, dynamic> _extractParameters(Uri url, DeepLinkFlow deepLinkFlow) {
-    final parameters = <String>[];
-    final regExp = pathToRegExp(deepLinkFlow.template, parameters: parameters);
-    final match = regExp.matchAsPrefix(url.host + url.path);
-    return extract(parameters, match)..addAll(url.queryParameters);
   }
 }

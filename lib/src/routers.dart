@@ -1,27 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../nuvigator.dart';
 import 'screen.dart';
 
-class DeepLinkFlow {
-  DeepLinkFlow({this.template, this.path, this.routeName});
+class RouteEntry {
+  RouteEntry({this.deepLink, this.template, this.routeName, this.screen});
 
+  final String deepLink;
   final String template;
-  final String path;
+  final Screen screen;
   final String routeName;
 
+  Map<String, String> get arguments =>
+      _extractParameters(Uri.parse(deepLink), template);
+
+  RouteSettings get settings =>
+      RouteSettings(arguments: arguments, name: routeName);
+
+  Map<String, String> _extractParameters(Uri url, String deepLinkTemplate) {
+    final parameters = <String>[];
+    final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
+    final match = regExp.matchAsPrefix(url.host + url.path);
+    return extract(parameters, match)..addAll(url.queryParameters);
+  }
+
   @override
-  int get hashCode => hashList([
-        template.hashCode,
-        path.hashCode,
-        routeName.hashCode,
-      ]);
+  String toString() {
+    return '$deepLink ($routeName - $template)';
+  }
+
+  @override
+  int get hashCode => hashList([template, deepLink, routeName]);
 
   @override
   bool operator ==(dynamic other) {
-    if (other is DeepLinkFlow) {
-      return other.routeName == routeName &&
-          other.path == path &&
+    if (other is RouteEntry) {
+      return other.deepLink == deepLink &&
+          other.template == template &&
           other.routeName == routeName;
     }
     return false;
@@ -31,20 +47,9 @@ class DeepLinkFlow {
 /// Base Router class. Provide a basic interface to communicate with other Route
 /// components.
 abstract class Router {
-  Screen getScreen({String routeName});
+  Screen getScreen({@required String routeName});
 
-  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) => null;
-
-  Route getRoute(RouteSettings settings);
-}
-
-/// Application Router class. Provides a basic interface and helper to handle
-/// deepLinks and routes.
-abstract class AppRouter {
-  Future<bool> canOpenDeepLink(Uri url);
-
-  Future<T> openDeepLink<T>(Uri url,
-      [dynamic arguments, bool isFromNative = false]);
+  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) => null;
 
   Route getRoute(RouteSettings settings);
 }

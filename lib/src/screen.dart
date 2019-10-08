@@ -67,6 +67,22 @@ class Screen<T extends Object> {
     );
   }
 
+  Screen<T> copyWith({
+    WidgetBuilder builder,
+    ScreenType screenType,
+    WrapperFn wrapperFn,
+    String debugKey,
+    String deepLink,
+  }) {
+    return Screen<T>(
+      builder: builder ?? this.builder,
+      screenType: screenType ?? this.screenType,
+      wrapperFn: wrapperFn ?? this.wrapperFn,
+      debugKey: debugKey ?? this.debugKey,
+      deepLink: deepLink ?? this.deepLink,
+    );
+  }
+
   Route<T> toRoute(RouteSettings settings) {
     return _toRouteType(
       (BuildContext context) => _buildScreen(context, settings),

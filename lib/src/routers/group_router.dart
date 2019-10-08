@@ -25,22 +25,23 @@ abstract class GroupRouter extends SimpleRouter {
   }
 
   @override
-  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) async {
+  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) async {
     final thisDeepLinkPrefix = await getDeepLinkPrefix();
     final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
-    if (prefixRegex.hasMatch(url)) {
-      final deepLinkFlow = await super.getDeepLinkFlowForUrl(url);
-      if (deepLinkFlow != null) return deepLinkFlow;
+    if (prefixRegex.hasMatch(deepLink)) {
+      final screen = await super.getRouteEntryForDeepLink(deepLink);
+      if (screen != null) return screen;
 
       for (final Router router in routers) {
-        final newUrl = url.replaceFirst(thisDeepLinkPrefix, '');
-        final subDeepLinkFlow = await router.getDeepLinkFlowForUrl(newUrl);
-        if (subDeepLinkFlow != null) {
-          final fullTemplate = thisDeepLinkPrefix + subDeepLinkFlow.template;
-          return DeepLinkFlow(
+        final newUrl = deepLink.replaceFirst(thisDeepLinkPrefix, '');
+        final subRouterEntry = await router.getRouteEntryForDeepLink(newUrl);
+        if (subRouterEntry != null) {
+          final fullTemplate = thisDeepLinkPrefix + subRouterEntry.template;
+          return RouteEntry(
+            screen: subRouterEntry.screen,
             template: fullTemplate,
-            path: url,
-            routeName: subDeepLinkFlow.routeName,
+            deepLink: deepLink,
+            routeName: subRouterEntry.routeName,
           );
         }
       }

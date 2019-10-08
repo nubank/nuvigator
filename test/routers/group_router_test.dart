@@ -23,10 +23,10 @@ void main() {
   group('getDeepLinkFlow', () {
     test('priority is given to declared deeplinks on this router', () async {
       expect(
-        await testGroupRouter.getDeepLinkFlowForUrl('group/route/test'),
-        DeepLinkFlow(
+        await testGroupRouter.getRouteEntryForDeepLink('group/route/test'),
+        RouteEntry(
           routeName: 'firstScreen',
-          path: 'group/route/test',
+          deepLink: 'group/route/test',
           template: 'group/route/test',
         ),
       );
@@ -34,17 +34,17 @@ void main() {
 
     test('when not found, search in sub-routers appending prefix', () async {
       expect(
-        await testGroupRouter.getDeepLinkFlowForUrl('group/test/123/params'),
-        DeepLinkFlow(
+        await testGroupRouter.getRouteEntryForDeepLink('group/test/123/params'),
+        RouteEntry(
           routeName: 'secondScreen',
-          path: 'group/test/123/params',
+          deepLink: 'group/test/123/params',
           template: 'group/test/:id/params',
         ),
       );
     });
 
     test('return a null Future for not found deeplink', () async {
-      expect(await testRouter.getDeepLinkFlowForUrl('not/found'), null);
+      expect(await testRouter.getRouteEntryForDeepLink('not/found'), null);
     });
   });
 }

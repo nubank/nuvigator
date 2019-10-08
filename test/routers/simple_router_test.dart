@@ -33,20 +33,20 @@ void main() {
   group('getDeepLinkFlow', () {
     test('find route name for a simple deeplink', () async {
       expect(
-          await testRouter.getDeepLinkFlowForUrl('test/simple'),
-          DeepLinkFlow(
+          await testRouter.getRouteEntryForDeepLink('test/simple'),
+          RouteEntry(
             routeName: 'firstScreen',
-            path: 'test/simple',
+            deepLink: 'test/simple',
             template: 'test/simple',
           ));
     });
 
     test('find route name for a deeplink with path params', () async {
       expect(
-        await testRouter.getDeepLinkFlowForUrl('test/123/params'),
-        DeepLinkFlow(
+        await testRouter.getRouteEntryForDeepLink('test/123/params'),
+        RouteEntry(
           routeName: 'secondScreen',
-          path: 'test/123/params',
+          deepLink: 'test/123/params',
           template: 'test/:id/params',
         ),
       );
@@ -54,17 +54,18 @@ void main() {
 
     test('using prefix, finds a route name', () async {
       expect(
-        await testRouterWPrefix.getDeepLinkFlowForUrl('prefix/test/123/params'),
-        DeepLinkFlow(
+        await testRouterWPrefix
+            .getRouteEntryForDeepLink('prefix/test/123/params'),
+        RouteEntry(
           routeName: 'secondScreen',
-          path: 'prefix/test/123/params',
+          deepLink: 'prefix/test/123/params',
           template: 'prefix/test/:id/params',
         ),
       );
     });
 
     test('return a null Future for not found deeplink', () async {
-      expect(await testRouter.getDeepLinkFlowForUrl('not/found'), null);
+      expect(await testRouter.getRouteEntryForDeepLink('not/found'), null);
     });
   });
 }
