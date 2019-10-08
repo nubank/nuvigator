@@ -45,10 +45,9 @@ class GlobalRouter extends GroupRouter {
   final Screen Function(RouteSettings settings) onScreenNotFound;
 
   static GlobalRouter of(BuildContext context) {
-    // ignore: avoid_as
-    return (context.inheritFromWidgetOfExactType(GlobalRouterProvider)
-            as GlobalRouterProvider)
-        ?.globalRouter;
+    final GlobalRouterProvider globalRouterProvider =
+        context.inheritFromWidgetOfExactType(GlobalRouterProvider);
+    return globalRouterProvider?.globalRouter;
   }
 
   NuvigatorState get nuvigator => nuvigatorKey.currentState;
