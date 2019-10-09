@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.0.4
+- Fix transition animation when coming from native
+- Fix transition animation when popping from flow
+
 ## 0.0.3
 - `FlowRouter` type now extends `Object`
 - The `arguments` of push methods was changed from `Map` to `Object`
