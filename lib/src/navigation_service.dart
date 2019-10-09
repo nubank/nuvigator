@@ -62,19 +62,14 @@ class NavigationService {
   }
 
   bool pop<T extends Object>([T result]) {
+    bool isPopped = false;
     if (_navigator.canPop()) {
-      final isPopped = _navigator.pop<T>(result);
-
-      if (!isPopped && _navigator != _rootNavigator) {
-        return parentPop<T>(result);
-      }
-      return isPopped;
-    } else {
-      if (_navigator != _rootNavigator) {
-        return parentPop<T>(result);
-      }
+      isPopped = _navigator.pop<T>(result);
     }
-    return false;
+    if (!isPopped && parent != null && _navigator != _rootNavigator) {
+      return parentPop<T>(result);
+    }
+    return isPopped;
   }
 
   void popUntil(RoutePredicate predicate) {
