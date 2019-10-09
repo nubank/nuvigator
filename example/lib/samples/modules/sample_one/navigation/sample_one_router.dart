@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import '../screen/screen_one.dart';
@@ -12,12 +13,12 @@ class SampleOneRouter extends SimpleRouter {
   String get deepLinkPrefix => '/sampleOne/';
 
   @override
-  Map<String, Screen> get screensMap => {
-        SampleOneRoutes.screen_one: const Screen(
+  Map<String, Screen> get screensMap => const {
+        SampleOneRoutes.screen_one: Screen(
           builder: ScreenOne.builder,
           deepLink: 'screenOne/:testId',
         ),
-        SampleOneRoutes.screen_two: const Screen<int>(
+        SampleOneRoutes.screen_two: Screen<int>(
           builder: ScreenTwo.builder,
         ),
       };

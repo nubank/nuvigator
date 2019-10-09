@@ -75,8 +75,8 @@ class Nuvigator<T extends Router> extends Navigator {
 }
 
 class NuvigatorState<T extends Router> extends NavigatorState {
-  NuvigatorState get _rootNuvigator =>
-      Nuvigator.of(context, rootNuvigator: true) ?? this;
+  NuvigatorState<GlobalRouter> get _rootNuvigator =>
+      Nuvigator.of<GlobalRouter>(context, rootNuvigator: true) ?? this;
 
   @override
   Nuvigator get widget => super.widget;
@@ -165,7 +165,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     }
   }
 
-  /// R is the return value
+  /// [R] is the return value
   Future<R> navigate<R, T>(ScreenRoute<T, R> screenRoute) {
     return pushNamed<R>(screenRoute.routeName, arguments: screenRoute.params);
   }
@@ -180,12 +180,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   bool get isRoot => this == _rootNuvigator;
 
-  GlobalRouter get globalRouter {
-    if (isRoot && widget.router is GlobalRouter) {
-      return widget.router;
-    }
-    return _rootNuvigator.globalRouter;
-  }
+  GlobalRouter get globalRouter => _rootNuvigator.router;
 
   @override
   void didChangeDependencies() {
