@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/src/routers.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
 import 'errors.dart';
-import 'routers.dart';
 import 'routers/group_router.dart';
 
 class GlobalRouter extends GroupRouter implements AppRouter {
@@ -39,8 +39,7 @@ class GlobalRouter extends GroupRouter implements AppRouter {
 
   // We need this special handling while interacting with native
   Route _buildNativeRoute(Map<String, dynamic> args, String routeName) {
-    final routeSettings =
-        RouteSettings(arguments: args, name: routeName, isInitialRoute: true);
+    final routeSettings = RouteSettings(arguments: args, name: routeName);
     final route = getRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
