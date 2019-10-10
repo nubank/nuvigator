@@ -2,7 +2,7 @@ import 'package:example/samples/modules/sample_one/navigation/sample_one_router.
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class ScreenOne extends ScreenWidget<Map<String, String>> {
+class ScreenOne extends ScreenWidget<PaymentResumeArgs> {
   ScreenOne(BuildContext context) : super(context);
 
   static ScreenOne builder(BuildContext context) {
@@ -29,7 +29,7 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
-            'testId = ${args['testId']}',
+            'testId = ${args.testId}',
             textAlign: TextAlign.center,
           ),
           FlatButton(

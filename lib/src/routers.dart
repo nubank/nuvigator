@@ -51,5 +51,7 @@ abstract class Router {
 
   Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) => null;
 
-  Route getRoute(RouteSettings settings);
+  Route getRoute(RouteSettings settings) {
+    return getScreen(routeName: settings.name).toRoute(settings);
+  }
 }

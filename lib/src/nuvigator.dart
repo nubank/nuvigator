@@ -146,10 +146,7 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     if (canPop()) {
       isPopped = super.pop<T>(result);
     }
-    if (!isPopped &&
-        _rootNuvigator != null &&
-        this != _rootNuvigator &&
-        parent != null) {
+    if (!isPopped && this != _rootNuvigator && parent != null) {
       return parentPop<T>(result);
     }
     return isPopped;

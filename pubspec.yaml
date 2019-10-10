@@ -8,12 +8,18 @@ environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
+  build_config: ^0.4.0
+  build: ^1.1.4
+  code_builder: ^3.2.0
+  source_gen: ^0.9.4+2
   flutter:
     sdk: flutter
   path_to_regexp: ^0.2.1
-  
+
 dev_dependencies:
   mockito: ^4.1.0
+  build_runner: ^1.5.0
+  build_test: ^0.10.7+3
   flutter_test:
     sdk: flutter
 

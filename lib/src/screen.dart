@@ -45,6 +45,7 @@ class Screen<T extends Object> {
   final WrapperFn wrapperFn;
   final String debugKey;
   final String deepLink;
+//  final A Function(Map<String, String>) parseDeepLinkArgs;
 
   Screen<T> fallbackScreenType(ScreenType fallbackScreenType) {
     return Screen<T>(
