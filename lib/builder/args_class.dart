@@ -93,8 +93,6 @@ class ArgsClass {
 
   List<Class> build() {
     final className = classElement.name;
-    final lowerClassName = lowerCamelCase(classElement.name);
-
     final argsClasses = <Class>[];
 
     for (var field in classElement.fields) {
@@ -110,10 +108,6 @@ class ArgsClass {
       final constructorParameters = <Parameter>[];
       final argsFields = <Field>[];
       final argsParserBuffer = StringBuffer('');
-      final argsClassName = '${capitalize(field.name)}Args';
-
-      final parametersConstructor = <Parameter>[];
-      final fieldsArgs = <Field>[];
 
       for (final argEntry in args.entries) {
         final varName = argEntry.key.toStringValue();

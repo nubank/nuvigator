@@ -5,6 +5,7 @@ import 'package:source_gen/source_gen.dart';
 import '../builder.dart';
 
 const _nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
+const _nuSobRouterChecker = TypeChecker.fromRuntime(NuSubRouter);
 
 class NavigationClass {
   NavigationClass(this.classElement);
@@ -30,6 +31,19 @@ class NavigationClass {
         ..name = 'nuvigator'
         ..type = refer('NuvigatorState')
         ..modifier = FieldModifier.final$,
+    );
+  }
+
+  Method _navigationMethod(String typeName) {
+    return Method(
+      (f) => f
+        ..name = '${lowerCamelCase(typeName)}Navigation'
+        ..returns = refer('${typeName}Navigation')
+        ..type = MethodType.getter
+        ..lambda = true
+        ..body = Code(
+          '${typeName}Navigation(nuvigator)',
+        ),
     );
   }
 
@@ -105,33 +119,32 @@ class NavigationClass {
 
   Class build() {
     final className = classElement.name;
-    final lowerClassName = lowerCamelCase(classElement.name);
-
     final methods = <Method>[];
 
     for (var field in classElement.fields) {
       final nuRouteFieldAnnotation =
           _nuRouteChecker.firstAnnotationOfExact(field);
+      final nuSubRouterAnnotation =
+          _nuSobRouterChecker.firstAnnotationOfExact(field);
 
-      if (nuRouteFieldAnnotation == null) continue;
+      if (nuRouteFieldAnnotation != null) {
+        final args = nuRouteFieldAnnotation?.getField('args')?.toMapValue();
+        final subRouter =
+            nuRouteFieldAnnotation?.getField('subRouter')?.toTypeValue();
+        final screenReturn = getGenericTypes(field.type).toString();
 
-      final args = nuRouteFieldAnnotation?.getField('args')?.toMapValue();
-      final subRouter =
-          nuRouteFieldAnnotation?.getField('subRouter')?.toTypeValue();
-      final screenReturn = getGenericTypes(field.type).toString();
-
-      print(className);
-      print(field.name);
-      print(screenReturn);
-      print(args != null);
-
-      methods.add(
-        _pushMethod(className, field.name, screenReturn, args != null),
-      );
-
-      if (subRouter != null) {
         methods.add(
-          _subRouteMethod(subRouter.name),
+          _pushMethod(className, field.name, screenReturn, args != null),
+        );
+
+        if (subRouter != null) {
+          methods.add(
+            _subRouteMethod(subRouter.name),
+          );
+        }
+      } else if (nuSubRouterAnnotation != null) {
+        methods.add(
+          _navigationMethod(field.type.name),
         );
       }
     }

@@ -6,8 +6,6 @@ import '../builder.dart';
 
 const _nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
 
-String lowerCamelCase(String s) => s[0].toLowerCase() + s.substring(1);
-
 class RoutesClass {
   RoutesClass(this.classElement);
 
@@ -33,7 +31,6 @@ class RoutesClass {
 
   Class build() {
     final className = classElement.name;
-    final lowerClassName = lowerCamelCase(classElement.name);
 
     final fields = classElement.fields
         .where((field) => _nuRouteChecker.firstAnnotationOfExact(field) != null)
