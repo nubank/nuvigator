@@ -10,17 +10,15 @@ class SimulationRouterRoutes {
   static const test = 'SimulationRouter/test';
 }
 
-class TestArgs {
-  TestArgs({
-    @required this.aaa,
-  });
+class SimulationRouterNavigation {
+  SimulationRouterNavigation(this.nuvigator);
 
-  final String aaa;
+  final NuvigatorState nuvigator;
 
-  static TestArgs parse(Map<String, String> args) {
-    return TestArgs(
-      aaa: args['aaa'],
-    );
+  static SimulationRouterNavigation of(BuildContext context) =>
+      SimulationRouterNavigation(Nuvigator.of(context));
+  Future<Object> test(TestArgs arguments) {
+    return nuvigator.pushNamed<Object>(SimulationRouterRoutes.test);
   }
 }
 
@@ -30,77 +28,40 @@ Map<String, Screen> simulationRouter$getScreensMap(SimulationRouter router) {
   };
 }
 
-List<Router> simulationRouter$getSubRoutersList(SimulationRouter router) {
-  return [];
-}
+class TestArgs {
+  TestArgs({@required this.aaa});
 
-class SimulationRouterNavigation {
-  SimulationRouterNavigation(this.nuvigator);
+  final String aaa;
 
-  static SimulationRouterNavigation of(BuildContext context) =>
-      SimulationRouterNavigation(Nuvigator.of(context));
+  static TestArgs parse(Map<String, String> args) {
+    return TestArgs(
+      aaa: args['aaa'],
+    );
+  }
 
-  final NuvigatorState nuvigator;
-
-  Future<Object> test(TestArgs arguments) {
-    return nuvigator.pushNamed<Object>(SimulationRouterRoutes.test);
+  static TestArgs of(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings?.arguments;
+    if (args is TestArgs) return args;
+    if (args is Map<String, String>) return parse(args);
+    return null;
   }
 }
 
 class LendingRouterRoutes {
   static const paymentResume = 'LendingRouter/paymentResume';
+
   static const paymentSucceeded = 'LendingRouter/paymentSucceeded';
+
   static const paymentSimulations = 'LendingRouter/paymentSimulations';
-}
-
-class PaymentResumeArgs {
-  PaymentResumeArgs({
-    @required this.testId,
-  });
-
-  final String testId;
-
-  static PaymentResumeArgs parse(Map<String, String> args) {
-    return PaymentResumeArgs(
-      testId: args['testId'],
-    );
-  }
-}
-
-class PaymentSucceededArgs {
-  PaymentSucceededArgs({
-    @required this.myParams,
-  });
-
-  final String myParams;
-
-  static PaymentSucceededArgs parse(Map<String, String> args) {
-    return PaymentSucceededArgs(
-      myParams: args['myParams'],
-    );
-  }
-}
-
-Map<String, Screen> lendingRouter$getScreensMap(LendingRouter router) {
-  return {
-    LendingRouterRoutes.paymentResume: router.paymentResume,
-    LendingRouterRoutes.paymentSucceeded: router.paymentSucceeded,
-    LendingRouterRoutes.paymentSimulations: router.paymentSimulations,
-  };
-}
-
-List<Router> lendingRouter$getSubRoutersList(LendingRouter router) {
-  return [];
 }
 
 class LendingRouterNavigation {
   LendingRouterNavigation(this.nuvigator);
 
-  static LendingRouterNavigation of(BuildContext context) =>
-      LendingRouterNavigation(Nuvigator.of(context));
-
   final NuvigatorState nuvigator;
 
+  static LendingRouterNavigation of(BuildContext context) =>
+      LendingRouterNavigation(Nuvigator.of(context));
   Future<Object> paymentResume(PaymentResumeArgs arguments) {
     return nuvigator.pushNamed<Object>(LendingRouterRoutes.paymentResume);
   }
@@ -117,33 +78,70 @@ class LendingRouterNavigation {
       SimulationRouterNavigation(nuvigator);
 }
 
+Map<String, Screen> lendingRouter$getScreensMap(LendingRouter router) {
+  return {
+    LendingRouterRoutes.paymentResume: router.paymentResume,
+    LendingRouterRoutes.paymentSucceeded: router.paymentSucceeded,
+    LendingRouterRoutes.paymentSimulations: router.paymentSimulations,
+  };
+}
+
+class PaymentResumeArgs {
+  PaymentResumeArgs({@required this.testId});
+
+  final String testId;
+
+  static PaymentResumeArgs parse(Map<String, String> args) {
+    return PaymentResumeArgs(
+      testId: args['testId'],
+    );
+  }
+
+  static PaymentResumeArgs of(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings?.arguments;
+    if (args is PaymentResumeArgs) return args;
+    if (args is Map<String, String>) return parse(args);
+    return null;
+  }
+}
+
+class PaymentSucceededArgs {
+  PaymentSucceededArgs({@required this.myParams});
+
+  final String myParams;
+
+  static PaymentSucceededArgs parse(Map<String, String> args) {
+    return PaymentSucceededArgs(
+      myParams: args['myParams'],
+    );
+  }
+
+  static PaymentSucceededArgs of(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings?.arguments;
+    if (args is PaymentSucceededArgs) return args;
+    if (args is Map<String, String>) return parse(args);
+    return null;
+  }
+}
+
 class NuAppRouterRoutes {
   static const mgmNudge = 'NuAppRouter/mgmNudge';
+}
+
+class NuAppRouterNavigation {
+  NuAppRouterNavigation(this.nuvigator);
+
+  final NuvigatorState nuvigator;
+
+  static NuAppRouterNavigation of(BuildContext context) =>
+      NuAppRouterNavigation(Nuvigator.of(context));
+  Future<Object> mgmNudge() {
+    return nuvigator.pushNamed<Object>(NuAppRouterRoutes.mgmNudge);
+  }
 }
 
 Map<String, Screen> nuAppRouter$getScreensMap(NuAppRouter router) {
   return {
     NuAppRouterRoutes.mgmNudge: router.mgmNudge,
   };
-}
-
-List<Router> nuAppRouter$getSubRoutersList(NuAppRouter router) {
-  return [
-    router.lendingRouter,
-  ];
-}
-
-class NuAppRouterNavigation {
-  NuAppRouterNavigation(this.nuvigator);
-
-  static NuAppRouterNavigation of(BuildContext context) =>
-      NuAppRouterNavigation(Nuvigator.of(context));
-
-  final NuvigatorState nuvigator;
-
-  LendingRouterNavigation get lendingRouterNavigation =>
-      LendingRouterNavigation(nuvigator);
-  Future<Object> mgmNudge() {
-    return nuvigator.pushNamed<Object>(NuAppRouterRoutes.mgmNudge);
-  }
 }
