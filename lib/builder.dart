@@ -228,6 +228,26 @@ class NuvigationGenerator extends GeneratorForAnnotation<NuRouter> {
                     ..body = Code(
                         'return $argsClassName(${argsParserBuffer.toString()});'),
                 ),
+              )
+              ..methods.add(
+                Method(
+                  (m) => m
+                    ..name = 'of'
+                    ..static = true
+                    ..returns = refer(argsClassName)
+                    ..requiredParameters.add(
+                      Parameter(
+                        (p) => p
+                          ..name = 'context'
+                          ..type = refer('BuildContext'),
+                      ),
+                    )
+                    ..body = Code(
+                        'final args = ModalRoute.of(context)?.settings?.arguments;'
+                        'if (args is $argsClassName) return args;'
+                        'if (args is Map<String, String>) return parse(args);'
+                        'return null;'),
+                ),
               ),
           );
 
@@ -300,9 +320,7 @@ class NuvigationGenerator extends GeneratorForAnnotation<NuRouter> {
           screensMapMethod(classElement, screensMapBuffer.toString()),
           ...listSpecs
         ]));
-    final libCode = _dartfmt.format('${lib.accept(DartEmitter())}');
-    print(libCode);
-    return libCode;
+    return _dartfmt.format('${lib.accept(DartEmitter())}');
   }
 }
 
