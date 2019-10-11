@@ -22,12 +22,6 @@ class SimulationRouterNavigation {
   }
 }
 
-Map<String, Screen> simulationRouter$getScreensMap(SimulationRouter router) {
-  return {
-    SimulationRouterRoutes.test: router.test,
-  };
-}
-
 class TestArgs {
   TestArgs({@required this.aaa});
 
@@ -46,6 +40,14 @@ class TestArgs {
     return null;
   }
 }
+
+Map<String, Screen> simulationRouter$getScreensMap(SimulationRouter router) {
+  return {
+    SimulationRouterRoutes.test: router.test,
+  };
+}
+
+List<Router> simulationRouter$getSubRoutersList(SimulationRouter router) => [];
 
 class LendingRouterRoutes {
   static const paymentResume = 'LendingRouter/paymentResume';
@@ -76,14 +78,6 @@ class LendingRouterNavigation {
 
   SimulationRouterNavigation get simulationRouterNavigation =>
       SimulationRouterNavigation(nuvigator);
-}
-
-Map<String, Screen> lendingRouter$getScreensMap(LendingRouter router) {
-  return {
-    LendingRouterRoutes.paymentResume: router.paymentResume,
-    LendingRouterRoutes.paymentSucceeded: router.paymentSucceeded,
-    LendingRouterRoutes.paymentSimulations: router.paymentSimulations,
-  };
 }
 
 class PaymentResumeArgs {
@@ -124,6 +118,16 @@ class PaymentSucceededArgs {
   }
 }
 
+Map<String, Screen> lendingRouter$getScreensMap(LendingRouter router) {
+  return {
+    LendingRouterRoutes.paymentResume: router.paymentResume,
+    LendingRouterRoutes.paymentSucceeded: router.paymentSucceeded,
+    LendingRouterRoutes.paymentSimulations: router.paymentSimulations,
+  };
+}
+
+List<Router> lendingRouter$getSubRoutersList(LendingRouter router) => [];
+
 class NuAppRouterRoutes {
   static const mgmNudge = 'NuAppRouter/mgmNudge';
 }
@@ -135,6 +139,8 @@ class NuAppRouterNavigation {
 
   static NuAppRouterNavigation of(BuildContext context) =>
       NuAppRouterNavigation(Nuvigator.of(context));
+  LendingRouterNavigation get lendingRouterNavigation =>
+      LendingRouterNavigation(nuvigator);
   Future<Object> mgmNudge() {
     return nuvigator.pushNamed<Object>(NuAppRouterRoutes.mgmNudge);
   }
@@ -145,3 +151,7 @@ Map<String, Screen> nuAppRouter$getScreensMap(NuAppRouter router) {
     NuAppRouterRoutes.mgmNudge: router.mgmNudge,
   };
 }
+
+List<Router> nuAppRouter$getSubRoutersList(NuAppRouter router) => [
+      router.lendingRouter,
+    ];
