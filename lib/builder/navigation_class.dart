@@ -1,12 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:nuvigator/builder/base_builder.dart';
 
 import 'helpers.dart';
 
-class NavigationClass {
-  NavigationClass(this.classElement);
-
-  final ClassElement classElement;
+class NavigationClass extends BaseBuilder {
+  NavigationClass(ClassElement classElement) : super(classElement);
 
   Constructor _constructor() {
     return Constructor(
@@ -113,7 +112,8 @@ class NavigationClass {
     );
   }
 
-  Class build() {
+  @override
+  Spec build() {
     final className = classElement.name;
     final methods = <Method>[];
 

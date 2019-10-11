@@ -1,12 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:nuvigator/builder/base_builder.dart';
 
 import 'helpers.dart';
 
-class ArgsClass {
-  ArgsClass(this.classElement);
-
-  final ClassElement classElement;
+class ArgsClass extends BaseBuilder {
+  ArgsClass(ClassElement classElement) : super(classElement);
 
   Constructor _constructor(List<Parameter> parameters) {
     return Constructor(
@@ -88,7 +87,8 @@ class ArgsClass {
     );
   }
 
-  List<Class> build() {
+  @override
+  Spec build() {
     final argsClasses = <Class>[];
 
     for (var field in classElement.fields) {
@@ -130,6 +130,6 @@ class ArgsClass {
       );
     }
 
-    return argsClasses;
+    return Library((l) => l.body.addAll(argsClasses));
   }
 }

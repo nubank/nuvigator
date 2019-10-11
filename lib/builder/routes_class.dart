@@ -1,12 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:nuvigator/builder/base_builder.dart';
 
 import 'helpers.dart';
 
-class RoutesClass {
-  RoutesClass(this.classElement);
-
-  final ClassElement classElement;
+class RoutesClass extends BaseBuilder {
+  RoutesClass(ClassElement classElement) : super(classElement);
 
   Class _generateRoutesClass(String className, List<Field> fields) {
     return Class(
@@ -26,7 +25,8 @@ class RoutesClass {
     );
   }
 
-  Class build() {
+  @override
+  Spec build() {
     final className = classElement.name;
 
     final fields = classElement.fields

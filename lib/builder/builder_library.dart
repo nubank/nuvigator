@@ -1,15 +1,14 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:nuvigator/builder/base_builder.dart';
 import 'package:nuvigator/builder/routes_class.dart';
 
 import 'args_class.dart';
 import 'helpers.dart';
 import 'navigation_class.dart';
 
-class BuilderLibrary {
-  BuilderLibrary(this.classElement);
-
-  final ClassElement classElement;
+class BuilderLibrary extends BaseBuilder {
+  BuilderLibrary(ClassElement classElement) : super(classElement);
 
   Method _screensMapMethod(String className, String code) {
     final lowerClassName = lowerCamelCase(className);
@@ -55,14 +54,15 @@ class BuilderLibrary {
       (l) => l.body.addAll([
         RoutesClass(classElement).build(),
         NavigationClass(classElement).build(),
-        ...ArgsClass(classElement).build(),
+        ArgsClass(classElement).build(),
         _screensMapMethod(className, screensMapCode),
         _subRoutersListMethod(className, subRoutersListCode),
       ]),
     );
   }
 
-  Library build() {
+  @override
+  Spec build() {
     final className = classElement.name;
 
     final screensMapBuffer = StringBuffer();
