@@ -89,7 +89,6 @@ class ArgsClass {
   }
 
   List<Class> build() {
-    final className = classElement.name;
     final argsClasses = <Class>[];
 
     for (var field in classElement.fields) {

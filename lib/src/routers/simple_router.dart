@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/builder.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
