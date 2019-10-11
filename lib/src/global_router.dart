@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/src/routers.dart';
-
 import '../nuvigator.dart';
 import 'errors.dart';
 import 'nuvigator.dart';
