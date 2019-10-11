@@ -1,14 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:nuvigator/builder/routes_class.dart';
-import 'package:source_gen/source_gen.dart';
 
-import '../builder.dart';
 import 'args_class.dart';
+import 'helpers.dart';
 import 'navigation_class.dart';
-
-const _nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
-const _nuSobRouterChecker = TypeChecker.fromRuntime(NuSubRouter);
 
 class BuilderLibrary {
   BuilderLibrary(this.classElement);
@@ -74,9 +70,9 @@ class BuilderLibrary {
 
     for (final field in classElement.fields) {
       final nuRouteFieldAnnotation =
-          _nuRouteChecker.firstAnnotationOfExact(field);
+          nuRouteChecker.firstAnnotationOfExact(field);
       final nuSubRouterAnnotation =
-          _nuSobRouterChecker.firstAnnotationOfExact(field);
+          nuSobRouterChecker.firstAnnotationOfExact(field);
 
       if (nuRouteFieldAnnotation != null) {
         screensMapBuffer

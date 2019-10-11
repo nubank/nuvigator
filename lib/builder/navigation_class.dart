@@ -1,11 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:source_gen/source_gen.dart';
 
-import '../builder.dart';
-
-const _nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
-const _nuSobRouterChecker = TypeChecker.fromRuntime(NuSubRouter);
+import 'helpers.dart';
 
 class NavigationClass {
   NavigationClass(this.classElement);
@@ -123,9 +119,9 @@ class NavigationClass {
 
     for (var field in classElement.fields) {
       final nuRouteFieldAnnotation =
-          _nuRouteChecker.firstAnnotationOfExact(field);
+          nuRouteChecker.firstAnnotationOfExact(field);
       final nuSubRouterAnnotation =
-          _nuSobRouterChecker.firstAnnotationOfExact(field);
+          nuSobRouterChecker.firstAnnotationOfExact(field);
 
       if (nuRouteFieldAnnotation != null) {
         final args = nuRouteFieldAnnotation?.getField('args')?.toMapValue();

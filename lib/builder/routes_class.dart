@@ -1,10 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:source_gen/source_gen.dart';
 
-import '../builder.dart';
-
-const _nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
+import 'helpers.dart';
 
 class RoutesClass {
   RoutesClass(this.classElement);
@@ -33,7 +30,7 @@ class RoutesClass {
     final className = classElement.name;
 
     final fields = classElement.fields
-        .where((field) => _nuRouteChecker.firstAnnotationOfExact(field) != null)
+        .where((field) => nuRouteChecker.firstAnnotationOfExact(field) != null)
         .map((field) => _constRoutesField(field.name, className))
         .toList();
 

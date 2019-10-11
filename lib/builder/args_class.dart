@@ -1,10 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:source_gen/source_gen.dart';
 
-import '../builder.dart';
-
-const _nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
+import 'helpers.dart';
 
 class ArgsClass {
   ArgsClass(this.classElement);
@@ -97,7 +94,7 @@ class ArgsClass {
 
     for (var field in classElement.fields) {
       final nuRouteFieldAnnotation =
-          _nuRouteChecker.firstAnnotationOfExact(field);
+          nuRouteChecker.firstAnnotationOfExact(field);
 
       if (nuRouteFieldAnnotation == null) continue;
 
