@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-import 'routers.dart';
-import 'screen_route.dart';
+import 'router.dart';
 
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
@@ -24,13 +23,12 @@ class Nuvigator<T extends Router> extends Navigator {
                 initialArguments != null) {
               finalSettings = settings.copyWith(
                 arguments: initialArguments,
-                isInitialRoute: false,
               );
             }
             return router
                 .getScreen(routeName: finalSettings.name)
-                .fallbackScreenType(screenType)
-                .toRoute(finalSettings);
+                ?.fallbackScreenType(screenType)
+                ?.toRoute(finalSettings);
           },
           key: (router is GlobalRouter) ? router.nuvigatorKey : key,
           initialRoute: initialRoute,
@@ -160,11 +158,6 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     if (isNested) {
       parentPop(result);
     }
-  }
-
-  /// [R] is the return value
-  Future<R> navigate<R, T>(ScreenRoute<T, R> screenRoute) {
-    return pushNamed<R>(screenRoute.routeName, arguments: screenRoute.params);
   }
 
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {

@@ -2,7 +2,7 @@ import 'package:example/samples/modules/sample_one/navigation/sample_one_router.
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class ScreenOne extends ScreenWidget<PaymentResumeArgs> {
+class ScreenOne extends ScreenWidget {
   ScreenOne(BuildContext context) : super(context);
 
   static ScreenOne builder(BuildContext context) {
@@ -11,10 +11,6 @@ class ScreenOne extends ScreenWidget<PaymentResumeArgs> {
 
   @override
   Widget build(BuildContext context) {
-    final nuvigator = Nuvigator.of(context);
-
-    print(nuvigator.canPop());
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
@@ -29,12 +25,12 @@ class ScreenOne extends ScreenWidget<PaymentResumeArgs> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
-            'testId = ${args.testId}',
+            'testId = ${ScreenOneArgs.of(context).testId}',
             textAlign: TextAlign.center,
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () => nuvigator.navigate(SampleOneRouter.screenTwo()),
+            onPressed: () => SampleOneRouterNavigation.of(context).screenTwo(),
           ),
           Hero(
             child: const FlutterLogo(),

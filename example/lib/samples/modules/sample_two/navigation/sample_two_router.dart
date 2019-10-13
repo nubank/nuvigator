@@ -7,24 +7,11 @@ import '../bloc/sample_flow_bloc.dart';
 import '../bloc/sample_two_bloc.dart';
 import '../screen/screen_one.dart';
 import '../screen/screen_two.dart';
-import 'sample_two_routes.dart';
 
-class SampleTwoRouter extends SimpleRouter {
-  @override
-  Map<String, Screen> get screensMap => {
-        SampleTwoRoutes.screen_one: Screen<String>(
-          builder: ScreenOne.builder,
-          wrapperFn: (screenContext, child) {
-            return Provider<ScreenOneBloc>.value(
-              value: ScreenOneBloc(),
-              child: child,
-            );
-          },
-        ),
-        SampleTwoRoutes.screen_two:
-            const Screen<String>(builder: ScreenTwo.builder),
-      };
+part 'sample_two_router.g.dart';
 
+@NuRouter()
+class SampleTwoRouter extends BaseRouter {
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {
         return Provider<SampleTwoBloc>.value(
@@ -33,15 +20,28 @@ class SampleTwoRouter extends SimpleRouter {
         );
       };
 
-  static ScreenRoute screenOne(String testId) =>
-      ScreenRoute(SampleTwoRoutes.screen_one, {'testId': testId});
+  @NuRoute(args: {'testId': String})
+  final screenOne = ScreenRoute<String>(
+    builder: ScreenOne.builder,
+    wrapperFn: (screenContext, child) {
+      return Provider<ScreenOneBloc>.value(
+        value: ScreenOneBloc(),
+        child: child,
+      );
+    },
+  );
 
-  static ScreenRoute screenTwo() => ScreenRoute(SampleTwoRoutes.screen_two);
+  @NuRoute()
+  final screenTwo = const ScreenRoute<String>(builder: ScreenTwo.builder);
+
+  @override
+  Map<String, ScreenRoute<Object>> get screensMap =>
+      sampleTwoRouter$getScreensMap(this);
 }
 
-final sampleTwoNuvigator = Nuvigator(
+final sampleTwoNuvigator = Nuvigator<SampleTwoRouter>(
     router: SampleTwoRouter(),
-    initialRoute: SampleTwoRoutes.screen_one,
+    initialRoute: SampleTwoRouterRoutes.screenOne,
     screenType: cupertinoScreenType,
     wrapperFn: (BuildContext context, Widget child) =>
         Provider<SampleFlowBloc>.value(

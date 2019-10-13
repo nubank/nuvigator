@@ -43,7 +43,7 @@ class ArgsClass extends BaseBuilder {
         ..requiredParameters.add(
           Parameter((p) => p
             ..name = 'args'
-            ..type = refer('Map<String, String>')),
+            ..type = refer('Map<String, Object>')),
         )
         ..returns = refer(className)
         ..static = true
@@ -67,7 +67,7 @@ class ArgsClass extends BaseBuilder {
         ..body = Code(
           'final args = ModalRoute.of(context)?.settings?.arguments;'
           'if (args is $className) return args;'
-          'if (args is Map<String, String>) return parse(args);'
+          'if (args is Map<String, Object>) return parse(args);'
           'return null;',
         ),
     );

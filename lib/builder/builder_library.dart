@@ -24,7 +24,7 @@ class BuilderLibrary extends BaseBuilder {
               ..name = 'router',
           ),
         )
-        ..returns = refer('Map<String, Screen>')
+        ..returns = refer('Map<String, ScreenRoute>')
         ..body = Code('return {$code};'),
     );
   }
@@ -51,13 +51,14 @@ class BuilderLibrary extends BaseBuilder {
   Library _generateLibrary(
       String className, String screensMapCode, String subRoutersListCode) {
     return Library(
-      (l) => l.body.addAll([
-        RoutesClass(classElement).build(),
-        NavigationClass(classElement).build(),
-        ArgsClass(classElement).build(),
-        _screensMapMethod(className, screensMapCode),
-        _subRoutersListMethod(className, subRoutersListCode),
-      ]),
+      (l) => l
+        ..body.addAll([
+          RoutesClass(classElement).build(),
+          ArgsClass(classElement).build(),
+          NavigationClass(classElement).build(),
+          _screensMapMethod(className, screensMapCode),
+          _subRoutersListMethod(className, subRoutersListCode),
+        ]),
     );
   }
 
@@ -72,7 +73,7 @@ class BuilderLibrary extends BaseBuilder {
       final nuRouteFieldAnnotation =
           nuRouteChecker.firstAnnotationOfExact(field);
       final nuSubRouterAnnotation =
-          nuSobRouterChecker.firstAnnotationOfExact(field);
+          nuRouterChecker.firstAnnotationOfExact(field);
 
       if (nuRouteFieldAnnotation != null) {
         screensMapBuffer

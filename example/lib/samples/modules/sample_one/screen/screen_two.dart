@@ -21,8 +21,8 @@ class ScreenTwo extends ScreenWidget {
         children: <Widget>[
           FlatButton(
               child: const Text('Open sample two flow'),
-              onPressed: () => nuvigator
-                  .navigate(SamplesRouter.sampleTwo('from sample one'))),
+              onPressed: () => SamplesRouterNavigation.of(context)
+                  .second(testId: 'From Sample One')),
         ],
       ),
     );

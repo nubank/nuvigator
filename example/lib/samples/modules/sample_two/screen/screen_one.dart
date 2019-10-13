@@ -1,8 +1,9 @@
 import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
+import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class ScreenOne extends ScreenWidget<Map<String, String>> {
+class ScreenOne extends ScreenWidget {
   ScreenOne(BuildContext context) : super(context);
 
   static ScreenOne builder(BuildContext context) {
@@ -11,17 +12,6 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
 
   @override
   Widget build(BuildContext context) {
-//    print(Provider.of<ScreenOneBloc>(context).testText);
-//    print(Provider.of<SampleTwoBloc>(context).testText);
-//    print(Provider.of<SampleFlowBloc>(context).testText);
-//    print(Provider.of<SamplesBloc>(context).testText);
-
-//    final rootNuvigator = Nuvigator.of(context, rootNuvigator: true);
-//    print(Nuvigator.of(context, rootNuvigator: true));
-//    print(nuvigator);
-//    print(nuvigator == rootNuvigator);
-//    print(nuvigator.isRoot);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
@@ -36,15 +26,15 @@ class ScreenOne extends ScreenWidget<Map<String, String>> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
-            'testId = ${args['testId']}',
+            'testId = ${ScreenOneArgs.of(context).testId}',
             textAlign: TextAlign.center,
           ),
           FlatButton(
             child: const Text('Go to screen two'),
             onPressed: () async {
-              final value =
-                  await nuvigator.navigate(SampleTwoRouter.screenTwo());
-              print('Return from sample two screen two with value: $value');
+              SamplesRouterNavigation.of(context)
+                  .sampleTwoRouterNavigation
+                  .screenTwo();
             },
           ),
           TextField(),

@@ -1,10 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/src/routers.dart';
-import '../nuvigator.dart';
 import 'errors.dart';
 import 'nuvigator.dart';
-import 'routers/group_router.dart';
+import 'router.dart';
+import 'screen_route.dart';
 
 typedef HandleDeepLinkFn = Future<bool> Function(
     GlobalRouter globalRouter, Uri uri,
@@ -23,25 +22,18 @@ class GlobalRouterProvider extends InheritedWidget {
   }
 }
 
-class GlobalRouter extends GroupRouter {
+class GlobalRouter implements Router {
   GlobalRouter({
-    @required List<Router> routers,
+    @required this.baseRouter,
     GlobalKey<NuvigatorState> nuvigatorKey,
     this.onScreenNotFound,
     this.onDeepLinkNotFound,
   }) {
-    this.routers = routers;
     this.nuvigatorKey = nuvigatorKey ?? defaultKey;
   }
 
   static final defaultKey =
       GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
-
-  final HandleDeepLinkFn onDeepLinkNotFound;
-
-  GlobalKey<NuvigatorState> nuvigatorKey;
-
-  final Screen Function(RouteSettings settings) onScreenNotFound;
 
   static GlobalRouter of(BuildContext context) {
     final GlobalRouterProvider globalRouterProvider =
@@ -49,7 +41,22 @@ class GlobalRouter extends GroupRouter {
     return globalRouterProvider?.globalRouter;
   }
 
+  final HandleDeepLinkFn onDeepLinkNotFound;
+  final Router baseRouter;
+  GlobalKey<NuvigatorState> nuvigatorKey;
+  final ScreenRoute Function(RouteSettings settings) onScreenNotFound;
+
   NuvigatorState get nuvigator => nuvigatorKey.currentState;
+
+  @override
+  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) {
+    return baseRouter.getRouteEntryForDeepLink(deepLink);
+  }
+
+  @override
+  ScreenRoute<Object> getScreen({String routeName}) {
+    return baseRouter.getScreen(routeName: routeName);
+  }
 
   @override
   Route getRoute(RouteSettings settings) {
@@ -82,9 +89,6 @@ class GlobalRouter extends GroupRouter {
         .pushNamed<T>(routeEntry.routeName, arguments: routeEntry.arguments);
   }
 
-  // We need this special handling while interacting with native for having
-  // right animation and closing the Flutter Activity correctly when we reach
-  // the end of our main Route stack.
   Route _buildNativeRoute(RouteEntry routeEntry) {
     final routeSettings = routeEntry.settings.copyWith(isInitialRoute: false);
     final route = routeEntry.screen.toRoute(routeSettings);

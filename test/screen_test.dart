@@ -13,16 +13,17 @@ void main() {
 
   group('helper build methods for Screen', () {
     test('on cupertino', () {
-      expect(Screen.cupertino((sc) => null).screenType, cupertinoScreenType);
+      expect(
+          ScreenRoute.cupertino((sc) => null).screenType, cupertinoScreenType);
     });
 
     test('on material', () {
-      expect(Screen.material((sc) => null).screenType, materialScreenType);
+      expect(ScreenRoute.material((sc) => null).screenType, materialScreenType);
     });
   });
 
   group('withWrappedScreen', () {
-    final screen = Screen.material((sc) => null, debugKey: 'test');
+    final screen = ScreenRoute.material((sc) => null, debugKey: 'test');
     final newScreen = screen.wrapWith(defaultWrapperFn);
 
     test('newScreen keeps properties from the original screen', () {

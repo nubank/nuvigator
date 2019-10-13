@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:nuvigator/builder/base_builder.dart';
 
@@ -60,27 +61,41 @@ class NavigationClass extends BaseBuilder {
     );
   }
 
-  Method _pushMethod(
-      String className, String fieldName, String screenReturn, bool hasArgs) {
+  Method _pushMethod(String className, String fieldName, String screenReturn,
+      Map<DartObject, DartObject> args) {
     final parameters = <Parameter>[];
-    if (hasArgs) {
-      parameters.add(
-        Parameter(
-          (p) => p
-            ..name = 'arguments'
-            ..type = refer('${capitalize(fieldName)}Args'),
-        ),
-      );
+    final argumentsMapBuffer = StringBuffer('{');
+
+    if (args != null) {
+      for (final arg in args.entries) {
+        final argName = arg.key.toStringValue();
+        parameters.add(
+          Parameter(
+            (p) => p
+              ..name = arg.key.toStringValue()
+              ..named = true
+              ..type = refer(
+                arg.value.toTypeValue().name,
+              ),
+          ),
+        );
+        argumentsMapBuffer.write("'$argName': $argName,");
+      }
     }
+    argumentsMapBuffer.write('}');
 
     return Method(
       (m) => m
         ..name = fieldName
         ..returns = refer('Future<$screenReturn>')
-        ..requiredParameters.addAll(parameters)
-        ..body = Code(
-          'return nuvigator.pushNamed<$screenReturn>(${className}Routes.$fieldName);',
-        ),
+        ..optionalParameters.addAll(parameters)
+        ..body = args != null
+            ? Code(
+                'return nuvigator.pushNamed<$screenReturn>(${className}Routes.$fieldName, arguments: ${argumentsMapBuffer.toString()});',
+              )
+            : Code(
+                'return nuvigator.pushNamed<$screenReturn>(${className}Routes.$fieldName);',
+              ),
     );
   }
 
@@ -119,21 +134,23 @@ class NavigationClass extends BaseBuilder {
 
     for (var field in classElement.fields) {
       final nuRouteFieldAnnotation =
-          nuRouteChecker.firstAnnotationOfExact(field);
+          nuRouteChecker.firstAnnotationOf(field, throwOnUnresolved: true);
+      final isFlow = field.type.name == 'FlowRoute';
       final nuSubRouterAnnotation =
-          nuSobRouterChecker.firstAnnotationOfExact(field);
+          nuRouterChecker.firstAnnotationOfExact(field);
 
       if (nuRouteFieldAnnotation != null) {
+        final generics = getGenericTypes(field.type);
         final args = nuRouteFieldAnnotation?.getField('args')?.toMapValue();
-        final subRouter =
-            nuRouteFieldAnnotation?.getField('subRouter')?.toTypeValue();
-        final screenReturn = getGenericTypes(field.type).toString();
+        final screenReturn =
+            generics.length > 1 ? generics[1].name : generics.first.name;
 
         methods.add(
-          _pushMethod(className, field.name, screenReturn, args != null),
+          _pushMethod(className, field.name, screenReturn, args),
         );
 
-        if (subRouter != null) {
+        if (isFlow) {
+          final subRouter = getGenericTypes(field.type).first;
           methods.add(
             _subRouteMethod(subRouter.name),
           );

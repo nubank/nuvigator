@@ -7,24 +7,12 @@ import '../bloc/samples_bloc.dart';
 import '../modules/sample_one/navigation/sample_one_router.dart';
 import '../modules/sample_two/navigation/sample_two_router.dart';
 
-class SamplesRouter extends GroupRouter {
+part 'samples_router.g.dart';
+
+@NuRouter()
+class SamplesRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => 'deepprefix';
-
-  @override
-  Map<String, Screen> get screensMap => {
-        'home': Screen(
-          builder: (screenContext) => HomeScreen(screenContext),
-        ),
-        'second': Screen(
-          builder: sampleTwoNuvigator,
-        ),
-      };
-
-  @override
-  List<Router> get routers => [
-        sampleOneRouter,
-      ];
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget child) {
@@ -34,11 +22,24 @@ class SamplesRouter extends GroupRouter {
         );
       };
 
-  // Navigation Helpers
+  @NuRoute()
+  final home = ScreenRoute(
+    builder: (context) => HomeScreen(context),
+  );
 
-  static ScreenRoute sampleTwo(String testId) {
-    return ScreenRoute('second', {'testId': testId});
-  }
+  @NuRoute(args: {'testId': String})
+  final second = FlowRoute(
+    nuvigator: sampleTwoNuvigator,
+  );
+
+  @NuRouter()
+  final sampleOneRouter = SampleOneRouter();
+
+  @override
+  Map<String, ScreenRoute> get screensMap => samplesRouter$getScreensMap(this);
+
+  @override
+  List<Router> get routers => samplesRouter$getSubRoutersList(this);
 }
 
 final samplesRouter = SamplesRouter();

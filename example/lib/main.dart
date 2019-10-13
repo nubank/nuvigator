@@ -7,7 +7,7 @@ import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  static final router = GlobalRouter(routers: [samplesRouter]);
+  static final router = GlobalRouter(baseRouter: samplesRouter);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
         router: router,
-        initialRoute: 'home',
+        initialRoute: SamplesRouterRoutes.home,
       ),
     );
   }
@@ -27,12 +27,6 @@ class HomeScreen extends ScreenWidget {
 
   @override
   Widget build(BuildContext context) {
-//    final rootNuvigator = Nuvigator.of(context, rootNuvigator: true);
-//    print(Nuvigator.of(context, rootNuvigator: true));
-//    print(nuvigator);
-//    print(nuvigator == rootNuvigator);
-//    print(nuvigator.isRoot);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('nuvigator Example'),
@@ -48,8 +42,9 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
               onPressed: () async {
-                final result = await nuvigator
-                    .navigate(SampleOneRouter.screenOne('FROM HOME'));
+                final result = await SamplesRouterNavigation.of(context)
+                    .sampleOneRouterNavigation
+                    .screenOne(testId: 'From Home');
                 print(result);
               }),
           FlatButton(
@@ -60,8 +55,8 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              final result = await nuvigator
-                  .pushNamed('second', arguments: {'testId': 'GO FOR IT'});
+              final result = await SamplesRouterNavigation.of(context)
+                  .second(testId: 'From Home');
               print('RESULT $result');
             },
           ),
