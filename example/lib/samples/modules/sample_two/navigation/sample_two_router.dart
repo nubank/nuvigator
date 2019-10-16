@@ -35,13 +35,12 @@ class SampleTwoRouter extends BaseRouter {
   final screenTwo = const ScreenRoute<String>(builder: ScreenTwo.builder);
 
   @override
-  Map<String, ScreenRoute<Object>> get screensMap =>
-      sampleTwoRouter$getScreensMap(this);
+  Map<String, ScreenRoute> get screensMap => _$sampleTwoScreensMap(this);
 }
 
 final sampleTwoNuvigator = Nuvigator<SampleTwoRouter>(
     router: SampleTwoRouter(),
-    initialRoute: SampleTwoRouterRoutes.screenOne,
+    initialRoute: SampleTwoRoutes.screenOne,
     screenType: cupertinoScreenType,
     wrapperFn: (BuildContext context, Widget child) =>
         Provider<SampleFlowBloc>.value(

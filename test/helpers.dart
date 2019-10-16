@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class TestRouter extends SimpleRouter {
+class TestRouter extends BaseRouter {
   @override
   Map<String, ScreenRoute> get screensMap => {
         'firstScreen': ScreenRoute(

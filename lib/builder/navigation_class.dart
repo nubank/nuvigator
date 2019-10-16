@@ -31,14 +31,15 @@ class NavigationClass extends BaseBuilder {
   }
 
   Method _navigationMethod(String typeName) {
+    final navigationName = '${routerName(typeName)}Navigation';
     return Method(
       (f) => f
-        ..name = '${lowerCamelCase(typeName)}Navigation'
-        ..returns = refer('${typeName}Navigation')
+        ..name = '${lowerCamelCase(navigationName)}'
+        ..returns = refer(navigationName)
         ..type = MethodType.getter
         ..lambda = true
         ..body = Code(
-          '${typeName}Navigation(nuvigator)',
+          '$navigationName(nuvigator)',
         ),
     );
   }
@@ -84,6 +85,8 @@ class NavigationClass extends BaseBuilder {
     }
     argumentsMapBuffer.write('}');
 
+    final routeName = '${routerName(className)}Routes.$fieldName';
+
     return Method(
       (m) => m
         ..name = fieldName
@@ -91,36 +94,37 @@ class NavigationClass extends BaseBuilder {
         ..optionalParameters.addAll(parameters)
         ..body = args != null
             ? Code(
-                'return nuvigator.pushNamed<$screenReturn>(${className}Routes.$fieldName, arguments: ${argumentsMapBuffer.toString()});',
+                'return nuvigator.pushNamed<$screenReturn>($routeName, arguments: ${argumentsMapBuffer.toString()});',
               )
             : Code(
-                'return nuvigator.pushNamed<$screenReturn>(${className}Routes.$fieldName);',
+                'return nuvigator.pushNamed<$screenReturn>($routeName);',
               ),
     );
   }
 
-  Method _subRouteMethod(String className) {
+  Method _subRouterMethod(String className) {
     return Method(
       (m) => m
-        ..name = '${lowerCamelCase(className)}Navigation'
-        ..returns = refer('${className}Navigation')
+        ..name = '${routerName(lowerCamelCase(className))}Navigation'
+        ..returns = refer('${routerName(className)}Navigation')
         ..type = MethodType.getter
         ..lambda = true
         ..body = Code(
-          '${className}Navigation(nuvigator)',
+          '${routerName(className)}Navigation(nuvigator)',
         ),
     );
   }
 
   Class _generateNavigationClass(String className, List<Method> methods) {
+    final navigationClassName = '${routerName(className)}Navigation';
     return Class(
       (b) => b
-        ..name = '${className}Navigation'
+        ..name = navigationClassName
         ..constructors.add(_constructor())
         ..fields.add(_nuvigatorStateField())
         ..methods.addAll(
           [
-            _ofMethod('${className}Navigation'),
+            _ofMethod(navigationClassName),
             ...methods,
           ],
         ),
@@ -152,7 +156,7 @@ class NavigationClass extends BaseBuilder {
         if (isFlow) {
           final subRouter = getGenericTypes(field.type).first;
           methods.add(
-            _subRouteMethod(subRouter.name),
+            _subRouterMethod(subRouter.name),
           );
         }
       } else if (nuSubRouterAnnotation != null) {

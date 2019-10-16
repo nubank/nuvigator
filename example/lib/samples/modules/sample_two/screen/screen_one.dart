@@ -32,9 +32,7 @@ class ScreenOne extends ScreenWidget {
           FlatButton(
             child: const Text('Go to screen two'),
             onPressed: () async {
-              SamplesRouterNavigation.of(context)
-                  .sampleTwoRouterNavigation
-                  .screenTwo();
+              SamplesNavigation.of(context).sampleTwoNavigation.screenTwo();
             },
           ),
           TextField(),

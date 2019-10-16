@@ -15,4 +15,8 @@ const nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
 const nuRouterChecker = TypeChecker.fromRuntime(NuRouter);
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+
 String lowerCamelCase(String s) => s[0].toLowerCase() + s.substring(1);
+
+String routerName(String routerClassName) =>
+    routerClassName.replaceAll('Router', '');

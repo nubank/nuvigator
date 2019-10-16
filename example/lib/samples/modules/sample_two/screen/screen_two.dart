@@ -37,8 +37,8 @@ class ScreenTwo extends ScreenWidget {
           ),
           FlatButton(
               child: const Text('Go to sample one'),
-              onPressed: () => SamplesRouterNavigation.of(context)
-                  .sampleOneRouterNavigation
+              onPressed: () => SamplesNavigation.of(context)
+                  .sampleOneNavigation
                   .screenOne(testId: 'FromSampleTwo')),
         ],
       ),

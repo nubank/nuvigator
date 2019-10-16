@@ -10,7 +10,7 @@ class RoutesClass extends BaseBuilder {
   Class _generateRoutesClass(String className, List<Field> fields) {
     return Class(
       (b) => b
-        ..name = '${className}Routes'
+        ..name = '${routerName(className)}Routes'
         ..fields.addAll(fields),
     );
   }
@@ -19,7 +19,7 @@ class RoutesClass extends BaseBuilder {
     return Field(
       (f) => f
         ..name = fieldName
-        ..assignment = Code("'$className/$fieldName'")
+        ..assignment = Code("'${routerName(className)}/$fieldName'")
         ..modifier = FieldModifier.constant
         ..static = true,
     );

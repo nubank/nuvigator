@@ -9,7 +9,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'builder/builder_library.dart';
 
-class NuvigationGenerator extends GeneratorForAnnotation<NuRouter> {
+class NuvigatorGenerator extends GeneratorForAnnotation<NuRouter> {
   @override
   FutureOr<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
@@ -22,5 +22,5 @@ class NuvigationGenerator extends GeneratorForAnnotation<NuRouter> {
   }
 }
 
-Builder nuvigationBuilder(BuilderOptions options) =>
-    PartBuilder([NuvigationGenerator()], '.g.dart');
+Builder nuvigatorBuilder(BuilderOptions options) =>
+    PartBuilder([NuvigatorGenerator()], '.g.dart');

@@ -30,7 +30,7 @@ class ScreenOne extends ScreenWidget {
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () => SampleOneRouterNavigation.of(context).screenTwo(),
+            onPressed: () => SampleOneNavigation.of(context).screenTwo(),
           ),
           Hero(
             child: const FlutterLogo(),

@@ -3,13 +3,13 @@
 part of 'samples_router.dart';
 
 // **************************************************************************
-// NuvigationGenerator
+// NuvigatorGenerator
 // **************************************************************************
 
-class SamplesRouterRoutes {
-  static const home = 'SamplesRouter/home';
+class SamplesRoutes {
+  static const home = 'Samples/home';
 
-  static const second = 'SamplesRouter/second';
+  static const second = 'Samples/second';
 }
 
 class SecondArgs {
@@ -31,36 +31,34 @@ class SecondArgs {
   }
 }
 
-class SamplesRouterNavigation {
-  SamplesRouterNavigation(this.nuvigator);
+class SamplesNavigation {
+  SamplesNavigation(this.nuvigator);
 
   final NuvigatorState nuvigator;
 
-  static SamplesRouterNavigation of(BuildContext context) =>
-      SamplesRouterNavigation(Nuvigator.of(context));
+  static SamplesNavigation of(BuildContext context) =>
+      SamplesNavigation(Nuvigator.of(context));
   Future<Object> home() {
-    return nuvigator.pushNamed<Object>(SamplesRouterRoutes.home);
+    return nuvigator.pushNamed<Object>(SamplesRoutes.home);
   }
 
   Future<Object> second({String testId}) {
-    return nuvigator.pushNamed<Object>(SamplesRouterRoutes.second, arguments: {
+    return nuvigator.pushNamed<Object>(SamplesRoutes.second, arguments: {
       'testId': testId,
     });
   }
 
-  SampleTwoRouterNavigation get sampleTwoRouterNavigation =>
-      SampleTwoRouterNavigation(nuvigator);
-  SampleOneRouterNavigation get sampleOneRouterNavigation =>
-      SampleOneRouterNavigation(nuvigator);
+  SampleTwoNavigation get sampleTwoNavigation => SampleTwoNavigation(nuvigator);
+  SampleOneNavigation get sampleOneNavigation => SampleOneNavigation(nuvigator);
 }
 
-Map<String, ScreenRoute> samplesRouter$getScreensMap(SamplesRouter router) {
+Map<String, ScreenRoute> _$samplesScreensMap(SamplesRouter router) {
   return {
-    SamplesRouterRoutes.home: router.home,
-    SamplesRouterRoutes.second: router.second,
+    SamplesRoutes.home: router.home,
+    SamplesRoutes.second: router.second,
   };
 }
 
-List<Router> samplesRouter$getSubRoutersList(SamplesRouter router) => [
+List<Router> _$samplesRoutersList(SamplesRouter router) => [
       router.sampleOneRouter,
     ];

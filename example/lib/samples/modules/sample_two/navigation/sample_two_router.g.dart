@@ -3,13 +3,13 @@
 part of 'sample_two_router.dart';
 
 // **************************************************************************
-// NuvigationGenerator
+// NuvigatorGenerator
 // **************************************************************************
 
-class SampleTwoRouterRoutes {
-  static const screenOne = 'SampleTwoRouter/screenOne';
+class SampleTwoRoutes {
+  static const screenOne = 'SampleTwo/screenOne';
 
-  static const screenTwo = 'SampleTwoRouter/screenTwo';
+  static const screenTwo = 'SampleTwo/screenTwo';
 }
 
 class ScreenOneArgs {
@@ -31,30 +31,29 @@ class ScreenOneArgs {
   }
 }
 
-class SampleTwoRouterNavigation {
-  SampleTwoRouterNavigation(this.nuvigator);
+class SampleTwoNavigation {
+  SampleTwoNavigation(this.nuvigator);
 
   final NuvigatorState nuvigator;
 
-  static SampleTwoRouterNavigation of(BuildContext context) =>
-      SampleTwoRouterNavigation(Nuvigator.of(context));
+  static SampleTwoNavigation of(BuildContext context) =>
+      SampleTwoNavigation(Nuvigator.of(context));
   Future<String> screenOne({String testId}) {
-    return nuvigator
-        .pushNamed<String>(SampleTwoRouterRoutes.screenOne, arguments: {
+    return nuvigator.pushNamed<String>(SampleTwoRoutes.screenOne, arguments: {
       'testId': testId,
     });
   }
 
   Future<String> screenTwo() {
-    return nuvigator.pushNamed<String>(SampleTwoRouterRoutes.screenTwo);
+    return nuvigator.pushNamed<String>(SampleTwoRoutes.screenTwo);
   }
 }
 
-Map<String, ScreenRoute> sampleTwoRouter$getScreensMap(SampleTwoRouter router) {
+Map<String, ScreenRoute> _$sampleTwoScreensMap(SampleTwoRouter router) {
   return {
-    SampleTwoRouterRoutes.screenOne: router.screenOne,
-    SampleTwoRouterRoutes.screenTwo: router.screenTwo,
+    SampleTwoRoutes.screenOne: router.screenOne,
+    SampleTwoRoutes.screenTwo: router.screenTwo,
   };
 }
 
-List<Router> sampleTwoRouter$getSubRoutersList(SampleTwoRouter router) => [];
+List<Router> _$sampleTwoRoutersList(SampleTwoRouter router) => [];

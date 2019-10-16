@@ -1,7 +1,7 @@
 builders:
   nuvigator:
     import: "package:nuvigator/builder.dart"
-    builder_factories: ["nuvigationBuilder"]
+    builder_factories: ["nuvigatorBuilder"]
     build_extensions: {".dart": [".nuvigator.g.part"]}
     auto_apply: dependents
     build_to: source

@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
         router: router,
-        initialRoute: SamplesRouterRoutes.home,
+        initialRoute: SamplesRoutes.home,
       ),
     );
   }
@@ -42,8 +42,8 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
               onPressed: () async {
-                final result = await SamplesRouterNavigation.of(context)
-                    .sampleOneRouterNavigation
+                final result = await SamplesNavigation.of(context)
+                    .sampleOneNavigation
                     .screenOne(testId: 'From Home');
                 print(result);
               }),
@@ -55,7 +55,7 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              final result = await SamplesRouterNavigation.of(context)
+              final result = await SamplesNavigation.of(context)
                   .second(testId: 'From Home');
               print('RESULT $result');
             },

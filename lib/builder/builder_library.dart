@@ -16,7 +16,7 @@ class BuilderLibrary extends BaseBuilder {
     return Method(
       (b) => b
         ..body = const Code('')
-        ..name = '$lowerClassName\$getScreensMap'
+        ..name = '_\$${routerName(lowerClassName)}ScreensMap'
         ..requiredParameters.add(
           Parameter(
             (p) => p
@@ -34,7 +34,7 @@ class BuilderLibrary extends BaseBuilder {
 
     return Method(
       (b) => b
-        ..name = '$lowerClassName\$getSubRoutersList'
+        ..name = '_\$${routerName(lowerClassName)}RoutersList'
         ..requiredParameters.add(
           Parameter(
             (p) => p
@@ -76,8 +76,8 @@ class BuilderLibrary extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
 
       if (nuRouteFieldAnnotation != null) {
-        screensMapBuffer
-            .write('${className}Routes.${field.name}: router.${field.name},\n');
+        screensMapBuffer.write(
+            '${routerName(className)}Routes.${field.name}: router.${field.name},\n');
       } else if (nuSubRouterAnnotation != null) {
         subRoutersListBuffer.write('router.${field.name},\n');
       }

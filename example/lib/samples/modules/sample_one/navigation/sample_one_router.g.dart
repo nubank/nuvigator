@@ -3,13 +3,13 @@
 part of 'sample_one_router.dart';
 
 // **************************************************************************
-// NuvigationGenerator
+// NuvigatorGenerator
 // **************************************************************************
 
-class SampleOneRouterRoutes {
-  static const screenOne = 'SampleOneRouter/screenOne';
+class SampleOneRoutes {
+  static const screenOne = 'SampleOne/screenOne';
 
-  static const screenTwo = 'SampleOneRouter/screenTwo';
+  static const screenTwo = 'SampleOne/screenTwo';
 }
 
 class ScreenOneArgs {
@@ -31,30 +31,29 @@ class ScreenOneArgs {
   }
 }
 
-class SampleOneRouterNavigation {
-  SampleOneRouterNavigation(this.nuvigator);
+class SampleOneNavigation {
+  SampleOneNavigation(this.nuvigator);
 
   final NuvigatorState nuvigator;
 
-  static SampleOneRouterNavigation of(BuildContext context) =>
-      SampleOneRouterNavigation(Nuvigator.of(context));
+  static SampleOneNavigation of(BuildContext context) =>
+      SampleOneNavigation(Nuvigator.of(context));
   Future<Object> screenOne({String testId}) {
-    return nuvigator
-        .pushNamed<Object>(SampleOneRouterRoutes.screenOne, arguments: {
+    return nuvigator.pushNamed<Object>(SampleOneRoutes.screenOne, arguments: {
       'testId': testId,
     });
   }
 
   Future<int> screenTwo() {
-    return nuvigator.pushNamed<int>(SampleOneRouterRoutes.screenTwo);
+    return nuvigator.pushNamed<int>(SampleOneRoutes.screenTwo);
   }
 }
 
-Map<String, ScreenRoute> sampleOneRouter$getScreensMap(SampleOneRouter router) {
+Map<String, ScreenRoute> _$sampleOneScreensMap(SampleOneRouter router) {
   return {
-    SampleOneRouterRoutes.screenOne: router.screenOne,
-    SampleOneRouterRoutes.screenTwo: router.screenTwo,
+    SampleOneRoutes.screenOne: router.screenOne,
+    SampleOneRoutes.screenTwo: router.screenTwo,
   };
 }
 
-List<Router> sampleOneRouter$getSubRoutersList(SampleOneRouter router) => [];
+List<Router> _$sampleOneRoutersList(SampleOneRouter router) => [];
