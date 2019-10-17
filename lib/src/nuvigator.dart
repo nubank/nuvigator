@@ -3,6 +3,8 @@ import 'package:nuvigator/nuvigator.dart';
 
 import 'router.dart';
 
+typedef WrapperFn = Widget Function(BuildContext context, Widget child);
+
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
@@ -10,7 +12,7 @@ class Nuvigator<T extends Router> extends Navigator {
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
-    this.wrapperFn,
+    this.wrapper,
     this.initialArguments,
   })  : assert(router != null),
         super(
@@ -44,7 +46,7 @@ class Nuvigator<T extends Router> extends Navigator {
       initialRoute: initialRoute,
       router: router,
       screenType: screenType,
-      wrapperFn: wrapperFn,
+      wrapper: wrapper,
       initialArguments: initialArguments,
       key: key,
     );
@@ -53,7 +55,7 @@ class Nuvigator<T extends Router> extends Navigator {
   final T router;
   final Object initialArguments;
   final ScreenType screenType;
-  final WrapperFn wrapperFn;
+  final WrapperFn wrapper;
 
   Nuvigator call(BuildContext context, [Widget child]) {
     return _screenBuilder(context);
@@ -189,8 +191,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     if (router is GlobalRouter) {
       child = GlobalRouterProvider(globalRouter: widget.router, child: child);
     }
-    if (widget.wrapperFn != null) {
-      child = widget.wrapperFn(context, child);
+    if (widget.wrapper != null) {
+      child = widget.wrapper(context, child);
     }
     return child;
   }

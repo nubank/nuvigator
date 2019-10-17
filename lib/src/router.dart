@@ -44,7 +44,7 @@ class RouteEntry {
   }
 }
 
-/// Base Router class. Provide a basic interface to communicate with other Route
+/// Router Interface. Provide a basic interface to communicate with other Router
 /// components.
 abstract class Router {
   ScreenRoute getScreen({@required String routeName});
@@ -58,9 +58,8 @@ abstract class BaseRouter implements Router {
   List<Router> get routers => [];
 
   Map<String, ScreenRoute> get screensMap;
-  final String deepLinkPrefix = null;
 
-  WrapperFn get screensWrapper => null;
+  final String deepLinkPrefix = null;
 
   Future<String> getDeepLinkPrefix() async {
     return deepLinkPrefix ?? '';
@@ -75,7 +74,7 @@ abstract class BaseRouter implements Router {
 
     for (Router router in routers) {
       final screen = router.getScreen(routeName: routeName);
-      if (screen != null) return screen.wrapWith(screensWrapper);
+      if (screen != null) return screen;
     }
     return null;
   }
@@ -106,9 +105,7 @@ abstract class BaseRouter implements Router {
 
   ScreenRoute _getScreen({@required String routeName}) {
     assert(routeName != null && routeName.isNotEmpty);
-
-    final screen = screensMap[routeName];
-    return screen?.wrapWith(screensWrapper);
+    return screensMap[routeName];
   }
 
   Future<RouteEntry> _getRouteEntryForDeepLink(String deepLink) async {
