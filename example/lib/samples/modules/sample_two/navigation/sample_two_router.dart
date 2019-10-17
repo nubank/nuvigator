@@ -39,11 +39,11 @@ class SampleTwoRouter extends BaseRouter {
 }
 
 final sampleTwoNuvigator = Nuvigator<SampleTwoRouter>(
-    router: SampleTwoRouter(),
-    initialRoute: SampleTwoRoutes.screenOne,
-    screenType: cupertinoScreenType,
+  router: SampleTwoRouter(),
+  initialRoute: SampleTwoRoutes.screenOne,
+  screenType: cupertinoScreenType,
   wrapper: (BuildContext context, Widget child) => Provider<SampleFlowBloc>(
     builder: (_) => SampleFlowBloc(),
-          child: child,
+    child: child,
   ),
 );
