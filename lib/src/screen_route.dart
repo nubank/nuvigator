@@ -7,10 +7,15 @@ import 'screen_type.dart';
 import 'screen_types/cupertino_screen_type.dart';
 import 'screen_types/material_screen_type.dart';
 
+typedef WrapperFn = Widget Function(BuildContext context, Widget child);
+
+Widget defaultWrapperFn(BuildContext _, Widget screenWidget) => screenWidget;
+
 /// [T] is the possible return type of this Screen
 class ScreenRoute<T extends Object> {
   const ScreenRoute({
     @required this.builder,
+    this.wrapperFn,
     this.screenType,
     this.debugKey,
     this.deepLink,
@@ -40,26 +45,44 @@ class ScreenRoute<T extends Object> {
 
   final WidgetBuilder builder;
   final ScreenType screenType;
+  final WrapperFn wrapperFn;
   final String debugKey;
   final String deepLink;
+
+//  final A Function(Map<String, String>) parseDeepLinkArgs;
 
   ScreenRoute<T> fallbackScreenType(ScreenType fallbackScreenType) {
     return ScreenRoute<T>(
       builder: builder,
       debugKey: debugKey,
       screenType: screenType ?? fallbackScreenType,
+      wrapperFn: wrapperFn,
+    );
+  }
+
+  ScreenRoute<T> wrapWith(WrapperFn wrapperFn) {
+    if (wrapperFn == null) {
+      return this;
+    }
+    return ScreenRoute<T>(
+      builder: builder,
+      debugKey: debugKey,
+      screenType: screenType,
+      wrapperFn: _getComposedWrapper(wrapperFn),
     );
   }
 
   ScreenRoute<T> copyWith({
     WidgetBuilder builder,
     ScreenType screenType,
+    WrapperFn wrapperFn,
     String debugKey,
     String deepLink,
   }) {
     return ScreenRoute<T>(
       builder: builder ?? this.builder,
       screenType: screenType ?? this.screenType,
+      wrapperFn: wrapperFn ?? this.wrapperFn,
       debugKey: debugKey ?? this.debugKey,
       deepLink: deepLink ?? this.deepLink,
     );
@@ -72,12 +95,29 @@ class ScreenRoute<T extends Object> {
     );
   }
 
+  WrapperFn _getComposedWrapper(WrapperFn wrapperFn) {
+    if (wrapperFn != null) {
+      return (BuildContext c, Widget child) => wrapperFn(
+            c,
+            Builder(
+              builder: (context) => this.wrapperFn != null
+                  ? this.wrapperFn(context, child)
+                  : child,
+            ),
+          );
+    }
+    return this.wrapperFn;
+  }
+
   Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
       screenType.toRoute<T>(builder, settings);
 
   Widget _buildScreen(BuildContext context, RouteSettings settings) {
-    return Builder(
-      builder: (innerContext) => builder(innerContext),
+    return wrapperFn(
+      context,
+      Builder(
+        builder: (innerContext) => builder(innerContext),
+      ),
     );
   }
 }

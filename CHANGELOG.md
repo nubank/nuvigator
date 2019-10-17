@@ -14,7 +14,6 @@
 - Removal of `NavigationService` in favor of `ScreenRoute`
 - Removal of `FlowRouter` in favor of nested `Nuvigators`
 - Removal of `ScreenContext` in favor of `BuildContext`
-- Removal of `screensWrapper` on `BaseRouter`
 - Added code generation for creating code from a base Router defined
 
 ## 0.0.4

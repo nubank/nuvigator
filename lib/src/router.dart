@@ -58,8 +58,9 @@ abstract class BaseRouter implements Router {
   List<Router> get routers => [];
 
   Map<String, ScreenRoute> get screensMap;
-
   final String deepLinkPrefix = null;
+
+  WrapperFn get screensWrapper => null;
 
   Future<String> getDeepLinkPrefix() async {
     return deepLinkPrefix ?? '';
@@ -74,7 +75,7 @@ abstract class BaseRouter implements Router {
 
     for (Router router in routers) {
       final screen = router.getScreen(routeName: routeName);
-      if (screen != null) return screen;
+      if (screen != null) return screen.wrapWith(screensWrapper);
     }
     return null;
   }
@@ -105,7 +106,9 @@ abstract class BaseRouter implements Router {
 
   ScreenRoute _getScreen({@required String routeName}) {
     assert(routeName != null && routeName.isNotEmpty);
-    return screensMap[routeName];
+
+    final screen = screensMap[routeName];
+    return screen?.wrapWith(screensWrapper);
   }
 
   Future<RouteEntry> _getRouteEntryForDeepLink(String deepLink) async {

@@ -3,8 +3,6 @@ import 'package:nuvigator/nuvigator.dart';
 
 import 'router.dart';
 
-typedef WrapperFn = Widget Function(BuildContext context, Widget child);
-
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
