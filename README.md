@@ -19,7 +19,7 @@ and how you can use they in your project.
 Basic usage
 
 ```dart
-class MyRouter extends SimpleRouter {
+class MyRouter extends BaseRouter {
   @override
   Map<String, Screen> get screensMap  => {
     'MyScreenRouteName': Screen(
@@ -28,7 +28,7 @@ class MyRouter extends SimpleRouter {
   };
 }
 
-final router = GlobalRouter(routers: [MyRouter()]);
+final router = GlobalRouter(baseRouter: MyRouter());
 
 Widget build(BuildContext context) {
   return MaterialApp(
@@ -52,7 +52,7 @@ Each `Nuvigator` should have a `Router`. The `Router` acts just like the routing
 the `Nuvigator` will be responsible for visualization, widget render and state keeping. The Router
 will be Pure class that will be responsible to provide elements to be presented and managed by the Nuvigator.
 
-## Screens
+## ScreenRoute and FlowRoute
 
 Envelopes a widget that is going to be presented as a Screen by a Navigator.
 The Screen contains a ScreenBuilder function, and some attributes, like transition type,
@@ -65,32 +65,16 @@ Screen Options:
 - deepLink
 - wrapperFn
 
-## Routers
-
-### Interface
-
-A Router is just a interface that aims to provide a screen for a given route name.
-
-```dart
-abstract class Router {
-  Screen getScreen({String routeName});
-
-  Future<DeepLinkFlow> getDeepLinkFlowForUrl(String url) => null;
-}
-```
-
-Below you will find some implementations of this Interface that can be used to define the Routing in you application.
-
-### SimpleRouter
+### BaseRouter
 
 Basic Usage:
 
 ```dart
-class ChatRouter extends SimpleRouter {
+class ChatRouter extends BaseRouter {
   @override
-  Map<String, Screen> get screensMap => {
-        'test': Screen(
-            builder: (screenContext) => ChatHomeScreen(screenContext),
+  Map<String, ScreenRoute> get screensMap => {
+        'home': ScreenRoute(
+            builder: (context) => ChatHomeScreen(context),
             screenType: materialScreenType,
             deepLink: '/myGroup/test/', 
           ),
@@ -114,35 +98,9 @@ A function that will receives a ScreenContext and a child Widget. Should return 
 that wraps this child Widget. The Wrapper will be applied to all Screens in this Router.
 (this function runs one time for each screen, and not one time for the entire Router).
 
-
-### GroupRouter
-
-`GroupRouter` extends the `SimpleRouter` so, every option of the SimpleRouter can be used here. In addition to that
-the `GroupRouter` supports a list if child `Routers` to be iterated in the case of itself not being able to resolve
-the requested RouteName.
-
-```dart
-
-class LendingRouter extends GroupRouter {
-
-  @override
-  List<Router> get routers => [
-    ChatRouter(),
-  ];
-
-}
-
-```
-
-Options:
-
-All from `SimpleRouter` plus:
-
 - `routers`
 
-A `List<Router>` that will be called in the case of the GroupRouter itself not being able to resolve the RouteName.
+Routers to be grouped and checked if this router does not match any screen.
 
-- `deepLinkPrefix`
+## Code Generators
 
-Behaves like the one in the `SimpleRouter`, but in the case of the DeepLink being dispatched to the child `routers`, it
-will have this prefix trimmed/removed before sending down it.

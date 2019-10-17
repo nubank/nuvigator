@@ -23,7 +23,7 @@ class SampleTwoRouter extends BaseRouter {
   @NuRoute(args: {'testId': String})
   final screenOne = ScreenRoute<String>(
     builder: ScreenOne.builder,
-    wrapperFn: (screenContext, child) {
+    wrapper: (screenContext, child) {
       return Provider<ScreenOneBloc>.value(
         value: ScreenOneBloc(),
         child: child,
