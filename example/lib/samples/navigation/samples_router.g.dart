@@ -24,9 +24,15 @@ class SecondArgs {
   }
 
   static SecondArgs of(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings?.arguments;
-    if (args is SecondArgs) return args;
-    if (args is Map<String, Object>) return parse(args);
+    final routeSettings = ModalRoute.of(context)?.settings;
+    final nuvigator = Nuvigator.of(context);
+    if (routeSettings?.name == SamplesRoutes.second) {
+      final args = routeSettings?.arguments;
+      if (args is SecondArgs) return args;
+      if (args is Map<String, Object>) return parse(args);
+    } else if (nuvigator != null) {
+      return of(nuvigator.context);
+    }
     return null;
   }
 }

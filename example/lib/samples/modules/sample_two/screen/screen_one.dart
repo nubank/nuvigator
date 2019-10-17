@@ -3,7 +3,7 @@ import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class ScreenOne extends ScreenWidget {
+class ScreenOne extends ScreenOneScreen {
   ScreenOne(BuildContext context) : super(context);
 
   static ScreenOne builder(BuildContext context) {
@@ -26,7 +26,7 @@ class ScreenOne extends ScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
-            'testId = ${ScreenOneArgs.of(context).testId}',
+            'testId = ${args.testId}',
             textAlign: TextAlign.center,
           ),
           FlatButton(

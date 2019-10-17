@@ -29,6 +29,10 @@ class ScreenTwo extends ScreenWidget {
             ),
             tag: 'HERO',
           ),
+          Text(
+            'TEST_ID: ${SecondArgs.of(context).testId}',
+            textAlign: TextAlign.center,
+          ),
           FlatButton(
             child: const Text('Close entire flow'),
             onPressed: () =>

@@ -24,11 +24,23 @@ class ScreenOneArgs {
   }
 
   static ScreenOneArgs of(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings?.arguments;
-    if (args is ScreenOneArgs) return args;
-    if (args is Map<String, Object>) return parse(args);
+    final routeSettings = ModalRoute.of(context)?.settings;
+    final nuvigator = Nuvigator.of(context);
+    if (routeSettings?.name == SampleOneRoutes.screenOne) {
+      final args = routeSettings?.arguments;
+      if (args is ScreenOneArgs) return args;
+      if (args is Map<String, Object>) return parse(args);
+    } else if (nuvigator != null) {
+      return of(nuvigator.context);
+    }
     return null;
   }
+}
+
+abstract class ScreenOneScreen extends ScreenWidget {
+  ScreenOneScreen(BuildContext context) : super(context);
+
+  ScreenOneArgs get args => ScreenOneArgs.of(context);
 }
 
 class SampleOneNavigation {

@@ -45,7 +45,7 @@ class HomeScreen extends ScreenWidget {
                 final result = await SamplesNavigation.of(context)
                     .sampleOneNavigation
                     .screenOne(testId: 'From Home');
-                print(result);
+                print('RESULT $result');
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),

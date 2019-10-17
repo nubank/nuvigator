@@ -51,7 +51,7 @@ class ArgsClass extends BaseBuilder {
     );
   }
 
-  Method _ofMethod(String className) {
+  Method _ofMethod(String className, String routerName, String screenName) {
     return Method(
       (m) => m
         ..name = 'of'
@@ -65,16 +65,23 @@ class ArgsClass extends BaseBuilder {
           ),
         )
         ..body = Code(
-          'final args = ModalRoute.of(context)?.settings?.arguments;'
+          'final routeSettings = ModalRoute.of(context)?.settings;'
+          'final nuvigator = Nuvigator.of(context);'
+          'if (routeSettings?.name == ${routerName}Routes.$screenName) {'
+          'final args = routeSettings?.arguments;'
           'if (args is $className) return args;'
           'if (args is Map<String, Object>) return parse(args);'
+          '} else if (nuvigator != null) {'
+          'return of(nuvigator.context);'
+          '}'
           'return null;',
         ),
     );
   }
 
-  Class _generateArgsClass(String className, String argsCode,
+  Class _generateArgsClass(String routerName, String fieldName, String argsCode,
       List<Parameter> constructorParameters, List<Field> argsFields) {
+    final className = '${capitalize(fieldName)}Args';
     return Class(
       (c) => c
         ..name = className
@@ -82,18 +89,50 @@ class ArgsClass extends BaseBuilder {
         ..fields.addAll(argsFields)
         ..methods.addAll([
           _parseMethod(className, argsCode),
-          _ofMethod(className),
+          _ofMethod(className, routerName, fieldName),
         ]),
+    );
+  }
+
+  Class _generateScreenClass(String routeName) {
+    return Class(
+      (c) => c
+        ..name = '${routeName}Screen'
+        ..abstract = true
+        ..extend = refer('ScreenWidget')
+        ..constructors.add(
+          Constructor((cons) => cons
+            ..initializers.add(const Code('super(context)'))
+            ..requiredParameters.add(
+              Parameter(
+                (p) => p
+                  ..type = refer('BuildContext')
+                  ..name = 'context',
+              ),
+            )),
+        )
+        ..methods.add(
+          Method(
+            (m) => m
+              ..name = 'args'
+              ..lambda = true
+              ..type = MethodType.getter
+              ..returns = refer('${capitalize(routeName)}Args')
+              ..body = Code('${capitalize(routeName)}Args.of(context)'),
+          ),
+        ),
     );
   }
 
   @override
   Spec build() {
     final argsClasses = <Class>[];
+    final screensClasses = <Class>[];
 
     for (var field in classElement.fields) {
       final nuRouteFieldAnnotation =
           nuRouteChecker.firstAnnotationOfExact(field);
+      final isFlow = field.type.name == 'FlowRoute';
 
       if (nuRouteFieldAnnotation == null) continue;
 
@@ -122,14 +161,22 @@ class ArgsClass extends BaseBuilder {
 
       argsClasses.add(
         _generateArgsClass(
-          '${capitalize(field.name)}Args',
+          routerName(classElement.name),
+          field.name,
           argsParserBuffer.toString(),
           constructorParameters,
           argsFields,
         ),
       );
+      if (!isFlow) {
+        screensClasses.add(
+          _generateScreenClass(
+            capitalize(field.name),
+          ),
+        );
+      }
     }
 
-    return Library((l) => l.body.addAll(argsClasses));
+    return Library((l) => l.body..addAll(argsClasses)..addAll(screensClasses));
   }
 }
