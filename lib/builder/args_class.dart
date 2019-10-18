@@ -136,17 +136,17 @@ class ArgsClass extends BaseBuilder {
 
       if (nuRouteFieldAnnotation == null) continue;
 
-      final args = nuRouteFieldAnnotation?.getField('args')?.toMapValue();
+      final args = nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
 
-      if (args == null) continue;
+      if (args?.parameters == null || args.parameters.isEmpty) continue;
 
       final constructorParameters = <Parameter>[];
       final argsFields = <Field>[];
       final argsParserBuffer = StringBuffer('');
 
-      for (final argEntry in args.entries) {
-        final varName = argEntry.key.toStringValue();
-        final typeName = argEntry.value.toTypeValue().name;
+      for (final arg in args.parameters) {
+        final varName = arg.name.toString();
+        final typeName = arg.type.toString();
 
         argsParserBuffer.write("$varName: args['$varName'],\n");
 

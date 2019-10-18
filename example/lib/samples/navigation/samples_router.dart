@@ -27,7 +27,7 @@ class SamplesRouter extends BaseRouter {
     builder: (context) => HomeScreen(context),
   );
 
-  @NuRoute(args: {'testId': String})
+  @NuRoute(args: screenOneS1Args)
   final second = FlowRoute(
     nuvigator: sampleTwoNuvigator,
   );

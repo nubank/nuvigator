@@ -5,5 +5,5 @@ class NuRouter {
 class NuRoute {
   const NuRoute({this.args});
 
-  final Map<String, Type> args;
+  final Function args;
 }

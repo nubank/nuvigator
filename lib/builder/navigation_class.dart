@@ -63,21 +63,19 @@ class NavigationClass extends BaseBuilder {
   }
 
   Method _pushMethod(String className, String fieldName, String screenReturn,
-      Map<DartObject, DartObject> args) {
+      ExecutableElement args) {
     final parameters = <Parameter>[];
     final argumentsMapBuffer = StringBuffer('{');
 
-    if (args != null) {
-      for (final arg in args.entries) {
-        final argName = arg.key.toStringValue();
+    if (args?.parameters != null && args.parameters.isNotEmpty) {
+      for (final arg in args.parameters) {
+        final argName = arg.name.toString();
         parameters.add(
           Parameter(
             (p) => p
-              ..name = arg.key.toStringValue()
+              ..name = argName
               ..named = true
-              ..type = refer(
-                arg.value.toTypeValue().name,
-              ),
+              ..type = refer(arg.type.toString()),
           ),
         );
         argumentsMapBuffer.write("'$argName': $argName,");
@@ -145,7 +143,8 @@ class NavigationClass extends BaseBuilder {
 
       if (nuRouteFieldAnnotation != null) {
         final generics = getGenericTypes(field.type);
-        final args = nuRouteFieldAnnotation?.getField('args')?.toMapValue();
+        final args =
+            nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
         final screenReturn =
             generics.length > 1 ? generics[1].name : generics.first.name;
 

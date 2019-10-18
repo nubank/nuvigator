@@ -18,9 +18,9 @@ dependencies:
 
 dev_dependencies:
   mockito: ^4.1.0
-  build_runner: ^1.5.0
-  build_test: ^0.10.7+3
+  build_runner: ^1.6.5
   flutter_test:
     sdk: flutter
+  analyzer: ^0.38.5
 
 flutter:
