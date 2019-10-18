@@ -9,13 +9,12 @@ part 'sample_one_router.g.dart';
 const screenOneDeepLink =
     'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink';
 
-void screenOneS1Args(String testId) {}
-
 @NuRouter()
 class SampleOneRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => '/sampleOne/';
 
+  static void screenOneS1Args(String testId) {}
   @NuRoute(args: screenOneS1Args)
   final screenOne = const ScreenRoute(
     builder: ScreenOne.builder,

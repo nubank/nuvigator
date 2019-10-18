@@ -10,8 +10,6 @@ import '../screen/screen_two.dart';
 
 part 'sample_two_router.g.dart';
 
-void screenOneS2Args(String testId) {}
-
 @NuRouter()
 class SampleTwoRouter extends BaseRouter {
   @override
@@ -22,6 +20,7 @@ class SampleTwoRouter extends BaseRouter {
         );
       };
 
+  static void screenOneS2Args(String testId) {}
   @NuRoute(args: screenOneS2Args)
   final screenOne = ScreenRoute<String>(
     builder: ScreenOne.builder,
