@@ -24,7 +24,7 @@ class BuilderLibrary extends BaseBuilder {
               ..name = 'router',
           ),
         )
-        ..returns = refer('Map<String, ScreenRoute>')
+        ..returns = refer('Map<String, ScreenRouteBuilder>')
         ..body = Code('return {$code};'),
     );
   }
@@ -69,16 +69,33 @@ class BuilderLibrary extends BaseBuilder {
     final screensMapBuffer = StringBuffer();
     final subRoutersListBuffer = StringBuffer();
 
-    for (final field in classElement.fields) {
+    for (final method in classElement.methods) {
       final nuRouteFieldAnnotation =
-          nuRouteChecker.firstAnnotationOfExact(field);
-      final nuSubRouterAnnotation =
-          nuRouterChecker.firstAnnotationOfExact(field);
+          nuRouteChecker.firstAnnotationOfExact(method);
+
+      final params = method.parameters.map((p) => p.name);
+      final paramsStr = params.isEmpty
+          ? ''
+          : '${params.map((p) => "$p: args['$p']").join(",")}';
+
+      final screenRouteBuilder = Method((m) => m
+        ..requiredParameters.add(Parameter((p) => p
+          ..name = 'settings'
+          ..type = refer('RouteSettings')))
+        ..lambda = false
+        ..body = Code('final Map<String, Object> args = settings.arguments;'
+            'return router.${method.name}($paramsStr);'));
 
       if (nuRouteFieldAnnotation != null) {
         screensMapBuffer.write(
-            '${routerName(className)}Routes.${field.name}: router.${field.name},\n');
-      } else if (nuSubRouterAnnotation != null) {
+            '${routerName(className)}Routes.${method.name}: ${screenRouteBuilder.accept(DartEmitter())},\n');
+      }
+    }
+
+    for (final field in classElement.fields) {
+      final nuSubRouterAnnotation =
+          nuRouterChecker.firstAnnotationOfExact(field);
+      if (nuSubRouterAnnotation != null) {
         subRoutersListBuffer.write('router.${field.name},\n');
       }
     }

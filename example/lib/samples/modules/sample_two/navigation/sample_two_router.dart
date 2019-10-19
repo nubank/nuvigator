@@ -20,23 +20,24 @@ class SampleTwoRouter extends BaseRouter {
         );
       };
 
-  static void screenOneS2Args(String testId) {}
-  @NuRoute(args: screenOneS2Args)
-  final screenOne = ScreenRoute<String>(
-    builder: ScreenOne.builder,
-    wrapper: (screenContext, child) {
-      return Provider<ScreenOneBloc>.value(
-        value: ScreenOneBloc(),
-        child: child,
+//  static void screenOneS2Args(String testId) {}
+  @NuRoute()
+  ScreenRoute<String> screenOne({String testId}) => const ScreenRoute(
+        builder: ScreenOne.builder,
+//        wrapper: (screenContext, child) {
+//          return Provider<ScreenOneBloc>.value(
+//            value: ScreenOneBloc(),
+//            child: child,
+//          );
+//        },
       );
-    },
-  );
 
   @NuRoute()
-  final screenTwo = const ScreenRoute<String>(builder: ScreenTwo.builder);
+  ScreenRoute<String> screenTwo() =>
+      const ScreenRoute<String>(builder: ScreenTwo.builder);
 
   @override
-  Map<String, ScreenRoute> get screensMap => _$sampleTwoScreensMap(this);
+  Map<String, ScreenRouteBuilder> get screensMap => _$sampleTwoScreensMap(this);
 }
 
 final sampleTwoNuvigator = Nuvigator<SampleTwoRouter>(

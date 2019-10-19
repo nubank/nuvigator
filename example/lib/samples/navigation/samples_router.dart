@@ -23,20 +23,20 @@ class SamplesRouter extends BaseRouter {
       };
 
   @NuRoute()
-  final home = ScreenRoute(
-    builder: (context) => HomeScreen(context),
-  );
+  ScreenRoute home() => ScreenRoute(
+        builder: (context) => HomeScreen(context),
+      );
 
-  @NuRoute(args: SampleTwoRouter.screenOneS2Args)
-  final second = FlowRoute(
-    nuvigator: sampleTwoNuvigator,
-  );
+  @NuRoute()
+  FlowRoute<SampleTwoRouter, void> second({String testId}) => FlowRoute(
+        nuvigator: sampleTwoNuvigator,
+      );
 
   @NuRouter()
   final sampleOneRouter = SampleOneRouter();
 
   @override
-  Map<String, ScreenRoute> get screensMap => _$samplesScreensMap(this);
+  Map<String, ScreenRouteBuilder> get screensMap => _$samplesScreensMap(this);
 
   @override
   List<Router> get routers => _$samplesRoutersList(this);

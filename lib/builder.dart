@@ -16,7 +16,7 @@ class NuvigatorGenerator extends GeneratorForAnnotation<NuRouter> {
     if (element is ClassElement) {
       final ClassElement classElement = element;
       final lib = BuilderLibrary(classElement).build();
-      return DartFormatter().format('${lib.accept(DartEmitter())}');
+      return DartFormatter().format(lib.accept(DartEmitter()).toString());
     }
     return null;
   }

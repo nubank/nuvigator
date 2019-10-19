@@ -3,7 +3,7 @@ class NuRouter {
 }
 
 class NuRoute {
-  const NuRoute({this.args});
+  const NuRoute({this.deepLink});
 
-  final Function args;
+  final String deepLink;
 }

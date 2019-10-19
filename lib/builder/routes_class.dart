@@ -29,9 +29,9 @@ class RoutesClass extends BaseBuilder {
   Spec build() {
     final className = classElement.name;
 
-    final fields = classElement.fields
-        .where((field) => nuRouteChecker.firstAnnotationOfExact(field) != null)
-        .map((field) => _constRoutesField(field.name, className))
+    final fields = classElement.methods
+        .where((m) => nuRouteChecker.firstAnnotationOfExact(m) != null)
+        .map((method) => _constRoutesField(method.name, className))
         .toList();
 
     return _generateRoutesClass(className, fields);

@@ -26,7 +26,7 @@ class Nuvigator<T extends Router> extends Navigator {
               );
             }
             return router
-                .getScreen(routeName: finalSettings.name)
+                .getScreen(finalSettings)
                 ?.fallbackScreenType(screenType)
                 ?.toRoute(finalSettings);
           },
@@ -83,7 +83,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
-    final possibleRoute = router.getScreen(routeName: routeName);
+    final possibleRoute =
+        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null && parent != null) {
       return parent.pushNamed<T>(routeName, arguments: arguments);
     }
@@ -95,7 +96,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute = router.getScreen(routeName: routeName);
+    final possibleRoute =
+        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
       return parent.pushReplacementNamed<T, TO>(routeName,
           arguments: arguments, result: result);
@@ -108,7 +110,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   Future<T> pushNamedAndRemoveUntil<T extends Object>(
       String newRouteName, RoutePredicate predicate,
       {Object arguments}) {
-    final possibleRoute = router.getScreen(routeName: newRouteName);
+    final possibleRoute = router
+        .getScreen(RouteSettings(name: newRouteName, arguments: arguments));
     if (possibleRoute == null) {
       return parent.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
           arguments: arguments);
@@ -122,7 +125,8 @@ class NuvigatorState<T extends Router> extends NavigatorState {
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute = router.getScreen(routeName: routeName);
+    final possibleRoute =
+        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
       return parent.popAndPushNamed<T, TO>(routeName,
           arguments: arguments, result: result);

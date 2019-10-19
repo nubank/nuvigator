@@ -62,12 +62,14 @@ class NavigationClass extends BaseBuilder {
   }
 
   Method _pushMethod(String className, String fieldName, String screenReturn,
-      ExecutableElement args) {
+      MethodElement method) {
     final parameters = <Parameter>[];
     final argumentsMapBuffer = StringBuffer('{');
+    final hasParameters =
+        method?.parameters != null && method.parameters.isNotEmpty;
 
-    if (args?.parameters != null && args.parameters.isNotEmpty) {
-      for (final arg in args.parameters) {
+    if (hasParameters) {
+      for (final arg in method.parameters) {
         final argName = arg.name.toString();
         parameters.add(
           Parameter(
@@ -89,7 +91,7 @@ class NavigationClass extends BaseBuilder {
         ..name = fieldName
         ..returns = refer('Future<$screenReturn>')
         ..optionalParameters.addAll(parameters)
-        ..body = args != null
+        ..body = hasParameters
             ? Code(
                 'return nuvigator.pushNamed<$screenReturn>($routeName, arguments: ${argumentsMapBuffer.toString()});',
               )
@@ -133,31 +135,32 @@ class NavigationClass extends BaseBuilder {
     final className = classElement.name;
     final methods = <Method>[];
 
-    for (var field in classElement.fields) {
+    for (final method in classElement.methods) {
       final nuRouteFieldAnnotation =
-          nuRouteChecker.firstAnnotationOf(field, throwOnUnresolved: true);
-      final isFlow = field.type.name == 'FlowRoute';
-      final nuSubRouterAnnotation =
-          nuRouterChecker.firstAnnotationOfExact(field);
+          nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
 
       if (nuRouteFieldAnnotation != null) {
-        final generics = getGenericTypes(field.type);
-        final args =
-            nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
+        final generics = getGenericTypes(method.returnType);
         final screenReturn =
             generics.length > 1 ? generics[1].name : generics.first.name;
 
         methods.add(
-          _pushMethod(className, field.name, screenReturn, args),
+          _pushMethod(className, method.name, screenReturn, method),
         );
+      }
+      final isFlow = method.returnType.name == 'FlowRoute';
+      if (isFlow) {
+        final subRouter = getGenericTypes(method.returnType).first;
+        methods.add(
+          _subRouterMethod(subRouter.name),
+        );
+      }
+    }
 
-        if (isFlow) {
-          final subRouter = getGenericTypes(field.type).first;
-          methods.add(
-            _subRouterMethod(subRouter.name),
-          );
-        }
-      } else if (nuSubRouterAnnotation != null) {
+    for (final field in classElement.fields) {
+      final nuSubRouterAnnotation =
+          nuRouterChecker.firstAnnotationOfExact(field);
+      if (nuSubRouterAnnotation != null) {
         methods.add(
           _navigationMethod(field.type.name),
         );

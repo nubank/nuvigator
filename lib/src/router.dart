@@ -47,17 +47,26 @@ class RouteEntry {
 /// Router Interface. Provide a basic interface to communicate with other Router
 /// components.
 abstract class Router {
-  ScreenRoute getScreen({@required String routeName});
+  ScreenRoute getScreen(RouteSettings settings);
 
   Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) => null;
 
   Route getRoute(RouteSettings settings);
 }
 
+typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
+
+abstract class RouteRegistry {
+  List<Router> get routers => [];
+
+  Map<String, ScreenRouteBuilder> get screensMap;
+}
+
 abstract class BaseRouter implements Router {
   List<Router> get routers => [];
 
-  Map<String, ScreenRoute> get screensMap;
+  Map<String, ScreenRoute Function(RouteSettings settings)> get screensMap;
+
   final String deepLinkPrefix = null;
 
   WrapperFn get screensWrapper => null;
@@ -67,14 +76,12 @@ abstract class BaseRouter implements Router {
   }
 
   @override
-  ScreenRoute getScreen({@required String routeName}) {
-    assert(routeName != null && routeName.isNotEmpty);
-
-    final screen = _getScreen(routeName: routeName);
+  ScreenRoute getScreen(RouteSettings settings) {
+    final screen = _getScreen(settings);
     if (screen != null) return screen;
 
     for (Router router in routers) {
-      final screen = router.getScreen(routeName: routeName);
+      final screen = router.getScreen(settings);
       if (screen != null) return screen.wrapWith(screensWrapper);
     }
     return null;
@@ -104,35 +111,34 @@ abstract class BaseRouter implements Router {
     return null;
   }
 
-  ScreenRoute _getScreen({@required String routeName}) {
-    assert(routeName != null && routeName.isNotEmpty);
-
-    final screen = screensMap[routeName];
-    return screen?.wrapWith(screensWrapper);
+  ScreenRoute _getScreen(RouteSettings settings) {
+    final screenBuilder = screensMap[settings.name];
+    if (screenBuilder == null) return null;
+    return screenBuilder(settings).wrapWith(screensWrapper);
   }
 
   Future<RouteEntry> _getRouteEntryForDeepLink(String deepLink) async {
-    final deepLinkPrefix = await getDeepLinkPrefix();
-    for (var screenEntry in screensMap.entries) {
-      final screen = screenEntry.value;
-      final currentDeepLink = screenEntry.value.deepLink;
-      if (currentDeepLink == null) break;
-      final fullTemplate = deepLinkPrefix + currentDeepLink;
-      final regExp = pathToRegExp(fullTemplate);
-      if (regExp.hasMatch(deepLink)) {
-        return RouteEntry(
-          deepLink: deepLink,
-          template: fullTemplate,
-          screen: screen,
-          routeName: screenEntry.key,
-        );
-      }
-    }
+//    final deepLinkPrefix = await getDeepLinkPrefix();
+//    for (var screenEntry in screensMap.entries) {
+//      final screen = screenEntry.value;
+//      final currentDeepLink = screen.deepLink;
+//      if (currentDeepLink == null) break;
+//      final fullTemplate = deepLinkPrefix + currentDeepLink;
+//      final regExp = pathToRegExp(fullTemplate);
+//      if (regExp.hasMatch(deepLink)) {
+//        return RouteEntry(
+//          deepLink: deepLink,
+//          template: fullTemplate,
+//          screen: screen,
+//          routeName: screenEntry.key,
+//        );
+//      }
+//    }
     return null;
   }
 
   @override
   Route getRoute(RouteSettings settings) {
-    return getScreen(routeName: settings.name).toRoute(settings);
+    return getScreen(settings).toRoute(settings);
   }
 }

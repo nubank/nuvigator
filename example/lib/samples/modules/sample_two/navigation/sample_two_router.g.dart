@@ -61,10 +61,16 @@ class SampleTwoNavigation {
   }
 }
 
-Map<String, ScreenRoute> _$sampleTwoScreensMap(SampleTwoRouter router) {
+Map<String, ScreenRouteBuilder> _$sampleTwoScreensMap(SampleTwoRouter router) {
   return {
-    SampleTwoRoutes.screenOne: router.screenOne,
-    SampleTwoRoutes.screenTwo: router.screenTwo,
+    SampleTwoRoutes.screenOne: (RouteSettings settings) {
+      final Map<String, Object> args = settings.arguments;
+      return router.screenOne(testId: args['testId']);
+    },
+    SampleTwoRoutes.screenTwo: (RouteSettings settings) {
+      final Map<String, Object> args = settings.arguments;
+      return router.screenTwo();
+    },
   };
 }
 

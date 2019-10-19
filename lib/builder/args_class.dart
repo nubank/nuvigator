@@ -129,22 +129,22 @@ class ArgsClass extends BaseBuilder {
     final argsClasses = <Class>[];
     final screensClasses = <Class>[];
 
-    for (var field in classElement.fields) {
+    for (var method in classElement.methods) {
       final nuRouteFieldAnnotation =
-          nuRouteChecker.firstAnnotationOfExact(field);
-      final isFlow = field.type.name == 'FlowRoute';
+          nuRouteChecker.firstAnnotationOfExact(method);
+      final isFlow = method.type.name == 'FlowRoute';
 
       if (nuRouteFieldAnnotation == null) continue;
 
-      final args = nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
+//      final args = nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
 
-      if (args?.parameters == null || args.parameters.isEmpty) continue;
+      if (method?.parameters == null || method.parameters.isEmpty) continue;
 
       final constructorParameters = <Parameter>[];
       final argsFields = <Field>[];
       final argsParserBuffer = StringBuffer('');
 
-      for (final arg in args.parameters) {
+      for (final arg in method.parameters) {
         final varName = arg.name.toString();
         final typeName = arg.type.toString();
 
@@ -162,7 +162,7 @@ class ArgsClass extends BaseBuilder {
       argsClasses.add(
         _generateArgsClass(
           routerName(classElement.name),
-          field.name,
+          method.name,
           argsParserBuffer.toString(),
           constructorParameters,
           argsFields,
@@ -171,7 +171,7 @@ class ArgsClass extends BaseBuilder {
       if (!isFlow) {
         screensClasses.add(
           _generateScreenClass(
-            capitalize(field.name),
+            capitalize(method.name),
           ),
         );
       }

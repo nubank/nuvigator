@@ -37,6 +37,12 @@ class SecondArgs {
   }
 }
 
+abstract class SecondScreen extends ScreenWidget {
+  SecondScreen(BuildContext context) : super(context);
+
+  SecondArgs get args => SecondArgs.of(context);
+}
+
 class SamplesNavigation {
   SamplesNavigation(this.nuvigator);
 
@@ -48,8 +54,8 @@ class SamplesNavigation {
     return nuvigator.pushNamed<Object>(SamplesRoutes.home);
   }
 
-  Future<Object> second({String testId}) {
-    return nuvigator.pushNamed<Object>(SamplesRoutes.second, arguments: {
+  Future<void> second({String testId}) {
+    return nuvigator.pushNamed<void>(SamplesRoutes.second, arguments: {
       'testId': testId,
     });
   }
@@ -58,10 +64,16 @@ class SamplesNavigation {
   SampleOneNavigation get sampleOneNavigation => SampleOneNavigation(nuvigator);
 }
 
-Map<String, ScreenRoute> _$samplesScreensMap(SamplesRouter router) {
+Map<String, ScreenRouteBuilder> _$samplesScreensMap(SamplesRouter router) {
   return {
-    SamplesRoutes.home: router.home,
-    SamplesRoutes.second: router.second,
+    SamplesRoutes.home: (RouteSettings settings) {
+      final Map<String, Object> args = settings.arguments;
+      return router.home();
+    },
+    SamplesRoutes.second: (RouteSettings settings) {
+      final Map<String, Object> args = settings.arguments;
+      return router.second(testId: args['testId']);
+    },
   };
 }
 

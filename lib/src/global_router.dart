@@ -54,13 +54,13 @@ class GlobalRouter implements Router {
   }
 
   @override
-  ScreenRoute<Object> getScreen({String routeName}) {
-    return baseRouter.getScreen(routeName: routeName);
+  ScreenRoute getScreen(RouteSettings settings) {
+    return baseRouter.getScreen(settings);
   }
 
   @override
   Route getRoute(RouteSettings settings) {
-    final screen = getScreen(routeName: settings.name);
+    final screen = getScreen(settings);
     if (screen == null) {
       if (onScreenNotFound != null)
         return onScreenNotFound(settings).toRoute(settings);

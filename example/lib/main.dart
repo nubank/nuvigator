@@ -55,9 +55,7 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              final result = await SamplesNavigation.of(context)
-                  .second(testId: 'From Home');
-              print('RESULT $result');
+              SamplesNavigation.of(context).second(testId: 'From Home');
             },
           ),
         ],
