@@ -4,5 +4,5 @@ builders:
     builder_factories: ["nuvigatorBuilder"]
     build_extensions: {".dart": [".nuvigator.g.part"]}
     auto_apply: dependents
-    build_to: source
-    applies_builders: ["source_gen"]
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

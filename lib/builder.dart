@@ -23,4 +23,4 @@ class NuvigatorGenerator extends GeneratorForAnnotation<NuRouter> {
 }
 
 Builder nuvigatorBuilder(BuilderOptions options) =>
-    PartBuilder([NuvigatorGenerator()], '.g.dart');
+    SharedPartBuilder([NuvigatorGenerator()], 'nuvigator');
