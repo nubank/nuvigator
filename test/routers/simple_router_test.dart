@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
 
@@ -6,17 +7,23 @@ import '../helpers.dart';
 void main() {
   group('getScreen', () {
     test('finds the correct screen for `firstScreen`', () {
-      expect(testRouter.getScreen(routeName: 'firstScreen').debugKey,
+      expect(
+          testRouter
+              .getScreen(const RouteSettings(name: 'firstScreen'))
+              .debugKey,
           'testRouterFirstScreen');
     });
 
     test('finds the correct screen for `secondScreen`', () {
-      expect(testRouter.getScreen(routeName: 'secondScreen').debugKey,
+      expect(
+          testRouter
+              .getScreen(const RouteSettings(name: 'secondScreen'))
+              .debugKey,
           'testRouterSecondScreen');
     });
 
     test('returns null if the screen is not found', () {
-      expect(testRouter.getScreen(routeName: 'notFound'), null);
+      expect(testRouter.getScreen(const RouteSettings(name: 'notFound')), null);
     });
   });
 

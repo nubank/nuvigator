@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
 
@@ -6,17 +7,26 @@ import '../helpers.dart';
 void main() {
   group('getScreen', () {
     test('priority is given to declared screens on this router', () {
-      expect(testGroupRouter.getScreen(routeName: 'firstScreen').debugKey,
+      expect(
+          testGroupRouter
+              .getScreen(const RouteSettings(name: 'firstScreen'))
+              .debugKey,
           'groupRouterFirstScreen');
     });
 
     test('when not found in it, search in sub-routers', () {
-      expect(testGroupRouter.getScreen(routeName: 'secondScreen').debugKey,
+      expect(
+          testGroupRouter
+              .getScreen(const RouteSettings(name: 'secondScreen'))
+              .debugKey,
           'testRouterSecondScreen');
     });
 
     test('screen is not found', () {
-      expect(testGroupRouter.getScreen(routeName: 'notFoundScreen'), null);
+      expect(
+          testGroupRouter
+              .getScreen(const RouteSettings(name: 'notFoundScreen')),
+          null);
     });
   });
 

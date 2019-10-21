@@ -20,3 +20,26 @@ String lowerCamelCase(String s) => s[0].toLowerCase() + s.substring(1);
 
 String routerName(String routerClassName) =>
     routerClassName.replaceAll('Router', '');
+
+String getRouterName(ClassElement element) {
+  return nuRouterChecker
+          .firstAnnotationOfExact(element)
+          ?.getField('routerName')
+          ?.toStringValue() ??
+      routerName(element.name);
+}
+
+String getRouteString(ClassElement routerElement, MethodElement element) {
+  final prefix = nuRouterChecker
+          .firstAnnotationOfExact(routerElement)
+          ?.getField('routeNamePrefix')
+          ?.toStringValue() ??
+      '';
+  final routerName = getRouterName(routerElement);
+  final routeName = nuRouteChecker
+          .firstAnnotationOfExact(element)
+          ?.getField('routeName')
+          ?.toStringValue() ??
+      element.name;
+  return '$prefix$routerName/$routeName';
+}

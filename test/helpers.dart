@@ -3,19 +3,19 @@ import 'package:nuvigator/nuvigator.dart';
 
 class TestRouter extends BaseRouter {
   @override
-  Map<String, ScreenRoute> get screensMap => {
-        'firstScreen': ScreenRoute(
-          builder: (sc) => null,
-          deepLink: 'test/simple',
-          debugKey: 'testRouterFirstScreen',
-          screenType: materialScreenType,
-        ),
-        'secondScreen': ScreenRoute(
-          builder: (sc) => null,
-          deepLink: 'test/:id/params',
-          debugKey: 'testRouterSecondScreen',
-          screenType: materialScreenType,
-        ),
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
+        RouteDef('firstScreen'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              deepLink: 'test/simple',
+              debugKey: 'testRouterFirstScreen',
+              screenType: materialScreenType,
+            ),
+        RouteDef('secondScreen'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              deepLink: 'test/:id/params',
+              debugKey: 'testRouterSecondScreen',
+              screenType: materialScreenType,
+            ),
       };
 }
 
@@ -34,13 +34,13 @@ class GroupTestRouter extends BaseRouter {
       ];
 
   @override
-  Map<String, ScreenRoute> get screensMap => {
-        'firstScreen': ScreenRoute(
-          builder: (sc) => null,
-          debugKey: 'groupRouterFirstScreen',
-          screenType: cupertinoScreenType,
-          deepLink: 'route/test',
-        ),
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
+        RouteDef('firstScreen'): (settings) => ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'groupRouterFirstScreen',
+              screenType: cupertinoScreenType,
+              deepLink: 'route/test',
+            ),
       };
 }
 
