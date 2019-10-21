@@ -50,7 +50,7 @@ class SampleOneNavigation {
 
   static SampleOneNavigation of(BuildContext context) =>
       SampleOneNavigation(Nuvigator.of(context));
-  Future<Object> screenOne({String testId}) {
+  Future<Object> screenOne({@required String testId}) {
     return nuvigator.pushNamed<Object>(SampleOneRoutes.screenOne, arguments: {
       'testId': testId,
     });
@@ -70,10 +70,7 @@ Map<RouteDef, ScreenRouteBuilder> _$sampleOneScreensMap(
       return router.screenOne(testId: args['testId']);
     },
     RouteDef(SampleOneRoutes.screenTwo): (RouteSettings settings) {
-      final Map<String, Object> args = settings.arguments;
       return router.screenTwo();
     },
   };
 }
-
-List<Router> _$sampleOneRoutersList(SampleOneRouter router) => [];

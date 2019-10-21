@@ -9,8 +9,6 @@ import 'screen_types/material_screen_type.dart';
 
 typedef WrapperFn = Widget Function(BuildContext context, Widget child);
 
-Widget defaultWrapperFn(BuildContext _, Widget screenWidget) => screenWidget;
-
 class RouteDef {
   RouteDef(this.routeName, {this.deepLink});
 
@@ -33,7 +31,6 @@ class ScreenRoute<T extends Object> {
     this.wrapper,
     this.screenType,
     this.debugKey,
-    this.deepLink,
   }) : assert(builder != null);
 
   static ScreenRoute material<T extends Object>(WidgetBuilder widgetBuilder,
@@ -62,9 +59,6 @@ class ScreenRoute<T extends Object> {
   final ScreenType screenType;
   final WrapperFn wrapper;
   final String debugKey;
-  final String deepLink;
-
-//  final A Function(Map<String, String>) parseDeepLinkArgs;
 
   ScreenRoute<T> fallbackScreenType(ScreenType fallbackScreenType) {
     return ScreenRoute<T>(
@@ -99,7 +93,6 @@ class ScreenRoute<T extends Object> {
       screenType: screenType ?? this.screenType,
       wrapper: wrapper ?? this.wrapper,
       debugKey: debugKey ?? this.debugKey,
-      deepLink: deepLink ?? this.deepLink,
     );
   }
 
@@ -140,12 +133,10 @@ class ScreenRoute<T extends Object> {
 class FlowRoute<T extends Router, R extends Object> extends ScreenRoute<R> {
   FlowRoute({
     @required Nuvigator<T> nuvigator,
-    String deepLink,
     ScreenType screenType,
     String debugKey,
   }) : super(
           builder: nuvigator,
-          deepLink: deepLink,
           screenType: screenType,
           debugKey: debugKey,
         );

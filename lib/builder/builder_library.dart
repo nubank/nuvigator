@@ -57,7 +57,8 @@ class BuilderLibrary extends BaseBuilder {
           ArgsClass(classElement).build(),
           NavigationClass(classElement).build(),
           _screensMapMethod(className, screensMapCode),
-          _subRoutersListMethod(className, subRoutersListCode),
+          if (subRoutersListCode != '')
+            _subRoutersListMethod(className, subRoutersListCode),
         ]),
     );
   }
@@ -85,7 +86,9 @@ class BuilderLibrary extends BaseBuilder {
             ..name = 'settings'
             ..type = refer('RouteSettings')))
           ..lambda = false
-          ..body = Code('final Map<String, Object> args = settings.arguments;'
+          ..body = Code((params.isEmpty
+                  ? ''
+                  : 'final Map<String, Object> args = settings.arguments;') +
               'return router.${method.name}($paramsStr);'));
 
         if (deepLink != null) {

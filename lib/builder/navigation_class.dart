@@ -71,10 +71,14 @@ class NavigationClass extends BaseBuilder {
     if (hasParameters) {
       for (final arg in method.parameters) {
         final argName = arg.name.toString();
+        final isRequired = arg.metadata.isNotEmpty &&
+            arg.metadata.firstWhere((e) => e.isRequired, orElse: null) != null;
         parameters.add(
           Parameter(
             (p) => p
               ..name = argName
+              ..annotations.addAll(
+                  isRequired ? [const CodeExpression(Code('required'))] : [])
               ..named = true
               ..type = refer(arg.type.toString()),
           ),

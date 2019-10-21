@@ -1,4 +1,3 @@
-import 'package:example/samples/modules/sample_two/bloc/screen_one_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';

@@ -69,10 +69,7 @@ Map<RouteDef, ScreenRouteBuilder> _$sampleTwoScreensMap(
       return router.screenOne(testId: args['testId']);
     },
     RouteDef(SampleTwoRoutes.screenTwo): (RouteSettings settings) {
-      final Map<String, Object> args = settings.arguments;
       return router.screenTwo();
     },
   };
 }
-
-List<Router> _$sampleTwoRoutersList(SampleTwoRouter router) => [];

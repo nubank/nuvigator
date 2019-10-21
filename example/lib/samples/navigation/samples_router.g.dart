@@ -67,7 +67,6 @@ class SamplesNavigation {
 Map<RouteDef, ScreenRouteBuilder> _$samplesScreensMap(SamplesRouter router) {
   return {
     RouteDef(SamplesRoutes.home): (RouteSettings settings) {
-      final Map<String, Object> args = settings.arguments;
       return router.home();
     },
     RouteDef(SamplesRoutes.second): (RouteSettings settings) {
