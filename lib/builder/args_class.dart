@@ -94,7 +94,9 @@ class ArgsClass extends BaseBuilder {
     );
   }
 
-  Class _generateScreenClass(String routeName) {
+  Class _generateScreenClass(ClassElement classElement, String routeName) {
+    final routerNavigationName = '${getRouterName(classElement)}Navigation';
+
     return Class(
       (c) => c
         ..name = '${routeName}Screen'
@@ -111,15 +113,24 @@ class ArgsClass extends BaseBuilder {
               ),
             )),
         )
-        ..methods.add(
+        ..methods.addAll([
           Method(
-            (m) => m
+                (m) => m
               ..name = 'args'
               ..lambda = true
               ..type = MethodType.getter
               ..returns = refer('${capitalize(routeName)}Args')
               ..body = Code('${capitalize(routeName)}Args.of(context)'),
           ),
+          Method(
+                (m) => m
+              ..name = lowerCamelCase(routerNavigationName)
+              ..lambda = true
+              ..type = MethodType.getter
+              ..returns = refer(routerNavigationName)
+              ..body = Code('$routerNavigationName.of(context)'),
+          ),
+          ]
         ),
     );
   }
@@ -171,6 +182,7 @@ class ArgsClass extends BaseBuilder {
       if (!isFlow) {
         screensClasses.add(
           _generateScreenClass(
+            classElement,
             capitalize(method.name),
           ),
         );

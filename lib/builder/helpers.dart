@@ -35,7 +35,7 @@ String getRouteString(ClassElement routerElement, MethodElement element) {
           ?.getField('routeNamePrefix')
           ?.toStringValue() ??
       '';
-  final routerName = getRouterName(routerElement);
+  final routerName = lowerCamelCase(getRouterName(routerElement));
   final routeName = nuRouteChecker
           .firstAnnotationOfExact(element)
           ?.getField('routeName')

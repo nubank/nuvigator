@@ -19,7 +19,7 @@ class RoutesClass extends BaseBuilder {
     return Field(
       (f) => f
         ..name = routeMethod.name
-        ..assignment = Code('\'${getRouteString(routerClass, routeMethod)}\'')
+        ..assignment = Code("'${getRouteString(routerClass, routeMethod)}'")
         ..modifier = FieldModifier.constant
         ..static = true,
     );
