@@ -127,6 +127,7 @@ class ScreenRoute<T extends Object> {
       screenType.toRoute<T>(builder, settings);
 
   Widget _buildScreen(BuildContext context, RouteSettings settings) {
+    if (wrapper == null) return builder(context);
     return wrapper(
       context,
       Builder(
