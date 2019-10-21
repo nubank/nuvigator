@@ -7,19 +7,19 @@ import 'helpers.dart';
 class RoutesClass extends BaseBuilder {
   RoutesClass(ClassElement classElement) : super(classElement);
 
-  Class _generateRoutesClass(String className, List<Field> fields) {
+  Class _generateRoutesClass(ClassElement classElement, List<Field> fields) {
     return Class(
       (b) => b
-        ..name = '${routerName(className)}Routes'
+        ..name = '${getRouterName(classElement)}Routes'
         ..fields.addAll(fields),
     );
   }
 
-  Field _constRoutesField(String fieldName, String className) {
+  Field _constRoutesField(MethodElement routeMethod, ClassElement routerClass) {
     return Field(
       (f) => f
-        ..name = fieldName
-        ..assignment = Code("'${routerName(className)}/$fieldName'")
+        ..name = routeMethod.name
+        ..assignment = Code('\'${getRouteString(routerClass, routeMethod)}\'')
         ..modifier = FieldModifier.constant
         ..static = true,
     );
@@ -27,13 +27,11 @@ class RoutesClass extends BaseBuilder {
 
   @override
   Spec build() {
-    final className = classElement.name;
-
     final fields = classElement.methods
         .where((m) => nuRouteChecker.firstAnnotationOfExact(m) != null)
-        .map((method) => _constRoutesField(method.name, className))
+        .map((method) => _constRoutesField(method, classElement))
         .toList();
 
-    return _generateRoutesClass(className, fields);
+    return _generateRoutesClass(classElement, fields);
   }
 }
