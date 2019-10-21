@@ -37,7 +37,8 @@ class SampleTwoRouter extends BaseRouter {
       const ScreenRoute<String>(builder: ScreenTwo.builder);
 
   @override
-  Map<String, ScreenRouteBuilder> get screensMap => _$sampleTwoScreensMap(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap =>
+      _$sampleTwoScreensMap(this);
 }
 
 final sampleTwoNuvigator = Nuvigator<SampleTwoRouter>(

@@ -56,18 +56,20 @@ class SampleOneNavigation {
     });
   }
 
-  Future<Object> screenTwo() {
-    return nuvigator.pushNamed<Object>(SampleOneRoutes.screenTwo);
+  Future<int> screenTwo() {
+    return nuvigator.pushNamed<int>(SampleOneRoutes.screenTwo);
   }
 }
 
-Map<String, ScreenRouteBuilder> _$sampleOneScreensMap(SampleOneRouter router) {
+Map<RouteDef, ScreenRouteBuilder> _$sampleOneScreensMap(
+    SampleOneRouter router) {
   return {
-    SampleOneRoutes.screenOne: (RouteSettings settings) {
+    RouteDef(SampleOneRoutes.screenOne, deepLink: 'screenOne/:testId'):
+        (RouteSettings settings) {
       final Map<String, Object> args = settings.arguments;
       return router.screenOne(testId: args['testId']);
     },
-    SampleOneRoutes.screenTwo: (RouteSettings settings) {
+    RouteDef(SampleOneRoutes.screenTwo): (RouteSettings settings) {
       final Map<String, Object> args = settings.arguments;
       return router.screenTwo();
     },

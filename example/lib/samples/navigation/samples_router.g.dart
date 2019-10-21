@@ -64,13 +64,13 @@ class SamplesNavigation {
   SampleOneNavigation get sampleOneNavigation => SampleOneNavigation(nuvigator);
 }
 
-Map<String, ScreenRouteBuilder> _$samplesScreensMap(SamplesRouter router) {
+Map<RouteDef, ScreenRouteBuilder> _$samplesScreensMap(SamplesRouter router) {
   return {
-    SamplesRoutes.home: (RouteSettings settings) {
+    RouteDef(SamplesRoutes.home): (RouteSettings settings) {
       final Map<String, Object> args = settings.arguments;
       return router.home();
     },
-    SamplesRoutes.second: (RouteSettings settings) {
+    RouteDef(SamplesRoutes.second): (RouteSettings settings) {
       final Map<String, Object> args = settings.arguments;
       return router.second(testId: args['testId']);
     },

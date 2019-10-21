@@ -24,7 +24,7 @@ class BuilderLibrary extends BaseBuilder {
               ..name = 'router',
           ),
         )
-        ..returns = refer('Map<String, ScreenRouteBuilder>')
+        ..returns = refer('Map<RouteDef, ScreenRouteBuilder>')
         ..body = Code('return {$code};'),
     );
   }
@@ -72,23 +72,29 @@ class BuilderLibrary extends BaseBuilder {
     for (final method in classElement.methods) {
       final nuRouteFieldAnnotation =
           nuRouteChecker.firstAnnotationOfExact(method);
-
-      final params = method.parameters.map((p) => p.name);
-      final paramsStr = params.isEmpty
-          ? ''
-          : '${params.map((p) => "$p: args['$p']").join(",")}';
-
-      final screenRouteBuilder = Method((m) => m
-        ..requiredParameters.add(Parameter((p) => p
-          ..name = 'settings'
-          ..type = refer('RouteSettings')))
-        ..lambda = false
-        ..body = Code('final Map<String, Object> args = settings.arguments;'
-            'return router.${method.name}($paramsStr);'));
-
       if (nuRouteFieldAnnotation != null) {
-        screensMapBuffer.write(
-            '${routerName(className)}Routes.${method.name}: ${screenRouteBuilder.accept(DartEmitter())},\n');
+        final params = method.parameters.map((p) => p.name);
+        final deepLink =
+            nuRouteFieldAnnotation.getField('deepLink').toStringValue();
+        final paramsStr = params.isEmpty
+            ? ''
+            : '${params.map((p) => "$p: args['$p']").join(",")}';
+
+        final screenRouteBuilder = Method((m) => m
+          ..requiredParameters.add(Parameter((p) => p
+            ..name = 'settings'
+            ..type = refer('RouteSettings')))
+          ..lambda = false
+          ..body = Code('final Map<String, Object> args = settings.arguments;'
+              'return router.${method.name}($paramsStr);'));
+
+        if (deepLink != null) {
+          screensMapBuffer.write(
+              'RouteDef(${routerName(className)}Routes.${method.name}, deepLink: \'$deepLink\'): ${screenRouteBuilder.accept(DartEmitter())},\n');
+        } else {
+          screensMapBuffer.write(
+              'RouteDef(${routerName(className)}Routes.${method.name}): ${screenRouteBuilder.accept(DartEmitter())},\n');
+        }
       }
     }
 

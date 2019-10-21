@@ -91,7 +91,7 @@ class GlobalRouter implements Router {
 
   Route _buildNativeRoute(RouteEntry routeEntry) {
     final routeSettings = routeEntry.settings.copyWith(isInitialRoute: false);
-    final route = routeEntry.screen.toRoute(routeSettings);
+    final route = routeEntry.screen(routeSettings).toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
       await SystemNavigator.pop();

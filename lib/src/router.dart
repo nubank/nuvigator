@@ -9,7 +9,7 @@ class RouteEntry {
 
   final String deepLink;
   final String template;
-  final ScreenRoute screen;
+  final ScreenRouteBuilder screen;
   final String routeName;
 
   Map<String, String> get arguments =>
@@ -56,16 +56,10 @@ abstract class Router {
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 
-abstract class RouteRegistry {
-  List<Router> get routers => [];
-
-  Map<String, ScreenRouteBuilder> get screensMap;
-}
-
 abstract class BaseRouter implements Router {
   List<Router> get routers => [];
 
-  Map<String, ScreenRoute Function(RouteSettings settings)> get screensMap;
+  Map<RouteDef, ScreenRouteBuilder> get screensMap;
 
   final String deepLinkPrefix = null;
 
@@ -112,28 +106,29 @@ abstract class BaseRouter implements Router {
   }
 
   ScreenRoute _getScreen(RouteSettings settings) {
-    final screenBuilder = screensMap[settings.name];
+    final screenBuilder = screensMap[RouteDef(settings.name)];
     if (screenBuilder == null) return null;
     return screenBuilder(settings).wrapWith(screensWrapper);
   }
 
   Future<RouteEntry> _getRouteEntryForDeepLink(String deepLink) async {
-//    final deepLinkPrefix = await getDeepLinkPrefix();
-//    for (var screenEntry in screensMap.entries) {
-//      final screen = screenEntry.value;
-//      final currentDeepLink = screen.deepLink;
-//      if (currentDeepLink == null) break;
-//      final fullTemplate = deepLinkPrefix + currentDeepLink;
-//      final regExp = pathToRegExp(fullTemplate);
-//      if (regExp.hasMatch(deepLink)) {
-//        return RouteEntry(
-//          deepLink: deepLink,
-//          template: fullTemplate,
-//          screen: screen,
-//          routeName: screenEntry.key,
-//        );
-//      }
-//    }
+    final deepLinkPrefix = await getDeepLinkPrefix();
+    for (var screenEntry in screensMap.entries) {
+      final routeDef = screenEntry.key;
+      final screenBuilder = screenEntry.value;
+      final currentDeepLink = routeDef.deepLink;
+      if (currentDeepLink == null) break;
+      final fullTemplate = deepLinkPrefix + currentDeepLink;
+      final regExp = pathToRegExp(fullTemplate);
+      if (regExp.hasMatch(deepLink)) {
+        return RouteEntry(
+          deepLink: deepLink,
+          template: fullTemplate,
+          screen: screenBuilder,
+          routeName: routeDef.routeName,
+        );
+      }
+    }
     return null;
   }
 

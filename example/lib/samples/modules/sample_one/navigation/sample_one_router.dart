@@ -14,10 +14,9 @@ class SampleOneRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => '/sampleOne/';
 
-  @NuRoute()
+  @NuRoute(deepLink: 'screenOne/:testId')
   ScreenRoute screenOne({String testId}) => const ScreenRoute(
         builder: ScreenOne.builder,
-        deepLink: 'screenOne/:testId',
       );
 
   @NuRoute()
@@ -26,7 +25,8 @@ class SampleOneRouter extends BaseRouter {
       );
 
   @override
-  Map<String, ScreenRouteBuilder> get screensMap => _$sampleOneScreensMap(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap =>
+      _$sampleOneScreensMap(this);
 }
 
 final sampleOneRouter = SampleOneRouter();

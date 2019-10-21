@@ -11,6 +11,21 @@ typedef WrapperFn = Widget Function(BuildContext context, Widget child);
 
 Widget defaultWrapperFn(BuildContext _, Widget screenWidget) => screenWidget;
 
+class RouteDef {
+  RouteDef(this.routeName, {this.deepLink});
+
+  final String routeName;
+  final String deepLink;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RouteDef && other.routeName == routeName;
+  }
+
+  @override
+  int get hashCode => routeName.hashCode;
+}
+
 /// [T] is the possible return type of this Screen
 class ScreenRoute<T extends Object> {
   const ScreenRoute({
