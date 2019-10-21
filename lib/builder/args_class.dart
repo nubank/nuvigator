@@ -115,7 +115,7 @@ class ArgsClass extends BaseBuilder {
         )
         ..methods.addAll([
           Method(
-                (m) => m
+            (m) => m
               ..name = 'args'
               ..lambda = true
               ..type = MethodType.getter
@@ -123,15 +123,14 @@ class ArgsClass extends BaseBuilder {
               ..body = Code('${capitalize(routeName)}Args.of(context)'),
           ),
           Method(
-                (m) => m
+            (m) => m
               ..name = lowerCamelCase(routerNavigationName)
               ..lambda = true
               ..type = MethodType.getter
               ..returns = refer(routerNavigationName)
               ..body = Code('$routerNavigationName.of(context)'),
           ),
-          ]
-        ),
+        ]),
     );
   }
 
