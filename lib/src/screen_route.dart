@@ -137,7 +137,7 @@ class FlowRoute<T extends Router, R extends Object> extends ScreenRoute<R> {
     ScreenType screenType,
     String debugKey,
   }) : super(
-          builder: nuvigator ?? builder,
+          builder: nuvigator.call ?? builder,
           screenType: screenType,
           debugKey: debugKey,
         );

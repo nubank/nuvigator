@@ -1,9 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:path_to_regexp/path_to_regexp.dart';
 import 'errors.dart';
 import 'nuvigator.dart';
 import 'router.dart';
 import 'screen_route.dart';
+
+String deepLinkString(Uri url) => url.host + url.path;
 
 typedef HandleDeepLinkFn = Future<bool> Function(
     GlobalRouter globalRouter, Uri uri,
@@ -71,29 +74,37 @@ class GlobalRouter implements Router {
   }
 
   Future<bool> canOpenDeepLink(Uri url) async {
-    return (await getRouteEntryForDeepLink(url.host + url.path)) != null;
+    return (await getRouteEntryForDeepLink(deepLinkString(url))) != null;
   }
 
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
-    final routeEntry = await getRouteEntryForDeepLink(url.host + url.path);
+    final routeEntry = await getRouteEntryForDeepLink(deepLinkString(url));
+
+    final arguments = _extractParameters(url, routeEntry.key.deepLink);
+
     if (routeEntry == null) {
       if (onDeepLinkNotFound != null)
         await onDeepLinkNotFound(this, url, isFromNative, arguments);
       return null;
     }
     if (isFromNative) {
-      final route = _buildNativeRoute(routeEntry);
+      final route = _buildNativeRoute(routeEntry, arguments);
       return nuvigatorKey.currentState.push<T>(route);
     }
     return nuvigatorKey.currentState
-        .pushNamed<T>(routeEntry.routeName, arguments: routeEntry.arguments);
+        .pushNamed<T>(routeEntry.key.routeName, arguments: arguments);
   }
 
-  Route _buildNativeRoute(RouteEntry routeEntry) {
-    final routeSettings = routeEntry.settings.copyWith(isInitialRoute: false);
+  Route _buildNativeRoute(
+      RouteEntry routeEntry, Map<String, String> arguments) {
+    final routeSettings = RouteSettings(
+      name: routeEntry.key.routeName,
+      isInitialRoute: false,
+      arguments: arguments,
+    );
     final screenRoute = routeEntry
-        .screenBuilder(routeSettings)
+        .value(routeSettings)
         .fallbackScreenType(nuvigator.widget.screenType);
     final route = screenRoute.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
@@ -101,5 +112,12 @@ class GlobalRouter implements Router {
       await SystemNavigator.pop();
     });
     return route;
+  }
+
+  Map<String, String> _extractParameters(Uri url, String deepLinkTemplate) {
+    final parameters = <String>[];
+    final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
+    final match = regExp.matchAsPrefix(deepLinkString(url));
+    return extract(parameters, match)..addAll(url.queryParameters);
   }
 }

@@ -5,44 +5,16 @@ import '../nuvigator.dart';
 import 'screen_route.dart';
 
 class RouteEntry {
-  RouteEntry(
-      {this.deepLink, this.template, this.routeName, this.screenBuilder});
+  RouteEntry(this.key, this.value);
 
-  final String deepLink;
-  final String template;
-  final ScreenRouteBuilder screenBuilder;
-  final String routeName;
-
-  Map<String, String> get arguments =>
-      _extractParameters(Uri.parse(deepLink), template);
-
-  RouteSettings get settings =>
-      RouteSettings(arguments: arguments, name: routeName);
-
-  Map<String, String> _extractParameters(Uri url, String deepLinkTemplate) {
-    final parameters = <String>[];
-    final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
-    final match = regExp.matchAsPrefix(url.host + url.path);
-    return extract(parameters, match)..addAll(url.queryParameters);
-  }
+  final RouteDef key;
+  final ScreenRouteBuilder value;
 
   @override
-  String toString() {
-    return '$deepLink ($routeName - $template)';
-  }
+  int get hashCode => key.hashCode;
 
   @override
-  int get hashCode => hashList([template, deepLink, routeName]);
-
-  @override
-  bool operator ==(dynamic other) {
-    if (other is RouteEntry) {
-      return other.deepLink == deepLink &&
-          other.template == template &&
-          other.routeName == routeName;
-    }
-    return false;
-  }
+  bool operator ==(Object other) => other is RouteEntry && other.key == key;
 }
 
 /// Router Interface. Provide a basic interface to communicate with other Router
@@ -90,15 +62,15 @@ abstract class BaseRouter implements Router {
       final screen = await _getRouteEntryForDeepLink(deepLink);
       if (screen != null) return screen;
       for (final Router router in routers) {
-        final newUrl = deepLink.replaceFirst(thisDeepLinkPrefix, '');
-        final subRouterEntry = await router.getRouteEntryForDeepLink(newUrl);
+        final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
+        final subRouterEntry =
+            await router.getRouteEntryForDeepLink(newDeepLink);
         if (subRouterEntry != null) {
-          final fullTemplate = thisDeepLinkPrefix + subRouterEntry.template;
+          final fullTemplate =
+              thisDeepLinkPrefix + (subRouterEntry.key.deepLink ?? '');
           return RouteEntry(
-            screenBuilder: _wrapScreenBuilder(subRouterEntry.screenBuilder),
-            template: fullTemplate,
-            deepLink: deepLink,
-            routeName: subRouterEntry.routeName,
+            RouteDef(subRouterEntry.key.routeName, deepLink: fullTemplate),
+            _wrapScreenBuilder(subRouterEntry.value),
           );
         }
       }
@@ -128,10 +100,8 @@ abstract class BaseRouter implements Router {
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(deepLink)) {
         return RouteEntry(
-          deepLink: deepLink,
-          template: fullTemplate,
-          screenBuilder: _wrapScreenBuilder(screenBuilder),
-          routeName: routeDef.routeName,
+          RouteDef(routeDef.routeName, deepLink: fullTemplate),
+          _wrapScreenBuilder(screenBuilder),
         );
       }
     }

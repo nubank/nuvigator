@@ -35,9 +35,8 @@ void main() {
       expect(
         await testGroupRouter.getRouteEntryForDeepLink('group/route/test'),
         RouteEntry(
-          routeName: 'firstScreen',
-          deepLink: 'group/route/test',
-          template: 'group/route/test',
+          RouteDef('firstScreen', deepLink: 'group/route/test'),
+          null,
         ),
       );
     });
@@ -46,9 +45,8 @@ void main() {
       expect(
         await testGroupRouter.getRouteEntryForDeepLink('group/test/123/params'),
         RouteEntry(
-          routeName: 'secondScreen',
-          deepLink: 'group/test/123/params',
-          template: 'group/test/:id/params',
+          RouteDef('secondScreen', deepLink: 'group/test/:id/params'),
+          null,
         ),
       );
     });

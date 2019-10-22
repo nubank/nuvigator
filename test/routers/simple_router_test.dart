@@ -40,21 +40,26 @@ void main() {
   group('getDeepLinkFlow', () {
     test('find route name for a simple deeplink', () async {
       expect(
-          await testRouter.getRouteEntryForDeepLink('test/simple'),
-          RouteEntry(
-            routeName: 'firstScreen',
+        await testRouter.getRouteEntryForDeepLink('test/simple'),
+        RouteEntry(
+          RouteDef(
+            'firstScreen',
             deepLink: 'test/simple',
-            template: 'test/simple',
-          ));
+          ),
+          null,
+        ),
+      );
     });
 
     test('find route name for a deeplink with path params', () async {
       expect(
         await testRouter.getRouteEntryForDeepLink('test/123/params'),
         RouteEntry(
-          routeName: 'secondScreen',
-          deepLink: 'test/123/params',
-          template: 'test/:id/params',
+          RouteDef(
+            'secondScreen',
+            deepLink: 'test/:id/params',
+          ),
+          null,
         ),
       );
     });
@@ -64,9 +69,8 @@ void main() {
         await testRouterWPrefix
             .getRouteEntryForDeepLink('prefix/test/123/params'),
         RouteEntry(
-          routeName: 'secondScreen',
-          deepLink: 'prefix/test/123/params',
-          template: 'prefix/test/:id/params',
+          RouteDef('secondScreen', deepLink: 'prefix/test/:id/params'),
+          null,
         ),
       );
     });
