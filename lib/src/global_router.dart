@@ -91,7 +91,9 @@ class GlobalRouter implements Router {
 
   Route _buildNativeRoute(RouteEntry routeEntry) {
     final routeSettings = routeEntry.settings.copyWith(isInitialRoute: false);
-    final screenRoute = routeEntry.screenBuilder(routeSettings).fallbackScreenType(nuvigator.widget.screenType);
+    final screenRoute = routeEntry
+        .screenBuilder(routeSettings)
+        .fallbackScreenType(nuvigator.widget.screenType);
     final route = screenRoute.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
