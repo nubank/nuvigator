@@ -33,28 +33,6 @@ class ScreenRoute<T extends Object> {
     this.debugKey,
   }) : assert(builder != null);
 
-  static ScreenRoute material<T extends Object>(WidgetBuilder widgetBuilder,
-          {String debugKey}) =>
-      ScreenRoute<T>(
-          builder: widgetBuilder,
-          screenType: materialScreenType,
-          debugKey: debugKey);
-
-  static ScreenRoute cupertino<T extends Object>(WidgetBuilder widgetBuilder,
-          {String debugKey}) =>
-      ScreenRoute<T>(
-          builder: widgetBuilder,
-          screenType: cupertinoScreenType,
-          debugKey: debugKey);
-
-  static ScreenRoute cupertinoDialog<T extends Object>(
-          WidgetBuilder widgetBuilder,
-          {String debugKey}) =>
-      ScreenRoute<T>(
-          builder: widgetBuilder,
-          screenType: cupertinoDialogScreenType,
-          debugKey: debugKey);
-
   final WidgetBuilder builder;
   final ScreenType screenType;
   final WrapperFn wrapper;

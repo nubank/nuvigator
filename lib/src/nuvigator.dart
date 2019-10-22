@@ -12,9 +12,14 @@ class Nuvigator<T extends Router> extends Navigator {
     this.screenType = materialScreenType,
     this.wrapper,
     this.initialArguments,
+    this.inheritableObservers = const [],
   })  : assert(router != null),
         super(
-          observers: [HeroController(), ...observers],
+          observers: [
+            HeroController(),
+            ...observers,
+            ...inheritableObservers,
+          ],
           onGenerateRoute: (settings) {
             var finalSettings = settings;
             if (settings.isInitialRoute &&
@@ -34,19 +39,34 @@ class Nuvigator<T extends Router> extends Navigator {
           initialRoute: initialRoute,
         );
 
-  Nuvigator _screenBuilder(BuildContext context) {
+  Nuvigator builder(BuildContext context) {
     final settings = ModalRoute.of(context)?.settings;
-    return _withInitialArguments(settings?.arguments);
+    final parentNuvigator = Nuvigator.of(context);
+    return copyWith(
+      initialArguments: settings?.arguments,
+      inheritableObservers: [
+        ...parentNuvigator?.widget?.inheritableObservers ?? [],
+        ...inheritableObservers,
+      ],
+    );
   }
 
-  Nuvigator _withInitialArguments(Object initialArguments) {
+  Nuvigator<T> copyWith({
+    Object initialArguments,
+    WrapperFn wrapper,
+    Key key,
+    ScreenType screenType,
+    List<NavigatorObserver> inheritableObservers,
+    String initialRoute,
+  }) {
     return Nuvigator<T>(
-      initialRoute: initialRoute,
+      initialRoute: initialRoute ?? this.initialRoute,
       router: router,
-      screenType: screenType,
-      wrapper: wrapper,
-      initialArguments: initialArguments,
-      key: key,
+      inheritableObservers: inheritableObservers,
+      screenType: screenType ?? this.screenType,
+      wrapper: wrapper ?? this.wrapper,
+      initialArguments: initialArguments ?? this.initialArguments,
+      key: key ?? this.key,
     );
   }
 
@@ -54,9 +74,10 @@ class Nuvigator<T extends Router> extends Navigator {
   final Object initialArguments;
   final ScreenType screenType;
   final WrapperFn wrapper;
+  final List<NavigatorObserver> inheritableObservers;
 
   Nuvigator call(BuildContext context, [Widget child]) {
-    return _screenBuilder(context);
+    return builder(context);
   }
 
   static NuvigatorState<T> of<T extends Router>(BuildContext context,
