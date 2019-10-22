@@ -123,7 +123,7 @@ abstract class BaseRouter implements Router {
       final routeDef = screenEntry.key;
       final screenBuilder = screenEntry.value;
       final currentDeepLink = routeDef.deepLink;
-      if (currentDeepLink == null) break;
+      if (currentDeepLink == null) continue;
       final fullTemplate = deepLinkPrefix + currentDeepLink;
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(deepLink)) {
