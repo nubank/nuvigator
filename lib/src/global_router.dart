@@ -55,18 +55,19 @@ class GlobalRouter implements Router {
 
   @override
   ScreenRoute getScreen(RouteSettings settings) {
-    return baseRouter.getScreen(settings);
+    final screen = baseRouter.getScreen(settings);
+    if (screen == null) {
+      if (onScreenNotFound != null)
+        return onScreenNotFound(settings)
+            ?.fallbackScreenType(nuvigator.widget.screenType);
+      throw RouteNotFoundException(settings.name);
+    }
+    return screen;
   }
 
   @override
   Route getRoute(RouteSettings settings) {
-    final screen = getScreen(settings);
-    if (screen == null) {
-      if (onScreenNotFound != null)
-        return onScreenNotFound(settings).toRoute(settings);
-      throw RouteNotFoundException(settings.name);
-    }
-    return screen.toRoute(settings);
+    return getScreen(settings)?.toRoute(settings);
   }
 
   Future<bool> canOpenDeepLink(Uri url) async {
