@@ -3,6 +3,8 @@ import 'package:nuvigator/nuvigator.dart';
 
 import 'router.dart';
 
+typedef ObserverBuilder = NavigatorObserver Function();
+
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
@@ -18,7 +20,7 @@ class Nuvigator<T extends Router> extends Navigator {
           observers: [
             HeroController(),
             ...observers,
-            ...inheritableObservers,
+            ...inheritableObservers.map((f) => f()),
           ],
           onGenerateRoute: (settings) {
             var finalSettings = settings;
@@ -56,7 +58,7 @@ class Nuvigator<T extends Router> extends Navigator {
     WrapperFn wrapper,
     Key key,
     ScreenType screenType,
-    List<NavigatorObserver> inheritableObservers,
+    List<ObserverBuilder> inheritableObservers,
     String initialRoute,
   }) {
     return Nuvigator<T>(
@@ -74,7 +76,7 @@ class Nuvigator<T extends Router> extends Navigator {
   final Object initialArguments;
   final ScreenType screenType;
   final WrapperFn wrapper;
-  final List<NavigatorObserver> inheritableObservers;
+  final List<ObserverBuilder> inheritableObservers;
 
   Nuvigator call(BuildContext context, [Widget child]) {
     return builder(context);
