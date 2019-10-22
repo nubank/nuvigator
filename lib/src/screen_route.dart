@@ -132,11 +132,12 @@ class ScreenRoute<T extends Object> {
 
 class FlowRoute<T extends Router, R extends Object> extends ScreenRoute<R> {
   FlowRoute({
-    @required Nuvigator<T> nuvigator,
+    Nuvigator<T> nuvigator,
+    WidgetBuilder builder,
     ScreenType screenType,
     String debugKey,
   }) : super(
-          builder: nuvigator,
+          builder: nuvigator ?? builder,
           screenType: screenType,
           debugKey: debugKey,
         );
