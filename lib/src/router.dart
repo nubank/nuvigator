@@ -5,11 +5,12 @@ import '../nuvigator.dart';
 import 'screen_route.dart';
 
 class RouteEntry {
-  RouteEntry({this.deepLink, this.template, this.routeName, this.screen});
+  RouteEntry(
+      {this.deepLink, this.template, this.routeName, this.screenBuilder});
 
   final String deepLink;
   final String template;
-  final ScreenRouteBuilder screen;
+  final ScreenRouteBuilder screenBuilder;
   final String routeName;
 
   Map<String, String> get arguments =>
@@ -94,7 +95,7 @@ abstract class BaseRouter implements Router {
         if (subRouterEntry != null) {
           final fullTemplate = thisDeepLinkPrefix + subRouterEntry.template;
           return RouteEntry(
-            screen: subRouterEntry.screen,
+            screenBuilder: _wrapScreenBuilder(subRouterEntry.screenBuilder),
             template: fullTemplate,
             deepLink: deepLink,
             routeName: subRouterEntry.routeName,
@@ -103,6 +104,11 @@ abstract class BaseRouter implements Router {
       }
     }
     return null;
+  }
+
+  ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {
+    return (RouteSettings settings) =>
+        screenRouteBuilder(settings).wrapWith(screensWrapper);
   }
 
   ScreenRoute _getScreen(RouteSettings settings) {
@@ -124,7 +130,7 @@ abstract class BaseRouter implements Router {
         return RouteEntry(
           deepLink: deepLink,
           template: fullTemplate,
-          screen: screenBuilder,
+          screenBuilder: _wrapScreenBuilder(screenBuilder),
           routeName: routeDef.routeName,
         );
       }
