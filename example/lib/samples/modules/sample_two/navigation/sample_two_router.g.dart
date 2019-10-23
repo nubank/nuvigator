@@ -7,9 +7,9 @@ part of 'sample_two_router.dart';
 // **************************************************************************
 
 class SampleTwoRoutes {
-  static const screenOne = 'SampleTwo/screenOne';
+  static const screenOne = 'sampleTwo/screenOne';
 
-  static const screenTwo = 'SampleTwo/screenTwo';
+  static const screenTwo = 'sampleTwo/screenTwo';
 }
 
 class ScreenOneArgs {
@@ -41,6 +41,8 @@ abstract class ScreenOneScreen extends ScreenWidget {
   ScreenOneScreen(BuildContext context) : super(context);
 
   ScreenOneArgs get args => ScreenOneArgs.of(context);
+  SampleTwoNavigation get sampleTwoNavigation =>
+      SampleTwoNavigation.of(context);
 }
 
 class SampleTwoNavigation {
@@ -50,13 +52,13 @@ class SampleTwoNavigation {
 
   static SampleTwoNavigation of(BuildContext context) =>
       SampleTwoNavigation(Nuvigator.of(context));
-  Future<String> screenOne({String testId}) {
+  Future<String> toScreenOne({String testId}) {
     return nuvigator.pushNamed<String>(SampleTwoRoutes.screenOne, arguments: {
       'testId': testId,
     });
   }
 
-  Future<String> screenTwo() {
+  Future<String> toScreenTwo() {
     return nuvigator.pushNamed<String>(SampleTwoRoutes.screenTwo);
   }
 }

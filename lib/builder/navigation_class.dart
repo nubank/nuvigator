@@ -92,7 +92,7 @@ class NavigationClass extends BaseBuilder {
 
     return Method(
       (m) => m
-        ..name = fieldName
+        ..name = 'to${capitalize(fieldName)}'
         ..returns = refer('Future<$screenReturn>')
         ..optionalParameters.addAll(parameters)
         ..body = hasParameters

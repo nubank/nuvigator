@@ -44,7 +44,7 @@ class HomeScreen extends ScreenWidget {
               onPressed: () async {
                 final result = await SamplesNavigation.of(context)
                     .sampleOneNavigation
-                    .screenOne(testId: 'From Home');
+                    .toScreenOne(testId: 'From Home');
                 print('RESULT $result');
               }),
           FlatButton(
@@ -55,7 +55,7 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              SamplesNavigation.of(context).second(testId: 'From Home');
+              SamplesNavigation.of(context).toSecond(testId: 'From Home');
             },
           ),
         ],

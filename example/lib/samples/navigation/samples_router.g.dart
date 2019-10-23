@@ -7,9 +7,9 @@ part of 'samples_router.dart';
 // **************************************************************************
 
 class SamplesRoutes {
-  static const home = 'Samples/home';
+  static const home = 'samples/home';
 
-  static const second = 'Samples/second';
+  static const second = 'samples/second';
 }
 
 class SecondArgs {
@@ -41,6 +41,7 @@ abstract class SecondScreen extends ScreenWidget {
   SecondScreen(BuildContext context) : super(context);
 
   SecondArgs get args => SecondArgs.of(context);
+  SamplesNavigation get samplesNavigation => SamplesNavigation.of(context);
 }
 
 class SamplesNavigation {
@@ -50,11 +51,11 @@ class SamplesNavigation {
 
   static SamplesNavigation of(BuildContext context) =>
       SamplesNavigation(Nuvigator.of(context));
-  Future<Object> home() {
+  Future<Object> toHome() {
     return nuvigator.pushNamed<Object>(SamplesRoutes.home);
   }
 
-  Future<void> second({String testId}) {
+  Future<void> toSecond({String testId}) {
     return nuvigator.pushNamed<void>(SamplesRoutes.second, arguments: {
       'testId': testId,
     });

@@ -22,7 +22,7 @@ class ScreenTwo extends ScreenWidget {
           FlatButton(
               child: const Text('Open sample two flow'),
               onPressed: () => SamplesNavigation.of(context)
-                  .second(testId: 'From Sample One')),
+                  .toSecond(testId: 'From Sample One')),
         ],
       ),
     );

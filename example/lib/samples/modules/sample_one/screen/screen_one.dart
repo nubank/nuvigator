@@ -29,7 +29,7 @@ class ScreenOne extends ScreenOneScreen {
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () => SampleOneNavigation.of(context).screenTwo(),
+            onPressed: () => SampleOneNavigation.of(context).toScreenTwo(),
           ),
           Hero(
             child: const FlutterLogo(),

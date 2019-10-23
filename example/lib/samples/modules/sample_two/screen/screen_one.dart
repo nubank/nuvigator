@@ -32,7 +32,7 @@ class ScreenOne extends ScreenOneScreen {
           FlatButton(
             child: const Text('Go to screen two'),
             onPressed: () async {
-              SamplesNavigation.of(context).sampleTwoNavigation.screenTwo();
+              SamplesNavigation.of(context).sampleTwoNavigation.toScreenTwo();
             },
           ),
           TextField(),

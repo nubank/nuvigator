@@ -42,7 +42,7 @@ class ScreenTwo extends ScreenWidget {
               child: const Text('Go to sample one'),
               onPressed: () => SamplesNavigation.of(context)
                   .sampleOneNavigation
-                  .screenOne(testId: 'FromSampleTwo')),
+                  .toScreenOne(testId: 'FromSampleTwo')),
         ],
       ),
     );
