@@ -13,6 +13,4 @@ class NuRoute {
   final List<PushMethodType> pushMethods;
 }
 
-enum PushMethodType {
-  push, pushReplacement, popAndPush, pushAndRemoveUntil
-}
+enum PushMethodType { push, pushReplacement, popAndPush, pushAndRemoveUntil }
