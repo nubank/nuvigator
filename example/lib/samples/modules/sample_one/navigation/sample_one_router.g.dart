@@ -53,13 +53,55 @@ class SampleOneNavigation {
   static SampleOneNavigation of(BuildContext context) =>
       SampleOneNavigation(Nuvigator.of(context));
   Future<Object> toScreenOne({@required String testId}) {
-    return nuvigator.pushNamed<Object>(SampleOneRoutes.screenOne, arguments: {
-      'testId': testId,
-    });
+    return nuvigator.pushNamed<Object>(
+      SampleOneRoutes.screenOne,
+      arguments: {
+        'testId': testId,
+      },
+    );
+  }
+
+  Future<Object> pushReplacementToScreenOne<TO extends Object>(
+      {@required String testId, TO result}) {
+    return nuvigator.pushReplacementNamed<Object, TO>(
+      SampleOneRoutes.screenOne,
+      arguments: {
+        'testId': testId,
+      },
+      result: result,
+    );
+  }
+
+  Future<Object> pushAndRemoveUntilToScreenOne<TO extends Object>(
+      {@required String testId, @required RoutePredicate predicate}) {
+    return nuvigator.pushNamedAndRemoveUntil<Object>(
+      SampleOneRoutes.screenOne,
+      predicate,
+      arguments: {
+        'testId': testId,
+      },
+    );
   }
 
   Future<int> toScreenTwo() {
-    return nuvigator.pushNamed<int>(SampleOneRoutes.screenTwo);
+    return nuvigator.pushNamed<int>(
+      SampleOneRoutes.screenTwo,
+    );
+  }
+
+  Future<int> pushReplacementToScreenTwo<TO extends Object>({TO result}) {
+    return nuvigator.pushReplacementNamed<int, TO>(
+      SampleOneRoutes.screenTwo,
+      result: result,
+    );
+  }
+
+  Future<int> pushAndRemoveUntilToScreenTwo<TO extends Object>(
+      {@required RoutePredicate predicate}) {
+    return nuvigator.pushNamedAndRemoveUntil<int>(
+      SampleOneRoutes.screenTwo,
+      predicate,
+    );
   }
 }
 

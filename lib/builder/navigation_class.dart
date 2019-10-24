@@ -61,9 +61,7 @@ class NavigationClass extends BaseBuilder {
     );
   }
 
-  Method _pushMethod(String className, String fieldName, String screenReturn,
-      MethodElement method) {
-    final parameters = <Parameter>[];
+  String _getArgs(List<Parameter> parameters,  MethodElement method) {
     final argumentsMapBuffer = StringBuffer('{');
     final hasParameters =
         method?.parameters != null && method.parameters.isNotEmpty;
@@ -75,7 +73,7 @@ class NavigationClass extends BaseBuilder {
             arg.metadata.firstWhere((e) => e.isRequired, orElse: null) != null;
         parameters.add(
           Parameter(
-            (p) => p
+                (p) => p
               ..name = argName
               ..annotations.addAll(
                   isRequired ? [const CodeExpression(Code('required'))] : [])
@@ -87,7 +85,14 @@ class NavigationClass extends BaseBuilder {
       }
     }
     argumentsMapBuffer.write('}');
+    return argumentsMapBuffer.toString();
+  }
 
+  Method _pushMethod(String className, String fieldName, String screenReturn,
+      MethodElement method) {
+    final parameters = <Parameter>[];
+    final args = _getArgs(parameters, method);
+    final hasParameters = parameters.isNotEmpty;
     final routeName = '${routerName(className)}Routes.$fieldName';
 
     return Method(
@@ -97,11 +102,76 @@ class NavigationClass extends BaseBuilder {
         ..optionalParameters.addAll(parameters)
         ..body = hasParameters
             ? Code(
-                'return nuvigator.pushNamed<$screenReturn>($routeName, arguments: ${argumentsMapBuffer.toString()});',
+                'return nuvigator.pushNamed<$screenReturn>($routeName, arguments: $args,);',
               )
             : Code(
-                'return nuvigator.pushNamed<$screenReturn>($routeName);',
+                'return nuvigator.pushNamed<$screenReturn>($routeName,);',
               ),
+    );
+  }
+
+  Method _pushReplacementMethod(String className, String fieldName, String screenReturn,
+      MethodElement method) {
+    final parameters = <Parameter>[];
+    final args = _getArgs(parameters, method);
+    final hasParameters = parameters.isNotEmpty;
+    final routeName = '${routerName(className)}Routes.$fieldName';
+
+    parameters.add(
+      Parameter(
+      (p) => p
+      ..name = 'result'
+      ..named = true
+      ..type = refer('TO'),
+      ),
+    );
+
+    return Method(
+          (m) => m
+        ..name = 'pushReplacementTo${capitalize(fieldName)}'
+        ..returns = refer('Future<$screenReturn>')
+        ..optionalParameters.addAll([...parameters, ])
+        ..types.add(refer('TO extends Object'))
+        ..body = hasParameters
+            ? Code(
+          'return nuvigator.pushReplacementNamed<$screenReturn, TO>($routeName, arguments: $args, result: result,);',
+        )
+            : Code(
+          'return nuvigator.pushReplacementNamed<$screenReturn, TO>($routeName, result: result,);',
+        ),
+    );
+  }
+
+  Method _pushNamedAndRemoveUntilMethod(String className, String fieldName, String screenReturn,
+      MethodElement method) {
+    final parameters = <Parameter>[];
+    final args = _getArgs(parameters, method);
+    final hasParameters = parameters.isNotEmpty;
+    final routeName = '${routerName(className)}Routes.$fieldName';
+
+    parameters.add(
+      Parameter(
+            (p) => p
+          ..name = 'predicate'
+          ..named = true
+          ..annotations.add(const CodeExpression(Code('required')))
+          ..type = refer('RoutePredicate'),
+      ),
+    );
+
+    return Method(
+          (m) => m
+        ..name = 'pushAndRemoveUntilTo${capitalize(fieldName)}'
+        ..returns = refer('Future<$screenReturn>')
+        ..optionalParameters.addAll([...parameters, ])
+        ..types.add(refer('TO extends Object'))
+        ..body = hasParameters
+            ? Code(
+          'return nuvigator.pushNamedAndRemoveUntil<$screenReturn>($routeName, predicate, arguments: $args,);',
+        )
+            : Code(
+          'return nuvigator.pushNamedAndRemoveUntil<$screenReturn>($routeName, predicate,);',
+        ),
     );
   }
 
@@ -148,8 +218,12 @@ class NavigationClass extends BaseBuilder {
         final screenReturn =
             generics.length > 1 ? generics[1].name : generics.first.name;
 
-        methods.add(
-          _pushMethod(className, method.name, screenReturn, method),
+        methods.addAll(
+          [
+            _pushMethod(className, method.name, screenReturn, method),
+            _pushReplacementMethod(className, method.name, screenReturn, method),
+            _pushNamedAndRemoveUntilMethod(className, method.name, screenReturn, method),
+          ]
         );
       }
       final isFlow = method.returnType.name == 'FlowRoute';

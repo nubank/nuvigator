@@ -52,13 +52,55 @@ class SamplesNavigation {
   static SamplesNavigation of(BuildContext context) =>
       SamplesNavigation(Nuvigator.of(context));
   Future<Object> toHome() {
-    return nuvigator.pushNamed<Object>(SamplesRoutes.home);
+    return nuvigator.pushNamed<Object>(
+      SamplesRoutes.home,
+    );
+  }
+
+  Future<Object> pushReplacementToHome<TO extends Object>({TO result}) {
+    return nuvigator.pushReplacementNamed<Object, TO>(
+      SamplesRoutes.home,
+      result: result,
+    );
+  }
+
+  Future<Object> pushAndRemoveUntilToHome<TO extends Object>(
+      {@required RoutePredicate predicate}) {
+    return nuvigator.pushNamedAndRemoveUntil<Object>(
+      SamplesRoutes.home,
+      predicate,
+    );
   }
 
   Future<void> toSecond({String testId}) {
-    return nuvigator.pushNamed<void>(SamplesRoutes.second, arguments: {
-      'testId': testId,
-    });
+    return nuvigator.pushNamed<void>(
+      SamplesRoutes.second,
+      arguments: {
+        'testId': testId,
+      },
+    );
+  }
+
+  Future<void> pushReplacementToSecond<TO extends Object>(
+      {String testId, TO result}) {
+    return nuvigator.pushReplacementNamed<void, TO>(
+      SamplesRoutes.second,
+      arguments: {
+        'testId': testId,
+      },
+      result: result,
+    );
+  }
+
+  Future<void> pushAndRemoveUntilToSecond<TO extends Object>(
+      {String testId, @required RoutePredicate predicate}) {
+    return nuvigator.pushNamedAndRemoveUntil<void>(
+      SamplesRoutes.second,
+      predicate,
+      arguments: {
+        'testId': testId,
+      },
+    );
   }
 
   SampleTwoNavigation get sampleTwoNavigation => SampleTwoNavigation(nuvigator);
