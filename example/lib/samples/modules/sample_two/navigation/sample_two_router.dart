@@ -31,7 +31,7 @@ class SampleTwoRouter extends BaseRouter {
 //        },
       );
 
-  @NuRoute()
+  @NuRoute(pushMethods: [PushMethodType.push, PushMethodType.pushReplacement])
   ScreenRoute<String> screenTwo() =>
       const ScreenRoute<String>(builder: ScreenTwo.builder);
 

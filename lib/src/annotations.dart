@@ -6,8 +6,13 @@ class NuRouter {
 }
 
 class NuRoute {
-  const NuRoute({this.deepLink, this.routeName});
+  const NuRoute({this.deepLink, this.routeName, this.pushMethods});
 
   final String deepLink;
   final String routeName;
+  final List<PushMethodType> pushMethods;
+}
+
+enum PushMethodType {
+  push, pushReplacement, popAndPush, pushAndRemoveUntil
 }

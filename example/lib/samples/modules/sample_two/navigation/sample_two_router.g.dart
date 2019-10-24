@@ -106,21 +106,6 @@ class SampleTwoNavigation {
       result: result,
     );
   }
-
-  Future<String> pushAndRemoveUntilToScreenTwo<TO extends Object>(
-      {@required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<String>(
-      SampleTwoRoutes.screenTwo,
-      predicate,
-    );
-  }
-
-  Future<String> popAndPushToScreenTwo<TO extends Object>({TO result}) {
-    return nuvigator.popAndPushNamed<String, TO>(
-      SampleTwoRoutes.screenTwo,
-      result: result,
-    );
-  }
 }
 
 Map<RouteDef, ScreenRouteBuilder> _$sampleTwoScreensMap(

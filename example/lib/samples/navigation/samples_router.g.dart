@@ -138,5 +138,5 @@ Map<RouteDef, ScreenRouteBuilder> _$samplesScreensMap(SamplesRouter router) {
 }
 
 List<Router> _$samplesRoutersList(SamplesRouter router) => [
-      router.sampleOneRouter,
-    ];
+  router.sampleOneRouter,
+];
