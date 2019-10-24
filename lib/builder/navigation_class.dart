@@ -112,12 +112,12 @@ class NavigationClass extends BaseBuilder {
     );
   }
 
-  Method _pushReplacementMethod(String className, String fieldName,
-      String screenReturn, MethodElement method) {
+  Method _pushReplacementMethod(
+      String className, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.$fieldName';
+    final routeName = '${routerName(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -130,7 +130,7 @@ class NavigationClass extends BaseBuilder {
 
     return Method(
       (m) => m
-        ..name = 'pushReplacementTo${capitalize(fieldName)}'
+        ..name = 'pushReplacementTo${capitalize(method.name)}'
         ..returns = refer('Future<$screenReturn>')
         ..optionalParameters.addAll([
           ...parameters,
@@ -146,12 +146,12 @@ class NavigationClass extends BaseBuilder {
     );
   }
 
-  Method _pushAndRemoveUntilMethod(String className, String fieldName,
-      String screenReturn, MethodElement method) {
+  Method _pushAndRemoveUntilMethod(
+      String className, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.$fieldName';
+    final routeName = '${routerName(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -165,7 +165,7 @@ class NavigationClass extends BaseBuilder {
 
     return Method(
       (m) => m
-        ..name = 'pushAndRemoveUntilTo${capitalize(fieldName)}'
+        ..name = 'pushAndRemoveUntilTo${capitalize(method.name)}'
         ..returns = refer('Future<$screenReturn>')
         ..optionalParameters.addAll([
           ...parameters,
@@ -181,12 +181,12 @@ class NavigationClass extends BaseBuilder {
     );
   }
 
-  Method _popAndPushMethod(String className, String fieldName,
-      String screenReturn, MethodElement method) {
+  Method _popAndPushMethod(
+      String className, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.$fieldName';
+    final routeName = '${routerName(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -199,7 +199,7 @@ class NavigationClass extends BaseBuilder {
 
     return Method(
       (m) => m
-        ..name = 'popAndPushTo${capitalize(fieldName)}'
+        ..name = 'popAndPushTo${capitalize(method.name)}'
         ..returns = refer('Future<$screenReturn>')
         ..optionalParameters.addAll([
           ...parameters,
@@ -261,23 +261,21 @@ class NavigationClass extends BaseBuilder {
           if (pushStr.contains('push =')) {
             methods.add(_pushMethod(className, screenReturn, method));
           } else if (pushStr.contains('pushReplacement =')) {
-            methods.add(_pushReplacementMethod(
-                className, method.name, screenReturn, method));
+            methods
+                .add(_pushReplacementMethod(className, screenReturn, method));
           } else if (pushStr.contains('popAndPush =')) {
-            methods.add(_popAndPushMethod(
-                className, method.name, screenReturn, method));
+            methods.add(_popAndPushMethod(className, screenReturn, method));
           } else if (pushStr.contains('pushAndRemoveUntil =')) {
-            methods.add(_pushAndRemoveUntilMethod(
-                className, method.name, screenReturn, method,));
+            methods.add(
+                _pushAndRemoveUntilMethod(className, screenReturn, method));
           }
         }
       } else {
         methods.addAll([
           _pushMethod(className, screenReturn, method),
-          _pushReplacementMethod(className, method.name, screenReturn, method),
-          _pushAndRemoveUntilMethod(
-              className, method.name, screenReturn, method),
-          _popAndPushMethod(className, method.name, screenReturn, method),
+          _pushReplacementMethod(className, screenReturn, method),
+          _pushAndRemoveUntilMethod(className, screenReturn, method),
+          _popAndPushMethod(className, screenReturn, method),
         ]);
       }
     }
