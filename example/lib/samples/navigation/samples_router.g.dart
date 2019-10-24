@@ -72,6 +72,13 @@ class SamplesNavigation {
     );
   }
 
+  Future<Object> popAndPushToHome<TO extends Object>({TO result}) {
+    return nuvigator.popAndPushNamed<Object, TO>(
+      SamplesRoutes.home,
+      result: result,
+    );
+  }
+
   Future<void> toSecond({String testId}) {
     return nuvigator.pushNamed<void>(
       SamplesRoutes.second,
@@ -100,6 +107,17 @@ class SamplesNavigation {
       arguments: {
         'testId': testId,
       },
+    );
+  }
+
+  Future<void> popAndPushToSecond<TO extends Object>(
+      {String testId, TO result}) {
+    return nuvigator.popAndPushNamed<void, TO>(
+      SamplesRoutes.second,
+      arguments: {
+        'testId': testId,
+      },
+      result: result,
     );
   }
 

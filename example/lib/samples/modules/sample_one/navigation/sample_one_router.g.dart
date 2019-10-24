@@ -83,6 +83,17 @@ class SampleOneNavigation {
     );
   }
 
+  Future<Object> popAndPushToScreenOne<TO extends Object>(
+      {@required String testId, TO result}) {
+    return nuvigator.popAndPushNamed<Object, TO>(
+      SampleOneRoutes.screenOne,
+      arguments: {
+        'testId': testId,
+      },
+      result: result,
+    );
+  }
+
   Future<int> toScreenTwo() {
     return nuvigator.pushNamed<int>(
       SampleOneRoutes.screenTwo,
@@ -101,6 +112,13 @@ class SampleOneNavigation {
     return nuvigator.pushNamedAndRemoveUntil<int>(
       SampleOneRoutes.screenTwo,
       predicate,
+    );
+  }
+
+  Future<int> popAndPushToScreenTwo<TO extends Object>({TO result}) {
+    return nuvigator.popAndPushNamed<int, TO>(
+      SampleOneRoutes.screenTwo,
+      result: result,
     );
   }
 }
