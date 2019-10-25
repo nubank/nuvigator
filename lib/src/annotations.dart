@@ -1,35 +1,63 @@
 /// Annotation used to define a router
 ///
-/// This annotation is used by the code generator to identify the class as a
+/// You can set a [routerName] and [routeNamePrefix].
+///
+/// This annotation is used by the code generator to identify a class as a
 /// router and start the analysis of code generation.
 ///
-/// By default, the [NuRouter] generates all files with the class name where the
-/// annotation is used, for example:
+/// By default, the [NuRouter] generates all the code with the class name where
+/// the annotation is used, for example:
 ///
+/// {@tool sample}
+/// This sample shows how to create a [NuRouter].
+///
+/// ```dart
 /// @NuRouter()
-/// class MyRouter {}
+/// class HomeRouter {
+///   @NuRoute()
+///   ScreenRoute profile() => ScreenRoute(
+///     builder: (context) => ProfileScreen(context),
+///   );
+/// }
+/// ```
+/// {@end-tool}
 ///
-/// The generated files will be:
+/// The generated code will be:
 ///
-/// class MyRouterRoutes {
-///   static const myNuRoute = 'myRouter/myNuRoute';
+/// ```dart
+/// class HomeRoutes {
+///   static const profile = 'home/profile';
 /// }
 ///
-/// MyRouterNavigation get myRouterNavigation => MyRouterNavigation.of(context);
+/// HomeNavigation get homeNavigation => HomeNavigation.of(context);
+/// ```
 ///
 /// You can specify the generated names using the argument [routerName] and the
-/// [routeNamePrefix]. Here an example:
+/// [routeNamePrefix].
 ///
+/// {@tool sample}
+/// This sample shows how to create a [NuRouter] with a custom name and prefix.
+///
+/// ```dart
 /// @NuRouter(routerName: 'Custom', routeNamePrefix: 'customPrefix/')
-/// class MyRouter {}
+/// class HomeRouter {
+///   @NuRoute()
+///   ScreenRoute profile() => ScreenRoute(
+///     builder: (context) => ProfileScreen(context),
+///   );
+/// }
+/// ```
+/// {@end-tool}
 ///
-/// The generated files will be:
+/// The generated codes will be:
 ///
+/// ```dart
 /// class CustomRoutes {
-///   static const myNuRoute = 'customPrefix/custom/myNuRoute';
+///   static const profile = 'customPrefix/custom/profile';
 /// }
 ///
 /// CustomNavigation get customNavigation => CustomNavigation.of(context);
+/// ```
 ///
 /// Obs: The [routeNamePrefix] is only used by the routes class to compose the
 /// route names.
@@ -40,6 +68,42 @@ class NuRouter {
   final String routeNamePrefix;
 }
 
+/// Annotation used to define a route.
+///
+/// You can set a [routeName], [deepLink] and [pushMethods].
+///
+/// This annotation is used by the code generator to identify a method as a
+/// route and start the analysis of code generation.
+///
+/// By default, the [NuRoute] generates all the code with the method name where
+/// the annotation is used, for example:
+///
+/// {@tool sample}
+/// This sample shows how to create a [NuRoute].
+///
+/// ```dart
+///   @NuRoute()
+///   ScreenRoute profile() => ScreenRoute(
+///     builder: (context) => ProfileScreen(context),
+///   );
+/// ```
+/// {@end-tool}
+///
+/// An example of generated code is:
+///
+/// ```dart
+///   static const profile = '<routerName>/profile';
+/// ```
+///
+/// You can change the name used on the generated codes setting the [routeName].
+///
+/// ```dart
+/// NuRoute(routeName: 'custom')
+/// ```
+///
+/// Another important prop is the [pushMethods], by default the [NuRoute] will
+/// generate a method for all types of push. You can specify which methods you
+/// need and avoid unused code.
 class NuRoute {
   const NuRoute({this.deepLink, this.routeName, this.pushMethods});
 
