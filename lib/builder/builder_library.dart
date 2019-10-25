@@ -16,11 +16,11 @@ class BuilderLibrary extends BaseBuilder {
     return Method(
       (b) => b
         ..body = const Code('')
-        ..name = '_\$${routerName(lowerClassName)}ScreensMap'
+        ..name = '_\$${removeRouterKey(lowerClassName)}ScreensMap'
         ..requiredParameters.add(
           Parameter(
             (p) => p
-              ..type = refer(className)
+              ..type = refer(classElement.name)
               ..name = 'router',
           ),
         )
@@ -34,11 +34,11 @@ class BuilderLibrary extends BaseBuilder {
 
     return Method(
       (b) => b
-        ..name = '_\$${routerName(lowerClassName)}RoutersList'
+        ..name = '_\$${removeRouterKey(lowerClassName)}RoutersList'
         ..requiredParameters.add(
           Parameter(
             (p) => p
-              ..type = refer(className)
+              ..type = refer(classElement.name)
               ..name = 'router',
           ),
         )
@@ -65,7 +65,7 @@ class BuilderLibrary extends BaseBuilder {
 
   @override
   Spec build() {
-    final className = classElement.name;
+    final className = getRouterName(classElement);
 
     final screensMapBuffer = StringBuffer();
     final subRoutersListBuffer = StringBuffer();
@@ -93,10 +93,10 @@ class BuilderLibrary extends BaseBuilder {
 
         if (deepLink != null) {
           screensMapBuffer.write(
-              'RouteDef(${routerName(className)}Routes.${method.name}, deepLink: \'$deepLink\'): ${screenRouteBuilder.accept(DartEmitter())},\n');
+              'RouteDef(${removeRouterKey(className)}Routes.${method.name}, deepLink: \'$deepLink\'): ${screenRouteBuilder.accept(DartEmitter())},\n');
         } else {
           screensMapBuffer.write(
-              'RouteDef(${routerName(className)}Routes.${method.name}): ${screenRouteBuilder.accept(DartEmitter())},\n');
+              'RouteDef(${removeRouterKey(className)}Routes.${method.name}): ${screenRouteBuilder.accept(DartEmitter())},\n');
         }
       }
     }

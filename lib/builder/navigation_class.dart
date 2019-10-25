@@ -30,7 +30,7 @@ class NavigationClass extends BaseBuilder {
   }
 
   Method _navigationMethod(String typeName) {
-    final navigationName = '${routerName(typeName)}Navigation';
+    final navigationName = '${removeRouterKey(typeName)}Navigation';
     return Method(
       (f) => f
         ..name = '${lowerCamelCase(navigationName)}'
@@ -93,7 +93,7 @@ class NavigationClass extends BaseBuilder {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.${method.name}';
+    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     return Method(
       (m) => m
@@ -115,7 +115,7 @@ class NavigationClass extends BaseBuilder {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.${method.name}';
+    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -149,7 +149,7 @@ class NavigationClass extends BaseBuilder {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.${method.name}';
+    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -184,7 +184,7 @@ class NavigationClass extends BaseBuilder {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${routerName(className)}Routes.${method.name}';
+    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -214,20 +214,21 @@ class NavigationClass extends BaseBuilder {
   }
 
   Method _subRouterMethod(String className) {
+    final name = removeRouterKey(className);
     return Method(
       (m) => m
-        ..name = '${routerName(lowerCamelCase(className))}Navigation'
-        ..returns = refer('${routerName(className)}Navigation')
+        ..name = '${lowerCamelCase(name)}Navigation'
+        ..returns = refer('${name}Navigation')
         ..type = MethodType.getter
         ..lambda = true
         ..body = Code(
-          '${routerName(className)}Navigation(nuvigator)',
+          '${name}Navigation(nuvigator)',
         ),
     );
   }
 
   Class _generateNavigationClass(String className, List<Method> methods) {
-    final navigationClassName = '${routerName(className)}Navigation';
+    final navigationClassName = '${removeRouterKey(className)}Navigation';
     return Class(
       (b) => b
         ..name = navigationClassName
@@ -281,7 +282,7 @@ class NavigationClass extends BaseBuilder {
 
   @override
   Spec build() {
-    final className = classElement.name;
+    final className = getRouterName(classElement);
     final methods = <Method>[];
 
     for (final method in classElement.methods) {
@@ -301,7 +302,7 @@ class NavigationClass extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
         methods.add(
-          _navigationMethod(field.type.name),
+          _navigationMethod(getRouterName(field)),
         );
       }
     }

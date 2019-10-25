@@ -3,7 +3,7 @@
 /// This annotation is used by the code generator to identify the class as a
 /// router and start the analysis of code generation.
 ///
-/// By default the [NuRouter] generates all files with the class name where the
+/// By default, the [NuRouter] generates all files with the class name where the
 /// annotation is used, for example:
 ///
 /// @NuRouter()

@@ -127,8 +127,8 @@ class ArgsClass extends BaseBuilder {
               ..name = lowerCamelCase(routerNavigationName)
               ..lambda = true
               ..type = MethodType.getter
-              ..returns = refer(routerNavigationName)
-              ..body = Code('$routerNavigationName.of(context)'),
+              ..returns = refer(capitalize(routerNavigationName))
+              ..body = Code('${capitalize(routerNavigationName)}.of(context)'),
           ),
         ]),
     );
@@ -171,7 +171,7 @@ class ArgsClass extends BaseBuilder {
 
       argsClasses.add(
         _generateArgsClass(
-          routerName(classElement.name),
+          removeRouterKey(getRouterName(classElement)),
           method.name,
           argsParserBuffer.toString(),
           constructorParameters,

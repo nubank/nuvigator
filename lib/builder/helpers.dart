@@ -18,15 +18,16 @@ String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 String lowerCamelCase(String s) => s[0].toLowerCase() + s.substring(1);
 
-String routerName(String routerClassName) =>
+String removeRouterKey(String routerClassName) =>
     routerClassName.replaceAll('Router', '');
 
-String getRouterName(ClassElement element) {
-  return nuRouterChecker
+String getRouterName(Element element) {
+  final name = nuRouterChecker
           .firstAnnotationOfExact(element)
           ?.getField('routerName')
           ?.toStringValue() ??
-      routerName(element.name);
+      removeRouterKey(element.name);
+  return capitalize(name);
 }
 
 String getRouteString(ClassElement routerElement, MethodElement element) {
