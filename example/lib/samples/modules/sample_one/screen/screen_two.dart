@@ -1,13 +1,12 @@
+import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-import '../../../../src/example_app_router.dart';
+class ScreenTwo extends ScreenWidget {
+  ScreenTwo(BuildContext context) : super(context);
 
-class _ScreenTwo extends ExampleScreenWidget {
-  _ScreenTwo(ScreenContext screenContext) : super(screenContext);
-
-  static _ScreenTwo from(ScreenContext screenContext) {
-    return _ScreenTwo(screenContext);
+  static ScreenTwo builder(BuildContext context) {
+    return ScreenTwo(context);
   }
 
   @override
@@ -21,13 +20,11 @@ class _ScreenTwo extends ExampleScreenWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           FlatButton(
-            child: const Text('Open sample two flow'),
-            onPressed: () => navigation.samples.sampleTwo.start('test_123'),
-          ),
+              child: const Text('Open sample two flow'),
+              onPressed: () => SamplesNavigation.of(context)
+                  .toSecond(testId: 'From Sample One')),
         ],
       ),
     );
   }
 }
-
-final s1ScreenTwoPage = NuScreen.page(_ScreenTwo.from);

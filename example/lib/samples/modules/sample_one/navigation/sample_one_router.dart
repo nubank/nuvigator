@@ -1,26 +1,32 @@
+import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import '../screen/screen_one.dart';
 import '../screen/screen_two.dart';
-import 'sample_one_routes.dart';
+
+part 'sample_one_router.g.dart';
 
 const screenOneDeepLink =
     'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink';
 
-class _SampleOneRouter extends SimpleRouter {
+@NuRouter()
+class SampleOneRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => '/sampleOne/';
 
-  @override
-  Map<String, Screen> get screensMap => {
-        SampleOneRoutes.screen_one: s1ScreenOnePage,
-        SampleOneRoutes.screen_two: s1ScreenTwoPage,
-      };
+  @NuRoute(deepLink: 'screenOne/:testId')
+  ScreenRoute screenOne({@required String testId}) => const ScreenRoute(
+        builder: ScreenOne.builder,
+      );
+
+  @NuRoute()
+  ScreenRoute<int> screenTwo() => const ScreenRoute<int>(
+        builder: ScreenTwo.builder,
+      );
 
   @override
-  Map<String, String> get deepLinksMap => {
-        'screenOne/:testId': SampleOneRoutes.screen_one,
-      };
+  Map<RouteDef, ScreenRouteBuilder> get screensMap =>
+      _$sampleOneScreensMap(this);
 }
 
-final sampleOneRouter = _SampleOneRouter();
+final sampleOneRouter = SampleOneRouter();

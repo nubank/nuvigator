@@ -1,19 +1,20 @@
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class TestRouter extends SimpleRouter {
+class TestRouter extends BaseRouter {
   @override
-  Map<String, Screen> get screensMap => {
-        'firstScreen':
-            Screen.material((sc) => null, debugKey: 'testRouterFirstScreen'),
-        'secondScreen':
-            Screen.cupertino((sc) => null, debugKey: 'testRouterSecondScreen'),
-      };
-
-  @override
-  Map<String, String> get deepLinksMap => {
-        'test/simple': 'firstScreen',
-        'test/:id/params': 'secondScreen',
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
+        RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterFirstScreen',
+              screenType: materialScreenType,
+            ),
+        RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
+            ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterSecondScreen',
+              screenType: materialScreenType,
+            ),
       };
 }
 
@@ -22,7 +23,7 @@ class TestRouterWPrefix extends TestRouter {
   String get deepLinkPrefix => 'prefix/';
 }
 
-class GroupTestRouter extends GroupRouter {
+class GroupTestRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => 'group/';
 
@@ -32,14 +33,13 @@ class GroupTestRouter extends GroupRouter {
       ];
 
   @override
-  Map<String, Screen> get screensMap => {
-        'firstScreen':
-            Screen.cupertino((sc) => null, debugKey: 'groupRouterFirstScreen'),
-      };
-
-  @override
-  Map<String, String> get deepLinksMap => {
-        'route/test': 'firstScreen',
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
+        RouteDef('firstScreen', deepLink: 'route/test'): (settings) =>
+            ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'groupRouterFirstScreen',
+              screenType: cupertinoScreenType,
+            ),
       };
 }
 

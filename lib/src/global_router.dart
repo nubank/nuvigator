@@ -1,46 +1,112 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/src/routers.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-
 import 'errors.dart';
-import 'routers/group_router.dart';
+import 'nuvigator.dart';
+import 'router.dart';
+import 'screen_route.dart';
 
-class GlobalRouter extends GroupRouter implements AppRouter {
-  GlobalRouter(this.navigatorKey);
+String deepLinkString(Uri url) => url.host + url.path;
 
-  final GlobalKey<NavigatorState> navigatorKey;
+typedef HandleDeepLinkFn = Future<bool> Function(
+    GlobalRouter globalRouter, Uri uri,
+    [bool isFromNative, dynamic args]);
+
+class GlobalRouterProvider extends InheritedWidget {
+  const GlobalRouterProvider(
+      {@required this.globalRouter, @required Widget child})
+      : super(child: child);
+
+  final GlobalRouter globalRouter;
+
+  @override
+  bool updateShouldNotify(GlobalRouterProvider oldWidget) {
+    return oldWidget.globalRouter != globalRouter;
+  }
+}
+
+class GlobalRouter implements Router {
+  GlobalRouter({
+    @required this.baseRouter,
+    GlobalKey<NuvigatorState> nuvigatorKey,
+    this.onScreenNotFound,
+    this.onDeepLinkNotFound,
+  }) {
+    this.nuvigatorKey = nuvigatorKey ?? defaultKey;
+  }
+
+  static final defaultKey =
+      GlobalKey<NuvigatorState>(debugLabel: 'GlobalRouter');
+
+  static GlobalRouter of(BuildContext context) {
+    final GlobalRouterProvider globalRouterProvider =
+        context.inheritFromWidgetOfExactType(GlobalRouterProvider);
+    return globalRouterProvider?.globalRouter;
+  }
+
+  final HandleDeepLinkFn onDeepLinkNotFound;
+  final Router baseRouter;
+  GlobalKey<NuvigatorState> nuvigatorKey;
+  final ScreenRoute Function(RouteSettings settings) onScreenNotFound;
+
+  NuvigatorState get nuvigator => nuvigatorKey.currentState;
+
+  @override
+  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) {
+    return baseRouter.getRouteEntryForDeepLink(deepLink);
+  }
+
+  @override
+  ScreenRoute getScreen(RouteSettings settings) {
+    final screen = baseRouter.getScreen(settings);
+    if (screen == null) {
+      if (onScreenNotFound != null)
+        return onScreenNotFound(settings)
+            ?.fallbackScreenType(nuvigator.widget.screenType);
+      throw RouteNotFoundException(settings.name);
+    }
+    return screen;
+  }
 
   @override
   Route getRoute(RouteSettings settings) {
-    final screen = getScreen(routeName: settings.name);
-    if (screen == null) throw RouteNotFoundException(settings.name);
-    return screen.toRoute(settings);
+    return getScreen(settings)?.toRoute(settings);
   }
 
-  @override
   Future<bool> canOpenDeepLink(Uri url) async {
-    return (await getDeepLinkFlowForUrl(url.host + url.path)) != null;
+    return (await getRouteEntryForDeepLink(deepLinkString(url))) != null;
   }
 
-  @override
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
-    final deepLinkFlow = await getDeepLinkFlowForUrl(url.host + url.path);
-    if (deepLinkFlow == null) return null;
-    final args = _extractParameters(url, deepLinkFlow);
-    if (isFromNative) {
-      final route = _buildNativeRoute(args, deepLinkFlow.routeName);
-      return navigatorKey.currentState.push(route);
+    final routeEntry = await getRouteEntryForDeepLink(deepLinkString(url));
+
+    final arguments = _extractParameters(url, routeEntry.key.deepLink);
+
+    if (routeEntry == null) {
+      if (onDeepLinkNotFound != null)
+        await onDeepLinkNotFound(this, url, isFromNative, arguments);
+      return null;
     }
-    return navigatorKey.currentState
-        .pushNamed(deepLinkFlow.routeName, arguments: args);
+    if (isFromNative) {
+      final route = _buildNativeRoute(routeEntry, arguments);
+      return nuvigatorKey.currentState.push<T>(route);
+    }
+    return nuvigatorKey.currentState
+        .pushNamed<T>(routeEntry.key.routeName, arguments: arguments);
   }
 
-  // We need this special handling while interacting with native
-  Route _buildNativeRoute(Map<String, dynamic> args, String routeName) {
-    final routeSettings = RouteSettings(arguments: args, name: routeName);
-    final route = getRoute(routeSettings);
+  Route _buildNativeRoute(
+      RouteEntry routeEntry, Map<String, String> arguments) {
+    final routeSettings = RouteSettings(
+      name: routeEntry.key.routeName,
+      isInitialRoute: false,
+      arguments: arguments,
+    );
+    final screenRoute = routeEntry
+        .value(routeSettings)
+        .fallbackScreenType(nuvigator.widget.screenType);
+    final route = screenRoute.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
       await Future<void>.delayed(Duration(milliseconds: 300));
       await SystemNavigator.pop();
@@ -48,10 +114,10 @@ class GlobalRouter extends GroupRouter implements AppRouter {
     return route;
   }
 
-  Map<String, dynamic> _extractParameters(Uri url, DeepLinkFlow deepLinkFlow) {
+  Map<String, String> _extractParameters(Uri url, String deepLinkTemplate) {
     final parameters = <String>[];
-    final regExp = pathToRegExp(deepLinkFlow.template, parameters: parameters);
-    final match = regExp.matchAsPrefix(url.host + url.path);
+    final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
+    final match = regExp.matchAsPrefix(deepLinkString(url));
     return extract(parameters, match)..addAll(url.queryParameters);
   }
 }

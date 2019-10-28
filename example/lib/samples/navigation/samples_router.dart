@@ -1,35 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../../src/example_app_router.dart';
 import '../bloc/samples_bloc.dart';
 import '../modules/sample_one/navigation/sample_one_router.dart';
 import '../modules/sample_two/navigation/sample_two_router.dart';
 
-class _SamplesRouter extends GroupRouter {
+part 'samples_router.g.dart';
+
+@NuRouter()
+class SamplesRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => 'deepprefix';
 
   @override
-  Map<String, Screen> get screensMap => {
-        'home': NuScreen.page((screenContext) => HomeScreen(screenContext)),
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+        return Provider<SamplesBloc>.value(
+          value: SamplesBloc(),
+          child: child,
+        );
       };
 
-  @override
-  List<Router> get routers => [
-        sampleOneRouter,
-        sampleTwoRouter,
-      ];
+  @NuRoute()
+  ScreenRoute home() => ScreenRoute(
+        builder: (context) => HomeScreen(context),
+      );
+
+  @NuRoute()
+  FlowRoute<SampleTwoRouter, void> second({String testId}) => FlowRoute(
+        nuvigator: sampleTwoNuvigator,
+      );
+
+  @NuRouter()
+  final sampleOneRouter = SampleOneRouter();
 
   @override
-  Widget screenWrapper(ScreenContext screenContext, Widget screenWidget) {
-    return Provider<SamplesBloc>.value(
-      value: SamplesBloc(),
-      child: screenWidget,
-    );
-  }
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$samplesScreensMap(this);
+
+  @override
+  List<Router> get routers => _$samplesRoutersList(this);
 }
 
-final samplesRouter = _SamplesRouter();
+final samplesRouter = SamplesRouter();

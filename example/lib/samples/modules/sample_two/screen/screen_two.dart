@@ -1,13 +1,12 @@
+import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-import '../../../../src/example_app_router.dart';
+class ScreenTwo extends ScreenWidget {
+  ScreenTwo(BuildContext context) : super(context);
 
-class _ScreenTwo extends ExampleScreenWidget {
-  _ScreenTwo(ScreenContext screenContext) : super(screenContext);
-
-  static _ScreenTwo from(ScreenContext screenContext) {
-    return _ScreenTwo(screenContext);
+  static ScreenTwo builder(BuildContext context) {
+    return ScreenTwo(context);
   }
 
   @override
@@ -17,26 +16,35 @@ class _ScreenTwo extends ExampleScreenWidget {
         title: const Text('Screen Two'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => navigation.pop<String>('Backed from Screen Two'),
+          onPressed: () => nuvigator.pop<String>('Backed from Screen Two'),
         ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          Hero(
+            child: const FlutterLogo(
+              size: 100,
+            ),
+            tag: 'HERO',
+          ),
+          Text(
+            'TEST_ID: ${SecondArgs.of(context).testId}',
+            textAlign: TextAlign.center,
+          ),
           FlatButton(
             child: const Text('Close entire flow'),
             onPressed: () =>
-                navigation.parentPop<String>('Backed from Screen Two'),
+                nuvigator.parentPop<String>('Backed from Screen Two'),
           ),
           FlatButton(
-            child: const Text('Go to sample one'),
-            onPressed: () => navigation.samples.sampleOne.start('test_123'),
-          ),
+              child: const Text('Go to sample one'),
+              onPressed: () => SamplesNavigation.of(context)
+                  .sampleOneNavigation
+                  .toScreenOne(testId: 'FromSampleTwo')),
         ],
       ),
     );
   }
 }
-
-final s2ScreenTwoPage = NuScreen.page<String>(_ScreenTwo.from);

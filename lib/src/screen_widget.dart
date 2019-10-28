@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'navigation_service.dart';
-import 'screen.dart';
+import 'nuvigator.dart';
 
+/// [T] is the type of the arguments this [ScreenWidget] may receive
 abstract class ScreenWidget<T extends Object> extends StatelessWidget {
-  ScreenWidget(this.screenContext)
-      : navigation = screenContext.navigation,
-        args = screenContext.settings.arguments;
+  ScreenWidget(this.context) : nuvigator = Nuvigator.of(context);
 
-  final ScreenContext screenContext;
-  final NavigationService navigation;
-  final T args;
+  final BuildContext context;
+  final NuvigatorState nuvigator;
 }
