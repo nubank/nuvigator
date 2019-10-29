@@ -49,8 +49,8 @@ class HomeScreen extends ScreenWidget {
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
-            onPressed: () => GlobalRouter.of(context)
-                .openDeepLink<void>(Uri.parse(screenOneDeepLink)),
+            onPressed: () =>
+                nuvigator.openDeepLink<void>(Uri.parse(screenOneDeepLink)),
           ),
           FlatButton(
             child: const Text('Go to sample two with flow'),
