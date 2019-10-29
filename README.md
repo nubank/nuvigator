@@ -126,15 +126,15 @@ Example:
 @NuRoute(deepLink: 'myRoute/:argumentName')
 ```
 
-_Obs_: DeepLinks present in routers used in nested Nuvigators inside `FlowRoute` will **NOT** be considered and are no 
-reachable. If you to create a deepLink to a flow, be sure to add it to the `@NuRoute` annotation in the Router that
-declares the `FlowRoute`.
+_Obs_: DeepLinks contained in routers that are used in nested Nuvigators (inside a `FlowRoute`) will **NOT** be considered
+and are not reachable. If you want to create a deepLink to a flow, be sure to add it to the `@NuRoute` annotation in the 
+Router that declares the `FlowRoute`.
 
 ### Groped Routers
 
 In addition to declaring Routes in your Router, you can also declare child Routers. Those routers will have it's Routes
 presented as being part of the father Router. We may also refer this pattern as Router Grouping or Grouped Routers.
-This allow for splitting a huge router that potentially could have many Routes, into smaller autonomous Routers that can
+This allows for splitting a huge router that potentially could have many Routes, into smaller autonomous Routers that can
 be imported and grouped together in the main Router.
 
 To declare child routers you just need to add a new field with desired router type, and annotate it with the `@NuRouter`
@@ -158,7 +158,7 @@ class MyCustomRouter extends BaseRouter {
 ### BaseRouter Options
 
 It is a Router interface implementation with sensible defaults that should be used most of the times. `BaseRoute` includes
-some options that can be used enhance the navigation experience.
+some options that can be used to enhance the navigation experience.
 
 When extending from the `BaseRouter` you can override the following properties to add custom behaviors to your routes:
 
@@ -225,7 +225,7 @@ class SecondArgs {
 
 ### Typed ScreenInterfaces Classes
 
-It's a extension of `StatelessWidger` that can be extended by your Screen Widget. This class is make to provide easy access
+It's a extension of `StatelessWidget` that can be extended by your Screen Widget. This class is make to provide easy access
 to the current `Nuvigator` instance, and also to the Route arguments. eg:
 
 ```dart
