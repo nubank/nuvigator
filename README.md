@@ -1,8 +1,10 @@
 # Nuvigator
 
-[![CircleCI](https://circleci.com/gh/nubank/nuvigator/tree/master.svg?style=svg&circle-token=55aa922fdac1237c4a0081776e09431213884247)](https://circleci.com/gh/nubank/nuvigator/tree/master)
+[![CircleCI](https://circleci.com/gh/nubank/nuvigator/tree/master.svg?style=svg)](https://circleci.com/gh/nubank/nuvigator/tree/master)
+[![Pub](https://img.shields.io/pub/v/nuvigator.svg)](https://pub.dartlang.org/packages/nuvigator)
 
 Routing and Navigation package.
+
 
 ## What
 
