@@ -1,6 +1,6 @@
 name: nuvigator
 description: Flutter Routing and Navigation package.
-version: 0.1.0
+version: 0.1.0+1
 authors:
   - Nubank <tech@nubank.com.br>
   - Leonardo Iacovini <leonardo.iacovini@nubank.com.br>

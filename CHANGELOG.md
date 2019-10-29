@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.0+1
+- Improve pub description and update packages
+
 ## 0.1.0
 - [BREAKING] Major refactor and API revamp
 - Create `Nuvigator` navigator widget
