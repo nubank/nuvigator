@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.0+2
+- Update pubspec.yaml dependencies versions
+
 ## 0.1.0+1
 - Improve pub description and update packages
 
