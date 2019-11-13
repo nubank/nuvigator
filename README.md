@@ -130,7 +130,7 @@ _Obs_: DeepLinks contained in routers that are used in nested Nuvigators (inside
 and are not reachable. If you want to create a deepLink to a flow, be sure to add it to the `@NuRoute` annotation in the 
 Router that declares the `FlowRoute`.
 
-### Groped Routers
+### Grouped Routers
 
 In addition to declaring Routes in your Router, you can also declare child Routers. Those routers will have it's Routes
 presented as being part of the father Router. We may also refer this pattern as Router Grouping or Grouped Routers.
