@@ -126,7 +126,7 @@ class SampleOneNavigation {
 Map<RouteDef, ScreenRouteBuilder> _$sampleOneScreensMap(
     SampleOneRouter router) {
   return {
-    RouteDef(SampleOneRoutes.screenOne, deepLink: 'screenOne/:testId'):
+    RouteDef(SampleOneRoutes.screenOne, deepLink: '/screenOne/:testId'):
         (RouteSettings settings) {
       final Map<String, Object> args = settings.arguments;
       return router.screenOne(testId: args['testId']);

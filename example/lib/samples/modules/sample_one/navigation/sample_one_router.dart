@@ -12,9 +12,9 @@ const screenOneDeepLink =
 @NuRouter()
 class SampleOneRouter extends BaseRouter {
   @override
-  String get deepLinkPrefix => '/sampleOne/';
+  String get deepLinkPrefix => '/sampleOne';
 
-  @NuRoute(deepLink: 'screenOne/:testId')
+  @NuRoute(deepLink: '/screenOne/:testId')
   ScreenRoute screenOne({@required String testId}) => const ScreenRoute(
         builder: ScreenOne.builder,
       );

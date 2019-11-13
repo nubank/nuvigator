@@ -103,8 +103,7 @@ class GlobalRouter implements Router {
       isInitialRoute: false,
       arguments: arguments,
     );
-    final screenRoute = routeEntry
-        .value(routeSettings)
+    final screenRoute = getScreen(routeSettings)
         .fallbackScreenType(nuvigator.widget.screenType);
     final route = screenRoute.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {

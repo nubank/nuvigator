@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -29,11 +30,22 @@ class SamplesRouter extends BaseRouter {
 
   @NuRoute()
   FlowRoute<SampleTwoRouter, void> second({String testId}) => FlowRoute(
-        nuvigator: sampleTwoNuvigator,
+        nuvigator: Nuvigator(
+          router: SampleTwoRouter(),
+          initialRoute: SampleTwoRoutes.screenOne,
+          screenType: cupertinoScreenType,
+          wrapper: (BuildContext context, Widget child) => Provider(
+            builder: (_) => SampleFlowBloc(),
+            child: child,
+          ),
+        ),
       );
 
   @NuRouter()
-  final sampleOneRouter = SampleOneRouter();
+  final sampleOneRouter = FlowRouter(
+    SampleOneRouter(),
+    screensType: materialScreenType,
+  );
 
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$samplesScreensMap(this);
