@@ -35,9 +35,9 @@ class ScreenOne extends ScreenOneScreen {
               SamplesNavigation.of(context).sampleTwoNavigation.toScreenTwo();
             },
           ),
-          TextField(),
-          Hero(
-            child: const FlutterLogo(
+          const TextField(),
+          const Hero(
+            child: FlutterLogo(
               size: 100,
             ),
             tag: 'HERO',

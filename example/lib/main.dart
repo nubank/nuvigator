@@ -35,8 +35,8 @@ class HomeScreen extends ScreenWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Hero(
-            child: const FlutterLogo(),
+          const Hero(
+            child: FlutterLogo(),
             tag: 'HERO',
           ),
           FlatButton(

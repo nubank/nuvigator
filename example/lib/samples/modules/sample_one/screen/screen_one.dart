@@ -31,8 +31,8 @@ class ScreenOne extends ScreenOneScreen {
             child: const Text('Go to screen two'),
             onPressed: () => SampleOneNavigation.of(context).toScreenTwo(),
           ),
-          Hero(
-            child: const FlutterLogo(),
+          const Hero(
+            child: FlutterLogo(),
             tag: 'HERO',
           ),
         ],
