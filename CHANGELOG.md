@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.1.0+3
+## 0.1.1
 - Fix a bug when trying to call onDeepLinkNotfound
 
 ## 0.1.0+2
