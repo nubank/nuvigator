@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.0+3
+- Fix a bug when trying to call onDeepLinkNotfound
+
 ## 0.1.0+2
 - Update pubspec.yaml dependencies versions
 
