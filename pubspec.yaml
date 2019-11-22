@@ -1,10 +1,6 @@
 name: nuvigator
 description: A powerful and strongly typed routing abstraction over Flutter navigator, providing some new features and an easy way to define routers with code generation.
 version: 0.1.1
-authors:
-  - Nubank <tech@nubank.com.br>
-  - Leonardo Iacovini <leonardo.iacovini@nubank.com.br>
-  - Lucas Britto <lucas.britto@nubank.com.br>
 
 homepage: https://github.com/nubank/nuvigator
 
