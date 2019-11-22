@@ -8,7 +8,7 @@ import 'screen_route.dart';
 
 String deepLinkString(Uri url) => url.host + url.path;
 
-typedef HandleDeepLinkFn = Future<bool> Function(
+typedef HandleDeepLinkFn = Future<dynamic> Function(
     GlobalRouter globalRouter, Uri uri,
     [bool isFromNative, dynamic args]);
 
@@ -44,7 +44,7 @@ class GlobalRouter implements Router {
     return globalRouterProvider?.globalRouter;
   }
 
-  final HandleDeepLinkFn onDeepLinkNotFound;
+  HandleDeepLinkFn onDeepLinkNotFound;
   final Router baseRouter;
   GlobalKey<NuvigatorState> nuvigatorKey;
   final ScreenRoute Function(RouteSettings settings) onScreenNotFound;
@@ -81,19 +81,19 @@ class GlobalRouter implements Router {
       [dynamic arguments, bool isFromNative = false]) async {
     final routeEntry = await getRouteEntryForDeepLink(deepLinkString(url));
 
-    final arguments = _extractParameters(url, routeEntry.key.deepLink);
-
     if (routeEntry == null) {
       if (onDeepLinkNotFound != null)
-        await onDeepLinkNotFound(this, url, isFromNative, arguments);
+        return await onDeepLinkNotFound(this, url, isFromNative, arguments);
       return null;
     }
+
+    final mapArguments = _extractParameters(url, routeEntry.key.deepLink);
     if (isFromNative) {
-      final route = _buildNativeRoute(routeEntry, arguments);
+      final route = _buildNativeRoute(routeEntry, mapArguments);
       return nuvigatorKey.currentState.push<T>(route);
     }
     return nuvigatorKey.currentState
-        .pushNamed<T>(routeEntry.key.routeName, arguments: arguments);
+        .pushNamed<T>(routeEntry.key.routeName, arguments: mapArguments);
   }
 
   Route _buildNativeRoute(
@@ -107,7 +107,7 @@ class GlobalRouter implements Router {
         .fallbackScreenType(nuvigator.widget.screenType);
     final route = screenRoute.toRoute(routeSettings);
     route.popped.then<dynamic>((dynamic _) async {
-      await Future<void>.delayed(Duration(milliseconds: 300));
+      await Future<void>.delayed(const Duration(milliseconds: 300));
       await SystemNavigator.pop();
     });
     return route;
