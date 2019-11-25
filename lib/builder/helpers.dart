@@ -7,10 +7,6 @@ List<DartType> getGenericTypes(DartType type) {
   return type is ParameterizedType ? type.typeArguments : null;
 }
 
-List<TypeParameterElement> getGenericParameters(DartType type) {
-  return type is ParameterizedType ? type.typeParameters : null;
-}
-
 const nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
 const nuRouterChecker = TypeChecker.fromRuntime(NuRouter);
 

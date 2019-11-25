@@ -113,3 +113,41 @@ abstract class BaseRouter implements Router {
     return getScreen(settings).toRoute(settings);
   }
 }
+
+class FlowRouter<T extends Router, R extends Object> extends BaseRouter {
+  FlowRouter(
+    this.baseRouter, {
+    this.screensType,
+    this.initialScreenType,
+    this.wrapper,
+  });
+
+  final ScreenType initialScreenType;
+  final ScreenType screensType;
+  final Router baseRouter;
+  final WrapperFn wrapper;
+
+  @override
+  ScreenRoute getScreen(RouteSettings settings) {
+    final firstScreen = baseRouter.getScreen(settings);
+    if (firstScreen == null) return null;
+    return FlowRoute<T, R>(
+      screenType: initialScreenType,
+      nuvigator: Nuvigator<T>(
+        router: baseRouter,
+        initialRoute: settings.name,
+        screenType: screensType,
+        wrapper: wrapper,
+        initialArguments: settings.arguments,
+      ),
+    );
+  }
+
+  @override
+  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) async {
+    return await baseRouter.getRouteEntryForDeepLink(deepLink);
+  }
+
+  @override
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => null;
+}

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.0
+- Add `FlowRouter` back, compatible with the new API of nested Nuvigators
+- Increase version constraint of `analyzer`
+
 ## 0.1.1
 - Fix a bug when trying to call onDeepLinkNotfound
 
