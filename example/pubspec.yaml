@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  provider: ^3.0.0+1
+  provider: ^3.2.0
   nuvigator:
     path: ../
 

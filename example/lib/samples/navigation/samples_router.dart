@@ -35,7 +35,7 @@ class SamplesRouter extends BaseRouter {
           initialRoute: SampleTwoRoutes.screenOne,
           screenType: cupertinoScreenType,
           wrapper: (BuildContext context, Widget child) => Provider(
-            builder: (_) => SampleFlowBloc(),
+            create: (_) => SampleFlowBloc(),
             child: child,
           ),
         ),
