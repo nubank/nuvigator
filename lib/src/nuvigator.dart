@@ -95,7 +95,7 @@ class Nuvigator<T extends Router> extends Navigator {
   }
 }
 
-class NuvigatorState<T extends Router> extends NavigatorState {
+class NuvigatorState<T extends Router> extends NavigatorState with WidgetsBindingObserver {
   NuvigatorState<GlobalRouter> get _rootNuvigator =>
       Nuvigator.of<GlobalRouter>(context, rootNuvigator: true) ?? this;
 
@@ -103,6 +103,32 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   Nuvigator get widget => super.widget;
 
   T get router => widget.router;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // On Android: the user has pressed the back button.
+  @override
+  Future<bool> didPopRoute() async {
+    assert(mounted);
+    return await maybePop();
+  }
+
+  @override
+  Future<bool> didPushRoute(String route) async {
+    assert(mounted);
+    pushNamed(route);
+    return true;
+  }
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
@@ -159,13 +185,6 @@ class NuvigatorState<T extends Router> extends NavigatorState {
   }
 
   @override
-  Future<bool> maybePop<T extends Object>([T result]) async {
-    final willNotPop = await super.maybePop<T>(result);
-    if (!willNotPop) return parent?.maybePop<T>(result);
-    return willNotPop;
-  }
-
-  @override
   bool pop<T extends Object>([T result]) {
     var isPopped = false;
     if (canPop()) {
@@ -218,6 +237,14 @@ class NuvigatorState<T extends Router> extends NavigatorState {
     }
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
+    }
+    if (isNested) {
+      child = WillPopScope(
+        onWillPop: () async {
+          return !(await maybePop());
+        },
+        child: child,
+      );
     }
     return child;
   }
