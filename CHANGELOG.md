@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.1
+- Fix the bug when Android back button is pressed closing the app. Now, 
+  when the back button is pressed, the nuvigator will try to close the 
+  current page and will just close the app when doesn't have any pages to pop. 
+
 ## 0.2.0
 - Add `FlowRouter` back, compatible with the new API of nested Nuvigators
 - Increase version constraint of `analyzer`
