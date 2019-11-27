@@ -95,7 +95,8 @@ class Nuvigator<T extends Router> extends Navigator {
   }
 }
 
-class NuvigatorState<T extends Router> extends NavigatorState with WidgetsBindingObserver {
+class NuvigatorState<T extends Router> extends NavigatorState
+    with WidgetsBindingObserver {
   NuvigatorState<GlobalRouter> get _rootNuvigator =>
       Nuvigator.of<GlobalRouter>(context, rootNuvigator: true) ?? this;
 
