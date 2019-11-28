@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.2
+- Increase plugins version range
+
 ## 0.2.1
 - Fix the bug when Android back button is pressed closing the app. Now, 
   when the back button is pressed, the nuvigator will try to close the 
