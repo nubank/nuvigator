@@ -20,6 +20,9 @@ and how you can use they in your project.
 Basic usage
 
 ```dart
+import 'package:flutter/widgets.dart';
+import 'package:nuvigator/nuvigator.dart';
+
 @NuRouter()
 class MyRouter extends BaseRouter {
 
@@ -176,7 +179,7 @@ You probably noted in the examples above that we have methods that will be creat
 they don't exists you can just make they return `null` or leave un-implemented. 
 
 Before running the generator we recommend being sure that each Router is in a separated file, and also make sure that you
-have added the `part 'my_custom_router.g.dart';` directive in your router file. 
+have added the `part 'my_custom_router.g.dart';` directive and the required imports (`package:nuvigator/nuvigator.dart` and `package:flutter/widgets.dart`) in your router file. 
 
 After running the generator (`flutter pub run build_runner build --delete-conflicting-outputs`), you will notice that 
 each router file will have it's part of file created. Now you can complete the `screensMap` and `routersList` functions
