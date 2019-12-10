@@ -18,7 +18,7 @@ class RouteEntry {
 }
 
 /// Router Interface. Provide a basic interface to communicate with other Router
-/// components.
+/// components. Usually you would want to extend the [BaseRouter] instead.
 abstract class Router {
   ScreenRoute getScreen(RouteSettings settings);
 
@@ -29,6 +29,42 @@ abstract class Router {
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 
+/// Router with basic features implemented that can be extended to create custom
+/// Routers.
+///
+/// Relevant options that can be configured in the base Router are:
+/// - [deepLinkPrefix] will be used to prefix all deepLinks of the configured
+/// Routes or GroupedRouters in this Router.
+/// - [screensWrapper] a function that will be invoked to wrap each screen presented
+/// by this Router of by any of it's GroupedRouters. (note that this function is going be
+/// called one time per screen, and not just one time at the router creation)
+///
+/// {@tool sample}
+/// Sample usage of [BaseRouter] with [NuRouter]
+///
+/// ```dart
+/// @NuRouter()
+/// class ExampleRouter extends BaseRouter {
+///   @NuRoute()
+///   ScreenRoute profile() => ScreenRoute(
+///     builder: (_) => ProfileScreen(),
+///   );
+///
+///   @NuRouter()
+///   Example2Router example2Router = Example2Router();
+///
+///   @override
+///   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$exampleScreensMap(this);
+///   @override
+///   List<Router> routers = _$exampleMainRoutersList(this);
+/// }
+/// ```
+/// {@end-tool}
+///
+/// The required fields to be implemented are [screensMap] and (optionally) [routers]
+/// usually those getters are going to be generated automatically by the generator,
+/// however it's possible to implement they manually if you don't want to rely on
+/// generators.
 abstract class BaseRouter implements Router {
   List<Router> get routers => [];
 
@@ -114,6 +150,16 @@ abstract class BaseRouter implements Router {
   }
 }
 
+/// Wrapper around another Router that will make possible to dynamically create
+/// nested Nuvigators based on routes that are reached inside of it.
+///
+/// [baseRouter] is the Router that will be used by the nested Nuvigator and also to
+/// have it's Routes and deepLinks exposed just like a regular Grouped Router.
+/// [wrapper] will be used as the [Nuvigator.wrapper] function when instantiating it
+/// [screensType] will be used as the [Nuvigator.screenType]
+/// [initialScreenType] will be use to determine the screenType of the first screen
+/// presented, if omitted it will fallback to the screenType of the parent Nuvigator.
+///
 class FlowRouter<T extends Router, R extends Object> extends BaseRouter {
   FlowRouter(
     this.baseRouter, {
