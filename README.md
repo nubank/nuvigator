@@ -5,7 +5,6 @@
 
 Routing and Navigation package.
 
-
 ## What
 
 This package aims to provide a powerful routing abstraction over Flutter Navigators. Using a most declarative and concise
@@ -14,6 +13,15 @@ that the framework will handle for you.
 
 Below you will find a description of the main components of this frameworks,
 and how you can use they in your project.
+
+## Topics
+
+- Getting Started
+- Composing Multiple Routers
+- Nesting Nuvigators
+- Using Screen Arguments/Parameters
+- Using DeepLinks
+- FAQ 
 
 ## Main Concepts
 
@@ -64,6 +72,22 @@ Nuvigator.
 Each `Nuvigator` should have a `Router`. The `Router` acts just like the routing controller. While the `Nuvigator` will
 be responsible for visualization, widget render and state keeping. The Router will be Pure class that will be responsible
 to provide elements to be presented and managed by the Nuvigator.
+
+### Nested Flows and Nuvigators
+
+Currently, Flutter default Navigator have some clumsy behavior when nested, Nuvigator comes to fix and improve this functionality.
+What Nuvigator does for you:
+
+- When popping the last screen of a nested Nuvigator, it will pop the nested Nuvigator itself.
+- When calling a route that the nearest nested Nuvigator do not know how to handle, it will propagate up in the context
+to find a parent Nuvigator that can handle it.
+- When passing arguments to a nested Nuvigator, the arguments are passed again to the first route of this Nuvigator.
+- Android BackButton behavior is consistent within the nearest Nuvigator, usually it would always pop the root Navigator, 
+but with Nuvigator it will do the opposite, allowing to go back inside a nested Flow instead of dismissing it.
+- Provide several helpers to access and operate nested flows such as close it completely.
+- Methods such as popUntil, etc... Will work across multiple nested Nuvigators.
+- Hero animations works out-of-the-box on nested Nuvigators.
+- Can provide observers to be automatically passed to nested Nuvigators (such as analytics ones).
 
 ## ScreenRoute and FlowRoute
 
