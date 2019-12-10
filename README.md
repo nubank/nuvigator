@@ -14,14 +14,13 @@ that the framework will handle for you.
 Below you will find a description of the main components of this frameworks,
 and how you can use they in your project.
 
-## Topics
+## Specific Documentation
 
-- Getting Started
-- Composing Multiple Routers
-- Nesting Nuvigators
-- Using Screen Arguments/Parameters
-- Using DeepLinks
-- FAQ 
+- [Getting Started](docs/getting-started.md)
+- [Using Screen Arguments/Parameters](docs/arguments.md)
+- [Composing Multiple Routers](docs/router-composition.md)
+- [Nesting Nuvigators]()
+- [Using DeepLinks]() 
 
 ## Main Concepts
 
@@ -231,8 +230,8 @@ class SamplesRoutes {
 
 ### Typed Argument Classes
 
-Those are classes representing the arguments each route can receive. They include parse methods to extract itself from
-the BuildContext. eg:
+Those are classes representing the arguments each route can receive. They include a `.of` methods to extract itself from
+the `BuildContext`. eg:
 
 ```dart
 class SecondArgs {
