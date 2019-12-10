@@ -3,17 +3,19 @@
 This guide will provide the simplest App using Nuvigator you can get. This is a good starting point for learning how to
 setup the framework, and to incrementally learn more advanced features.
 
+You can find all of the files described in this tutorial in the `getting-started` folder.
+
 Given we have a simple Widget:
 
 `lib/src/tutorial_screen.dart`
 ```dart
-import 'paclage:flutter/widgets.dart';
+import 'package:flutter/widgets.dart';
 
 class TutorialScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Hello World!');
+    return const Text('Hello World!');
   }
 }
 ```
@@ -24,21 +26,22 @@ class TutorialScreen extends StatelessWidget {
 
 `lib/src/router.dart`
 ```dart
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart'; // Needed by the generated part-file
 import 'package:nuvigator/nuvigator.dart';
+import 'tutorial_screen.dart';
 
 part 'router.g.dart';
 
 @NuRouter()
 class TutorialRouter extends BaseRouter {
-
   @NuRoute()
   ScreenRoute tutorialRoute() => ScreenRoute(
-    builder: (context) => TutorialScreen(screenContext),
-  );
+        builder: (_) => TutorialScreen(),
+      );
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$tutorialScreensMap(this); // Will be generated
+  Map<RouteDef, ScreenRouteBuilder> get screensMap =>
+      _$tutorialScreensMap(this); // Will be generated
 }
 ```
 
