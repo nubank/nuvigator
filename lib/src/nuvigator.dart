@@ -275,9 +275,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
     if (isNested) {
       child = WillPopScope(
         onWillPop: () async {
-          final result = await maybePop();
-          print(result);
-          return !result;
+          return !(await maybePop());
         },
         child: child,
       );
