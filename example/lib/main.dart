@@ -7,15 +7,13 @@ import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  static final router = GlobalRouter(baseRouter: samplesRouter);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nubank',
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
-        router: router,
+        router: SamplesRouter(),
         initialRoute: SamplesRoutes.home,
       ),
     );
@@ -27,6 +25,9 @@ class HomeScreen extends ScreenWidget {
 
   @override
   Widget build(BuildContext context) {
+//    final router = Router.of<SamplesRouter>(context);
+    final nuvigator = Nuvigator.of<SamplesRouter>(context);
+    nuvigator.router.toScreenTwo();
     return Scaffold(
       appBar: AppBar(
         title: const Text('nuvigator Example'),
@@ -41,11 +42,9 @@ class HomeScreen extends ScreenWidget {
           ),
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
-              onPressed: () async {
-                final result = await SamplesNavigation.of(context)
-                    .sampleOneNavigation
+              onPressed: () {
+                router.navigator.sampleOneNavigation
                     .toScreenOne(testId: 'From Home');
-                print('RESULT $result');
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),

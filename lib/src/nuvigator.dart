@@ -37,7 +37,7 @@ class Nuvigator<T extends Router> extends Navigator {
                 ?.fallbackScreenType(screenType)
                 ?.toRoute(finalSettings);
           },
-          key: (router is GlobalRouter) ? router.nuvigatorKey : key,
+          key: key,
           initialRoute: initialRoute,
         );
 
@@ -97,8 +97,8 @@ class Nuvigator<T extends Router> extends Navigator {
 
 class NuvigatorState<T extends Router> extends NavigatorState
     with WidgetsBindingObserver {
-  NuvigatorState<GlobalRouter> get _rootNuvigator =>
-      Nuvigator.of<GlobalRouter>(context, rootNuvigator: true) ?? this;
+  NuvigatorState get _rootNuvigator =>
+      Nuvigator.of(context, rootNuvigator: true) ?? this;
 
   @override
   Nuvigator get widget => super.widget;
@@ -109,10 +109,12 @@ class NuvigatorState<T extends Router> extends NavigatorState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    widget.router.nuvigator = this;
   }
 
   @override
   void dispose() {
+    widget.router.nuvigator = null;
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -208,7 +210,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
   }
 
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return globalRouter.openDeepLink<R>(deepLink, arguments, false);
+    return topRouter.openDeepLink<R>(deepLink, arguments, false);
   }
 
   NuvigatorState get parent => Nuvigator.of(context);
@@ -217,25 +219,11 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   bool get isRoot => this == _rootNuvigator;
 
-  GlobalRouter get globalRouter => _rootNuvigator.router;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final existingGlobalRouter = GlobalRouter.of(context);
-    if (router is GlobalRouter && existingGlobalRouter != null) {
-      throw Exception('There is already a GlobalRouter in the widget tree!');
-    } else if (!(router is GlobalRouter) && isRoot) {
-      throw Exception('The root Nuvigator should have a GlobalRouter!');
-    }
-  }
+  Router get topRouter => _rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {
     Widget child = super.build(context);
-    if (router is GlobalRouter) {
-      child = GlobalRouterProvider(globalRouter: widget.router, child: child);
-    }
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
     }
@@ -247,6 +235,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
         child: child,
       );
     }
+    child = RouterProvider<T>(router: widget.router, child: child);
     return child;
   }
 }

@@ -1,7 +1,6 @@
 library nuvigator;
 
 export 'src/annotations.dart';
-export 'src/global_router.dart';
 export 'src/nuvigator.dart';
 export 'src/router.dart';
 export 'src/screen_route.dart';

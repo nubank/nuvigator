@@ -5,7 +5,7 @@ version: 0.2.2
 homepage: https://github.com/nubank/nuvigator
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   build: '>=0.12.6 <2.0.0'

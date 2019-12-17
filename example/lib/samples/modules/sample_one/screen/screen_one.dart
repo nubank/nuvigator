@@ -16,7 +16,7 @@ class ScreenOne extends ScreenOneScreen {
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => nuvigator.maybePop(),
+          onPressed: () => nuvigator.pop(),
         ),
       ),
       body: Column(

@@ -48,10 +48,8 @@ class SamplesRouter extends BaseRouter {
   );
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$samplesScreensMap(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$samplesScreensMap;
 
   @override
-  List<Router> get routers => _$samplesRoutersList(this);
+  List<Router> get routers => _$samplesRoutersList;
 }
-
-final samplesRouter = SamplesRouter();
