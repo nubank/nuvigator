@@ -134,6 +134,8 @@ class NuvigatorState<T extends Router> extends NavigatorState
   @override
   Nuvigator get widget => super.widget;
 
+  List<NuvigatorState> nestedNuvigators = [];
+
   T get router => widget.router;
 
   R getRouter<R extends Router>() => router.getRouter<R>();
@@ -141,6 +143,10 @@ class NuvigatorState<T extends Router> extends NavigatorState
   @override
   void initState() {
     super.initState();
+    parent = Nuvigator.of(context, nullOk: true);
+    if (isNested) {
+      parent.nestedNuvigators.add(this);
+    }
     WidgetsBinding.instance.addObserver(this);
     assert(widget.router.nuvigator == null);
     widget.router.nuvigator = this;
@@ -149,6 +155,9 @@ class NuvigatorState<T extends Router> extends NavigatorState
   @override
   void dispose() {
     widget.router.nuvigator = null;
+    if (isNested) {
+      parent.nestedNuvigators.remove(this);
+    }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -233,15 +242,6 @@ class NuvigatorState<T extends Router> extends NavigatorState
     return isPopped;
   }
 
-  @override
-  Future<bool> maybePop<T extends Object>([T result]) async {
-    final r = await super.maybePop(result);
-    if (!r && isNested) {
-      return parent.maybePop();
-    }
-    return r;
-  }
-
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
   bool rootPop<T extends Object>([T result]) => _rootNuvigator.pop<T>(result);
@@ -256,7 +256,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
     return rootRouter.openDeepLink<R>(deepLink, arguments, false);
   }
 
-  NuvigatorState get parent => Nuvigator.of(context, nullOk: true);
+  NuvigatorState parent;
 
   bool get isNested => parent != null;
 
@@ -272,16 +272,16 @@ class NuvigatorState<T extends Router> extends NavigatorState
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
     }
-//    if (isNested) {
-//      child = WillPopScope(
-//        onWillPop: () async {
-//          final result = await maybePop();
-//          print(result);
-//          return !result;
-//        },
-//        child: child,
-//      );
-//    }
+    if (isNested) {
+      child = WillPopScope(
+        onWillPop: () async {
+          final result = await maybePop();
+          print(result);
+          return !result;
+        },
+        child: child,
+      );
+    }
     return child;
   }
 }

@@ -9,6 +9,15 @@ mixin NuvigatorRoute<T> on PageRoute<T> {
   bool get canPop {
     return super.canPop || nuvigator.isNested;
   }
+
+  @override
+  Future<RoutePopDisposition> willPop() async {
+    final res = await super.willPop();
+    if (res == RoutePopDisposition.bubble && nuvigator.isNested) {
+      return RoutePopDisposition.pop;
+    }
+    return res;
+  }
 }
 
 abstract class ScreenType {
