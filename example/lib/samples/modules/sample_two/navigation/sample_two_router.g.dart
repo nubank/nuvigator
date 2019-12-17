@@ -23,11 +23,16 @@ class ScreenOneArgs {
     );
   }
 
+  Map<String, Object> get toMap => {
+        'testId': testId,
+      };
   static ScreenOneArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == SampleTwoRoutes.screenOne) {
       final args = routeSettings?.arguments;
+      if (args == null)
+        throw FlutterError('ScreenOneArgs requires Route arguments');
       if (args is ScreenOneArgs) return args;
       if (args is Map<String, Object>) return parse(args);
     } else if (nuvigator != null) {

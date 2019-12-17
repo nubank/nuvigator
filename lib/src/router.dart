@@ -28,8 +28,21 @@ class RouteEntry {
 abstract class Router {
   NuvigatorState nuvigator; // Nuvigator in which this Router is being used
 
-  static T of<T extends Router>(BuildContext context) {
-    return Nuvigator.forRouter<T>(context).getRouter<T>();
+  static T of<T extends Router>(
+    BuildContext context, {
+    bool nullOk = false,
+  }) {
+    final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
+    assert(() {
+      if (!nullOk && router == null) {
+        throw FlutterError(
+            'Router operation requested with a context that does not include a Router of the provided type.\n'
+            'The context used to get the specified Router must be that of a '
+            'widget that is a descendant of a Nuvigator widget that includes the desired Router.');
+      }
+      return true;
+    }());
+    return router;
   }
 
   Future<T> openDeepLink<T>(Uri url,

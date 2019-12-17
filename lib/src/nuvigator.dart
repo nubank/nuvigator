@@ -5,12 +5,13 @@ import 'router.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
 
-NuvigatorState _tryToFind<T extends Router>(NuvigatorState nuvigatorState) {
+NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
+    NuvigatorState nuvigatorState) {
   if (nuvigatorState == null) return null;
   final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
   if (nuvigatorRouterForType != null) return nuvigatorState;
   if (nuvigatorState != nuvigatorState.parent && nuvigatorState.parent != null)
-    return _tryToFind(nuvigatorState.parent);
+    return _tryToFindNuvigatorForRouter(nuvigatorState.parent);
   return null;
 }
 
@@ -91,18 +92,31 @@ class Nuvigator<T extends Router> extends Navigator {
     return builder(context);
   }
 
-  static NuvigatorState forRouter<T extends Router>(BuildContext context) {
+  static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
     final NuvigatorState closestNuvigator =
         context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
-    return _tryToFind<T>(closestNuvigator);
+    return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
-  static NuvigatorState<T> of<T extends Router>(BuildContext context,
-      {bool rootNuvigator = false}) {
+  static NuvigatorState<T> of<T extends Router>(
+    BuildContext context, {
+    bool rootNuvigator = false,
+    bool nullOk = false,
+  }) {
     if (rootNuvigator)
-      context.rootAncestorStateOfType(TypeMatcher<NuvigatorState<T>>());
-    final nuvigatorState = forRouter<T>(context);
+      return context.rootAncestorStateOfType(TypeMatcher<NuvigatorState<T>>());
+    final nuvigatorState = ofRouter<T>(context);
     if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
+    assert(() {
+      if (!nullOk) {
+        throw FlutterError(
+            'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
+            'The context used to push or pop routes from the Nuvigator must be that of a '
+            'widget that is a descendant of a Nuvigator widget.'
+            'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
+      }
+      return true;
+    }());
     return null;
   }
 
@@ -128,6 +142,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    assert(widget.router.nuvigator == null);
     widget.router.nuvigator = this;
   }
 
@@ -229,20 +244,21 @@ class NuvigatorState<T extends Router> extends NavigatorState
   }
 
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return topRouter.openDeepLink<R>(deepLink, arguments, false);
+    return rootRouter.openDeepLink<R>(deepLink, arguments, false);
   }
 
-  NuvigatorState get parent => Nuvigator.of(context);
+  NuvigatorState get parent => Nuvigator.of(context, nullOk: true);
 
   bool get isNested => parent != null;
 
   bool get isRoot => this == _rootNuvigator;
 
-  Router get topRouter => _rootNuvigator.router;
+  Router get rootRouter => _rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {
-    widget.router.nuvigator = this;
+    //? HotRestart seems to remove the attribution made in initState
+    widget.router.nuvigator ??= this;
     Widget child = super.build(context);
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);

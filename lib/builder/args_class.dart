@@ -69,6 +69,7 @@ class ArgsClass extends BaseBuilder {
           'final nuvigator = Nuvigator.of(context);'
           'if (routeSettings?.name == ${routerName}Routes.$screenName) {'
           'final args = routeSettings?.arguments;'
+          'if (args == null) throw FlutterError(\'$className requires Route arguments\');'
           'if (args is $className) return args;'
           'if (args is Map<String, Object>) return parse(args);'
           '} else if (nuvigator != null) {'
@@ -77,6 +78,20 @@ class ArgsClass extends BaseBuilder {
           'return null;',
         ),
     );
+  }
+
+  Method _toMapMethod(List<Field> argsFields) {
+    final argsMap = StringBuffer('{\n');
+    for (final field in argsFields) {
+      argsMap.write('\'${field.name}\': ${field.name},');
+    }
+    argsMap.write('}');
+    return Method((m) => m
+      ..name = 'toMap'
+      ..type = MethodType.getter
+      ..returns = refer('Map<String, Object>')
+      ..lambda = true
+      ..body = Code(argsMap.toString()));
   }
 
   Class _generateArgsClass(String routerName, String fieldName, String argsCode,
@@ -89,6 +104,7 @@ class ArgsClass extends BaseBuilder {
         ..fields.addAll(argsFields)
         ..methods.addAll([
           _parseMethod(className, argsCode),
+          _toMapMethod(argsFields),
           _ofMethod(className, routerName, fieldName),
         ]),
     );

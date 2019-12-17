@@ -23,11 +23,17 @@ class SecondArgs {
     );
   }
 
+  Map<String, Object> get toMap => {
+        'testId': testId,
+      };
+
   static SecondArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == SamplesRoutes.second) {
       final args = routeSettings?.arguments;
+      if (args == null)
+        throw FlutterError('SecondArgs requires Route arguments');
       if (args is SecondArgs) return args;
       if (args is Map<String, Object>) return parse(args);
     } else if (nuvigator != null) {
@@ -109,6 +115,7 @@ extension SamplesRouterNavigation on SamplesRouter {
   }
 
   SampleTwoRouter get sampleTwoRouter => getRouter<SampleTwoRouter>();
+
   SampleOneRouter get sampleOneRouter => getRouter<SampleOneRouter>();
 }
 
@@ -116,6 +123,7 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
   List<Router> get _$routers => [
         sampleOneRouter,
       ];
+
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
     return {
       RouteDef(SamplesRoutes.home): (RouteSettings settings) {
