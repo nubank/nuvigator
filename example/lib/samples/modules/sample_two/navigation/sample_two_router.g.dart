@@ -37,21 +37,7 @@ class ScreenOneArgs {
   }
 }
 
-abstract class ScreenOneScreen extends ScreenWidget {
-  ScreenOneScreen(BuildContext context) : super(context);
-
-  ScreenOneArgs get args => ScreenOneArgs.of(context);
-  SampleTwoNavigation get sampleTwoNavigation =>
-      SampleTwoNavigation.of(context);
-}
-
-class SampleTwoNavigation {
-  SampleTwoNavigation(this.nuvigator);
-
-  final NuvigatorState nuvigator;
-
-  static SampleTwoNavigation of(BuildContext context) =>
-      SampleTwoNavigation(Nuvigator.of(context));
+extension SampleTwoRouterNavigation on SampleTwoRouter {
   Future<String> toScreenOne({String testId}) {
     return nuvigator.pushNamed<String>(
       SampleTwoRoutes.screenOne,
@@ -108,15 +94,16 @@ class SampleTwoNavigation {
   }
 }
 
-Map<RouteDef, ScreenRouteBuilder> _$sampleTwoScreensMap(
-    SampleTwoRouter router) {
-  return {
-    RouteDef(SampleTwoRoutes.screenOne): (RouteSettings settings) {
-      final Map<String, Object> args = settings.arguments;
-      return router.screenOne(testId: args['testId']);
-    },
-    RouteDef(SampleTwoRoutes.screenTwo): (RouteSettings settings) {
-      return router.screenTwo();
-    },
-  };
+extension SampleTwoRouterScreensAndRouters on SampleTwoRouter {
+  Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
+    return {
+      RouteDef(SampleTwoRoutes.screenOne): (RouteSettings settings) {
+        final Map<String, Object> args = settings.arguments;
+        return screenOne(testId: args['testId']);
+      },
+      RouteDef(SampleTwoRoutes.screenTwo): (RouteSettings settings) {
+        return screenTwo();
+      },
+    };
+  }
 }

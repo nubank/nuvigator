@@ -37,22 +37,7 @@ class SecondArgs {
   }
 }
 
-abstract class SecondScreen extends ScreenWidget {
-  SecondScreen(BuildContext context) : super(context);
-
-  SecondArgs get args => SecondArgs.of(context);
-
-  SamplesNavigation get samplesNavigation => SamplesNavigation.of(context);
-}
-
-class SamplesNavigation {
-  SamplesNavigation(this.nuvigator);
-
-  final NuvigatorState nuvigator;
-
-  static SamplesNavigation of(BuildContext context) =>
-      SamplesNavigation(Nuvigator.of(context));
-
+extension SamplesRouterNavigation on SamplesRouter {
   Future<Object> toHome() {
     return nuvigator.pushNamed<Object>(
       SamplesRoutes.home,
@@ -123,103 +108,23 @@ class SamplesNavigation {
     );
   }
 
-  SampleTwoNavigation get sampleTwoNavigation => SampleTwoNavigation(nuvigator);
-
-  SampleOneNavigation get sampleOneNavigation => SampleOneNavigation(nuvigator);
+  SampleTwoRouter get sampleTwoRouter => getRouter<SampleTwoRouter>();
+  SampleOneRouter get sampleOneRouter => getRouter<SampleOneRouter>();
 }
 
-extension SamplesRouterNuvigator on NuvigatorState {
-  SamplesNavigation get samplesNavigation => SamplesNavigation(this);
-}
-
-extension SamplesRouterNavigator on SamplesRouter {
-  SamplesNavigation get navigator => SamplesNavigation(nuvigator);
-
-  Map<RouteDef, ScreenRouteBuilder> get _$samplesScreensMap => {
-        RouteDef(SamplesRoutes.home): (RouteSettings settings) {
-          return home();
-        },
-        RouteDef(SamplesRoutes.second): (RouteSettings settings) {
-          final Map<String, Object> args = settings.arguments;
-          return second(testId: args['testId']);
-        },
-      };
-
-  List<Router> get _$samplesRoutersList => [
-        this.sampleOneRouter,
+extension SamplesRouterScreensAndRouters on SamplesRouter {
+  List<Router> get _$routers => [
+        sampleOneRouter,
       ];
-
-  Future<Object> toHome() {
-    return nuvigator.pushNamed<Object>(
-      SamplesRoutes.home,
-    );
-  }
-
-  Future<Object> pushReplacementToHome<TO extends Object>({TO result}) {
-    return nuvigator.pushReplacementNamed<Object, TO>(
-      SamplesRoutes.home,
-      result: result,
-    );
-  }
-
-  Future<Object> pushAndRemoveUntilToHome<TO extends Object>(
-      {@required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<Object>(
-      SamplesRoutes.home,
-      predicate,
-    );
-  }
-
-  Future<Object> popAndPushToHome<TO extends Object>({TO result}) {
-    return nuvigator.popAndPushNamed<Object, TO>(
-      SamplesRoutes.home,
-      result: result,
-    );
-  }
-
-  Future<void> toSecond({String testId}) {
-    return nuvigator.pushNamed<void>(
-      SamplesRoutes.second,
-      arguments: {
-        'testId': testId,
+  Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
+    return {
+      RouteDef(SamplesRoutes.home): (RouteSettings settings) {
+        return home();
       },
-    );
-  }
-
-  Future<void> pushReplacementToSecond<TO extends Object>(
-      {String testId, TO result}) {
-    return nuvigator.pushReplacementNamed<void, TO>(
-      SamplesRoutes.second,
-      arguments: {
-        'testId': testId,
+      RouteDef(SamplesRoutes.second): (RouteSettings settings) {
+        final Map<String, Object> args = settings.arguments;
+        return second(testId: args['testId']);
       },
-      result: result,
-    );
+    };
   }
-
-  Future<void> pushAndRemoveUntilToSecond<TO extends Object>(
-      {String testId, @required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<void>(
-      SamplesRoutes.second,
-      predicate,
-      arguments: {
-        'testId': testId,
-      },
-    );
-  }
-
-  Future<void> popAndPushToSecond<TO extends Object>(
-      {String testId, TO result}) {
-    return nuvigator.popAndPushNamed<void, TO>(
-      SamplesRoutes.second,
-      arguments: {
-        'testId': testId,
-      },
-      result: result,
-    );
-  }
-
-  SampleTwoNavigation get sampleTwoNavigation => SampleTwoNavigation(nuvigator);
-
-  SampleOneNavigation get sampleOneNavigation => SampleOneNavigation(nuvigator);
 }

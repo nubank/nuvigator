@@ -7,8 +7,6 @@ import 'screen_route.dart';
 
 String deepLinkString(Uri url) => url.host + url.path;
 
-Type _typeOf<T>() => T;
-
 typedef HandleDeepLinkFn = Future<dynamic> Function(Router router, Uri uri,
     [bool isFromNative, dynamic args]);
 
@@ -25,28 +23,13 @@ class RouteEntry {
   bool operator ==(Object other) => other is RouteEntry && other.key == key;
 }
 
-class RouterProvider<T extends Router> extends InheritedWidget {
-  const RouterProvider({@required this.router, @required Widget child})
-      : super(child: child);
-
-  final T router;
-
-  @override
-  bool updateShouldNotify(RouterProvider oldWidget) {
-    return oldWidget.router != router;
-  }
-}
-
 /// Router Interface. Provide a basic interface to communicate with other Router
 /// components.
 abstract class Router {
   NuvigatorState nuvigator; // Nuvigator in which this Router is being used
 
   static T of<T extends Router>(BuildContext context) {
-    final type = _typeOf<RouterProvider<T>>();
-    final RouterProvider<T> provider =
-        context.inheritFromWidgetOfExactType(type);
-    return provider?.router;
+    return Nuvigator.forRouter<T>(context).getRouter<T>();
   }
 
   Future<T> openDeepLink<T>(Uri url,
@@ -59,17 +42,41 @@ abstract class Router {
   Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) => null;
 
   Route getRoute(RouteSettings settings);
+
+  T getRouter<T extends Router>() =>
+      this; // In case we need to find a specific router that is contained inside another
 }
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 
 abstract class BaseRouter implements Router {
-  List<Router> get routers => [];
+  List<Router> routers = [];
+
+  @override
+  T getRouter<T extends Router>() {
+    // ignore: avoid_as
+    if (this is T) return this as T;
+    for (final router in routers) {
+      if (router is T) return router;
+    }
+    return null;
+  }
 
   Map<RouteDef, ScreenRouteBuilder> get screensMap;
 
+  NuvigatorState _nuvigator;
+
   @override
-  NuvigatorState nuvigator;
+  set nuvigator(NuvigatorState newNuvigator) {
+    _nuvigator = newNuvigator;
+    for (final router in routers) {
+      router.nuvigator = newNuvigator;
+    }
+  }
+
+  @override
+  NuvigatorState get nuvigator => _nuvigator;
+
   final String deepLinkPrefix = null;
   HandleDeepLinkFn onDeepLinkNotFound;
   ScreenRoute Function(RouteSettings settings) onScreenNotFound;

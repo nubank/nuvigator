@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nubank',
-      builder: Nuvigator(
+      home: Nuvigator(
         screenType: cupertinoDialogScreenType,
         router: SamplesRouter(),
         initialRoute: SamplesRoutes.home,
@@ -20,14 +20,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends ScreenWidget {
-  HomeScreen(BuildContext context) : super(context);
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-//    final router = Router.of<SamplesRouter>(context);
-    final nuvigator = Nuvigator.of<SamplesRouter>(context);
-    nuvigator.router.toScreenTwo();
+    final router = Router.of<SamplesRouter>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('nuvigator Example'),
@@ -43,18 +39,17 @@ class HomeScreen extends ScreenWidget {
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
               onPressed: () {
-                router.navigator.sampleOneNavigation
-                    .toScreenOne(testId: 'From Home');
+                router.sampleOneRouter.toScreenOne(testId: 'From Home');
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
-            onPressed: () =>
-                nuvigator.openDeepLink<void>(Uri.parse(screenOneDeepLink)),
+            onPressed: () => router.nuvigator
+                .openDeepLink<void>(Uri.parse(screenOneDeepLink)),
           ),
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              SamplesNavigation.of(context).toSecond(testId: 'From Home');
+              router.toSecond(testId: 'From Home');
             },
           ),
         ],

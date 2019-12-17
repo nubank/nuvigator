@@ -19,15 +19,15 @@ class SampleTwoRouter extends BaseRouter {
       };
 
   @NuRoute()
-  ScreenRoute<String> screenOne({String testId}) => const ScreenRoute(
-        builder: ScreenOne.builder,
+  ScreenRoute<String> screenOne({String testId}) => ScreenRoute(
+        builder: (_) => ScreenOne(),
       );
 
   @NuRoute(pushMethods: [PushMethodType.push, PushMethodType.pushReplacement])
-  ScreenRoute<String> screenTwo() =>
-      const ScreenRoute<String>(builder: ScreenTwo.builder);
+  ScreenRoute<String> screenTwo() => ScreenRoute<String>(
+        builder: (_) => ScreenTwo(),
+      );
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap =>
-      _$sampleTwoScreensMap(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
 }

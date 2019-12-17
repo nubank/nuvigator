@@ -94,61 +94,17 @@ class ArgsClass extends BaseBuilder {
     );
   }
 
-  Class _generateScreenClass(ClassElement classElement, String routeName) {
-    final routerNavigationName = '${getRouterName(classElement)}Navigation';
-
-    return Class(
-      (c) => c
-        ..name = '${routeName}Screen'
-        ..abstract = true
-        ..extend = refer('ScreenWidget')
-        ..constructors.add(
-          Constructor((cons) => cons
-            ..initializers.add(const Code('super(context)'))
-            ..requiredParameters.add(
-              Parameter(
-                (p) => p
-                  ..type = refer('BuildContext')
-                  ..name = 'context',
-              ),
-            )),
-        )
-        ..methods.addAll([
-          Method(
-            (m) => m
-              ..name = 'args'
-              ..lambda = true
-              ..type = MethodType.getter
-              ..returns = refer('${capitalize(routeName)}Args')
-              ..body = Code('${capitalize(routeName)}Args.of(context)'),
-          ),
-          Method(
-            (m) => m
-              ..name = lowerCamelCase(routerNavigationName)
-              ..lambda = true
-              ..type = MethodType.getter
-              ..returns = refer(capitalize(routerNavigationName))
-              ..body = Code('${capitalize(routerNavigationName)}.of(context)'),
-          ),
-        ]),
-    );
-  }
-
   @override
   Spec build() {
     final argsClasses = <Class>[];
-    final screensClasses = <Class>[];
 
     for (var method in classElement.methods) {
       final nuRouteFieldAnnotation =
           nuRouteChecker.firstAnnotationOfExact(method);
-      final isFlow = method.type.name == 'FlowRoute';
 
-      if (nuRouteFieldAnnotation == null) continue;
-
-//      final args = nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
-
-      if (method?.parameters == null || method.parameters.isEmpty) continue;
+      if (nuRouteFieldAnnotation == null ||
+          method?.parameters == null ||
+          method.parameters.isEmpty) continue;
 
       final constructorParameters = <Parameter>[];
       final argsFields = <Field>[];
@@ -178,16 +134,8 @@ class ArgsClass extends BaseBuilder {
           argsFields,
         ),
       );
-      if (!isFlow) {
-        screensClasses.add(
-          _generateScreenClass(
-            classElement,
-            capitalize(method.name),
-          ),
-        );
-      }
     }
 
-    return Library((l) => l.body..addAll(argsClasses)..addAll(screensClasses));
+    return Library((l) => l.body..addAll(argsClasses));
   }
 }

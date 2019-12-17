@@ -5,6 +5,15 @@ import 'router.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
 
+NuvigatorState _tryToFind<T extends Router>(NuvigatorState nuvigatorState) {
+  if (nuvigatorState == null) return null;
+  final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
+  if (nuvigatorRouterForType != null) return nuvigatorState;
+  if (nuvigatorState != nuvigatorState.parent && nuvigatorState.parent != null)
+    return _tryToFind(nuvigatorState.parent);
+  return null;
+}
+
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
@@ -82,11 +91,19 @@ class Nuvigator<T extends Router> extends Navigator {
     return builder(context);
   }
 
+  static NuvigatorState forRouter<T extends Router>(BuildContext context) {
+    final NuvigatorState closestNuvigator =
+        context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
+    return _tryToFind<T>(closestNuvigator);
+  }
+
   static NuvigatorState<T> of<T extends Router>(BuildContext context,
       {bool rootNuvigator = false}) {
-    return rootNuvigator
-        ? context.rootAncestorStateOfType(TypeMatcher<NuvigatorState<T>>())
-        : context.ancestorStateOfType(TypeMatcher<NuvigatorState<T>>());
+    if (rootNuvigator)
+      context.rootAncestorStateOfType(TypeMatcher<NuvigatorState<T>>());
+    final nuvigatorState = forRouter<T>(context);
+    if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
+    return null;
   }
 
   @override
@@ -104,6 +121,8 @@ class NuvigatorState<T extends Router> extends NavigatorState
   Nuvigator get widget => super.widget;
 
   T get router => widget.router;
+
+  R getRouter<R extends Router>() => router.getRouter<R>();
 
   @override
   void initState() {
@@ -223,6 +242,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   @override
   Widget build(BuildContext context) {
+    widget.router.nuvigator = this;
     Widget child = super.build(context);
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
@@ -235,7 +255,6 @@ class NuvigatorState<T extends Router> extends NavigatorState
         child: child,
       );
     }
-    child = RouterProvider<T>(router: widget.router, child: child);
     return child;
   }
 }

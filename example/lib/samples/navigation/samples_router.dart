@@ -1,4 +1,5 @@
 import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
+import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../bloc/samples_bloc.dart';
 import '../modules/sample_one/navigation/sample_one_router.dart';
-import '../modules/sample_two/navigation/sample_two_router.dart';
 
 part 'samples_router.g.dart';
 
@@ -15,17 +15,9 @@ class SamplesRouter extends BaseRouter {
   @override
   String get deepLinkPrefix => 'deepprefix';
 
-  @override
-  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
-        return Provider<SamplesBloc>.value(
-          value: SamplesBloc(),
-          child: child,
-        );
-      };
-
   @NuRoute()
   ScreenRoute home() => ScreenRoute(
-        builder: (context) => HomeScreen(context),
+        builder: (context) => HomeScreen(),
       );
 
   @NuRoute()
@@ -42,14 +34,19 @@ class SamplesRouter extends BaseRouter {
       );
 
   @NuRouter()
-  final sampleOneRouter = FlowRouter(
-    SampleOneRouter(),
-    screensType: materialScreenType,
-  );
+  final SampleOneRouter sampleOneRouter = SampleOneRouter();
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$samplesScreensMap;
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+        return Provider<SamplesBloc>.value(
+          value: SamplesBloc(),
+          child: child,
+        );
+      };
 
   @override
-  List<Router> get routers => _$samplesRoutersList;
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
+
+  @override
+  List<Router> get routers => _$routers;
 }

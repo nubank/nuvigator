@@ -1,17 +1,11 @@
 import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
-import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class ScreenOne extends ScreenOneScreen {
-  ScreenOne(BuildContext context) : super(context);
-
-  static ScreenOne builder(BuildContext context) {
-    return ScreenOne(context);
-  }
-
+class ScreenOne extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final router = Router.of<SampleTwoRouter>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
@@ -25,15 +19,13 @@ class ScreenOne extends ScreenOneScreen {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(
-            'testId = ${args.testId}',
+          const Text(
+            'testId = 1',
             textAlign: TextAlign.center,
           ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () async {
-              SamplesNavigation.of(context).sampleTwoNavigation.toScreenTwo();
-            },
+            onPressed: () => router.toScreenTwo(),
           ),
           const TextField(),
           const Hero(

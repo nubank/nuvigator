@@ -1,5 +1,7 @@
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:code_builder/code_builder.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:nuvigator/src/annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -43,4 +45,9 @@ String getRouteString(ClassElement routerElement, MethodElement element) {
           ?.toStringValue() ??
       element.name;
   return '$prefix$routerName/$routeName';
+}
+
+String libraryToString(Library library) {
+  final emitter = DartEmitter(Allocator.simplePrefixing());
+  return DartFormatter().format('${library.accept(emitter)}');
 }
