@@ -7,20 +7,6 @@ import 'helpers.dart';
 class NavigationExtension extends BaseBuilder {
   NavigationExtension(ClassElement classElement) : super(classElement);
 
-  Method _navigationMethod(String typeName) {
-    final navigationName = '${removeRouterKey(typeName)}Navigation';
-    return Method(
-      (f) => f
-        ..name = '${lowerCamelCase(navigationName)}'
-        ..returns = refer(navigationName)
-        ..type = MethodType.getter
-        ..lambda = true
-        ..body = Code(
-          '$navigationName(nuvigator)',
-        ),
-    );
-  }
-
   String _getArgs(List<Parameter> parameters, MethodElement method) {
     final argumentsMapBuffer = StringBuffer('{');
     final hasParameters =

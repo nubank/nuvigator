@@ -1,3 +1,4 @@
+import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
@@ -16,12 +17,20 @@ class SampleOneRouter extends BaseRouter {
 
   @NuRoute(deepLink: '/screenOne/:testId')
   ScreenRoute screenOne({@required String testId}) => ScreenRoute(
-        builder: (_) => ScreenOne(),
+        builder: (context) => ScreenOne(
+          toBack: () => nuvigator.pop(),
+          toScreenTwo: () => toScreenTwo(),
+          toSampleTwo: () => Router.of<SamplesRouter>(context)
+              .toSecond(testId: 'From SampleOne'),
+        ),
       );
 
   @NuRoute()
   ScreenRoute<int> screenTwo() => ScreenRoute<int>(
-        builder: (_) => ScreenTwo(),
+        builder: (context) => ScreenTwo(
+          toSampleTwo: () => Router.of<SamplesRouter>(context)
+              .toSecond(testId: 'From SampleOne'),
+        ),
       );
 
   @override

@@ -53,7 +53,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   Nuvigator builder(BuildContext context) {
     final settings = ModalRoute.of(context)?.settings;
-    final parentNuvigator = Nuvigator.of(context);
+    final parentNuvigator = Nuvigator.of(context, nullOk: true);
     return copyWith(
       initialArguments: settings?.arguments,
       inheritableObservers: [
@@ -233,6 +233,15 @@ class NuvigatorState<T extends Router> extends NavigatorState
     return isPopped;
   }
 
+  @override
+  Future<bool> maybePop<T extends Object>([T result]) async {
+    final r = await super.maybePop(result);
+    if (!r && isNested) {
+      return parent.maybePop();
+    }
+    return r;
+  }
+
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
   bool rootPop<T extends Object>([T result]) => _rootNuvigator.pop<T>(result);
@@ -263,14 +272,16 @@ class NuvigatorState<T extends Router> extends NavigatorState
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
     }
-    if (isNested) {
-      child = WillPopScope(
-        onWillPop: () async {
-          return !(await maybePop());
-        },
-        child: child,
-      );
-    }
+//    if (isNested) {
+//      child = WillPopScope(
+//        onWillPop: () async {
+//          final result = await maybePop();
+//          print(result);
+//          return !result;
+//        },
+//        child: child,
+//      );
+//    }
     return child;
   }
 }

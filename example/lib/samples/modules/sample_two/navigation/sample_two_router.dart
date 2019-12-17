@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -20,12 +21,18 @@ class SampleTwoRouter extends BaseRouter {
 
   @NuRoute()
   ScreenRoute<String> screenOne({String testId}) => ScreenRoute(
-        builder: (_) => ScreenOne(),
+        builder: (context) => ScreenOne(
+          toScreenTwo: () => toScreenTwo(),
+        ),
       );
 
   @NuRoute(pushMethods: [PushMethodType.push, PushMethodType.pushReplacement])
   ScreenRoute<String> screenTwo() => ScreenRoute<String>(
-        builder: (_) => ScreenTwo(),
+        builder: (context) => ScreenTwo(
+          closeFlow: () => nuvigator.closeFlow(),
+          toSampleOne: () => Router.of<SampleOneRouter>(context)
+              .toScreenOne(testId: 'From SampleTwo'),
+        ),
       );
 
   @override
