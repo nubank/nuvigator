@@ -11,15 +11,15 @@ const screenOneDeepLink =
     'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink';
 
 @NuRouter()
-class SampleOneRouter extends BaseRouter {
+class SampleOneRouter extends Router {
   @override
-  String get deepLinkPrefix => '/sampleOne';
+  Future<String> get deepLinkPrefix async => '/sampleOne';
 
   @NuRoute(deepLink: '/screenOne/:testId')
   ScreenRoute screenOne({@required String testId}) => ScreenRoute(
         builder: (context) => ScreenOne(
-          toBack: () => nuvigator.pop(),
-          toScreenTwo: () => toScreenTwo(),
+          toBack: nuvigator.pop,
+          toScreenTwo: toScreenTwo,
           toSampleTwo: () => Router.of<SamplesRouter>(context)
               .toSecond(testId: 'From SampleOne'),
         ),

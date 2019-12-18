@@ -43,8 +43,8 @@ class HomeScreen extends StatelessWidget {
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
-            onPressed: () => router.nuvigator
-                .openDeepLink<void>(Uri.parse(screenOneDeepLink)),
+            onPressed: () =>
+                router.openDeepLink<void>(Uri.parse(screenOneDeepLink)),
           ),
           FlatButton(
             child: const Text('Go to sample two with flow'),

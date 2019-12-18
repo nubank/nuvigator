@@ -15,6 +15,40 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
   return null;
 }
 
+class NuvigatorStateTracker extends NavigatorObserver {
+  NuvigatorStateTracker(this.stack, {this.debug = false});
+
+  final List<Route> stack;
+  final bool debug;
+
+  List<String> get stackRouteNames => stack.map((it) => it.settings.name);
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    stack.add(route);
+    if (debug) print('didPush $route: $stackRouteNames');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    stack.remove(route);
+    if (debug) print('didPop $route: $stackRouteNames');
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    stack.remove(route);
+    if (debug) print('didRemove $route: $stackRouteNames');
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    final index = stack.indexOf(oldRoute);
+    stack[index] = newRoute;
+    if (debug) print('didReplace $oldRoute to $newRoute: $stackRouteNames');
+  }
+}
+
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
@@ -23,6 +57,7 @@ class Nuvigator<T extends Router> extends Navigator {
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
+    this.debugLog = false,
     this.initialArguments,
     this.inheritableObservers = const [],
   })  : assert(router != null),
@@ -67,6 +102,7 @@ class Nuvigator<T extends Router> extends Navigator {
     Object initialArguments,
     WrapperFn wrapper,
     Key key,
+    bool debugLog,
     ScreenType screenType,
     List<ObserverBuilder> inheritableObservers,
     String initialRoute,
@@ -74,6 +110,7 @@ class Nuvigator<T extends Router> extends Navigator {
     return Nuvigator<T>(
       initialRoute: initialRoute ?? this.initialRoute,
       router: router,
+      debugLog: debugLog,
       inheritableObservers: inheritableObservers,
       screenType: screenType ?? this.screenType,
       wrapper: wrapper ?? this.wrapper,
@@ -84,6 +121,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   final T router;
   final Object initialArguments;
+  final bool debugLog;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
@@ -138,10 +176,13 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   T get router => widget.router;
 
+  NuvigatorStateTracker stateTracker = NuvigatorStateTracker([]);
+
   R getRouter<R extends Router>() => router.getRouter<R>();
 
   @override
   void initState() {
+    widget.observers.add(stateTracker);
     super.initState();
     parent = Nuvigator.of(context, nullOk: true);
     if (isNested) {
@@ -153,8 +194,20 @@ class NuvigatorState<T extends Router> extends NavigatorState
   }
 
   @override
+  void didUpdateWidget(Nuvigator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.router != widget.router) {
+      oldWidget.router.nuvigator = null;
+      assert(widget.router.nuvigator == null);
+      widget.router.nuvigator = this;
+      widget.observers.add(stateTracker);
+    }
+  }
+
+  @override
   void dispose() {
     widget.router.nuvigator = null;
+    stateTracker = null;
     if (isNested) {
       parent.nestedNuvigators.remove(this);
     }
@@ -266,8 +319,6 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   @override
   Widget build(BuildContext context) {
-    //? HotRestart seems to remove the attribution made in initState
-    widget.router.nuvigator ??= this;
     Widget child = super.build(context);
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);

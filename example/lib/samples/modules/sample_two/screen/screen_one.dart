@@ -17,7 +17,7 @@ class ScreenOne extends StatelessWidget {
         children: <Widget>[
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () => toScreenTwo(),
+            onPressed: toScreenTwo,
           ),
           const Hero(
             child: FlutterLogo(

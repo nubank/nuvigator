@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class TestRouter extends BaseRouter {
+class TestRouter extends Router {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
@@ -20,12 +21,12 @@ class TestRouter extends BaseRouter {
 
 class TestRouterWPrefix extends TestRouter {
   @override
-  String get deepLinkPrefix => 'prefix/';
+  Future<String> get deepLinkPrefix async => 'prefix/';
 }
 
-class GroupTestRouter extends BaseRouter {
+class GroupTestRouter extends Router {
   @override
-  String get deepLinkPrefix => 'group/';
+  Future<String> get deepLinkPrefix async => 'group/';
 
   @override
   List<Router> get routers => [
@@ -52,4 +53,14 @@ class TestWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return null;
   }
+}
+
+Widget testApp(Router router, String initialRoute, [WrapperFn wrapper]) {
+  return MaterialApp(
+    builder: Nuvigator(
+      router: router,
+      initialRoute: initialRoute,
+      wrapper: wrapper,
+    ),
+  );
 }

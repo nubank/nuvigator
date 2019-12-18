@@ -29,11 +29,11 @@ void main() {
 
   group('getDeepLinkPrefix', () {
     test('if no deepLinkPrefix is provided, return empty string', () async {
-      expect(await testRouter.getDeepLinkPrefix, '');
+      expect(await testRouter.deepLinkPrefix, '');
     });
 
     test('if there is a deepLinkPrefix', () async {
-      expect(await testRouterWPrefix.getDeepLinkPrefix, 'prefix/');
+      expect(await testRouterWPrefix.deepLinkPrefix, 'prefix/');
     });
   });
 

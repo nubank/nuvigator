@@ -11,9 +11,9 @@ import '../modules/sample_one/navigation/sample_one_router.dart';
 part 'samples_router.g.dart';
 
 @NuRouter()
-class SamplesRouter extends BaseRouter {
+class SamplesRouter extends Router {
   @override
-  String get deepLinkPrefix => 'deepprefix';
+  Future<String> get deepLinkPrefix async => 'deepprefix';
 
   @NuRoute()
   ScreenRoute home() => ScreenRoute(

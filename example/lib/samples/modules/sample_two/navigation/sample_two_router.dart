@@ -10,7 +10,7 @@ import '../screen/screen_two.dart';
 part 'sample_two_router.g.dart';
 
 @NuRouter()
-class SampleTwoRouter extends BaseRouter {
+class SampleTwoRouter extends Router {
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {
         return Provider<SampleTwoBloc>.value(
@@ -30,8 +30,7 @@ class SampleTwoRouter extends BaseRouter {
   ScreenRoute<String> screenTwo() => ScreenRoute<String>(
         builder: (context) => ScreenTwo(
           closeFlow: () => nuvigator.closeFlow(),
-          toSampleOne: () => Router.of<SampleOneRouter>(context)
-              .toScreenOne(testId: 'From SampleTwo'),
+          toSampleOne: () => openDeepLink<void>(Uri.parse(screenOneDeepLink)),
         ),
       );
 
