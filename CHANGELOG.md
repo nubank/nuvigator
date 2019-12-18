@@ -1,5 +1,27 @@
 # CHANGELOG
 
+# 0.3.0
+- [BREAKING] API Simplifications/Changes.
+    - Removal of `ScreenWidget` and related generated classes.
+    - Use extension methods to navigation methods in the Router. Instead of `ExampleNavigation.of(context).toRoute()`
+use `Router.of<ExampleRouter>(context).toRoute()`.
+    - Use of extension methods to `screensMap` and `routers` generator. Instead of passing this to the function, just call
+the private getter `_$screensMap` and `_$routers` in the `Router` class.
+    - Unify `Router` and `BaseRouter`, instead of extending `BaseRouter` you should extend `Router` directly.
+    - Removal of `GlobalRouter`, every `Router` had it's capabilities incorporated, you can override `GlobalRouter` properties.
+directly in you topmost Router class, and pass it directly to the Nuvigator.
+- [IMPORTANT] Router instances should be unique per Nuvigator. The same Router instance SHOULD NOT be shared by different
+Nuvigator (we advise to create new instances together with the Nuvigator).
+- A bug was fixed were the `maybePop` method was not consistent with the Android back button behavior. Now the expected
+behavior is to always pop the Route of the active Nuvigator.
+- A `toMap` getter was added to `Args*` classes to serialize them into `Map<String, Object>`.
+- Added new mixin `NuvigatorRoute` that should be incorporated by `PageRoutes` used in custom `ScreenType`s. While this
+mixin is optional, it will guarantee the correct behavior of Android's back button and also make nested Nuvigators Routes
+present `AppBar` back buttons correctly based in the overall App state, and not only by the current Nuvigator. (The provided
+screensTypes Material and Cupertino have already been update to include this new Mixin).
+- Improvement of some error messages that could be misleading or produce unexpected error.
+
+
 ## 0.2.2
 - Increase plugins version range
 
