@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../screen_type.dart';
 
 class NuvigatorMaterialPageRoute<T> extends MaterialPageRoute<T>
-    with NuvigatorRoute<T> {
+    with NuvigatorPageRoute<T> {
   NuvigatorMaterialPageRoute({
     @required WidgetBuilder builder,
     RouteSettings settings,

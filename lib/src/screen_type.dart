@@ -2,18 +2,26 @@ import 'package:flutter/widgets.dart';
 
 import '../nuvigator.dart';
 
-mixin NuvigatorRoute<T> on PageRoute<T> {
-  NuvigatorState get nuvigator => navigator;
+/// Mixing to add Nuvigator support for custom Route.
+mixin NuvigatorPageRoute<T> on PageRoute<T> {
+  NuvigatorState get nuvigator {
+    if (navigator is NuvigatorState) {
+      return navigator;
+    }
+    return null;
+  }
+
+  bool get isNested => nuvigator != null && nuvigator.isNested;
 
   @override
   bool get canPop {
-    return super.canPop || nuvigator.isNested;
+    return super.canPop || isNested;
   }
 
   @override
   Future<RoutePopDisposition> willPop() async {
     final res = await super.willPop();
-    if (res == RoutePopDisposition.bubble && nuvigator.isNested) {
+    if (res == RoutePopDisposition.bubble && isNested) {
       return RoutePopDisposition.pop;
     }
     return res;

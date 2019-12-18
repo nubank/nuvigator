@@ -4,7 +4,7 @@ import 'package:nuvigator/nuvigator.dart';
 import '../screen_type.dart';
 
 class NuvigatorCupertinoPageRoute<T> extends CupertinoPageRoute<T>
-    with NuvigatorRoute<T> {
+    with NuvigatorPageRoute<T> {
   NuvigatorCupertinoPageRoute({
     @required WidgetBuilder builder,
     String title,
