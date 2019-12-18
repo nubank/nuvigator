@@ -57,6 +57,7 @@ pubspec.lock
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
+example/ios/Flutter/Flutter.podspec
 **/ios/Flutter/App.framework
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Generated.xcconfig
