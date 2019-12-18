@@ -106,14 +106,15 @@ class ScreenRoute<T extends Object> {
   }
 }
 
+/// [T] is the [Nuvigator] Router used in this Route, and [R] is the return type
+/// of this Route.
 class FlowRoute<T extends Router, R extends Object> extends ScreenRoute<R> {
   FlowRoute({
     Nuvigator<T> nuvigator,
-    WidgetBuilder builder,
     ScreenType screenType,
     String debugKey,
   }) : super(
-          builder: nuvigator.call ?? builder,
+          builder: nuvigator.call,
           screenType: screenType,
           debugKey: debugKey,
         );
