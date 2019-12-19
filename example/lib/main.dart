@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nubank',
       builder: Nuvigator(
+        debug: true,
         screenType: cupertinoDialogScreenType,
         router: SamplesRouter(),
         initialRoute: SamplesRoutes.home,

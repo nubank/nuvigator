@@ -14,6 +14,15 @@ mixin NuvigatorPageRoute<T> on PageRoute<T> {
   bool get isNested => nuvigator != null && nuvigator.isNested;
 
   @override
+  bool get fullscreenDialog {
+    if (isNested && isFirst && ModalRoute.of(nuvigator.context) is PageRoute) {
+      final PageRoute containedPageRoute = ModalRoute.of(nuvigator.context);
+      return super.fullscreenDialog || containedPageRoute.fullscreenDialog;
+    }
+    return super.fullscreenDialog;
+  }
+
+  @override
   bool get canPop {
     return super.canPop || isNested;
   }

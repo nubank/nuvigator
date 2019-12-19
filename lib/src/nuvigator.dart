@@ -21,7 +21,8 @@ class NuvigatorStateTracker extends NavigatorObserver {
   final List<Route> stack;
   final bool debug;
 
-  List<String> get stackRouteNames => stack.map((it) => it.settings.name);
+  List<String> get stackRouteNames =>
+      stack.map((it) => it.settings.name).toList();
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
@@ -57,7 +58,7 @@ class Nuvigator<T extends Router> extends Navigator {
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
-    this.debugLog = false,
+    this.debug = false,
     this.initialArguments,
     this.inheritableObservers = const [],
   })  : assert(router != null),
@@ -91,6 +92,7 @@ class Nuvigator<T extends Router> extends Navigator {
     final parentNuvigator = Nuvigator.of(context, nullOk: true);
     return copyWith(
       initialArguments: settings?.arguments,
+      debugLog: parentNuvigator?.widget?.debug,
       inheritableObservers: [
         ...parentNuvigator?.widget?.inheritableObservers ?? [],
         ...inheritableObservers,
@@ -110,7 +112,7 @@ class Nuvigator<T extends Router> extends Navigator {
     return Nuvigator<T>(
       initialRoute: initialRoute ?? this.initialRoute,
       router: router,
-      debugLog: debugLog,
+      debug: debugLog ?? debug,
       inheritableObservers: inheritableObservers,
       screenType: screenType ?? this.screenType,
       wrapper: wrapper ?? this.wrapper,
@@ -121,7 +123,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   final T router;
   final Object initialArguments;
-  final bool debugLog;
+  final bool debug;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
@@ -176,12 +178,13 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   T get router => widget.router;
 
-  NuvigatorStateTracker stateTracker = NuvigatorStateTracker([]);
+  NuvigatorStateTracker stateTracker;
 
   R getRouter<R extends Router>() => router.getRouter<R>();
 
   @override
   void initState() {
+    stateTracker = NuvigatorStateTracker([], debug: widget.debug);
     widget.observers.add(stateTracker);
     super.initState();
     parent = Nuvigator.of(context, nullOk: true);
