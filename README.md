@@ -87,7 +87,6 @@ is required so the static analysis is able to properly generate the code when ru
 
 ## Creating Routers
 
-
 Defining a new Router will probably be the what you will do the most when working with Nuvigator, so understanding how
 to do it properly is important. A Router class is a class that should extend a `Router` and annotate the class with 
 the `@NuRouter` annotation.
@@ -189,9 +188,8 @@ of stripping out the `Router` part of your Router class and using the rest of th
 Generated code includes the following features:
 
 - Routes "enum" class
+- Navigation extension methods to Router
 - Typed Arguments classes
-- Typed ScreenInterface classes
-- Navigation class
 - Implementation Methods
 
 ### Routes Class
