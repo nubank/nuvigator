@@ -68,10 +68,10 @@ abstract class Router {
 
   /// Get the specified router that can be grouped in this router
   T getRouter<T extends Router>() {
-    // ignore: avoid_as
-    if (this is T) return this as T;
+    if (this is T) return this;
     for (final router in routers) {
-      router.getRouter();
+      final r = router.getRouter<T>();
+      if (r != null) return r;
     }
     return null;
   }
@@ -84,9 +84,7 @@ abstract class Router {
       final screen = router.getScreen(settings);
       if (screen != null) return screen.wrapWith(screensWrapper);
     }
-    if (onScreenNotFound != null)
-      return onScreenNotFound(settings)
-          ?.fallbackScreenType(nuvigator.widget.screenType);
+    if (onScreenNotFound != null) return onScreenNotFound(settings);
     return null;
   }
 

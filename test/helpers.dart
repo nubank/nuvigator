@@ -19,14 +19,31 @@ class TestRouter extends Router {
       };
 }
 
-class TestRouterWPrefix extends TestRouter {
+class TestRouterWPrefix extends Router {
   @override
   Future<String> get deepLinkPrefix async => 'prefix/';
+
+  @override
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
+        RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterFirstScreen',
+              screenType: materialScreenType,
+            ),
+        RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
+            ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterSecondScreen',
+              screenType: materialScreenType,
+            ),
+      };
 }
 
 class GroupTestRouter extends Router {
   @override
   Future<String> get deepLinkPrefix async => 'group/';
+
+  TestRouter testRouter = TestRouter();
 
   @override
   List<Router> get routers => [
@@ -44,9 +61,26 @@ class GroupTestRouter extends Router {
       };
 }
 
-final testRouter = TestRouter();
-final testRouterWPrefix = TestRouterWPrefix();
-final testGroupRouter = GroupTestRouter();
+class MockNuvigator extends NuvigatorState {
+  MockNuvigator(this.router);
+
+  String routePushed;
+  Object argumentsPushed;
+  @override
+  final Router router;
+
+  @override
+  NuvigatorState<Router> get rootNuvigator => this;
+
+  @override
+  Future<T> pushNamed<T extends Object>(String routeName,
+      {Object arguments}) async {
+    routePushed = routeName;
+    argumentsPushed = arguments;
+    return null;
+//    return super.pushNamed(routeName, arguments);
+  }
+}
 
 class TestWidget extends StatelessWidget {
   @override

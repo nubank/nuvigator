@@ -168,7 +168,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
 class NuvigatorState<T extends Router> extends NavigatorState
     with WidgetsBindingObserver {
-  NuvigatorState get _rootNuvigator =>
+  NuvigatorState get rootNuvigator =>
       Nuvigator.of(context, rootNuvigator: true) ?? this;
 
   @override
@@ -292,7 +292,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
     if (canPop()) {
       isPopped = super.pop<T>(result);
     }
-    if (!isPopped && this != _rootNuvigator && parent != null) {
+    if (!isPopped && this != rootNuvigator && parent != null) {
       return parentPop<T>(result);
     }
     return isPopped;
@@ -300,7 +300,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
-  bool rootPop<T extends Object>([T result]) => _rootNuvigator.pop<T>(result);
+  bool rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
 
   void closeFlow<T extends Object>([T result]) {
     if (isNested) {
@@ -316,9 +316,9 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   bool get isNested => parent != null;
 
-  bool get isRoot => this == _rootNuvigator;
+  bool get isRoot => this == rootNuvigator;
 
-  Router get rootRouter => _rootNuvigator.router;
+  Router get rootRouter => rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {
