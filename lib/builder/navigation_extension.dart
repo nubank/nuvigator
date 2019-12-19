@@ -21,8 +21,7 @@ class NavigationExtension extends BaseBuilder {
           Parameter(
             (p) => p
               ..name = argName
-              ..annotations.addAll(
-                  isRequired ? [const CodeExpression(Code('required'))] : [])
+              ..annotations.addAll(isRequired ? [refer('required')] : [])
               ..named = true
               ..type = refer(arg.type.toString()),
           ),
@@ -102,7 +101,7 @@ class NavigationExtension extends BaseBuilder {
         (p) => p
           ..name = 'predicate'
           ..named = true
-          ..annotations.add(const CodeExpression(Code('required')))
+          ..annotations.add(refer('required'))
           ..type = refer('RoutePredicate'),
       ),
     );

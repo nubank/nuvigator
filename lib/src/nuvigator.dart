@@ -132,7 +132,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
     final NuvigatorState closestNuvigator =
-        context.ancestorStateOfType(const TypeMatcher<NuvigatorState>());
+        context.findRootAncestorStateOfType<NuvigatorState>();
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
@@ -142,7 +142,7 @@ class Nuvigator<T extends Router> extends Navigator {
     bool nullOk = false,
   }) {
     if (rootNuvigator)
-      return context.rootAncestorStateOfType(TypeMatcher<NuvigatorState<T>>());
+      return context.findRootAncestorStateOfType<NuvigatorState<T>>();
     final nuvigatorState = ofRouter<T>(context);
     if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
     assert(() {

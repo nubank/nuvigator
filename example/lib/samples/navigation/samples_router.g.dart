@@ -26,7 +26,6 @@ class SecondArgs {
   Map<String, Object> get toMap => {
         'testId': testId,
       };
-
   static SecondArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
@@ -115,7 +114,6 @@ extension SamplesRouterNavigation on SamplesRouter {
   }
 
   SampleTwoRouter get sampleTwoRouter => getRouter<SampleTwoRouter>();
-
   SampleOneRouter get sampleOneRouter => getRouter<SampleOneRouter>();
 }
 
@@ -123,7 +121,6 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
   List<Router> get _$routers => [
         sampleOneRouter,
       ];
-
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
     return {
       RouteDef(SamplesRoutes.home): (RouteSettings settings) {

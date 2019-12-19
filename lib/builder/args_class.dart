@@ -19,9 +19,7 @@ class ArgsClass extends BaseBuilder {
         ..name = name
         ..named = true
         ..annotations.add(
-          const CodeExpression(
-            Code('required'),
-          ),
+          refer('required'),
         )
         ..toThis = true,
     );
