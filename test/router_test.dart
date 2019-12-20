@@ -69,9 +69,11 @@ void main() {
     final testRouter = TestRouter();
     final mockNuvigator = MockNuvigator(testRouter);
     testRouter.nuvigator = mockNuvigator;
-    await testRouter.openDeepLink<void>(Uri.parse('test/12345/params'));
+    await testRouter
+        .openDeepLink<void>(Uri.parse('test/12345/params?extraParam=hello'));
     expect(mockNuvigator.routePushed, 'secondScreen');
-    expect(mockNuvigator.argumentsPushed, {'id': '12345'});
+    expect(
+        mockNuvigator.argumentsPushed, {'id': '12345', 'extraParam': 'hello'});
   });
 
   test('getting router from a grouped routers', () async {
