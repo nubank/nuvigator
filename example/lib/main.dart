@@ -6,14 +6,39 @@ import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 
 void main() => runApp(MyApp());
 
+class TestObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('didPush $route');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('didPop $route');
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('didRemove $route');
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    print('didReplace $oldRoute to $newRoute');
+  }
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nubank',
       builder: Nuvigator(
-        debug: true,
+//        debug: true,
         screenType: cupertinoDialogScreenType,
+        inheritableObservers: [
+          () => TestObserver(),
+        ],
         router: SamplesRouter(),
         initialRoute: SamplesRoutes.home,
       ),

@@ -11,15 +11,16 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
   final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
   if (nuvigatorRouterForType != null) return nuvigatorState;
   if (nuvigatorState != nuvigatorState.parent && nuvigatorState.parent != null)
-    return _tryToFindNuvigatorForRouter(nuvigatorState.parent);
+    return _tryToFindNuvigatorForRouter<T>(nuvigatorState.parent);
   return null;
 }
 
 class NuvigatorStateTracker extends NavigatorObserver {
-  NuvigatorStateTracker(this.stack, {this.debug = false});
+  final List<Route> stack = [];
 
-  final List<Route> stack;
-  final bool debug;
+  bool get debug => nuvigator.widget.debug;
+
+  NuvigatorState get nuvigator => navigator;
 
   List<String> get stackRouteNames =>
       stack.map((it) => it.settings.name).toList();
@@ -53,52 +54,27 @@ class NuvigatorStateTracker extends NavigatorObserver {
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
-    String initialRoute = '/',
+    @required String initialRoute,
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
     this.debug = false,
-    this.initialArguments,
     this.inheritableObservers = const [],
   })  : assert(router != null),
+        assert(initialRoute != null),
         super(
           observers: [
             HeroController(),
             ...observers,
-            ...inheritableObservers.map((f) => f()),
           ],
-          onGenerateRoute: (settings) {
-            var finalSettings = settings;
-            if (settings.isInitialRoute &&
-                settings.name == initialRoute &&
-                settings.arguments == null &&
-                initialArguments != null) {
-              finalSettings = settings.copyWith(
-                arguments: initialArguments,
-              );
-            }
-            return router
-                .getScreen(finalSettings)
-                ?.fallbackScreenType(screenType)
-                ?.toRoute(finalSettings);
-          },
+          onGenerateRoute: (settings) => router
+              .getScreen(settings)
+              ?.fallbackScreenType(screenType)
+              ?.toRoute(settings),
           key: key,
           initialRoute: initialRoute,
         );
-
-  Nuvigator builder(BuildContext context) {
-    final settings = ModalRoute.of(context)?.settings;
-    final parentNuvigator = Nuvigator.of(context, nullOk: true);
-    return copyWith(
-      initialArguments: settings?.arguments,
-      debugLog: parentNuvigator?.widget?.debug,
-      inheritableObservers: [
-        ...parentNuvigator?.widget?.inheritableObservers ?? [],
-        ...inheritableObservers,
-      ],
-    );
-  }
 
   Nuvigator<T> copyWith({
     Object initialArguments,
@@ -113,23 +89,21 @@ class Nuvigator<T extends Router> extends Navigator {
       initialRoute: initialRoute ?? this.initialRoute,
       router: router,
       debug: debugLog ?? debug,
-      inheritableObservers: inheritableObservers,
+      inheritableObservers: inheritableObservers ?? this.inheritableObservers,
       screenType: screenType ?? this.screenType,
       wrapper: wrapper ?? this.wrapper,
-      initialArguments: initialArguments ?? this.initialArguments,
       key: key ?? this.key,
     );
   }
 
   final T router;
-  final Object initialArguments;
   final bool debug;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
 
   Nuvigator call(BuildContext context, [Widget child]) {
-    return builder(context);
+    return this;
   }
 
   static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
@@ -182,15 +156,23 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   R getRouter<R extends Router>() => router.getRouter<R>();
 
+  List<ObserverBuilder> _collectObservers() {
+    if (isNested) {
+      return widget.inheritableObservers + parent._collectObservers();
+    }
+    return widget.inheritableObservers;
+  }
+
   @override
   void initState() {
-    stateTracker = NuvigatorStateTracker([], debug: widget.debug);
-    widget.observers.add(stateTracker);
-    super.initState();
     parent = Nuvigator.of(context, nullOk: true);
     if (isNested) {
       parent.nestedNuvigators.add(this);
     }
+    widget.observers.addAll(_collectObservers().map((f) => f()));
+    stateTracker = NuvigatorStateTracker();
+    widget.observers.add(stateTracker);
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
     assert(widget.router.nuvigator == null);
     widget.router.nuvigator = this;
@@ -198,13 +180,14 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   @override
   void didUpdateWidget(Nuvigator oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget.router != widget.router) {
       oldWidget.router.nuvigator = null;
       assert(widget.router.nuvigator == null);
       widget.router.nuvigator = this;
       widget.observers.add(stateTracker);
+      widget.observers.addAll(_collectObservers().map((f) => f()));
     }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

@@ -11,6 +11,10 @@ part 'sample_two_router.g.dart';
 
 @NuRouter()
 class SampleTwoRouter extends Router {
+  SampleTwoRouter({@required this.testId});
+
+  final String testId;
+
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {
         return Provider<SampleTwoBloc>.value(
@@ -20,7 +24,7 @@ class SampleTwoRouter extends Router {
       };
 
   @NuRoute()
-  ScreenRoute<String> screenOne({String testId}) => ScreenRoute(
+  ScreenRoute<String> screenOne() => ScreenRoute(
         builder: (context) => ScreenOne(
           toScreenTwo: () => toScreenTwo(),
         ),

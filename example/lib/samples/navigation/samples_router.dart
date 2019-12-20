@@ -23,7 +23,7 @@ class SamplesRouter extends Router {
   @NuRoute()
   FlowRoute<SampleTwoRouter, void> second({String testId}) => FlowRoute(
         nuvigator: Nuvigator(
-          router: SampleTwoRouter(),
+          router: SampleTwoRouter(testId: testId),
           initialRoute: SampleTwoRoutes.screenOne,
           screenType: cupertinoScreenType,
           wrapper: (BuildContext context, Widget child) => Provider(
