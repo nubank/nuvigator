@@ -64,18 +64,24 @@ class HomeScreen extends StatelessWidget {
           ),
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
-              onPressed: () {
-                router.sampleOneRouter.toScreenOne(testId: 'From Home');
+              onPressed: () async {
+                final result = await router.sampleOneRouter
+                    .toScreenOne(testId: 'From Home');
+                print('ScreenOneResult: $result');
               }),
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
-            onPressed: () =>
-                router.openDeepLink<void>(Uri.parse(screenOneDeepLink)),
+            onPressed: () async {
+              final result = await router
+                  .openDeepLink<String>(Uri.parse(screenOneDeepLink));
+              print('ScreenOneDeepLinkResult: $result}');
+            },
           ),
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              router.toSecond(testId: 'From Home');
+              final result = await router.toSecond(testId: 'From Home');
+              print('SecondRouteResult: $result');
             },
           ),
         ],

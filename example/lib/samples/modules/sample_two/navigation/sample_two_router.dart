@@ -24,7 +24,7 @@ class SampleTwoRouter extends Router {
       };
 
   @NuRoute()
-  ScreenRoute<String> screenOne() => ScreenRoute(
+  ScreenRoute screenOne() => ScreenRoute(
         builder: (context) => ScreenOne(
           toScreenTwo: () => toScreenTwo(),
         ),
@@ -33,7 +33,7 @@ class SampleTwoRouter extends Router {
   @NuRoute(pushMethods: [PushMethodType.push, PushMethodType.pushReplacement])
   ScreenRoute<String> screenTwo() => ScreenRoute<String>(
         builder: (context) => ScreenTwo(
-          closeFlow: () => nuvigator.closeFlow(),
+          closeFlow: () => nuvigator.closeFlow<String>('ClosedNestedNuvigator'),
           toSampleOne: () => openDeepLink<void>(Uri.parse(screenOneDeepLink)),
         ),
       );

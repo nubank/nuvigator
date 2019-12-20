@@ -215,14 +215,6 @@ class NavigationExtension extends BaseBuilder {
 
     for (final method in classElement.methods) {
       checkPushMethodsAndAdd(methods, className, method);
-
-      final isFlow = method.returnType.name == 'FlowRoute';
-      if (isFlow) {
-        final subRouter = getGenericTypes(method.returnType).first;
-        methods.add(
-          _subRouterMethod(subRouter.name),
-        );
-      }
     }
 
     for (final field in classElement.fields) {

@@ -16,9 +16,9 @@ class SampleOneRouter extends Router {
   Future<String> get deepLinkPrefix async => '/sampleOne';
 
   @NuRoute(deepLink: '/screenOne/:testId')
-  ScreenRoute screenOne({@required String testId}) => ScreenRoute(
+  ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
         builder: (context) => ScreenOne(
-          toBack: nuvigator.pop,
+          toBack: () => nuvigator.pop('ResultFromScreenOne'),
           toScreenTwo: toScreenTwo,
           toSampleTwo: () => Router.of<SamplesRouter>(context)
               .toSecond(testId: 'From SampleOne'),

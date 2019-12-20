@@ -26,6 +26,10 @@ class ScreenOne extends StatelessWidget {
             child: const Text('Go to Sample Two'),
             onPressed: () => toSampleTwo(),
           ),
+          FlatButton(
+            child: const Text('Close Screen with Result'),
+            onPressed: () => toBack(),
+          ),
           const Hero(
             child: FlutterLogo(),
             tag: 'HERO',

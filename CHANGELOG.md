@@ -3,10 +3,13 @@
 ## 0.3.0
 - **[BREAKING]** API Simplifications/Changes.
     - Removal of `ScreenWidget` and related generated classes.
+    - Removal of `FlowRoute`, now you can use the default `ScreenRoute` and pass the Nuvigator to the builder function.
     - Removal of `GlobalRouter`, every `Router` had it's capabilities incorporated, you can override previous `GlobalRouter` 
     properties directly in your topmost Router class, and pass it directly to the Nuvigator. 
     - Removal of Nuvigator `initialArgs` auto-passing, now you should explicitly provide the arguments required to the
     nested nuvigator. The suggestion is to pass it to the Router constructor.
+    - Removal of `FlowRouters`.
+    - Nested Nuvigators will not have it's router exposed by the parent anymore.
     - Use extension methods to navigation methods in the Router. Instead of `ExampleNavigation.of(context).toRoute()`
     use `Router.of<ExampleRouter>(context).toExampleRoute()`.
     - Use of extension methods to `screensMap` and `routers` generator. Instead of passing this to the function, just call

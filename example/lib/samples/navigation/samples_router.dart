@@ -16,13 +16,13 @@ class SamplesRouter extends Router {
   Future<String> get deepLinkPrefix async => 'deepprefix';
 
   @NuRoute()
-  ScreenRoute home() => ScreenRoute(
+  ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => HomeScreen(),
       );
 
   @NuRoute()
-  FlowRoute<SampleTwoRouter, void> second({String testId}) => FlowRoute(
-        nuvigator: Nuvigator(
+  ScreenRoute<String> second({@required String testId}) => ScreenRoute(
+        builder: Nuvigator(
           router: SampleTwoRouter(testId: testId),
           initialRoute: SampleTwoRoutes.screenOne,
           screenType: cupertinoScreenType,

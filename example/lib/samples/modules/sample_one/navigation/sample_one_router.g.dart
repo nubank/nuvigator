@@ -43,8 +43,8 @@ class ScreenOneArgs {
 }
 
 extension SampleOneRouterNavigation on SampleOneRouter {
-  Future<Object> toScreenOne({@required String testId}) {
-    return nuvigator.pushNamed<Object>(
+  Future<String> toScreenOne({@required String testId}) {
+    return nuvigator.pushNamed<String>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
@@ -52,9 +52,9 @@ extension SampleOneRouterNavigation on SampleOneRouter {
     );
   }
 
-  Future<Object> pushReplacementToScreenOne<TO extends Object>(
+  Future<String> pushReplacementToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
-    return nuvigator.pushReplacementNamed<Object, TO>(
+    return nuvigator.pushReplacementNamed<String, TO>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
@@ -63,9 +63,9 @@ extension SampleOneRouterNavigation on SampleOneRouter {
     );
   }
 
-  Future<Object> pushAndRemoveUntilToScreenOne<TO extends Object>(
+  Future<String> pushAndRemoveUntilToScreenOne<TO extends Object>(
       {@required String testId, @required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<Object>(
+    return nuvigator.pushNamedAndRemoveUntil<String>(
       SampleOneRoutes.screenOne,
       predicate,
       arguments: {
@@ -74,9 +74,9 @@ extension SampleOneRouterNavigation on SampleOneRouter {
     );
   }
 
-  Future<Object> popAndPushToScreenOne<TO extends Object>(
+  Future<String> popAndPushToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
-    return nuvigator.popAndPushNamed<Object, TO>(
+    return nuvigator.popAndPushNamed<String, TO>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,

@@ -13,29 +13,29 @@ class SampleTwoRoutes {
 }
 
 extension SampleTwoRouterNavigation on SampleTwoRouter {
-  Future<String> toScreenOne() {
-    return nuvigator.pushNamed<String>(
+  Future<Object> toScreenOne() {
+    return nuvigator.pushNamed<Object>(
       SampleTwoRoutes.screenOne,
     );
   }
 
-  Future<String> pushReplacementToScreenOne<TO extends Object>({TO result}) {
-    return nuvigator.pushReplacementNamed<String, TO>(
+  Future<Object> pushReplacementToScreenOne<TO extends Object>({TO result}) {
+    return nuvigator.pushReplacementNamed<Object, TO>(
       SampleTwoRoutes.screenOne,
       result: result,
     );
   }
 
-  Future<String> pushAndRemoveUntilToScreenOne<TO extends Object>(
+  Future<Object> pushAndRemoveUntilToScreenOne<TO extends Object>(
       {@required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<String>(
+    return nuvigator.pushNamedAndRemoveUntil<Object>(
       SampleTwoRoutes.screenOne,
       predicate,
     );
   }
 
-  Future<String> popAndPushToScreenOne<TO extends Object>({TO result}) {
-    return nuvigator.popAndPushNamed<String, TO>(
+  Future<Object> popAndPushToScreenOne<TO extends Object>({TO result}) {
+    return nuvigator.popAndPushNamed<Object, TO>(
       SampleTwoRoutes.screenOne,
       result: result,
     );

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:nuvigator/src/router.dart';
 
 import 'screen_type.dart';
 
@@ -104,18 +103,4 @@ class ScreenRoute<T extends Object> {
       ),
     );
   }
-}
-
-/// [T] is the [Nuvigator] Router used in this Route, and [R] is the return type
-/// of this Route.
-class FlowRoute<T extends Router, R extends Object> extends ScreenRoute<R> {
-  FlowRoute({
-    Nuvigator<T> nuvigator,
-    ScreenType screenType,
-    String debugKey,
-  }) : super(
-          builder: nuvigator.call,
-          screenType: screenType,
-          debugKey: debugKey,
-        );
 }
