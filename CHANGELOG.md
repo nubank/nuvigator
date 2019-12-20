@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# 0.3.0
+## 0.3.0
 - **[BREAKING]** API Simplifications/Changes.
     - Removal of `ScreenWidget` and related generated classes.
     - Removal of `GlobalRouter`, every `Router` had it's capabilities incorporated, you can override previous `GlobalRouter` 

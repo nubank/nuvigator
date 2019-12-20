@@ -159,9 +159,6 @@ class MyCustomRouter extends Router {
 
 ### Router Options
 
-It is a Router interface implementation with sensible defaults that should be used most of the times. `BaseRoute` includes
-some options that can be used to enhance the navigation experience.
-
 When extending from the `Router` you can override the following properties to add custom behaviors to your routes:
 
 - `deepLinkPrefix`:
@@ -171,6 +168,9 @@ A `Future<String>`, that will be used as prefix for the deepLinks declared on ea
 A function to wrap each route presented by this router. Should return a new Widget that wraps this child Widget. 
 The Wrapper will be applied to all Screens in this Router. (this function runs one time for each screen, and not one 
 time for the entire Router).
+
+- `routers`
+Sub-Routers grouped into this Router.
 
 ## Code Generators
 
