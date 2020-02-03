@@ -1,4 +1,5 @@
 import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
+import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -6,32 +7,23 @@ import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../bloc/samples_bloc.dart';
 import '../modules/sample_one/navigation/sample_one_router.dart';
-import '../modules/sample_two/navigation/sample_two_router.dart';
 
 part 'samples_router.g.dart';
 
 @NuRouter()
-class SamplesRouter extends BaseRouter {
+class SamplesRouter extends Router {
   @override
-  String get deepLinkPrefix => 'deepprefix';
-
-  @override
-  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
-        return Provider<SamplesBloc>.value(
-          value: SamplesBloc(),
-          child: child,
-        );
-      };
+  Future<String> get deepLinkPrefix async => 'deepprefix';
 
   @NuRoute()
-  ScreenRoute home() => ScreenRoute(
-        builder: (context) => HomeScreen(context),
+  ScreenRoute<void> home() => ScreenRoute(
+        builder: (context) => HomeScreen(),
       );
 
   @NuRoute()
-  FlowRoute<SampleTwoRouter, void> second({String testId}) => FlowRoute(
-        nuvigator: Nuvigator(
-          router: SampleTwoRouter(),
+  ScreenRoute<String> second({@required String testId}) => ScreenRoute(
+        builder: Nuvigator(
+          router: SampleTwoRouter(testId: testId),
           initialRoute: SampleTwoRoutes.screenOne,
           screenType: cupertinoScreenType,
           wrapper: (BuildContext context, Widget child) => Provider(
@@ -42,16 +34,19 @@ class SamplesRouter extends BaseRouter {
       );
 
   @NuRouter()
-  final sampleOneRouter = FlowRouter(
-    SampleOneRouter(),
-    screensType: materialScreenType,
-  );
+  final SampleOneRouter sampleOneRouter = SampleOneRouter();
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$samplesScreensMap(this);
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+        return Provider<SamplesBloc>.value(
+          value: SamplesBloc(),
+          child: child,
+        );
+      };
 
   @override
-  List<Router> get routers => _$samplesRoutersList(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
+
+  @override
+  List<Router> get routers => _$routers;
 }
-
-final samplesRouter = SamplesRouter();

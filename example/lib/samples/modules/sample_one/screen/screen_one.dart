@@ -1,35 +1,34 @@
-import 'package:example/samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'package:flutter/material.dart';
 
-class ScreenOne extends ScreenOneScreen {
-  ScreenOne(BuildContext context) : super(context);
+class ScreenOne extends StatelessWidget {
+  const ScreenOne({Key key, this.toScreenTwo, this.toSampleTwo, this.toBack})
+      : super(key: key);
 
-  static ScreenOne builder(BuildContext context) {
-    return ScreenOne(context);
-  }
+  final VoidCallback toScreenTwo;
+  final VoidCallback toSampleTwo;
+  final VoidCallback toBack;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen One'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => nuvigator.maybePop(),
-        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(
-            'testId = ${args.testId}',
-            textAlign: TextAlign.center,
-          ),
           FlatButton(
             child: const Text('Go to screen two'),
-            onPressed: () => SampleOneNavigation.of(context).toScreenTwo(),
+            onPressed: () => toScreenTwo(),
+          ),
+          FlatButton(
+            child: const Text('Go to Sample Two'),
+            onPressed: () => toSampleTwo(),
+          ),
+          FlatButton(
+            child: const Text('Close Screen with Result'),
+            onPressed: () => toBack(),
           ),
           const Hero(
             child: FlutterLogo(),

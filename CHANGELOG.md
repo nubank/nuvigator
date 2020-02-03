@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## 0.3.0
+- **[BREAKING]** API Simplifications/Changes.
+    - Removal of `ScreenWidget` and related generated classes.
+    - Removal of `FlowRoute`, now you can use the default `ScreenRoute` and pass the Nuvigator to the builder function.
+    - Removal of `GlobalRouter`, every `Router` had it's capabilities incorporated, you can override previous `GlobalRouter` 
+    properties directly in your topmost Router class, and pass it directly to the Nuvigator. 
+    - Removal of Nuvigator `initialArgs` auto-passing, now you should explicitly provide the arguments required to the
+    nested nuvigator. The suggestion is to pass it to the Router constructor.
+    - Removal of `FlowRouters`.
+    - Nested Nuvigators will not have it's router exposed by the parent anymore.
+    - Use extension methods to navigation methods in the Router. Instead of `ExampleNavigation.of(context).toRoute()`
+    use `Router.of<ExampleRouter>(context).toExampleRoute()`.
+    - Use of extension methods to `screensMap` and `routers` generator. Instead of passing this to the function, just call
+    the private getter `_$screensMap` and `_$routers` in the `Router` class.
+    - Unify `Router` and `BaseRouter`, instead of extending `BaseRouter` you should extend `Router` directly.
+    - Rename `getDeepLinkPrefix` to `deepLinkPrefix`.
+    - `initialRoute` is now a required argument to Nuvigator. 
+- **[IMPORTANT]** Router instances should be unique per Nuvigator. The same Router instance SHOULD NOT be shared by different
+Nuvigator (we advise to create new instances together with the Nuvigator).
+- A bug was fixed were the `maybePop` method was not consistent with the Android back button behavior. Now the expected
+behavior is to always pop the Route of the active Nuvigator.
+- Nuvigator now keeps track of it's Route stack.
+- Added debug flag to Nuvigator to log all route transitions/changes.
+- Observers management was moved into the state lifecycle to ensure that inheritableObservers are always going to be
+considered. 
+- **[BUMP]** Updates to **Flutter 1.12.1**, resolves some deprecation warnings.
+- A `toMap` getter was added to `Args*` classes to serialize them into `Map<String, Object>`.
+- Added new mixin `NuvigatorRoute` that should be incorporated by `PageRoutes` used in custom `ScreenType`s. While this
+mixin is optional, it will guarantee the correct behavior of Android's back button and also make nested Nuvigators Routes
+present `AppBar` back buttons correctly based in the overall App state, and not only by the current Nuvigator. (The provided
+screensTypes Material and Cupertino have already been update to include this new Mixin).
+- Improvement of some error messages that could be misleading or produce unexpected error.
+
 ## 0.2.2
 - Increase plugins version range
 

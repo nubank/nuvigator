@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:nuvigator/src/router.dart';
 
 import 'screen_type.dart';
 
@@ -104,17 +103,4 @@ class ScreenRoute<T extends Object> {
       ),
     );
   }
-}
-
-class FlowRoute<T extends Router, R extends Object> extends ScreenRoute<R> {
-  FlowRoute({
-    Nuvigator<T> nuvigator,
-    WidgetBuilder builder,
-    ScreenType screenType,
-    String debugKey,
-  }) : super(
-          builder: nuvigator.call ?? builder,
-          screenType: screenType,
-          debugKey: debugKey,
-        );
 }

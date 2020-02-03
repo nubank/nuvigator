@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../nuvigator.dart';
 import 'screen_route.dart';
+
+typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
+
+String deepLinkString(Uri url) => url.host + url.path;
+
+typedef HandleDeepLinkFn = Future<dynamic> Function(Router router, Uri uri,
+    [bool isFromNative, dynamic args]);
 
 class RouteEntry {
   RouteEntry(this.key, this.value);
@@ -17,32 +25,57 @@ class RouteEntry {
   bool operator ==(Object other) => other is RouteEntry && other.key == key;
 }
 
-/// Router Interface. Provide a basic interface to communicate with other Router
-/// components.
 abstract class Router {
-  ScreenRoute getScreen(RouteSettings settings);
+  static T of<T extends Router>(
+    BuildContext context, {
+    bool nullOk = false,
+    bool rootRouter = false,
+  }) {
+    if (rootRouter) return Nuvigator.of(context, rootNuvigator: true).router;
+    final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
+    assert(() {
+      if (!nullOk && router == null) {
+        throw FlutterError(
+            'Router operation requested with a context that does not include a Router of the provided type.\n'
+            'The context used to get the specified Router must be that of a '
+            'widget that is a descendant of a Nuvigator widget that includes the desired Router.');
+      }
+      return true;
+    }());
+    return router;
+  }
 
-  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) => null;
+  HandleDeepLinkFn onDeepLinkNotFound;
+  ScreenRoute Function(RouteSettings settings) onScreenNotFound;
+  NuvigatorState _nuvigator;
 
-  Route getRoute(RouteSettings settings);
-}
+  NuvigatorState get nuvigator => _nuvigator;
 
-typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
-
-abstract class BaseRouter implements Router {
-  List<Router> get routers => [];
-
-  Map<RouteDef, ScreenRouteBuilder> get screensMap;
-
-  final String deepLinkPrefix = null;
+  set nuvigator(NuvigatorState newNuvigator) {
+    _nuvigator = newNuvigator;
+    for (final router in routers) {
+      router.nuvigator = newNuvigator;
+    }
+  }
 
   WrapperFn get screensWrapper => null;
 
-  Future<String> getDeepLinkPrefix() async {
-    return deepLinkPrefix ?? '';
+  List<Router> get routers => [];
+
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {};
+
+  Future<String> get deepLinkPrefix async => '';
+
+  /// Get the specified router that can be grouped in this router
+  T getRouter<T extends Router>() {
+    if (this is T) return this;
+    for (final router in routers) {
+      final r = router.getRouter<T>();
+      if (r != null) return r;
+    }
+    return null;
   }
 
-  @override
   ScreenRoute getScreen(RouteSettings settings) {
     final screen = _getScreen(settings);
     if (screen != null) return screen;
@@ -51,12 +84,12 @@ abstract class BaseRouter implements Router {
       final screen = router.getScreen(settings);
       if (screen != null) return screen.wrapWith(screensWrapper);
     }
+    if (onScreenNotFound != null) return onScreenNotFound(settings);
     return null;
   }
 
-  @override
   Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) async {
-    final thisDeepLinkPrefix = await getDeepLinkPrefix();
+    final thisDeepLinkPrefix = await deepLinkPrefix;
     final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
     if (prefixRegex.hasMatch(deepLink)) {
       final screen = await _getRouteEntryForDeepLink(deepLink);
@@ -78,6 +111,32 @@ abstract class BaseRouter implements Router {
     return null;
   }
 
+  Future<bool> canOpenDeepLink(Uri url) async {
+    return (await getRouteEntryForDeepLink(deepLinkString(url))) != null;
+  }
+
+  Future<T> openDeepLink<T>(Uri url,
+      [dynamic arguments, bool isFromNative = false]) async {
+    if (this == nuvigator.rootRouter) {
+      final routeEntry = await getRouteEntryForDeepLink(deepLinkString(url));
+
+      if (routeEntry == null) {
+        if (onDeepLinkNotFound != null)
+          return await onDeepLinkNotFound(this, url, isFromNative, arguments);
+        return null;
+      }
+
+      final mapArguments = _extractParameters(url, routeEntry.key.deepLink);
+      if (isFromNative) {
+        final route = _buildNativeRoute(routeEntry, mapArguments);
+        return nuvigator.push<T>(route);
+      }
+      return nuvigator.pushNamed<T>(routeEntry.key.routeName,
+          arguments: mapArguments);
+    }
+    return nuvigator.openDeepLink<T>(url, arguments);
+  }
+
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {
     return (RouteSettings settings) =>
         screenRouteBuilder(settings).wrapWith(screensWrapper);
@@ -90,13 +149,12 @@ abstract class BaseRouter implements Router {
   }
 
   Future<RouteEntry> _getRouteEntryForDeepLink(String deepLink) async {
-    final deepLinkPrefix = await getDeepLinkPrefix();
     for (var screenEntry in screensMap.entries) {
       final routeDef = screenEntry.key;
       final screenBuilder = screenEntry.value;
       final currentDeepLink = routeDef.deepLink;
       if (currentDeepLink == null) continue;
-      final fullTemplate = deepLinkPrefix + currentDeepLink;
+      final fullTemplate = await deepLinkPrefix + currentDeepLink;
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(deepLink)) {
         return RouteEntry(
@@ -108,46 +166,33 @@ abstract class BaseRouter implements Router {
     return null;
   }
 
-  @override
-  Route getRoute(RouteSettings settings) {
-    return getScreen(settings).toRoute(settings);
-  }
-}
-
-class FlowRouter<T extends Router, R extends Object> extends BaseRouter {
-  FlowRouter(
-    this.baseRouter, {
-    this.screensType,
-    this.initialScreenType,
-    this.wrapper,
-  });
-
-  final ScreenType initialScreenType;
-  final ScreenType screensType;
-  final Router baseRouter;
-  final WrapperFn wrapper;
-
-  @override
-  ScreenRoute getScreen(RouteSettings settings) {
-    final firstScreen = baseRouter.getScreen(settings);
-    if (firstScreen == null) return null;
-    return FlowRoute<T, R>(
-      screenType: initialScreenType,
-      nuvigator: Nuvigator<T>(
-        router: baseRouter,
-        initialRoute: settings.name,
-        screenType: screensType,
-        wrapper: wrapper,
-        initialArguments: settings.arguments,
-      ),
+  // When building a native route we assume we already the first route in the stack
+  // that corresponds to the backdrop/invisible component. This allows for the
+  // route animation being handled by the Flutter instead of the Native App.
+  Route _buildNativeRoute(
+      RouteEntry routeEntry, Map<String, String> arguments) {
+    final routeSettings = RouteSettings(
+      name: routeEntry.key.routeName,
+      isInitialRoute: false,
+      arguments: arguments,
     );
+    final screenRoute = getScreen(routeSettings)
+        .fallbackScreenType(nuvigator.widget.screenType);
+    final route = screenRoute.toRoute(routeSettings);
+    route.popped.then<dynamic>((dynamic _) async {
+      if (nuvigator.stateTracker.stack.length == 1) {
+        // We only have the backdrop route in the stack
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+        await SystemNavigator.pop();
+      }
+    });
+    return route;
   }
 
-  @override
-  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) async {
-    return await baseRouter.getRouteEntryForDeepLink(deepLink);
+  Map<String, String> _extractParameters(Uri url, String deepLinkTemplate) {
+    final parameters = <String>[];
+    final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
+    final match = regExp.matchAsPrefix(deepLinkString(url));
+    return extract(parameters, match)..addAll(url.queryParameters);
   }
-
-  @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => null;
 }

@@ -5,58 +5,82 @@ import 'router.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
 
+NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
+    NuvigatorState nuvigatorState) {
+  if (nuvigatorState == null) return null;
+  final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
+  if (nuvigatorRouterForType != null) return nuvigatorState;
+  if (nuvigatorState != nuvigatorState.parent && nuvigatorState.parent != null)
+    return _tryToFindNuvigatorForRouter<T>(nuvigatorState.parent);
+  return null;
+}
+
+class NuvigatorStateTracker extends NavigatorObserver {
+  final List<Route> stack = [];
+
+  bool get debug => nuvigator.widget.debug;
+
+  NuvigatorState get nuvigator => navigator;
+
+  List<String> get stackRouteNames =>
+      stack.map((it) => it.settings.name).toList();
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    stack.add(route);
+    if (debug) print('didPush $route: $stackRouteNames');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    stack.remove(route);
+    if (debug) print('didPop $route: $stackRouteNames');
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    stack.remove(route);
+    if (debug) print('didRemove $route: $stackRouteNames');
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    final index = stack.indexOf(oldRoute);
+    stack[index] = newRoute;
+    if (debug) print('didReplace $oldRoute to $newRoute: $stackRouteNames');
+  }
+}
+
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
-    String initialRoute = '/',
+    @required String initialRoute,
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
-    this.initialArguments,
+    this.debug = false,
     this.inheritableObservers = const [],
   })  : assert(router != null),
+        assert(initialRoute != null),
         super(
           observers: [
             HeroController(),
             ...observers,
-            ...inheritableObservers.map((f) => f()),
           ],
-          onGenerateRoute: (settings) {
-            var finalSettings = settings;
-            if (settings.isInitialRoute &&
-                settings.name == initialRoute &&
-                settings.arguments == null &&
-                initialArguments != null) {
-              finalSettings = settings.copyWith(
-                arguments: initialArguments,
-              );
-            }
-            return router
-                .getScreen(finalSettings)
-                ?.fallbackScreenType(screenType)
-                ?.toRoute(finalSettings);
-          },
-          key: (router is GlobalRouter) ? router.nuvigatorKey : key,
+          onGenerateRoute: (settings) => router
+              .getScreen(settings)
+              ?.fallbackScreenType(screenType)
+              ?.toRoute(settings),
+          key: key,
           initialRoute: initialRoute,
         );
-
-  Nuvigator builder(BuildContext context) {
-    final settings = ModalRoute.of(context)?.settings;
-    final parentNuvigator = Nuvigator.of(context);
-    return copyWith(
-      initialArguments: settings?.arguments,
-      inheritableObservers: [
-        ...parentNuvigator?.widget?.inheritableObservers ?? [],
-        ...inheritableObservers,
-      ],
-    );
-  }
 
   Nuvigator<T> copyWith({
     Object initialArguments,
     WrapperFn wrapper,
     Key key,
+    bool debugLog,
     ScreenType screenType,
     List<ObserverBuilder> inheritableObservers,
     String initialRoute,
@@ -64,29 +88,50 @@ class Nuvigator<T extends Router> extends Navigator {
     return Nuvigator<T>(
       initialRoute: initialRoute ?? this.initialRoute,
       router: router,
-      inheritableObservers: inheritableObservers,
+      debug: debugLog ?? debug,
+      inheritableObservers: inheritableObservers ?? this.inheritableObservers,
       screenType: screenType ?? this.screenType,
       wrapper: wrapper ?? this.wrapper,
-      initialArguments: initialArguments ?? this.initialArguments,
       key: key ?? this.key,
     );
   }
 
   final T router;
-  final Object initialArguments;
+  final bool debug;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
 
   Nuvigator call(BuildContext context, [Widget child]) {
-    return builder(context);
+    return this;
   }
 
-  static NuvigatorState<T> of<T extends Router>(BuildContext context,
-      {bool rootNuvigator = false}) {
-    return rootNuvigator
-        ? context.rootAncestorStateOfType(TypeMatcher<NuvigatorState<T>>())
-        : context.ancestorStateOfType(TypeMatcher<NuvigatorState<T>>());
+  static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
+    final NuvigatorState closestNuvigator =
+        context.findRootAncestorStateOfType<NuvigatorState>();
+    return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
+  }
+
+  static NuvigatorState<T> of<T extends Router>(
+    BuildContext context, {
+    bool rootNuvigator = false,
+    bool nullOk = false,
+  }) {
+    if (rootNuvigator)
+      return context.findRootAncestorStateOfType<NuvigatorState<T>>();
+    final nuvigatorState = ofRouter<T>(context);
+    if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
+    assert(() {
+      if (!nullOk) {
+        throw FlutterError(
+            'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
+            'The context used to push or pop routes from the Nuvigator must be that of a '
+            'widget that is a descendant of a Nuvigator widget.'
+            'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
+      }
+      return true;
+    }());
+    return null;
   }
 
   @override
@@ -97,22 +142,61 @@ class Nuvigator<T extends Router> extends Navigator {
 
 class NuvigatorState<T extends Router> extends NavigatorState
     with WidgetsBindingObserver {
-  NuvigatorState<GlobalRouter> get _rootNuvigator =>
-      Nuvigator.of<GlobalRouter>(context, rootNuvigator: true) ?? this;
+  NuvigatorState get rootNuvigator =>
+      Nuvigator.of(context, rootNuvigator: true) ?? this;
 
   @override
   Nuvigator get widget => super.widget;
 
+  List<NuvigatorState> nestedNuvigators = [];
+
   T get router => widget.router;
+
+  NuvigatorStateTracker stateTracker;
+
+  R getRouter<R extends Router>() => router.getRouter<R>();
+
+  List<ObserverBuilder> _collectObservers() {
+    if (isNested) {
+      return widget.inheritableObservers + parent._collectObservers();
+    }
+    return widget.inheritableObservers;
+  }
 
   @override
   void initState() {
+    parent = Nuvigator.of(context, nullOk: true);
+    if (isNested) {
+      parent.nestedNuvigators.add(this);
+    }
+    widget.observers.addAll(_collectObservers().map((f) => f()));
+    stateTracker = NuvigatorStateTracker();
+    widget.observers.add(stateTracker);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    assert(widget.router.nuvigator == null);
+    widget.router.nuvigator = this;
+  }
+
+  @override
+  void didUpdateWidget(Nuvigator oldWidget) {
+    if (oldWidget.router != widget.router) {
+      oldWidget.router.nuvigator = null;
+      assert(widget.router.nuvigator == null);
+      widget.router.nuvigator = this;
+      widget.observers.add(stateTracker);
+      widget.observers.addAll(_collectObservers().map((f) => f()));
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
+    widget.router.nuvigator = null;
+    stateTracker = null;
+    if (isNested) {
+      parent.nestedNuvigators.remove(this);
+    }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -191,7 +275,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
     if (canPop()) {
       isPopped = super.pop<T>(result);
     }
-    if (!isPopped && this != _rootNuvigator && parent != null) {
+    if (!isPopped && this != rootNuvigator && parent != null) {
       return parentPop<T>(result);
     }
     return isPopped;
@@ -199,7 +283,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
-  bool rootPop<T extends Object>([T result]) => _rootNuvigator.pop<T>(result);
+  bool rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
 
   void closeFlow<T extends Object>([T result]) {
     if (isNested) {
@@ -208,34 +292,20 @@ class NuvigatorState<T extends Router> extends NavigatorState
   }
 
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return globalRouter.openDeepLink<R>(deepLink, arguments, false);
+    return rootRouter.openDeepLink<R>(deepLink, arguments, false);
   }
 
-  NuvigatorState get parent => Nuvigator.of(context);
+  NuvigatorState parent;
 
   bool get isNested => parent != null;
 
-  bool get isRoot => this == _rootNuvigator;
+  bool get isRoot => this == rootNuvigator;
 
-  GlobalRouter get globalRouter => _rootNuvigator.router;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final existingGlobalRouter = GlobalRouter.of(context);
-    if (router is GlobalRouter && existingGlobalRouter != null) {
-      throw Exception('There is already a GlobalRouter in the widget tree!');
-    } else if (!(router is GlobalRouter) && isRoot) {
-      throw Exception('The root Nuvigator should have a GlobalRouter!');
-    }
-  }
+  Router get rootRouter => rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {
     Widget child = super.build(context);
-    if (router is GlobalRouter) {
-      child = GlobalRouterProvider(globalRouter: widget.router, child: child);
-    }
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
     }

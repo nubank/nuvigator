@@ -5,47 +5,45 @@ import 'package:nuvigator/builder/routes_class.dart';
 
 import 'args_class.dart';
 import 'helpers.dart';
-import 'navigation_class.dart';
+import 'navigation_extension.dart';
 
 class BuilderLibrary extends BaseBuilder {
   BuilderLibrary(ClassElement classElement) : super(classElement);
 
-  Method _screensMapMethod(String className, String code) {
-    final lowerClassName = lowerCamelCase(className);
-
+  Method _screensMapMethod(String code) {
     return Method(
       (b) => b
         ..body = const Code('')
-        ..name = '_\$${removeRouterKey(lowerClassName)}ScreensMap'
-        ..requiredParameters.add(
-          Parameter(
-            (p) => p
-              ..type = refer(classElement.name)
-              ..name = 'router',
-          ),
-        )
+        ..name = '_\$screensMap'
+        ..type = MethodType.getter
         ..returns = refer('Map<RouteDef, ScreenRouteBuilder>')
         ..body = Code('return {$code};'),
     );
   }
 
-  Method _subRoutersListMethod(String className, String code) {
-    final lowerClassName = lowerCamelCase(className);
-
+  Method _subRoutersListMethod(String code) {
     return Method(
       (b) => b
-        ..name = '_\$${removeRouterKey(lowerClassName)}RoutersList'
-        ..requiredParameters.add(
-          Parameter(
-            (p) => p
-              ..type = refer(classElement.name)
-              ..name = 'router',
-          ),
-        )
+        ..name = '_\$routers'
+        ..type = MethodType.getter
         ..returns = refer('List<Router>')
         ..lambda = true
         ..body = Code('[$code]'),
     );
+  }
+
+  Code _screensAndRoutersExtension(
+      String screensMapCode, String subRoutersListCode) {
+    final screensMap = _screensMapMethod(screensMapCode);
+    final routers = subRoutersListCode != ''
+        ? _subRoutersListMethod(subRoutersListCode)
+        : null;
+    final library = Library(
+        (l) => l..body.addAll([if (routers != null) routers, screensMap]));
+    final code =
+        'extension ${classElement.name}ScreensAndRouters on ${classElement.name} '
+        '{\n ${libraryToString(library)} \n}';
+    return Code(code);
   }
 
   Library _generateLibrary(
@@ -55,10 +53,8 @@ class BuilderLibrary extends BaseBuilder {
         ..body.addAll([
           RoutesClass(classElement).build(),
           ArgsClass(classElement).build(),
-          NavigationClass(classElement).build(),
-          _screensMapMethod(className, screensMapCode),
-          if (subRoutersListCode != '')
-            _subRoutersListMethod(className, subRoutersListCode),
+          NavigationExtension(classElement).build(),
+          _screensAndRoutersExtension(screensMapCode, subRoutersListCode),
         ]),
     );
   }
@@ -89,7 +85,7 @@ class BuilderLibrary extends BaseBuilder {
           ..body = Code((params.isEmpty
                   ? ''
                   : 'final Map<String, Object> args = settings.arguments;') +
-              'return router.${method.name}($paramsStr);'));
+              'return ${method.name}($paramsStr);'));
 
         if (deepLink != null) {
           screensMapBuffer.write(
@@ -105,7 +101,7 @@ class BuilderLibrary extends BaseBuilder {
       final nuSubRouterAnnotation =
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
-        subRoutersListBuffer.write('router.${field.name},\n');
+        subRoutersListBuffer.write('${field.name},\n');
       }
     }
 

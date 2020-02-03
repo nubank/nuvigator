@@ -23,11 +23,16 @@ class ScreenOneArgs {
     );
   }
 
+  Map<String, Object> get toMap => {
+        'testId': testId,
+      };
   static ScreenOneArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == SampleOneRoutes.screenOne) {
       final args = routeSettings?.arguments;
+      if (args == null)
+        throw FlutterError('ScreenOneArgs requires Route arguments');
       if (args is ScreenOneArgs) return args;
       if (args is Map<String, Object>) return parse(args);
     } else if (nuvigator != null) {
@@ -37,23 +42,9 @@ class ScreenOneArgs {
   }
 }
 
-abstract class ScreenOneScreen extends ScreenWidget {
-  ScreenOneScreen(BuildContext context) : super(context);
-
-  ScreenOneArgs get args => ScreenOneArgs.of(context);
-  SampleOneNavigation get sampleOneNavigation =>
-      SampleOneNavigation.of(context);
-}
-
-class SampleOneNavigation {
-  SampleOneNavigation(this.nuvigator);
-
-  final NuvigatorState nuvigator;
-
-  static SampleOneNavigation of(BuildContext context) =>
-      SampleOneNavigation(Nuvigator.of(context));
-  Future<Object> toScreenOne({@required String testId}) {
-    return nuvigator.pushNamed<Object>(
+extension SampleOneRouterNavigation on SampleOneRouter {
+  Future<String> toScreenOne({@required String testId}) {
+    return nuvigator.pushNamed<String>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
@@ -61,9 +52,9 @@ class SampleOneNavigation {
     );
   }
 
-  Future<Object> pushReplacementToScreenOne<TO extends Object>(
+  Future<String> pushReplacementToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
-    return nuvigator.pushReplacementNamed<Object, TO>(
+    return nuvigator.pushReplacementNamed<String, TO>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
@@ -72,9 +63,9 @@ class SampleOneNavigation {
     );
   }
 
-  Future<Object> pushAndRemoveUntilToScreenOne<TO extends Object>(
+  Future<String> pushAndRemoveUntilToScreenOne<TO extends Object>(
       {@required String testId, @required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<Object>(
+    return nuvigator.pushNamedAndRemoveUntil<String>(
       SampleOneRoutes.screenOne,
       predicate,
       arguments: {
@@ -83,9 +74,9 @@ class SampleOneNavigation {
     );
   }
 
-  Future<Object> popAndPushToScreenOne<TO extends Object>(
+  Future<String> popAndPushToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
-    return nuvigator.popAndPushNamed<Object, TO>(
+    return nuvigator.popAndPushNamed<String, TO>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
@@ -123,16 +114,17 @@ class SampleOneNavigation {
   }
 }
 
-Map<RouteDef, ScreenRouteBuilder> _$sampleOneScreensMap(
-    SampleOneRouter router) {
-  return {
-    RouteDef(SampleOneRoutes.screenOne, deepLink: '/screenOne/:testId'):
-        (RouteSettings settings) {
-      final Map<String, Object> args = settings.arguments;
-      return router.screenOne(testId: args['testId']);
-    },
-    RouteDef(SampleOneRoutes.screenTwo): (RouteSettings settings) {
-      return router.screenTwo();
-    },
-  };
+extension SampleOneRouterScreensAndRouters on SampleOneRouter {
+  Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
+    return {
+      RouteDef(SampleOneRoutes.screenOne, deepLink: '/screenOne/:testId'):
+          (RouteSettings settings) {
+        final Map<String, Object> args = settings.arguments;
+        return screenOne(testId: args['testId']);
+      },
+      RouteDef(SampleOneRoutes.screenTwo): (RouteSettings settings) {
+        return screenTwo();
+      },
+    };
+  }
 }

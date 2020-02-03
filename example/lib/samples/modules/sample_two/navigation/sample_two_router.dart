@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_one/navigation/sample_one_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,11 @@ import '../screen/screen_two.dart';
 part 'sample_two_router.g.dart';
 
 @NuRouter()
-class SampleTwoRouter extends BaseRouter {
+class SampleTwoRouter extends Router {
+  SampleTwoRouter({@required this.testId});
+
+  final String testId;
+
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {
         return Provider<SampleTwoBloc>.value(
@@ -19,15 +24,20 @@ class SampleTwoRouter extends BaseRouter {
       };
 
   @NuRoute()
-  ScreenRoute<String> screenOne({String testId}) => const ScreenRoute(
-        builder: ScreenOne.builder,
+  ScreenRoute screenOne() => ScreenRoute(
+        builder: (context) => ScreenOne(
+          toScreenTwo: () => toScreenTwo(),
+        ),
       );
 
   @NuRoute(pushMethods: [PushMethodType.push, PushMethodType.pushReplacement])
-  ScreenRoute<String> screenTwo() =>
-      const ScreenRoute<String>(builder: ScreenTwo.builder);
+  ScreenRoute<String> screenTwo() => ScreenRoute<String>(
+        builder: (context) => ScreenTwo(
+          closeFlow: () => nuvigator.closeFlow<String>('ClosedNestedNuvigator'),
+          toSampleOne: () => openDeepLink<void>(Uri.parse(screenOneDeepLink)),
+        ),
+      );
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap =>
-      _$sampleTwoScreensMap(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
 }

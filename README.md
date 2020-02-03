@@ -5,7 +5,6 @@
 
 Routing and Navigation package.
 
-
 ## What
 
 This package aims to provide a powerful routing abstraction over Flutter Navigators. Using a most declarative and concise
@@ -24,30 +23,31 @@ import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 @NuRouter()
-class MyRouter extends BaseRouter {
+class MyRouter extends Router {
 
   @NuRoute()
   ScreenRoute myRoute() => ScreenRoute(
-    builder: (context) => MyScreen(screenContext),
+    builder: (_) => MyScreen(),
   );
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$myScreensMap(this);
+  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$screensMap;
 }
 
-// Wraps the top most Router into a special Router to be able to handle with DeepLinks and system behaviors. This is a
-// must. Be sure to wrap your top most router into a GlobalRouter.
-final router = GlobalRouter(baseRouter: MyRouter());
+class MyScreen extends StatelessWidget {
 
-Widget build(BuildContext context) {
-  return MaterialApp(
-    builder: Nuvigator(
-      router: router,
-      screenType: materialScreenType,
-      initialRoute: MyRoutes.myRoute,
-    ), 
-  );
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      builder: Nuvigator(
+        router: MyRouter(),
+        screenType: materialScreenType,
+        initialRoute: MyRoutes.myRoute,
+      ), 
+    );
+  }
 }
+
 ```
 
 ## Nuvigator
@@ -87,9 +87,8 @@ is required so the static analysis is able to properly generate the code when ru
 
 ## Creating Routers
 
-
 Defining a new Router will probably be the what you will do the most when working with Nuvigator, so understanding how
-to do it properly is important. A Router class is a class that should extend a `BaseRouter` and annotate the class with 
+to do it properly is important. A Router class is a class that should extend a `Router` and annotate the class with 
 the `@NuRouter` annotation.
 
 ### Defining Routes
@@ -102,15 +101,15 @@ when navigating to it.
 Example:
 ```dart
 @NuRouter()
-class MyCustomRouter extends BaseRouter {
+class MyCustomRouter extends Router {
   
   @NuRoute()
   ScreenRoute firstScreen({String argumentHere}) => ScreenRoute(
-    builder: (context) => MyFirstScreen(context),
+    builder: (_) => MyFirstScreen(),
   ); 
   
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$myCustomScreensMap(this); // Will be created by generated code
+  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$screensMap; // Will be created by generated code
 
 }
 ```
@@ -146,32 +145,32 @@ annotation.
 Example:
 ```dart
 @NuRouter()
-class MyCustomRouter extends BaseRouter {
+class MyCustomRouter extends Router {
   
   @NuRouter()
   MyOtherRouter myOtherRouter = MyOtherRouter();
 
   @override
-  List<Router> get routers => _$myCustomRoutersList(this); // Will be created by the generated code
+  List<Router> get routers => _$routers; // Will be created by the generated code
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$myCustomScreensMap(this); // Will be created by generated code
+  Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$screensMap; // Will be created by generated code
 }
 ```
 
-### BaseRouter Options
+### Router Options
 
-It is a Router interface implementation with sensible defaults that should be used most of the times. `BaseRoute` includes
-some options that can be used to enhance the navigation experience.
-
-When extending from the `BaseRouter` you can override the following properties to add custom behaviors to your routes:
+When extending from the `Router` you can override the following properties to add custom behaviors to your routes:
 
 - `deepLinkPrefix`:
-A String, that will be used as prefix for the deepLinks declared on each route, and also on the grouped routers.
+A `Future<String>`, that will be used as prefix for the deepLinks declared on each route, and also on the grouped routers.
 
 - `screensWrapper`:
 A function to wrap each route presented by this router. Should return a new Widget that wraps this child Widget. 
 The Wrapper will be applied to all Screens in this Router. (this function runs one time for each screen, and not one 
 time for the entire Router).
+
+- `routers`
+Sub-Routers grouped into this Router.
 
 ## Code Generators
 
@@ -189,9 +188,8 @@ of stripping out the `Router` part of your Router class and using the rest of th
 Generated code includes the following features:
 
 - Routes "enum" class
+- Navigation extension methods to Router
 - Typed Arguments classes
-- Typed ScreenInterface classes
-- Navigation class
 - Implementation Methods
 
 ### Routes Class
@@ -226,31 +224,7 @@ class SecondArgs {
 }
 ```
 
-### Typed ScreenInterfaces Classes
-
-It's a extension of `StatelessWidget` that can be extended by your Screen Widget. This class is make to provide easy access
-to the current `Nuvigator` instance, and also to the Route arguments. eg:
-
-```dart
-abstract class SecondScreen extends ScreenWidget {
-  SecondScreen(BuildContext context) : super(context);
-
-  SecondArgs get args => SecondArgs.of(context);
-  SamplesNavigation get samplesNavigation => SamplesNavigation.of(context);
-}
-
-class MySecondScreenWidget extends SecondScreen {
-  MySecondScreenWidget(BuildContext context): super(context);
-
-  Widget build(BuildContext context) {
-    print(args.testId);
-    // nuvigator.pop();
-    ...
-  }
-}
-```
-
-### Navigation Class
+### Navigation Extensions
 
 It's a helper class that contains a bunch of typed navigation methods to navigate through your App. Each declared `@NuRoute`
 will have several methods created, each for one of the existing push methods. You can also configure which methods you want
@@ -260,10 +234,8 @@ Nested flows (declared with the `FlowRoute`) will also have it's generated Navig
 in the parent Navigation. The same applies for Grouped Routers. Usage eg:
 
 ```dart
-final result = await SamplesNavigation.of(context).sampleOneNavigation.toScreenOne(testId: 'From Home');
-print('RESULT $result');
-
-
-SamplesNavigation.of(context).toSecond(testId: 'From Home');
+final router = Router.of<SamplesRouter>(context);
+await router.sampleOneRouter.toScreenOne(testId: 'From Home');
+await router.toSecond(testId: 'From Home');
 ```
 

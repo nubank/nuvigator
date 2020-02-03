@@ -4,62 +4,8 @@ import 'package:nuvigator/builder/base_builder.dart';
 
 import 'helpers.dart';
 
-class NavigationClass extends BaseBuilder {
-  NavigationClass(ClassElement classElement) : super(classElement);
-
-  Constructor _constructor() {
-    return Constructor(
-      (c) => c
-        ..requiredParameters.add(
-          Parameter(
-            (p) => p
-              ..name = 'nuvigator'
-              ..toThis = true,
-          ),
-        ),
-    );
-  }
-
-  Field _nuvigatorStateField() {
-    return Field(
-      (f) => f
-        ..name = 'nuvigator'
-        ..type = refer('NuvigatorState')
-        ..modifier = FieldModifier.final$,
-    );
-  }
-
-  Method _navigationMethod(String typeName) {
-    final navigationName = '${removeRouterKey(typeName)}Navigation';
-    return Method(
-      (f) => f
-        ..name = '${lowerCamelCase(navigationName)}'
-        ..returns = refer(navigationName)
-        ..type = MethodType.getter
-        ..lambda = true
-        ..body = Code(
-          '$navigationName(nuvigator)',
-        ),
-    );
-  }
-
-  Method _ofMethod(String className) {
-    return Method(
-      (m) => m
-        ..name = 'of'
-        ..requiredParameters.add(
-          Parameter(
-            (p) => p
-              ..name = 'context'
-              ..type = refer('BuildContext'),
-          ),
-        )
-        ..returns = refer(className)
-        ..body = Code('$className(Nuvigator.of(context))')
-        ..lambda = true
-        ..static = true,
-    );
-  }
+class NavigationExtension extends BaseBuilder {
+  NavigationExtension(ClassElement classElement) : super(classElement);
 
   String _getArgs(List<Parameter> parameters, MethodElement method) {
     final argumentsMapBuffer = StringBuffer('{');
@@ -75,8 +21,7 @@ class NavigationClass extends BaseBuilder {
           Parameter(
             (p) => p
               ..name = argName
-              ..annotations.addAll(
-                  isRequired ? [const CodeExpression(Code('required'))] : [])
+              ..annotations.addAll(isRequired ? [refer('required')] : [])
               ..named = true
               ..type = refer(arg.type.toString()),
           ),
@@ -156,7 +101,7 @@ class NavigationClass extends BaseBuilder {
         (p) => p
           ..name = 'predicate'
           ..named = true
-          ..annotations.add(const CodeExpression(Code('required')))
+          ..annotations.add(refer('required'))
           ..type = refer('RoutePredicate'),
       ),
     );
@@ -214,31 +159,14 @@ class NavigationClass extends BaseBuilder {
   }
 
   Method _subRouterMethod(String className) {
-    final name = removeRouterKey(className);
     return Method(
       (m) => m
-        ..name = '${lowerCamelCase(name)}Navigation'
-        ..returns = refer('${name}Navigation')
+        ..name = '${lowerCamelCase(className)}'
+        ..returns = refer(className)
         ..type = MethodType.getter
         ..lambda = true
         ..body = Code(
-          '${name}Navigation(nuvigator)',
-        ),
-    );
-  }
-
-  Class _generateNavigationClass(String className, List<Method> methods) {
-    final navigationClassName = '${removeRouterKey(className)}Navigation';
-    return Class(
-      (b) => b
-        ..name = navigationClassName
-        ..constructors.add(_constructor())
-        ..fields.add(_nuvigatorStateField())
-        ..methods.addAll(
-          [
-            _ofMethod(navigationClassName),
-            ...methods,
-          ],
+          'getRouter<$className>()',
         ),
     );
   }
@@ -250,8 +178,9 @@ class NavigationClass extends BaseBuilder {
 
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
-      final screenReturn =
-          generics.length > 1 ? generics[1].name : generics.first.name;
+      final screenReturn = generics.length > 1
+          ? generics[1].getDisplayString()
+          : generics.first.getDisplayString();
       final pushMethods =
           nuRouteFieldAnnotation.getField('pushMethods').toListValue();
       if (pushMethods != null) {
@@ -287,14 +216,6 @@ class NavigationClass extends BaseBuilder {
 
     for (final method in classElement.methods) {
       checkPushMethodsAndAdd(methods, className, method);
-
-      final isFlow = method.returnType.name == 'FlowRoute';
-      if (isFlow) {
-        final subRouter = getGenericTypes(method.returnType).first;
-        methods.add(
-          _subRouterMethod(subRouter.name),
-        );
-      }
     }
 
     for (final field in classElement.fields) {
@@ -302,11 +223,16 @@ class NavigationClass extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
         methods.add(
-          _navigationMethod(getRouterName(field)),
+          _subRouterMethod(field.type.getDisplayString()),
         );
       }
     }
 
-    return _generateNavigationClass(className, methods);
+    final library = Library((l) => l.body..addAll(methods));
+
+    final code =
+        'extension ${classElement.name}Navigation on ${classElement.name} {\n ${libraryToString(library)} \n}';
+
+    return Code(code);
   }
 }

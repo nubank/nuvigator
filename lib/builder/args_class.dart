@@ -19,9 +19,7 @@ class ArgsClass extends BaseBuilder {
         ..name = name
         ..named = true
         ..annotations.add(
-          const CodeExpression(
-            Code('required'),
-          ),
+          refer('required'),
         )
         ..toThis = true,
     );
@@ -69,6 +67,7 @@ class ArgsClass extends BaseBuilder {
           'final nuvigator = Nuvigator.of(context);'
           'if (routeSettings?.name == ${routerName}Routes.$screenName) {'
           'final args = routeSettings?.arguments;'
+          'if (args == null) throw FlutterError(\'$className requires Route arguments\');'
           'if (args is $className) return args;'
           'if (args is Map<String, Object>) return parse(args);'
           '} else if (nuvigator != null) {'
@@ -77,6 +76,20 @@ class ArgsClass extends BaseBuilder {
           'return null;',
         ),
     );
+  }
+
+  Method _toMapMethod(List<Field> argsFields) {
+    final argsMap = StringBuffer('{\n');
+    for (final field in argsFields) {
+      argsMap.write('\'${field.name}\': ${field.name},');
+    }
+    argsMap.write('}');
+    return Method((m) => m
+      ..name = 'toMap'
+      ..type = MethodType.getter
+      ..returns = refer('Map<String, Object>')
+      ..lambda = true
+      ..body = Code(argsMap.toString()));
   }
 
   Class _generateArgsClass(String routerName, String fieldName, String argsCode,
@@ -89,47 +102,8 @@ class ArgsClass extends BaseBuilder {
         ..fields.addAll(argsFields)
         ..methods.addAll([
           _parseMethod(className, argsCode),
+          _toMapMethod(argsFields),
           _ofMethod(className, routerName, fieldName),
-        ]),
-    );
-  }
-
-  Class _generateScreenClass(ClassElement classElement, String routeName) {
-    final routerNavigationName = '${getRouterName(classElement)}Navigation';
-
-    return Class(
-      (c) => c
-        ..name = '${routeName}Screen'
-        ..abstract = true
-        ..extend = refer('ScreenWidget')
-        ..constructors.add(
-          Constructor((cons) => cons
-            ..initializers.add(const Code('super(context)'))
-            ..requiredParameters.add(
-              Parameter(
-                (p) => p
-                  ..type = refer('BuildContext')
-                  ..name = 'context',
-              ),
-            )),
-        )
-        ..methods.addAll([
-          Method(
-            (m) => m
-              ..name = 'args'
-              ..lambda = true
-              ..type = MethodType.getter
-              ..returns = refer('${capitalize(routeName)}Args')
-              ..body = Code('${capitalize(routeName)}Args.of(context)'),
-          ),
-          Method(
-            (m) => m
-              ..name = lowerCamelCase(routerNavigationName)
-              ..lambda = true
-              ..type = MethodType.getter
-              ..returns = refer(capitalize(routerNavigationName))
-              ..body = Code('${capitalize(routerNavigationName)}.of(context)'),
-          ),
         ]),
     );
   }
@@ -137,18 +111,14 @@ class ArgsClass extends BaseBuilder {
   @override
   Spec build() {
     final argsClasses = <Class>[];
-    final screensClasses = <Class>[];
 
     for (var method in classElement.methods) {
       final nuRouteFieldAnnotation =
           nuRouteChecker.firstAnnotationOfExact(method);
-      final isFlow = method.type.name == 'FlowRoute';
 
-      if (nuRouteFieldAnnotation == null) continue;
-
-//      final args = nuRouteFieldAnnotation?.getField('args')?.toFunctionValue();
-
-      if (method?.parameters == null || method.parameters.isEmpty) continue;
+      if (nuRouteFieldAnnotation == null ||
+          method?.parameters == null ||
+          method.parameters.isEmpty) continue;
 
       final constructorParameters = <Parameter>[];
       final argsFields = <Field>[];
@@ -178,16 +148,8 @@ class ArgsClass extends BaseBuilder {
           argsFields,
         ),
       );
-      if (!isFlow) {
-        screensClasses.add(
-          _generateScreenClass(
-            classElement,
-            capitalize(method.name),
-          ),
-        );
-      }
     }
 
-    return Library((l) => l.body..addAll(argsClasses)..addAll(screensClasses));
+    return Library((l) => l.body..addAll(argsClasses));
   }
 }
