@@ -73,7 +73,7 @@ class Nuvigator<T extends Router> extends Navigator {
               ?.fallbackScreenType(screenType)
               ?.toRoute(settings),
           key: key,
-          initialRoute: initialRoute,
+          initialRoute: router.getInitialRoute(initialRoute),
         );
 
   Nuvigator<T> copyWith({

@@ -13,7 +13,7 @@ part 'samples_router.g.dart';
 @NuRouter()
 class SamplesRouter extends Router {
   @override
-  Future<String> get deepLinkPrefix async => 'deepprefix';
+  String get deepLinkPrefix => 'deepprefix';
 
   @NuRoute()
   ScreenRoute<void> home() => ScreenRoute(

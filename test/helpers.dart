@@ -21,7 +21,7 @@ class TestRouter extends Router {
 
 class TestRouterWPrefix extends Router {
   @override
-  Future<String> get deepLinkPrefix async => 'prefix/';
+  String get deepLinkPrefix => 'prefix/';
 
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
@@ -41,7 +41,7 @@ class TestRouterWPrefix extends Router {
 
 class GroupTestRouter extends Router {
   @override
-  Future<String> get deepLinkPrefix async => 'group/';
+  String get deepLinkPrefix => 'group/';
 
   TestRouter testRouter = TestRouter();
 

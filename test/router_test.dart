@@ -27,21 +27,19 @@ void main() {
 
   test('router retrieves the right screen for the deepLink', () async {
     final testRouter = TestRouter();
-    final routeEntry = await testRouter.getRouteEntryForDeepLink('test/simple');
+    final routeEntry = testRouter.getRouteEntryForDeepLink('test/simple');
     expect(routeEntry.value(const RouteSettings()).debugKey,
         'testRouterFirstScreen');
   });
 
   test('router can open deepLink', () async {
     final testRouter = TestRouter();
-    expect(await testRouter.canOpenDeepLink(Uri.parse('test/simple')), true);
-    expect(await testRouter.canOpenDeepLink(Uri.parse('test/simple/another')),
-        false);
-    expect(await testRouter.canOpenDeepLink(Uri.parse('test/')), false);
-    expect(
-        await testRouter.canOpenDeepLink(Uri.parse('test/123/params')), true);
-    expect(await testRouter.canOpenDeepLink(Uri.parse('test/params')), false);
-    expect(await testRouter.canOpenDeepLink(Uri.parse('test//params')), false);
+    expect(testRouter.canOpenDeepLink(Uri.parse('test/simple')), true);
+    expect(testRouter.canOpenDeepLink(Uri.parse('test/simple/another')), false);
+    expect(testRouter.canOpenDeepLink(Uri.parse('test/')), false);
+    expect(testRouter.canOpenDeepLink(Uri.parse('test/123/params')), true);
+    expect(testRouter.canOpenDeepLink(Uri.parse('test/params')), false);
+    expect(testRouter.canOpenDeepLink(Uri.parse('test//params')), false);
   });
 
   test('router on deepLinkNotFound', () async {
@@ -57,7 +55,7 @@ void main() {
     expect(mockNuvigator.routePushed, null);
   });
 
-  test('router open deepLink correcntly', () async {
+  test('router open deepLink correctly', () async {
     final testRouter = TestRouter();
     final mockNuvigator = MockNuvigator(testRouter);
     testRouter.nuvigator = mockNuvigator;
@@ -81,5 +79,27 @@ void main() {
     expect(mainRouter.getRouter<TestRouter>(), mainRouter.testRouter);
     expect(mainRouter.getRouter<GroupTestRouter>(), mainRouter);
     expect(mainRouter.getRouter<TestRouterWPrefix>(), null);
+  });
+
+  group('initial route', () {
+    test('when its a known deep link without prefix', () async {
+      final testRouter = TestRouter();
+      expect(testRouter.getInitialRoute('test/simple'), 'firstScreen');
+    });
+
+    test('when its a know deep link with prefix', () async {
+      final testRouterWPrefix = TestRouterWPrefix();
+      expect(testRouterWPrefix.getInitialRoute('prefix/test/simple'),
+          'firstScreen');
+    });
+
+    test('when its a route name', () {
+      final testRouter = TestRouter();
+      expect(testRouter.getInitialRoute('firstScreen'), 'firstScreen');
+    });
+    test('when its a route name from a prefixed router', () async {
+      final testRouterWPrefix = TestRouterWPrefix();
+      expect(testRouterWPrefix.getInitialRoute('firstScreen'), 'firstScreen');
+    });
   });
 }
