@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import 'router.dart';
@@ -274,6 +275,9 @@ class NuvigatorState<T extends Router> extends NavigatorState
     var isPopped = false;
     if (canPop()) {
       isPopped = super.pop<T>(result);
+    } else if (this == rootNuvigator) {
+      isPopped = true;
+      SystemNavigator.pop();
     }
     if (!isPopped && this != rootNuvigator && parent != null) {
       return parentPop<T>(result);
