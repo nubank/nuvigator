@@ -110,12 +110,8 @@ abstract class Router {
     return null;
   }
 
-  String getInitialRoute(String deepLinkOrRouteName) {
-    final maybeDeepLinkRoute = getRouteEntryForDeepLink(deepLinkOrRouteName);
-
-    return maybeDeepLinkRoute != null
-        ? maybeDeepLinkRoute.key.routeName
-        : deepLinkOrRouteName;
+  String getScreenNameFromDeepLink(String initialDeepLink) {
+    return getRouteEntryForDeepLink(initialDeepLink)?.key?.routeName;
   }
 
   bool canOpenDeepLink(Uri url) {

@@ -54,7 +54,8 @@ class NuvigatorStateTracker extends NavigatorObserver {
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
-    @required String initialRoute,
+    String initialRoute,
+    String initialDeepLink,
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
@@ -62,7 +63,7 @@ class Nuvigator<T extends Router> extends Navigator {
     this.debug = false,
     this.inheritableObservers = const [],
   })  : assert(router != null),
-        assert(initialRoute != null),
+        assert(initialRoute != null || initialDeepLink != null),
         super(
           observers: [
             HeroController(),
@@ -73,7 +74,8 @@ class Nuvigator<T extends Router> extends Navigator {
               ?.fallbackScreenType(screenType)
               ?.toRoute(settings),
           key: key,
-          initialRoute: router.getInitialRoute(initialRoute),
+          initialRoute:
+              initialRoute ?? router.getScreenNameFromDeepLink(initialDeepLink),
         );
 
   Nuvigator<T> copyWith({

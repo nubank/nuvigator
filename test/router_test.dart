@@ -81,25 +81,16 @@ void main() {
     expect(mainRouter.getRouter<TestRouterWPrefix>(), null);
   });
 
-  group('initial route', () {
-    test('when its a known deep link without prefix', () async {
+  group('screen name from deep link', () {
+    test('when its a known deep link', () async {
       final testRouter = TestRouter();
-      expect(testRouter.getInitialRoute('test/simple'), 'firstScreen');
+      expect(
+          testRouter.getScreenNameFromDeepLink('test/simple'), 'firstScreen');
     });
 
-    test('when its a know deep link with prefix', () async {
-      final testRouterWPrefix = TestRouterWPrefix();
-      expect(testRouterWPrefix.getInitialRoute('prefix/test/simple'),
-          'firstScreen');
-    });
-
-    test('when its a route name', () {
+    test('when its an unknown deep link returns null', () async {
       final testRouter = TestRouter();
-      expect(testRouter.getInitialRoute('firstScreen'), 'firstScreen');
-    });
-    test('when its a route name from a prefixed router', () async {
-      final testRouterWPrefix = TestRouterWPrefix();
-      expect(testRouterWPrefix.getInitialRoute('firstScreen'), 'firstScreen');
+      expect(testRouter.getScreenNameFromDeepLink('this/doesnt/exist'), null);
     });
   });
 }
