@@ -22,8 +22,17 @@ Basic usage
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
+class MyApp extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext) {
+    return Text('Hello Nuvigator!'); // Your regular Flutter Widget
+  }
+
+}
+
 @NuRouter()
-class MyRouter extends Router {
+class MainRouter extends Router {
 
   @NuRoute()
   ScreenRoute myRoute() => ScreenRoute(
@@ -34,15 +43,19 @@ class MyRouter extends Router {
   Map<RouteDef, ScreenRouteBuilder> get screensMap  => _$screensMap;
 }
 
-class MyScreen extends StatelessWidget {
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: Nuvigator(
-        router: MyRouter(),
+        router: MainRouter(),
         screenType: materialScreenType,
-        initialRoute: MyRoutes.myRoute,
+        initialRoute: MainRoutes.myRoute,
       ), 
     );
   }
