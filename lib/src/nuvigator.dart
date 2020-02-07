@@ -62,6 +62,7 @@ class Nuvigator<T extends Router> extends Navigator {
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
+    this.shouldPopRoot = false,
   })  : assert(router != null),
         assert(initialRoute != null),
         super(
@@ -99,6 +100,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   final T router;
   final bool debug;
+  final bool shouldPopRoot;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
@@ -275,7 +277,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
     var isPopped = false;
     if (canPop()) {
       isPopped = super.pop<T>(result);
-    } else if (this == rootNuvigator) {
+    } else if (widget.shouldPopRoot && this == rootNuvigator) {
       isPopped = true;
       SystemNavigator.pop();
     }
