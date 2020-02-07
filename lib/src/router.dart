@@ -64,7 +64,7 @@ abstract class Router {
 
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {};
 
-  Future<String> get deepLinkPrefix async => '';
+  String get deepLinkPrefix => '';
 
   /// Get the specified router that can be grouped in this router
   T getRouter<T extends Router>() {
@@ -88,16 +88,15 @@ abstract class Router {
     return null;
   }
 
-  Future<RouteEntry> getRouteEntryForDeepLink(String deepLink) async {
-    final thisDeepLinkPrefix = await deepLinkPrefix;
+  RouteEntry getRouteEntryForDeepLink(String deepLink) {
+    final thisDeepLinkPrefix = deepLinkPrefix;
     final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
     if (prefixRegex.hasMatch(deepLink)) {
-      final screen = await _getRouteEntryForDeepLink(deepLink);
+      final screen = _getRouteEntryForDeepLink(deepLink);
       if (screen != null) return screen;
       for (final Router router in routers) {
         final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
-        final subRouterEntry =
-            await router.getRouteEntryForDeepLink(newDeepLink);
+        final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
         if (subRouterEntry != null) {
           final fullTemplate =
               thisDeepLinkPrefix + (subRouterEntry.key.deepLink ?? '');
@@ -111,14 +110,18 @@ abstract class Router {
     return null;
   }
 
-  Future<bool> canOpenDeepLink(Uri url) async {
-    return (await getRouteEntryForDeepLink(deepLinkString(url))) != null;
+  String getScreenNameFromDeepLink(String initialDeepLink) {
+    return getRouteEntryForDeepLink(initialDeepLink)?.key?.routeName;
+  }
+
+  bool canOpenDeepLink(Uri url) {
+    return getRouteEntryForDeepLink(deepLinkString(url)) != null;
   }
 
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
     if (this == nuvigator.rootRouter) {
-      final routeEntry = await getRouteEntryForDeepLink(deepLinkString(url));
+      final routeEntry = getRouteEntryForDeepLink(deepLinkString(url));
 
       if (routeEntry == null) {
         if (onDeepLinkNotFound != null)
@@ -148,13 +151,13 @@ abstract class Router {
     return screenBuilder(settings).wrapWith(screensWrapper);
   }
 
-  Future<RouteEntry> _getRouteEntryForDeepLink(String deepLink) async {
+  RouteEntry _getRouteEntryForDeepLink(String deepLink) {
     for (var screenEntry in screensMap.entries) {
       final routeDef = screenEntry.key;
       final screenBuilder = screenEntry.value;
       final currentDeepLink = routeDef.deepLink;
       if (currentDeepLink == null) continue;
-      final fullTemplate = await deepLinkPrefix + currentDeepLink;
+      final fullTemplate = deepLinkPrefix + currentDeepLink;
       final regExp = pathToRegExp(fullTemplate);
       if (regExp.hasMatch(deepLink)) {
         return RouteEntry(

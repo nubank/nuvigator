@@ -13,7 +13,7 @@ const screenOneDeepLink =
 @NuRouter()
 class SampleOneRouter extends Router {
   @override
-  Future<String> get deepLinkPrefix async => '/sampleOne';
+  String get deepLinkPrefix => '/sampleOne';
 
   @NuRoute(deepLink: '/screenOne/:testId')
   ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
