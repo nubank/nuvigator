@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.4.1
+- Make `initialDeepLink` work passing arguments to destination route
+
 ## 0.4.0
 - Allow to pass an `initialDeepLink`
 - Add new option to pop SystemNavigator on last screen of the Root Router
