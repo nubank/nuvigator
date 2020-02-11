@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 import 'router.dart';
@@ -62,6 +63,7 @@ class Nuvigator<T extends Router> extends Navigator {
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
+    this.shouldPopRoot = false,
   })  : assert(router != null),
         assert(initialRoute != null || initialDeepLink != null),
         super(
@@ -100,6 +102,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   final T router;
   final bool debug;
+  final bool shouldPopRoot;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
@@ -276,6 +279,9 @@ class NuvigatorState<T extends Router> extends NavigatorState
     var isPopped = false;
     if (canPop()) {
       isPopped = super.pop<T>(result);
+    } else if (widget.shouldPopRoot && this == rootNuvigator) {
+      isPopped = true;
+      SystemNavigator.pop();
     }
     if (!isPopped && this != rootNuvigator && parent != null) {
       return parentPop<T>(result);
