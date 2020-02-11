@@ -84,13 +84,15 @@ void main() {
   group('screen name from deep link', () {
     test('when its a known deep link', () async {
       final testRouter = TestRouter();
-      expect(
-          testRouter.getScreenNameFromDeepLink('test/simple'), 'firstScreen');
+      expect(testRouter.getScreenNameFromDeepLink(Uri.parse('test/simple')),
+          'firstScreen');
     });
 
     test('when its an unknown deep link returns null', () async {
       final testRouter = TestRouter();
-      expect(testRouter.getScreenNameFromDeepLink('this/doesnt/exist'), null);
+      expect(
+          testRouter.getScreenNameFromDeepLink(Uri.parse('this/doesnt/exist')),
+          null);
     });
   });
 }

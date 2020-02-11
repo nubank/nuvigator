@@ -41,6 +41,8 @@ class MyApp extends StatelessWidget {
         ],
         router: SamplesRouter(),
         initialRoute: SamplesRoutes.home,
+//        initialDeepLink: Uri.parse(
+//            'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink'),
       ),
     );
   }
