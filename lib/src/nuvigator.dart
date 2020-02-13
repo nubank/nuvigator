@@ -56,7 +56,8 @@ class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
     String initialRoute,
-    String initialDeepLink,
+    Uri initialDeepLink,
+    Map<String, Object> initialArguments,
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
@@ -66,15 +67,39 @@ class Nuvigator<T extends Router> extends Navigator {
     this.shouldPopRoot = false,
   })  : assert(router != null),
         assert(initialRoute != null || initialDeepLink != null),
+        assert((initialRoute != null && initialDeepLink == null) ||
+            (initialDeepLink != null && initialRoute == null)),
+        assert(() {
+          if (initialDeepLink != null) {
+            return initialArguments == null;
+          }
+          return true;
+        }()),
         super(
           observers: [
             HeroController(),
             ...observers,
           ],
-          onGenerateRoute: (settings) => router
-              .getScreen(settings)
-              ?.fallbackScreenType(screenType)
-              ?.toRoute(settings),
+          onGenerateRoute: (settings) {
+            var finalSettings = settings;
+            if (settings.isInitialRoute && settings.arguments == null) {
+              if (initialArguments != null) {
+                finalSettings = settings.copyWith(arguments: initialArguments);
+              } else if (initialDeepLink != null) {
+                final deepLinkTemplate = router
+                    .getRouteEntryForDeepLink(deepLinkString(initialDeepLink))
+                    ?.key
+                    ?.deepLink;
+                final args = extractDeepLinkParameters(
+                    initialDeepLink, deepLinkTemplate);
+                finalSettings = settings.copyWith(arguments: args);
+              }
+            }
+            return router
+                .getScreen(finalSettings)
+                ?.fallbackScreenType(screenType)
+                ?.toRoute(finalSettings);
+          },
           key: key,
           initialRoute:
               initialRoute ?? router.getScreenNameFromDeepLink(initialDeepLink),

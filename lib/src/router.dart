@@ -12,6 +12,14 @@ String deepLinkString(Uri url) => url.host + url.path;
 typedef HandleDeepLinkFn = Future<dynamic> Function(Router router, Uri uri,
     [bool isFromNative, dynamic args]);
 
+Map<String, String> extractDeepLinkParameters(
+    Uri url, String deepLinkTemplate) {
+  final parameters = <String>[];
+  final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
+  final match = regExp.matchAsPrefix(deepLinkString(url));
+  return extract(parameters, match)..addAll(url.queryParameters);
+}
+
 class RouteEntry {
   RouteEntry(this.key, this.value);
 
@@ -110,8 +118,8 @@ abstract class Router {
     return null;
   }
 
-  String getScreenNameFromDeepLink(String initialDeepLink) {
-    return getRouteEntryForDeepLink(initialDeepLink)?.key?.routeName;
+  String getScreenNameFromDeepLink(Uri url) {
+    return getRouteEntryForDeepLink(deepLinkString(url))?.key?.routeName;
   }
 
   bool canOpenDeepLink(Uri url) {
@@ -129,7 +137,8 @@ abstract class Router {
         return null;
       }
 
-      final mapArguments = _extractParameters(url, routeEntry.key.deepLink);
+      final mapArguments =
+          extractDeepLinkParameters(url, routeEntry.key.deepLink);
       if (isFromNative) {
         final route = _buildNativeRoute(routeEntry, mapArguments);
         return nuvigator.push<T>(route);
@@ -190,12 +199,5 @@ abstract class Router {
       }
     });
     return route;
-  }
-
-  Map<String, String> _extractParameters(Uri url, String deepLinkTemplate) {
-    final parameters = <String>[];
-    final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
-    final match = regExp.matchAsPrefix(deepLinkString(url));
-    return extract(parameters, match)..addAll(url.queryParameters);
   }
 }
