@@ -22,7 +22,7 @@ Basic usage
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class MyApp extends StatelessWidget {
+class MyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
