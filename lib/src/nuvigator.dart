@@ -138,7 +138,7 @@ class Nuvigator<T extends Router> extends Navigator {
 
   static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
     final NuvigatorState closestNuvigator =
-        context.findRootAncestorStateOfType<NuvigatorState>();
+        context.findAncestorStateOfType<NuvigatorState>();
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.4.2
+- Fix the `Nuvigator.of(context)` to start the search at the last state instead of root
+
 ## 0.4.1
 - Make `initialDeepLink` work passing arguments to destination route
 
