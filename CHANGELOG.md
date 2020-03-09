@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.4.3
+- Fix an exception when the args are null because are passed by the constructor
+
 ## 0.4.2
 - Fix the `Nuvigator.of(context)` to start the search at the last state instead of root
 
