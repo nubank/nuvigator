@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.4.4
+- Downgrade the analyzer dependency to '>=0.38.5 <0.40.0'
+
 ## 0.4.3
 - Fix an exception when the args are null because are passed by the constructor
 
