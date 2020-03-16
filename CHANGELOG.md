@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.4.4
+## 0.4.5
 - Downgrade the analyzer dependency to '>=0.38.5 <0.40.0'
 
 ## 0.4.3
