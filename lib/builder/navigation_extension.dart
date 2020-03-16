@@ -178,9 +178,8 @@ class NavigationExtension extends BaseBuilder {
 
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
-      final screenReturn = generics.length > 1
-          ? generics[1].getDisplayString()
-          : generics.first.getDisplayString();
+      final screenReturn =
+          generics.length > 1 ? generics[1].name : generics.first.name;
       final pushMethods =
           nuRouteFieldAnnotation.getField('pushMethods').toListValue();
       if (pushMethods != null) {
@@ -223,7 +222,7 @@ class NavigationExtension extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
         methods.add(
-          _subRouterMethod(field.type.getDisplayString()),
+          _subRouterMethod(field.type.name),
         );
       }
     }
