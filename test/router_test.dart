@@ -95,4 +95,18 @@ void main() {
           null);
     });
   });
+
+  group('extracting parameters from deepLink', () {
+    test('it can correctly adapt non camelCase keys', () {
+      final result = extractDeepLinkParameters(
+          Uri.parse('my-route/something?another-one=hello'),
+          'my-route/:my-argument');
+      expect(result, {
+        'my-argument': 'something',
+        'myArgument': 'something',
+        'another-one': 'hello',
+        'anotherOne': 'hello'
+      });
+    });
+  });
 }
