@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:recase/recase.dart';
 
 import '../nuvigator.dart';
 import 'screen_route.dart';
@@ -17,7 +18,11 @@ Map<String, String> extractDeepLinkParameters(
   final parameters = <String>[];
   final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
   final match = regExp.matchAsPrefix(deepLinkString(url));
-  return extract(parameters, match)..addAll(url.queryParameters);
+  final parametersMap = extract(parameters, match)..addAll(url.queryParameters);
+  final camelCasedParametersMap = parametersMap.map((k, v) {
+    return MapEntry(ReCase(k).camelCase, v);
+  });
+  return {...parametersMap, ...camelCasedParametersMap};
 }
 
 class RouteEntry {
@@ -100,8 +105,8 @@ abstract class Router {
     final thisDeepLinkPrefix = deepLinkPrefix;
     final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
     if (prefixRegex.hasMatch(deepLink)) {
-      final screen = _getRouteEntryForDeepLink(deepLink);
-      if (screen != null) return screen;
+      final routeEntry = _getRouteEntryForDeepLink(deepLink);
+      if (routeEntry != null) return routeEntry;
       for (final Router router in routers) {
         final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
         final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
