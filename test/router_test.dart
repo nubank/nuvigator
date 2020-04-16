@@ -100,9 +100,8 @@ void main() {
     test('it can correctly adapt non camelCase keys', () {
       final result = extractDeepLinkParameters(
           Uri.parse('my-route/something?another-one=hello'),
-          'my-route/:my-argument');
+          'my-route/:myArgument');
       expect(result, {
-        'my-argument': 'something',
         'myArgument': 'something',
         'another-one': 'hello',
         'anotherOne': 'hello'
