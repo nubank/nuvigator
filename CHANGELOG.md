@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.4.6
+- Support query parameters with dashes by converting them to camelCase
+
 ## 0.4.5
 - Downgrade the analyzer dependency to '>=0.38.5 <0.40.0'
 
