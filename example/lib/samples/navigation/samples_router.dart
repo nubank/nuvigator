@@ -12,19 +12,16 @@ part 'samples_router.g.dart';
 
 @NuRouter()
 class SamplesRouter extends Router {
-  @override
-  String get deepLinkPrefix => 'deepprefix';
-
-  @NuRoute()
+  @NuRoute('exapp://home')
   ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => HomeScreen(),
       );
 
-  @NuRoute()
+  @NuRoute('exapp://sampleTwo*')
   ScreenRoute<String> second({@required String testId}) => ScreenRoute(
-        builder: Nuvigator(
+        builder: (context) => Nuvigator(
           router: SampleTwoRouter(testId: testId),
-          initialRoute: SampleTwoRoutes.screenOne,
+          initialDeepLink: currentDeepLink(context),
           screenType: cupertinoScreenType,
           wrapper: (BuildContext context, Widget child) => Provider(
             create: (_) => SampleFlowBloc(),
@@ -45,7 +42,7 @@ class SamplesRouter extends Router {
       };
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
+  Map<String, ScreenRouteBuilder> get screensMap => _$screensMap;
 
   @override
   List<Router> get routers => _$routers;

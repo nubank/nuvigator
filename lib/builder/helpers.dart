@@ -29,10 +29,15 @@ String getRouterName(Element element) {
 }
 
 String getRouteString(ClassElement routerElement, MethodElement element) {
-  String prefix = nuRouterChecker
-      .firstAnnotationOfExact(routerElement)
-      ?.getField('routeNamePrefix')
-      ?.toStringValue();
+  final nuRouterAnnotation =
+      nuRouterChecker.firstAnnotationOfExact(routerElement);
+
+  String prefix =
+      nuRouterAnnotation?.getField('routeNamePrefix')?.toStringValue();
+
+  final String deepLinkPrefix =
+      nuRouterAnnotation.getField('deepLinkPrefix').toStringValue();
+
   prefix = prefix != null && prefix.isNotEmpty ? lowerCamelCase(prefix) : '';
 
   String routerName = getRouterName(routerElement);
@@ -40,11 +45,11 @@ String getRouteString(ClassElement routerElement, MethodElement element) {
   routerName = needsFormat ? lowerCamelCase(routerName) : routerName;
 
   final routeName = nuRouteChecker
-          .firstAnnotationOfExact(element)
-          ?.getField('routeName')
-          ?.toStringValue() ??
-      element.name;
-  return '$prefix$routerName/$routeName';
+      .firstAnnotationOfExact(element)
+      ?.getField('deepLink')
+      ?.toStringValue();
+
+  return deepLinkPrefix + routeName;
 }
 
 String libraryToString(Library library) {

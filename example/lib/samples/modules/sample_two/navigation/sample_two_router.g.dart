@@ -7,9 +7,9 @@ part of 'sample_two_router.dart';
 // **************************************************************************
 
 class SampleTwoRoutes {
-  static const screenOne = 'sampleTwo/screenOne';
+  static const screenOne = 'exapp://sampleTwo/screenOne';
 
-  static const screenTwo = 'sampleTwo/screenTwo';
+  static const screenTwo = 'exapp://sampleTwo/screenTwo';
 }
 
 extension SampleTwoRouterNavigation on SampleTwoRouter {
@@ -56,12 +56,12 @@ extension SampleTwoRouterNavigation on SampleTwoRouter {
 }
 
 extension SampleTwoRouterScreensAndRouters on SampleTwoRouter {
-  Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
+  Map<String, ScreenRouteBuilder> get _$screensMap {
     return {
-      RouteDef(SampleTwoRoutes.screenOne): (RouteSettings settings) {
+      SampleTwoRoutes.screenOne: (RouteSettings settings) {
         return screenOne();
       },
-      RouteDef(SampleTwoRoutes.screenTwo): (RouteSettings settings) {
+      SampleTwoRoutes.screenTwo: (RouteSettings settings) {
         return screenTwo();
       },
     };

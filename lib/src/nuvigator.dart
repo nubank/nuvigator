@@ -16,6 +16,10 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
   return null;
 }
 
+String currentDeepLink(BuildContext context) {
+  return ModalRoute.of(context).settings.name;
+}
+
 class NuvigatorStateTracker extends NavigatorObserver {
   final List<Route> stack = [];
 
@@ -55,9 +59,7 @@ class NuvigatorStateTracker extends NavigatorObserver {
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
-    String initialRoute,
-    Uri initialDeepLink,
-    Map<String, Object> initialArguments,
+    @required this.initialDeepLink,
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
@@ -66,43 +68,16 @@ class Nuvigator<T extends Router> extends Navigator {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
   })  : assert(router != null),
-        assert(initialRoute != null || initialDeepLink != null),
-        assert((initialRoute != null && initialDeepLink == null) ||
-            (initialDeepLink != null && initialRoute == null)),
-        assert(() {
-          if (initialDeepLink != null) {
-            return initialArguments == null;
-          }
-          return true;
-        }()),
+        assert(initialDeepLink != null),
         super(
           observers: [
             HeroController(),
             ...observers,
           ],
-          onGenerateRoute: (settings) {
-            var finalSettings = settings;
-            if (settings.isInitialRoute && settings.arguments == null) {
-              if (initialArguments != null) {
-                finalSettings = settings.copyWith(arguments: initialArguments);
-              } else if (initialDeepLink != null) {
-                final deepLinkTemplate = router
-                    .getRouteEntryForDeepLink(deepLinkString(initialDeepLink))
-                    ?.key
-                    ?.deepLink;
-                final args = extractDeepLinkParameters(
-                    initialDeepLink, deepLinkTemplate);
-                finalSettings = settings.copyWith(arguments: args);
-              }
-            }
-            return router
-                .getScreen(finalSettings)
-                ?.fallbackScreenType(screenType)
-                ?.toRoute(finalSettings);
-          },
+          onGenerateRoute: (settings) =>
+              router.getRoute<dynamic>(settings, screenType),
           key: key,
-          initialRoute:
-              initialRoute ?? router.getScreenNameFromDeepLink(initialDeepLink),
+          initialRoute: initialDeepLink,
         );
 
   Nuvigator<T> copyWith({
@@ -112,11 +87,11 @@ class Nuvigator<T extends Router> extends Navigator {
     bool debugLog,
     ScreenType screenType,
     List<ObserverBuilder> inheritableObservers,
-    String initialRoute,
+    String initialDeepLink,
   }) {
     return Nuvigator<T>(
-      initialRoute: initialRoute ?? this.initialRoute,
       router: router,
+      initialDeepLink: initialDeepLink ?? this.initialDeepLink,
       debug: debugLog ?? debug,
       inheritableObservers: inheritableObservers ?? this.inheritableObservers,
       screenType: screenType ?? this.screenType,
@@ -126,6 +101,7 @@ class Nuvigator<T extends Router> extends Navigator {
   }
 
   final T router;
+  final String initialDeepLink;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;
@@ -247,12 +223,12 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
-    final possibleRoute =
-        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
+    final possibleRoute = router
+        .getRoute<T>(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null && parent != null) {
       return parent.pushNamed<T>(routeName, arguments: arguments);
     }
-    return super.pushNamed<T>(routeName, arguments: arguments);
+    return super.push<T>(possibleRoute);
   }
 
   @override
@@ -260,14 +236,13 @@ class NuvigatorState<T extends Router> extends NavigatorState
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute =
-        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
+    final possibleRoute = router
+        .getRoute<T>(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
       return parent.pushReplacementNamed<T, TO>(routeName,
           arguments: arguments, result: result);
     }
-    return super.pushReplacementNamed<T, TO>(routeName,
-        arguments: arguments, result: result);
+    return super.pushReplacement<T, TO>(possibleRoute, result: result);
   }
 
   @override
@@ -275,13 +250,12 @@ class NuvigatorState<T extends Router> extends NavigatorState
       String newRouteName, RoutePredicate predicate,
       {Object arguments}) {
     final possibleRoute = router
-        .getScreen(RouteSettings(name: newRouteName, arguments: arguments));
+        .getRoute<T>(RouteSettings(name: newRouteName, arguments: arguments));
     if (possibleRoute == null) {
       return parent.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
           arguments: arguments);
     }
-    return super.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
-        arguments: arguments);
+    return super.pushAndRemoveUntil<T>(possibleRoute, predicate);
   }
 
   @override
@@ -289,14 +263,14 @@ class NuvigatorState<T extends Router> extends NavigatorState
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute =
-        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
+    final possibleRoute = router
+        .getRoute<T>(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
       return parent.popAndPushNamed<T, TO>(routeName,
           arguments: arguments, result: result);
     }
-    return super.popAndPushNamed<T, TO>(routeName,
-        arguments: arguments, result: result);
+    pop<TO>(result);
+    return push<T>(possibleRoute);
   }
 
   @override
@@ -324,8 +298,44 @@ class NuvigatorState<T extends Router> extends NavigatorState
     }
   }
 
-  Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return rootRouter.openDeepLink<R>(deepLink, arguments, false);
+  Future<R> openDeepLink<R>(String deepLink,
+      [dynamic arguments, bool isFromNative = false]) async {
+    final route = router.getRoute<T>(RouteSettings(name: deepLink));
+    if (route == null) {
+      if (isRoot && router.onDeepLinkNotFound != null)
+        return await router.onDeepLinkNotFound(
+            router, deepLink, isFromNative, arguments);
+      return parent.openDeepLink<R>(deepLink, arguments, isFromNative);
+    }
+//    final mapArguments = {
+//      ...extractDeepLinkParameters(deepLink, routeEntry.routeName),
+//      'nuvigator/deepLink': deepLink,
+//    };
+    if (isFromNative) {
+      final route = _buildNativeRoute(deepLink, arguments);
+      return push<R>(route);
+    }
+    return push<R>(route);
+  }
+
+  // When building a native route we assume we already the first route in the stack
+  // that corresponds to the backdrop/invisible component. This allows for the
+  // route animation being handled by the Flutter instead of the Native App.
+  Route _buildNativeRoute(String deepLink, Map<String, String> arguments) {
+    final routeSettings = RouteSettings(
+      name: deepLink,
+      isInitialRoute: false,
+      arguments: arguments,
+    );
+    final route = router.getRoute<T>(routeSettings);
+    route.popped.then<dynamic>((dynamic _) async {
+      if (stateTracker.stack.length == 1) {
+        // We only have the backdrop route in the stack
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+        await SystemNavigator.pop();
+      }
+    });
+    return route;
   }
 
   NuvigatorState parent;

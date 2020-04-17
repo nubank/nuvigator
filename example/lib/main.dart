@@ -40,9 +40,8 @@ class MyApp extends StatelessWidget {
           () => TestObserver(),
         ],
         router: SamplesRouter(),
-        initialRoute: SamplesRoutes.home,
-//        initialDeepLink: Uri.parse(
-//            'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink'),
+//        initialRoute: SamplesRoutes.home,
+        initialDeepLink: SamplesRoutes.home,
       ),
     );
   }
@@ -74,15 +73,17 @@ class HomeScreen extends StatelessWidget {
           FlatButton(
             child: const Text('Go to sample one with deepLink'),
             onPressed: () async {
-              final result = await router
-                  .openDeepLink<String>(Uri.parse(screenOneDeepLink));
+              final result = await router.nuvigator
+                  .openDeepLink<String>(screenOneDeepLink);
               print('ScreenOneDeepLinkResult: $result}');
             },
           ),
           FlatButton(
             child: const Text('Go to sample two with flow'),
             onPressed: () async {
-              final result = await router.toSecond(testId: 'From Home');
+//              final result = await router.toSecond(testId: 'From Home');
+              final result = await router.nuvigator
+                  .openDeepLink<String>('exapp://sampleTwo/screenTwo');
               print('SecondRouteResult: $result');
             },
           ),

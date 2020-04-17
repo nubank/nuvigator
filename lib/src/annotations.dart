@@ -62,8 +62,10 @@
 /// Obs: The [routeNamePrefix] is only used by the routes class to compose the
 /// route names.
 class NuRouter {
-  const NuRouter({this.routerName, this.routeNamePrefix});
+  const NuRouter(
+      {this.deepLinkPrefix = '', this.routerName, this.routeNamePrefix});
 
+  final String deepLinkPrefix;
   final String routerName;
   final String routeNamePrefix;
 }
@@ -105,10 +107,9 @@ class NuRouter {
 /// generate a method for all types of push. You can specify which methods you
 /// need and avoid unused code.
 class NuRoute {
-  const NuRoute({this.deepLink, this.routeName, this.pushMethods});
+  const NuRoute(this.deepLink, {this.pushMethods});
 
   final String deepLink;
-  final String routeName;
   final List<PushMethodType> pushMethods;
 }
 

@@ -7,15 +7,11 @@ import '../screen/screen_two.dart';
 
 part 'sample_one_router.g.dart';
 
-const screenOneDeepLink =
-    'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink';
+const screenOneDeepLink = 'exapp://sampleOne/screenOne/id_1234_deepLink';
 
-@NuRouter()
+@NuRouter(deepLinkPrefix: 'exapp://sampleone')
 class SampleOneRouter extends Router {
-  @override
-  String get deepLinkPrefix => '/sampleOne';
-
-  @NuRoute(deepLink: '/screenOne/:testId')
+  @NuRoute('/screenOne/:testId')
   ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
         builder: (context) => ScreenOne(
           toBack: () => nuvigator.pop('ResultFromScreenOne'),
@@ -25,7 +21,7 @@ class SampleOneRouter extends Router {
         ),
       );
 
-  @NuRoute()
+  @NuRoute('/screenTwo')
   ScreenRoute<int> screenTwo() => ScreenRoute<int>(
         builder: (context) => ScreenTwo(
           toSampleTwo: () => Router.of<SamplesRouter>(context)
@@ -34,5 +30,5 @@ class SampleOneRouter extends Router {
       );
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
+  Map<String, ScreenRouteBuilder> get screensMap => _$screensMap;
 }

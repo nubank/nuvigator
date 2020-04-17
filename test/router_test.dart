@@ -28,7 +28,7 @@ void main() {
   test('router retrieves the right screen for the deepLink', () async {
     final testRouter = TestRouter();
     final routeEntry = testRouter.getRouteEntryForDeepLink('test/simple');
-    expect(routeEntry.value(const RouteSettings()).debugKey,
+    expect(routeEntry.screenBuilder(const RouteSettings()).debugKey,
         'testRouterFirstScreen');
   });
 

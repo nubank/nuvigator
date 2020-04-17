@@ -7,9 +7,9 @@ part of 'samples_router.dart';
 // **************************************************************************
 
 class SamplesRoutes {
-  static const home = 'samples/home';
+  static const home = 'exapp://home';
 
-  static const second = 'samples/second';
+  static const second = 'exapp://sampleTwo*';
 }
 
 class SecondArgs {
@@ -120,13 +120,13 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
   List<Router> get _$routers => [
         sampleOneRouter,
       ];
-  Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
+  Map<String, ScreenRouteBuilder> get _$screensMap {
     return {
-      RouteDef(SamplesRoutes.home): (RouteSettings settings) {
+      SamplesRoutes.home: (RouteSettings settings) {
         return home();
       },
-      RouteDef(SamplesRoutes.second): (RouteSettings settings) {
-        final Map<String, Object> args = settings.arguments;
+      SamplesRoutes.second: (RouteSettings settings) {
+        final Map<String, Object> args = settings.arguments ?? const {};
         return second(testId: args['testId']);
       },
     };
