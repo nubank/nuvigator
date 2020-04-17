@@ -298,7 +298,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
     }
   }
 
-  Future<R> openDeepLink<R>(String deepLink,
+  Future<R> openDeepLink<R extends Object>(String deepLink,
       [dynamic arguments, bool isFromNative = false]) async {
     final route = router.getRoute<T>(RouteSettings(name: deepLink));
     if (route == null) {
@@ -307,10 +307,6 @@ class NuvigatorState<T extends Router> extends NavigatorState
             router, deepLink, isFromNative, arguments);
       return parent.openDeepLink<R>(deepLink, arguments, isFromNative);
     }
-//    final mapArguments = {
-//      ...extractDeepLinkParameters(deepLink, routeEntry.routeName),
-//      'nuvigator/deepLink': deepLink,
-//    };
     if (isFromNative) {
       final route = _buildNativeRoute(deepLink, arguments);
       return push<R>(route);

@@ -1,35 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:recase/recase.dart';
 
 import '../nuvigator.dart';
+import 'helpers.dart';
 import 'screen_route.dart';
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 typedef HandleDeepLinkFn = Future<dynamic>
     Function(Router router, String deepLink, [dynamic args, bool isFromNative]);
-
-RegExp pathToRegex(String path, {List<String> parameters}) {
-  final prefix = path.endsWith('*');
-  if (prefix) {
-    return pathToRegExp(path.substring(0, path.length - 1),
-        parameters: parameters, prefix: true);
-  } else {
-    return pathToRegExp(path, parameters: parameters);
-  }
-}
-
-Map<String, String> extractDeepLinkParameters(String deepLink, String path) {
-  final parameters = <String>[];
-  final regExp = pathToRegex(path, parameters: parameters);
-  final match = regExp.matchAsPrefix(deepLink);
-  final parametersMap = extract(parameters, match)
-    ..addAll(Uri.parse(deepLink).queryParameters);
-  final camelCasedParametersMap = parametersMap.map((k, v) {
-    return MapEntry(ReCase(k).camelCase, v);
-  });
-  return {...parametersMap, ...camelCasedParametersMap};
-}
 
 class RouteEntry {
   RouteEntry(this.routeName, this.screenBuilder);
@@ -94,13 +71,12 @@ abstract class Router {
   }
 
   Route getRoute<T>(RouteSettings settings, [ScreenType fallbackScreenType]) {
-    final routeEntry = getRouteEntryForDeepLink(settings.name);
+    final routeEntry = _getRouteEntryForDeepLink(settings.name);
     if (routeEntry == null) return null;
     final Map<String, Object> settingsArgs = (settings.arguments) ?? {};
     final Map<String, Object> computedArguments = {
-      'nuvigator/deepLink': settings.name,
+      ...extractDeepLinkParameters(settings.name, routeEntry.routeName),
       ...settingsArgs,
-      ...extractDeepLinkParameters(settings.name, routeEntry.routeName)
     };
     final finalSettings = settings.copyWith(arguments: computedArguments);
     print(nuvigator);
@@ -111,23 +87,14 @@ abstract class Router {
     return route;
   }
 
-  bool canOpenDeepLink(String deepLink) {
-    return getRouteEntryForDeepLink(deepLink) != null;
-  }
-
-  Future<T> openDeepLink<T>(String deepLink,
-      [dynamic arguments, bool isFromNative = false]) async {
-    return nuvigator.openDeepLink<T>(deepLink, arguments);
-  }
-
-  RouteEntry getRouteEntryForDeepLink(String deepLink) {
+  RouteEntry _getRouteEntryForDeepLink(String deepLink) {
     final routePath = screensMap.keys.firstWhere((routePath) {
       return pathToRegex(routePath).hasMatch(deepLink);
     }, orElse: () => null);
     if (routePath != null)
       return RouteEntry(routePath, _wrapScreenBuilder(screensMap[routePath]));
     for (final subRouter in routers) {
-      final subRouterEntry = subRouter.getRouteEntryForDeepLink(deepLink);
+      final subRouterEntry = subRouter._getRouteEntryForDeepLink(deepLink);
       if (subRouterEntry != null) {
         return RouteEntry(
           subRouterEntry.routeName,
@@ -142,37 +109,4 @@ abstract class Router {
     return (RouteSettings settings) =>
         screenRouteBuilder(settings).wrapWith(screensWrapper);
   }
-}
-
-class GenericRouter extends Router {
-  GenericRouter(
-      {List<Router> routers = const [],
-      Map<String, ScreenRouteBuilder> screensMap = const {}})
-      : _routers = routers,
-        _screensMap = screensMap;
-
-  final List<Router> _routers;
-  final Map<String, ScreenRouteBuilder> _screensMap;
-
-  void route(String path, ScreenRoute screenRoute) {
-    screensMap[path] = (settings) {
-      return screenRoute;
-    };
-  }
-
-  @override
-  Map<String, ScreenRouteBuilder> get screensMap => _screensMap;
-
-  @override
-  List<Router> get routers => _routers;
-}
-
-Router mergeRouters(List<Router> routers) {
-  return GenericRouter(routers: routers);
-}
-
-Router entryPointRouter(String deepLink, ScreenRouteBuilder builder) {
-  return GenericRouter(screensMap: {
-    deepLink: builder,
-  });
 }

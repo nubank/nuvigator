@@ -26,16 +26,16 @@ class SampleTwoRouter extends Router {
   @NuRoute('exapp://sampleTwo/screenOne')
   ScreenRoute screenOne() => ScreenRoute(
         builder: (context) => ScreenOne(
-          toScreenTwo: () => toScreenTwo(),
+          toScreenTwo: () =>
+              nuvigator.openDeepLink('exapp://sampleTwo/screenTwo'),
         ),
       );
 
-  @NuRoute('exapp://sampleTwo/screenTwo',
-      pushMethods: [PushMethodType.push, PushMethodType.pushReplacement])
+  @NuRoute('exapp://sampleTwo/screenTwo')
   ScreenRoute<String> screenTwo() => ScreenRoute<String>(
         builder: (context) => ScreenTwo(
           closeFlow: () => nuvigator.closeFlow<String>('ClosedNestedNuvigator'),
-          toSampleOne: () => openDeepLink<void>(screenOneDeepLink),
+          toSampleOne: () => nuvigator.openDeepLink(screenOneDeepLink),
         ),
       );
 

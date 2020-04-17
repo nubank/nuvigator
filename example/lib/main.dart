@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () async {
 //              final result = await router.toSecond(testId: 'From Home');
               final result = await router.nuvigator
-                  .openDeepLink<String>('exapp://sampleTwo/screenTwo');
+                  .openDeepLink<String>('exapp://sampleTwo/screenOne');
               print('SecondRouteResult: $result');
             },
           ),
