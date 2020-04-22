@@ -34,11 +34,10 @@ class NavigationExtension extends BaseBuilder {
   }
 
   Method _pushMethod(
-      String className, String screenReturn, MethodElement method) {
+      String routeName, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     return Method(
       (m) => m
@@ -56,11 +55,10 @@ class NavigationExtension extends BaseBuilder {
   }
 
   Method _pushReplacementMethod(
-      String className, String screenReturn, MethodElement method) {
+      String routeName, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -90,11 +88,10 @@ class NavigationExtension extends BaseBuilder {
   }
 
   Method _pushAndRemoveUntilMethod(
-      String className, String screenReturn, MethodElement method) {
+      String routeName, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -125,11 +122,10 @@ class NavigationExtension extends BaseBuilder {
   }
 
   Method _popAndPushMethod(
-      String className, String screenReturn, MethodElement method) {
+      String routeName, String screenReturn, MethodElement method) {
     final parameters = <Parameter>[];
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
-    final routeName = '${removeRouterKey(className)}Routes.${method.name}';
 
     parameters.add(
       Parameter(
@@ -175,7 +171,8 @@ class NavigationExtension extends BaseBuilder {
       List<Method> methods, String className, MethodElement method) {
     final nuRouteFieldAnnotation =
         nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
-
+    final routeName =
+        'pathWithPrefix(_${removeRouterKey(className)}Routes.${method.name})';
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
       final screenReturn =
@@ -186,23 +183,23 @@ class NavigationExtension extends BaseBuilder {
         for (final pushMethod in pushMethods) {
           final pushStr = pushMethod.toString();
           if (pushStr.contains('push =')) {
-            methods.add(_pushMethod(className, screenReturn, method));
+            methods.add(_pushMethod(routeName, screenReturn, method));
           } else if (pushStr.contains('pushReplacement =')) {
             methods
-                .add(_pushReplacementMethod(className, screenReturn, method));
+                .add(_pushReplacementMethod(routeName, screenReturn, method));
           } else if (pushStr.contains('popAndPush =')) {
-            methods.add(_popAndPushMethod(className, screenReturn, method));
+            methods.add(_popAndPushMethod(routeName, screenReturn, method));
           } else if (pushStr.contains('pushAndRemoveUntil =')) {
             methods.add(
-                _pushAndRemoveUntilMethod(className, screenReturn, method));
+                _pushAndRemoveUntilMethod(routeName, screenReturn, method));
           }
         }
       } else {
         methods.addAll([
-          _pushMethod(className, screenReturn, method),
-          _pushReplacementMethod(className, screenReturn, method),
-          _pushAndRemoveUntilMethod(className, screenReturn, method),
-          _popAndPushMethod(className, screenReturn, method),
+          _pushMethod(routeName, screenReturn, method),
+          _pushReplacementMethod(routeName, screenReturn, method),
+          _pushAndRemoveUntilMethod(routeName, screenReturn, method),
+          _popAndPushMethod(routeName, screenReturn, method),
         ]);
       }
     }

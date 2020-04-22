@@ -62,17 +62,14 @@
 /// Obs: The [routeNamePrefix] is only used by the routes class to compose the
 /// route names.
 class NuRouter {
-  const NuRouter(
-      {this.deepLinkPrefix = '', this.routerName, this.routeNamePrefix});
+  const NuRouter({this.routerName});
 
-  final String deepLinkPrefix;
   final String routerName;
-  final String routeNamePrefix;
 }
 
 /// Annotation used to define a route.
 ///
-/// You can set a [routeName], [deepLink] and [pushMethods].
+/// You can set a [deepLink], [pushMethods], and configure if it's a [prefix].
 ///
 /// This annotation is used by the code generator to identify a method as a
 /// route and start the analysis of code generation.
@@ -97,7 +94,7 @@ class NuRouter {
 ///   static const profile = '<routerName>/profile';
 /// ```
 ///
-/// You can change the name used on the generated codes setting the [routeName].
+/// You can change the name used on the generated codes setting the [routePath].
 ///
 /// ```dart
 /// NuRoute(routeName: 'custom')
@@ -107,9 +104,10 @@ class NuRouter {
 /// generate a method for all types of push. You can specify which methods you
 /// need and avoid unused code.
 class NuRoute {
-  const NuRoute(this.deepLink, {this.pushMethods});
+  const NuRoute(this.deepLink, {this.pushMethods, this.prefix = false});
 
   final String deepLink;
+  final bool prefix;
   final List<PushMethodType> pushMethods;
 }
 

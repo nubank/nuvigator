@@ -17,7 +17,7 @@ class SamplesRouter extends Router {
         builder: (context) => HomeScreen(),
       );
 
-  @NuRoute('exapp://sampleTwo*')
+  @NuRoute('exapp://sampleTwo', prefix: true)
   ScreenRoute<String> second({@required String testId}) => ScreenRoute(
         builder: (context) => Nuvigator(
           router: SampleTwoRouter(testId: testId),
@@ -35,14 +35,14 @@ class SamplesRouter extends Router {
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget child) {
-        return Provider<SamplesBloc>.value(
+        return ChangeNotifierProvider<SamplesBloc>.value(
           value: SamplesBloc(),
           child: child,
         );
       };
 
   @override
-  Map<String, ScreenRouteBuilder> get screensMap => _$screensMap;
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => _$screensMap;
 
   @override
   List<Router> get routers => _$routers;

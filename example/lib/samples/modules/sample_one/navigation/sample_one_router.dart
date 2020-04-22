@@ -9,8 +9,11 @@ part 'sample_one_router.g.dart';
 
 const screenOneDeepLink = 'exapp://sampleOne/screenOne/id_1234_deepLink';
 
-@NuRouter(deepLinkPrefix: 'exapp://sampleone')
+@NuRouter()
 class SampleOneRouter extends Router {
+  @override
+  String get prefix => 'exapp://sampleOne';
+
   @NuRoute('/screenOne/:testId')
   ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
         builder: (context) => ScreenOne(
@@ -30,5 +33,5 @@ class SampleOneRouter extends Router {
       );
 
   @override
-  Map<String, ScreenRouteBuilder> get screensMap => _$screensMap;
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => _$screensMap;
 }

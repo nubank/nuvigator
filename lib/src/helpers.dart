@@ -1,17 +1,12 @@
+import 'package:nuvigator/nuvigator.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
 
-RegExp pathToRegex(String path, {List<String> parameters}) {
-  final prefix = path.endsWith('*');
-  if (prefix) {
-    return pathToRegExp(path.substring(0, path.length - 1),
-        parameters: parameters, prefix: true);
-  } else {
-    return pathToRegExp(path, parameters: parameters);
-  }
+RegExp pathToRegex(RoutePath path, {List<String> parameters}) {
+  return pathToRegExp(path.path, parameters: parameters, prefix: path.prefix);
 }
 
-Map<String, String> extractDeepLinkParameters(String deepLink, String path) {
+Map<String, String> extractDeepLinkParameters(String deepLink, RoutePath path) {
   final parameters = <String>[];
   final regExp = pathToRegex(path, parameters: parameters);
   final match = regExp.matchAsPrefix(deepLink);

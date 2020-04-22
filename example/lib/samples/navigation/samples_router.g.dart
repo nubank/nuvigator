@@ -6,10 +6,10 @@ part of 'samples_router.dart';
 // NuvigatorGenerator
 // **************************************************************************
 
-class SamplesRoutes {
+class _SamplesRoutes {
   static const home = 'exapp://home';
 
-  static const second = 'exapp://sampleTwo*';
+  static const second = 'exapp://sampleTwo';
 }
 
 class SecondArgs {
@@ -29,7 +29,7 @@ class SecondArgs {
   static SecondArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
-    if (routeSettings?.name == SamplesRoutes.second) {
+    if (routeSettings?.name == _SamplesRoutes.second) {
       final args = routeSettings?.arguments;
       if (args == null)
         throw FlutterError('SecondArgs requires Route arguments');
@@ -45,13 +45,13 @@ class SecondArgs {
 extension SamplesRouterNavigation on SamplesRouter {
   Future<void> toHome() {
     return nuvigator.pushNamed<void>(
-      SamplesRoutes.home,
+      pathWithPrefix(_SamplesRoutes.home),
     );
   }
 
   Future<void> pushReplacementToHome<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
-      SamplesRoutes.home,
+      pathWithPrefix(_SamplesRoutes.home),
       result: result,
     );
   }
@@ -59,21 +59,21 @@ extension SamplesRouterNavigation on SamplesRouter {
   Future<void> pushAndRemoveUntilToHome<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
-      SamplesRoutes.home,
+      pathWithPrefix(_SamplesRoutes.home),
       predicate,
     );
   }
 
   Future<void> popAndPushToHome<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<void, TO>(
-      SamplesRoutes.home,
+      pathWithPrefix(_SamplesRoutes.home),
       result: result,
     );
   }
 
   Future<String> toSecond({@required String testId}) {
     return nuvigator.pushNamed<String>(
-      SamplesRoutes.second,
+      pathWithPrefix(_SamplesRoutes.second),
       arguments: {
         'testId': testId,
       },
@@ -83,7 +83,7 @@ extension SamplesRouterNavigation on SamplesRouter {
   Future<String> pushReplacementToSecond<TO extends Object>(
       {@required String testId, TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
-      SamplesRoutes.second,
+      pathWithPrefix(_SamplesRoutes.second),
       arguments: {
         'testId': testId,
       },
@@ -94,7 +94,7 @@ extension SamplesRouterNavigation on SamplesRouter {
   Future<String> pushAndRemoveUntilToSecond<TO extends Object>(
       {@required String testId, @required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<String>(
-      SamplesRoutes.second,
+      pathWithPrefix(_SamplesRoutes.second),
       predicate,
       arguments: {
         'testId': testId,
@@ -105,7 +105,7 @@ extension SamplesRouterNavigation on SamplesRouter {
   Future<String> popAndPushToSecond<TO extends Object>(
       {@required String testId, TO result}) {
     return nuvigator.popAndPushNamed<String, TO>(
-      SamplesRoutes.second,
+      pathWithPrefix(_SamplesRoutes.second),
       arguments: {
         'testId': testId,
       },
@@ -120,12 +120,12 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
   List<Router> get _$routers => [
         sampleOneRouter,
       ];
-  Map<String, ScreenRouteBuilder> get _$screensMap {
+  Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
-      SamplesRoutes.home: (RouteSettings settings) {
+      RoutePath(_SamplesRoutes.home, prefix: false): (RouteSettings settings) {
         return home();
       },
-      SamplesRoutes.second: (RouteSettings settings) {
+      RoutePath(_SamplesRoutes.second, prefix: true): (RouteSettings settings) {
         final Map<String, Object> args = settings.arguments ?? const {};
         return second(testId: args['testId']);
       },

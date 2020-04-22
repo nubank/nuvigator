@@ -65,7 +65,7 @@ class ArgsClass extends BaseBuilder {
         ..body = Code(
           'final routeSettings = ModalRoute.of(context)?.settings;'
           'final nuvigator = Nuvigator.of(context);'
-          'if (routeSettings?.name == ${routerName}Routes.$screenName) {'
+          'if (routeSettings?.name == _${routerName}Routes.$screenName) {'
           'final args = routeSettings?.arguments;'
           'if (args == null) throw FlutterError(\'$className requires Route arguments\');'
           'if (args is $className) return args;'

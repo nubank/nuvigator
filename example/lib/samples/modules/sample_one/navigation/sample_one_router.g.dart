@@ -6,10 +6,10 @@ part of 'sample_one_router.dart';
 // NuvigatorGenerator
 // **************************************************************************
 
-class SampleOneRoutes {
-  static const screenOne = 'exapp://sampleOne/screenOne/:testId';
+class _SampleOneRoutes {
+  static const screenOne = '/screenOne/:testId';
 
-  static const screenTwo = 'exapp://sampleOne/screenTwo';
+  static const screenTwo = '/screenTwo';
 }
 
 class ScreenOneArgs {
@@ -29,7 +29,7 @@ class ScreenOneArgs {
   static ScreenOneArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
-    if (routeSettings?.name == SampleOneRoutes.screenOne) {
+    if (routeSettings?.name == _SampleOneRoutes.screenOne) {
       final args = routeSettings?.arguments;
       if (args == null)
         throw FlutterError('ScreenOneArgs requires Route arguments');
@@ -45,7 +45,7 @@ class ScreenOneArgs {
 extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> toScreenOne({@required String testId}) {
     return nuvigator.pushNamed<String>(
-      SampleOneRoutes.screenOne,
+      pathWithPrefix(_SampleOneRoutes.screenOne),
       arguments: {
         'testId': testId,
       },
@@ -55,7 +55,7 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> pushReplacementToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
-      SampleOneRoutes.screenOne,
+      pathWithPrefix(_SampleOneRoutes.screenOne),
       arguments: {
         'testId': testId,
       },
@@ -66,7 +66,7 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> pushAndRemoveUntilToScreenOne<TO extends Object>(
       {@required String testId, @required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<String>(
-      SampleOneRoutes.screenOne,
+      pathWithPrefix(_SampleOneRoutes.screenOne),
       predicate,
       arguments: {
         'testId': testId,
@@ -77,7 +77,7 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> popAndPushToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
     return nuvigator.popAndPushNamed<String, TO>(
-      SampleOneRoutes.screenOne,
+      pathWithPrefix(_SampleOneRoutes.screenOne),
       arguments: {
         'testId': testId,
       },
@@ -87,13 +87,13 @@ extension SampleOneRouterNavigation on SampleOneRouter {
 
   Future<int> toScreenTwo() {
     return nuvigator.pushNamed<int>(
-      SampleOneRoutes.screenTwo,
+      pathWithPrefix(_SampleOneRoutes.screenTwo),
     );
   }
 
   Future<int> pushReplacementToScreenTwo<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<int, TO>(
-      SampleOneRoutes.screenTwo,
+      pathWithPrefix(_SampleOneRoutes.screenTwo),
       result: result,
     );
   }
@@ -101,27 +101,29 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<int> pushAndRemoveUntilToScreenTwo<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<int>(
-      SampleOneRoutes.screenTwo,
+      pathWithPrefix(_SampleOneRoutes.screenTwo),
       predicate,
     );
   }
 
   Future<int> popAndPushToScreenTwo<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<int, TO>(
-      SampleOneRoutes.screenTwo,
+      pathWithPrefix(_SampleOneRoutes.screenTwo),
       result: result,
     );
   }
 }
 
 extension SampleOneRouterScreensAndRouters on SampleOneRouter {
-  Map<String, ScreenRouteBuilder> get _$screensMap {
+  Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
-      SampleOneRoutes.screenOne: (RouteSettings settings) {
+      RoutePath(_SampleOneRoutes.screenOne, prefix: false):
+          (RouteSettings settings) {
         final Map<String, Object> args = settings.arguments ?? const {};
         return screenOne(testId: args['testId']);
       },
-      SampleOneRoutes.screenTwo: (RouteSettings settings) {
+      RoutePath(_SampleOneRoutes.screenTwo, prefix: false):
+          (RouteSettings settings) {
         return screenTwo();
       },
     };

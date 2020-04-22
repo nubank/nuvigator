@@ -1,6 +1,8 @@
+import 'package:example/samples/bloc/samples_bloc.dart';
 import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:provider/provider.dart';
 
 import 'samples/modules/sample_one/navigation/sample_one_router.dart';
 
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
         ],
         router: SamplesRouter(),
 //        initialRoute: SamplesRoutes.home,
-        initialDeepLink: SamplesRoutes.home,
+        initialDeepLink: 'exapp://home',
       ),
     );
   }
@@ -51,6 +53,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final router = Router.of<SamplesRouter>(context);
+    final bloc = Provider.of<SamplesBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('nuvigator Example'),
@@ -62,6 +65,13 @@ class HomeScreen extends StatelessWidget {
           const Hero(
             child: FlutterLogo(),
             tag: 'HERO',
+          ),
+          Text('Counter: ${bloc.counter}'),
+          FlatButton(
+            child: const Text('Increase'),
+            onPressed: () {
+              bloc.increase();
+            },
           ),
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),

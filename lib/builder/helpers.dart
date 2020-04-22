@@ -29,27 +29,16 @@ String getRouterName(Element element) {
 }
 
 String getRouteString(ClassElement routerElement, MethodElement element) {
-  final nuRouterAnnotation =
-      nuRouterChecker.firstAnnotationOfExact(routerElement);
-
-  String prefix =
-      nuRouterAnnotation?.getField('routeNamePrefix')?.toStringValue();
-
-  final String deepLinkPrefix =
-      nuRouterAnnotation.getField('deepLinkPrefix').toStringValue();
-
-  prefix = prefix != null && prefix.isNotEmpty ? lowerCamelCase(prefix) : '';
-
-  String routerName = getRouterName(routerElement);
-  final needsFormat = prefix.isEmpty || prefix.endsWith('/');
-  routerName = needsFormat ? lowerCamelCase(routerName) : routerName;
+//  String routerName = getRouterName(routerElement);
+//  final needsFormat = prefix.isEmpty || prefix.endsWith('/');
+//  routerName = needsFormat ? lowerCamelCase(routerName) : routerName;
 
   final routeName = nuRouteChecker
       .firstAnnotationOfExact(element)
       ?.getField('deepLink')
       ?.toStringValue();
 
-  return deepLinkPrefix + routeName;
+  return routeName;
 }
 
 String libraryToString(Library library) {

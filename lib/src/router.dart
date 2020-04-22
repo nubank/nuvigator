@@ -4,22 +4,44 @@ import '../nuvigator.dart';
 import 'helpers.dart';
 import 'screen_route.dart';
 
+class RoutePath {
+  RoutePath(this.path, {this.prefix = false});
+
+  final String path;
+  final bool prefix;
+
+  RoutePath copyWith({String path, bool prefix}) {
+    return RoutePath(
+      path ?? this.path,
+      prefix: prefix ?? this.prefix,
+    );
+  }
+
+  @override
+  int get hashCode => hashList([path.hashCode, prefix.hashCode]);
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoutePath && other.path == path && other.prefix == prefix;
+  }
+}
+
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 typedef HandleDeepLinkFn = Future<dynamic>
     Function(Router router, String deepLink, [dynamic args, bool isFromNative]);
 
 class RouteEntry {
-  RouteEntry(this.routeName, this.screenBuilder);
+  RouteEntry(this.routePath, this.screenBuilder);
 
-  final String routeName;
+  final RoutePath routePath;
   final ScreenRouteBuilder screenBuilder;
 
   @override
-  int get hashCode => routeName.hashCode;
+  int get hashCode => routePath.hashCode;
 
   @override
   bool operator ==(Object other) =>
-      other is RouteEntry && other.routeName == routeName;
+      other is RouteEntry && other.routePath == routePath;
 }
 
 abstract class Router {
@@ -47,6 +69,8 @@ abstract class Router {
 
   NuvigatorState get nuvigator => _nuvigator;
 
+  String get prefix => '';
+
   set nuvigator(NuvigatorState newNuvigator) {
     _nuvigator = newNuvigator;
     for (final router in routers) {
@@ -58,7 +82,12 @@ abstract class Router {
 
   List<Router> get routers => [];
 
-  Map<String, ScreenRouteBuilder> get screensMap => {};
+  // Public Override API
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => {};
+
+  // Used internally
+  Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
+      screensMap.map((k, v) => MapEntry(k.copyWith(path: prefix + k.path), v));
 
   /// Get the specified router that can be grouped in this router
   T getRouter<T extends Router>() {
@@ -75,7 +104,7 @@ abstract class Router {
     if (routeEntry == null) return null;
     final Map<String, Object> settingsArgs = (settings.arguments) ?? {};
     final Map<String, Object> computedArguments = {
-      ...extractDeepLinkParameters(settings.name, routeEntry.routeName),
+      ...extractDeepLinkParameters(settings.name, routeEntry.routePath),
       ...settingsArgs,
     };
     final finalSettings = settings.copyWith(arguments: computedArguments);
@@ -88,21 +117,26 @@ abstract class Router {
   }
 
   RouteEntry _getRouteEntryForDeepLink(String deepLink) {
-    final routePath = screensMap.keys.firstWhere((routePath) {
+    final routePath = _prefixedScreensMap.keys.firstWhere((routePath) {
       return pathToRegex(routePath).hasMatch(deepLink);
     }, orElse: () => null);
     if (routePath != null)
-      return RouteEntry(routePath, _wrapScreenBuilder(screensMap[routePath]));
+      return RouteEntry(
+          routePath, _wrapScreenBuilder(_prefixedScreensMap[routePath]));
     for (final subRouter in routers) {
       final subRouterEntry = subRouter._getRouteEntryForDeepLink(deepLink);
       if (subRouterEntry != null) {
         return RouteEntry(
-          subRouterEntry.routeName,
+          subRouterEntry.routePath,
           _wrapScreenBuilder(subRouterEntry.screenBuilder),
         );
       }
     }
     return null;
+  }
+
+  String pathWithPrefix(String path) {
+    return prefix + path;
   }
 
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {

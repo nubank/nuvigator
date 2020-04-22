@@ -9,21 +9,29 @@ import '../screen/screen_two.dart';
 
 part 'sample_two_router.g.dart';
 
+String exAppLink(String path) {
+  return 'exapp://$path';
+}
+
 @NuRouter()
 class SampleTwoRouter extends Router {
   SampleTwoRouter({@required this.testId});
 
   final String testId;
+  final SampleTwoBloc sampleTwoBloc = SampleTwoBloc();
+
+  @override
+  String get prefix => exAppLink('sampleTwo');
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {
-        return Provider<SampleTwoBloc>.value(
-          value: SampleTwoBloc(),
+        return ChangeNotifierProvider<SampleTwoBloc>.value(
+          value: sampleTwoBloc,
           child: screenWidget,
         );
       };
 
-  @NuRoute('exapp://sampleTwo/screenOne')
+  @NuRoute('/screenOne')
   ScreenRoute screenOne() => ScreenRoute(
         builder: (context) => ScreenOne(
           toScreenTwo: () =>
@@ -31,7 +39,7 @@ class SampleTwoRouter extends Router {
         ),
       );
 
-  @NuRoute('exapp://sampleTwo/screenTwo')
+  @NuRoute('/screenTwo')
   ScreenRoute<String> screenTwo() => ScreenRoute<String>(
         builder: (context) => ScreenTwo(
           closeFlow: () => nuvigator.closeFlow<String>('ClosedNestedNuvigator'),
@@ -40,5 +48,5 @@ class SampleTwoRouter extends Router {
       );
 
   @override
-  Map<String, ScreenRouteBuilder> get screensMap => _$screensMap;
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => _$screensMap;
 }

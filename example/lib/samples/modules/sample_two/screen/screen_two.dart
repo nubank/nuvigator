@@ -1,4 +1,6 @@
+import 'package:example/samples/modules/sample_two/bloc/sample_two_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ScreenTwo extends StatelessWidget {
   const ScreenTwo({Key key, this.closeFlow, this.toSampleOne})
@@ -9,9 +11,10 @@ class ScreenTwo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = Provider.of<SampleTwoBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Screen Two'),
+        title: Text('Screen Two ${bloc.counter}'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

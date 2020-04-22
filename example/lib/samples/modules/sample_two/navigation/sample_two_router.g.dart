@@ -6,22 +6,22 @@ part of 'sample_two_router.dart';
 // NuvigatorGenerator
 // **************************************************************************
 
-class SampleTwoRoutes {
-  static const screenOne = 'exapp://sampleTwo/screenOne';
+class _SampleTwoRoutes {
+  static const screenOne = '/screenOne';
 
-  static const screenTwo = 'exapp://sampleTwo/screenTwo';
+  static const screenTwo = '/screenTwo';
 }
 
 extension SampleTwoRouterNavigation on SampleTwoRouter {
   Future<Object> toScreenOne() {
     return nuvigator.pushNamed<Object>(
-      SampleTwoRoutes.screenOne,
+      pathWithPrefix(_SampleTwoRoutes.screenOne),
     );
   }
 
   Future<Object> pushReplacementToScreenOne<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<Object, TO>(
-      SampleTwoRoutes.screenOne,
+      pathWithPrefix(_SampleTwoRoutes.screenOne),
       result: result,
     );
   }
@@ -29,39 +29,56 @@ extension SampleTwoRouterNavigation on SampleTwoRouter {
   Future<Object> pushAndRemoveUntilToScreenOne<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<Object>(
-      SampleTwoRoutes.screenOne,
+      pathWithPrefix(_SampleTwoRoutes.screenOne),
       predicate,
     );
   }
 
   Future<Object> popAndPushToScreenOne<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<Object, TO>(
-      SampleTwoRoutes.screenOne,
+      pathWithPrefix(_SampleTwoRoutes.screenOne),
       result: result,
     );
   }
 
   Future<String> toScreenTwo() {
     return nuvigator.pushNamed<String>(
-      SampleTwoRoutes.screenTwo,
+      pathWithPrefix(_SampleTwoRoutes.screenTwo),
     );
   }
 
   Future<String> pushReplacementToScreenTwo<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
-      SampleTwoRoutes.screenTwo,
+      pathWithPrefix(_SampleTwoRoutes.screenTwo),
+      result: result,
+    );
+  }
+
+  Future<String> pushAndRemoveUntilToScreenTwo<TO extends Object>(
+      {@required RoutePredicate predicate}) {
+    return nuvigator.pushNamedAndRemoveUntil<String>(
+      pathWithPrefix(_SampleTwoRoutes.screenTwo),
+      predicate,
+    );
+  }
+
+  Future<String> popAndPushToScreenTwo<TO extends Object>({TO result}) {
+    return nuvigator.popAndPushNamed<String, TO>(
+      pathWithPrefix(_SampleTwoRoutes.screenTwo),
       result: result,
     );
   }
 }
 
 extension SampleTwoRouterScreensAndRouters on SampleTwoRouter {
-  Map<String, ScreenRouteBuilder> get _$screensMap {
+  Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
-      SampleTwoRoutes.screenOne: (RouteSettings settings) {
+      RoutePath(_SampleTwoRoutes.screenOne, prefix: false):
+          (RouteSettings settings) {
         return screenOne();
       },
-      SampleTwoRoutes.screenTwo: (RouteSettings settings) {
+      RoutePath(_SampleTwoRoutes.screenTwo, prefix: false):
+          (RouteSettings settings) {
         return screenTwo();
       },
     };

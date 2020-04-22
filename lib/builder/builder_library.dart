@@ -16,7 +16,7 @@ class BuilderLibrary extends BaseBuilder {
         ..body = const Code('')
         ..name = '_\$screensMap'
         ..type = MethodType.getter
-        ..returns = refer('Map<String, ScreenRouteBuilder>')
+        ..returns = refer('Map<RoutePath, ScreenRouteBuilder>')
         ..body = Code('return {$code};'),
     );
   }
@@ -71,8 +71,7 @@ class BuilderLibrary extends BaseBuilder {
           nuRouteChecker.firstAnnotationOfExact(method);
       if (nuRouteFieldAnnotation != null) {
         final params = method.parameters.map((p) => p.name);
-//        final deepLink =
-//            nuRouteFieldAnnotation.getField('deepLink').toStringValue();
+        final prefix = nuRouteFieldAnnotation.getField('prefix').toBoolValue();
         final paramsStr = params.isEmpty
             ? ''
             : '${params.map((p) => "$p: args['$p']").join(",")}';
@@ -88,7 +87,7 @@ class BuilderLibrary extends BaseBuilder {
               'return ${method.name}($paramsStr);'));
 
         screensMapBuffer.write(
-            '${removeRouterKey(className)}Routes.${method.name}: ${screenRouteBuilder.accept(DartEmitter())},\n');
+            'RoutePath(_${removeRouterKey(className)}Routes.${method.name}, prefix: $prefix): ${screenRouteBuilder.accept(DartEmitter())},\n');
       }
     }
 
