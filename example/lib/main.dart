@@ -76,7 +76,7 @@ class HomeScreen extends StatelessWidget {
           FlatButton(
               child: const Text('Go to sample one with flutter navigation'),
               onPressed: () async {
-                final result = await router.sampleOneRouter
+                final result = await Router.of<SampleOneRouter>(context)
                     .toScreenOne(testId: 'From Home');
                 print('ScreenOneResult: $result');
               }),

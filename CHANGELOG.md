@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 0.5.0
+- First Class DeepLink support edition, now every Route **SHOULD** have a deepLink
+- In this version route names and deepLinks where unified under just deepLinks. This aims
+to provide a more concise and easy to understand API without confusions between deepLinks and
+Route names. With this change, we also were able to implement some new features requested before.
+- Inner flow DeepLink navigation supported. The DeepLink resolution has changed from top-down to
+bottom-up, this means that when requesting to open a new deepLink the Nuvigator will start searching
+from it's current router before going up in the chain (until reaching the root Router). This allows
+for navigating in a nested flow using deepLinks. (If you want to have the same behavior as before you
+can just grab the Root Nuvigator and call the openDeepLink method directly in it, however this should not
+be required for most users).
+- DeepLink as prefix is now supported
+- Deep DeepLink navigation is now supported. Using the DeepLink prefix feature is now possible to
+open a specific screen of a nested flow using DeepLinks, currently we provide an explicit API to do
+this (`currentDeepLink(context)`), but in the future we may look into making this automatic. 
+- Fix a bad reference update between Nuvigator and Router that could lead to NullPointer exceptions.
+- Some API changes were introduced to support the new features, but they should be easy to migrate, notable changes:
+    - `RouteDef` class was replaced by `RoutePath`
+    - `deepLinkPrefix` on Router was replaced by just `prefix`
+    - DeepLinks should include the full DeepLink, and not just the part after the context where they would be grouped (including scheme)
+    - `NuRoute` annotation had the `routeName` removed and `deepLink` is now a positional required attribute
+    - `NuRouter` had the `routeNamePrefix` removed
+
 ## 0.4.6
 - Support query parameters with dashes by converting them to camelCase
 
