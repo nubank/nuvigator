@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 void main() {
-  test('RouteDef equality is based in the routeName', () {
-    final routeDef1 = RouteDef('route1', deepLink: 'deepLink1');
-    final routeDef2 = RouteDef('route2', deepLink: 'deepLink2');
-    final routeDef3 = RouteDef('route1', deepLink: 'deepLink3');
+  test('RoutePath equality', () {
+    final routeDef1 = RoutePath('route1');
+    final routeDef2 = RoutePath('route2');
+    final routeDef3 = RoutePath('route1', prefix: true);
 
     final routeMap = {
       routeDef1: 1,
@@ -16,8 +16,8 @@ void main() {
     };
 
     expect(routeDef1 == routeDef2, false);
-    expect(routeDef1 == routeDef3, true);
-    expect(routeMap[routeDef1], 3); // routeDef3 override
+    expect(routeDef1 == routeDef3, false);
+    expect(routeMap[routeDef1], 1);
     expect(routeMap[routeDef2], 2);
     expect(routeMap[routeDef3], 3);
   });

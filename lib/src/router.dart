@@ -118,7 +118,7 @@ abstract class Router {
 
   RouteEntry _getRouteEntryForDeepLink(String deepLink) {
     final routePath = _prefixedScreensMap.keys.firstWhere((routePath) {
-      return pathToRegex(routePath).hasMatch(deepLink);
+      return pathMatches(deepLink, routePath);
     }, orElse: () => null);
     if (routePath != null)
       return RouteEntry(

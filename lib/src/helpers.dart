@@ -6,12 +6,24 @@ RegExp pathToRegex(RoutePath path, {List<String> parameters}) {
   return pathToRegExp(path.path, parameters: parameters, prefix: path.prefix);
 }
 
+/// Removes query parameters and keep just the path part of the DeepLink
+String deepLinkToPath(String deepLink) {
+  return deepLink.split('?').first;
+}
+
+Match matchPath(String deepLink, RoutePath path, {List<String> parameters}) {
+  return pathToRegex(path, parameters: parameters)
+      .matchAsPrefix(deepLinkToPath(deepLink));
+}
+
+bool pathMatches(String deepLink, RoutePath path) =>
+    matchPath(deepLink, path) != null;
+
 Map<String, String> extractDeepLinkParameters(String deepLink, RoutePath path) {
   final parameters = <String>[];
-  final regExp = pathToRegex(path, parameters: parameters);
-  final match = regExp.matchAsPrefix(deepLink);
-  final parametersMap = extract(parameters, match)
-    ..addAll(Uri.parse(deepLink).queryParameters);
+  final queryParameters = Uri.parse(deepLink).queryParameters;
+  final match = matchPath(deepLink, path, parameters: parameters);
+  final parametersMap = extract(parameters, match)..addAll(queryParameters);
   final camelCasedParametersMap = parametersMap.map((k, v) {
     return MapEntry(ReCase(k).camelCase, v);
   });

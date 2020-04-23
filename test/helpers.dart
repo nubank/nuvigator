@@ -4,13 +4,13 @@ import 'package:nuvigator/nuvigator.dart';
 
 class TestRouter extends Router {
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
-        RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => {
+        RoutePath('testapp://test/simple', prefix: false): (_) => ScreenRoute(
               builder: (sc) => null,
               debugKey: 'testRouterFirstScreen',
               screenType: materialScreenType,
             ),
-        RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
+        RoutePath('testapp://test/:id/params', prefix: false): (_) =>
             ScreenRoute(
               builder: (sc) => null,
               debugKey: 'testRouterSecondScreen',
@@ -21,17 +21,16 @@ class TestRouter extends Router {
 
 class TestRouterWPrefix extends Router {
   @override
-  String get deepLinkPrefix => 'prefix/';
+  String get prefix => 'testapp://prefix/';
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
-        RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => {
+        RoutePath('test/simple'): (_) => ScreenRoute(
               builder: (sc) => null,
               debugKey: 'testRouterFirstScreen',
               screenType: materialScreenType,
             ),
-        RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
-            ScreenRoute(
+        RoutePath('test/:id/params'): (_) => ScreenRoute(
               builder: (sc) => null,
               debugKey: 'testRouterSecondScreen',
               screenType: materialScreenType,
@@ -41,7 +40,7 @@ class TestRouterWPrefix extends Router {
 
 class GroupTestRouter extends Router {
   @override
-  String get deepLinkPrefix => 'group/';
+  String get prefix => 'testapp://group/';
 
   TestRouter testRouter = TestRouter();
 
@@ -51,9 +50,8 @@ class GroupTestRouter extends Router {
       ];
 
   @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
-        RouteDef('firstScreen', deepLink: 'route/test'): (settings) =>
-            ScreenRoute(
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => {
+        RoutePath('route/test'): (settings) => ScreenRoute(
               builder: (sc) => null,
               debugKey: 'groupRouterFirstScreen',
               screenType: cupertinoScreenType,
@@ -89,11 +87,11 @@ class TestWidget extends StatelessWidget {
   }
 }
 
-Widget testApp(Router router, String initialRoute, [WrapperFn wrapper]) {
+Widget testApp(Router router, String initialDeepLink, [WrapperFn wrapper]) {
   return MaterialApp(
     builder: Nuvigator(
       router: router,
-      initialRoute: initialRoute,
+      initialDeepLink: initialDeepLink,
       wrapper: wrapper,
     ),
   );
