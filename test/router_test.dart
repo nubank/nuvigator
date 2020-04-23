@@ -40,6 +40,49 @@ void main() {
         true,
       );
     });
+    test('we can match paths with params', () {
+      expect(
+        pathMatches('testapp://home/here', RoutePath('testapp://home/:param')),
+        true,
+      );
+      expect(
+        pathMatches(
+            'testapp://home/here/more', RoutePath('testapp://home/:param')),
+        false,
+      );
+      expect(
+        pathMatches(
+            'testapp://home/here', RoutePath('testapp://home/:param1/:param2')),
+        false,
+      );
+      expect(
+        pathMatches('testapp://home/here?queryParam=hello',
+            RoutePath('testapp://home/:param')),
+        true,
+      );
+    });
+    test('using prefix pathes', () {
+      expect(
+        pathMatches('testapp://home/here',
+            RoutePath('testapp://home/:param', prefix: true)),
+        true,
+      );
+      expect(
+        pathMatches('testapp://home/here/more',
+            RoutePath('testapp://home/:param', prefix: true)),
+        true,
+      );
+      expect(
+        pathMatches('testapp://home/here',
+            RoutePath('testapp://home/:param1/:param2', prefix: true)),
+        false,
+      );
+      expect(
+        pathMatches('testapp://home/here?queryParam=hello',
+            RoutePath('testapp://home/:param', prefix: true)),
+        true,
+      );
+    });
   });
 
   group('extracting parameters from deepLink', () {
