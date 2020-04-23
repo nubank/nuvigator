@@ -182,7 +182,7 @@ class MyMain extends Router {
  obs :Remember to include the override with the generated `_$routers` field.
  
 This way all the routes declared in both `FirstRouter` and `SecondRouter` will be available to the `MainRouter`. Note that
-however, the `prefix` declared in the `MainRouter` do **NOT* take effect for the Routes declared in the other Routers, they
+however, the `prefix` declared in the `MainRouter` do **NOT** take effect for the Routes declared in the other Routers, they
 will still respect the `prefix` of the original Router.
 
 
