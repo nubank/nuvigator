@@ -11,6 +11,7 @@ from it's current router before going up in the chain (until reaching the root R
 for navigating in a nested flow using deepLinks. (If you want to have the same behavior as before you
 can just grab the Root Nuvigator and call the openDeepLink method directly in it, however this should not
 be required for most users).
+- Introduction of dynamic API helpers to be used when code generations is not desired.
 - DeepLink as prefix is now supported
 - Deep DeepLink navigation is now supported. Using the DeepLink prefix feature is now possible to
 open a specific screen of a nested flow using DeepLinks, currently we provide an explicit API to do
@@ -19,6 +20,8 @@ this (`currentDeepLink(context)`), but in the future we may look into making thi
 - Some API changes were introduced to support the new features, but they should be easy to migrate, notable changes:
     - `RouteDef` class was replaced by `RoutePath`
     - `deepLinkPrefix` on Router was replaced by just `prefix`
+    - Generated Routes class is now private
+    - DeepLinks are now treated as Strings in the whole library 
     - DeepLinks should include the full DeepLink, and not just the part after the context where they would be grouped (including scheme)
     - `NuRoute` annotation had the `routeName` removed and `deepLink` is now a positional required attribute
     - `NuRouter` had the `routeNamePrefix` removed
