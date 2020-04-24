@@ -227,31 +227,14 @@ In this scenario above, the `MyMainRouter.screensWrapper` is going to wrap the w
 of `SecondRouter` will have any information added by the `MyMainRouter` wrapper available to be used in their
 respective wrappers.
 
-### DeepLinks
-
-The `NuRoute` annotation may receive some options, in special, the `deepLink` option is used to declare a deepLink that
-will be used to access this route. The usage is the same when using a `FlowRoute`, the only changes will be in the generated
-code, that will take in account the nested nuvigator.
-
-DeepLinks support both pathParameters (using URL templates) and queryParameters. Those parameters will be passed to your
-Route as arguments as Strings, so keep that in mind when declaring the Route arguments.
-
-Example:
-```dart
-@NuRoute(deepLink: 'myRoute/:argumentName')
-```
-
-_Obs_: DeepLinks contained in routers that are used in nested Nuvigators (inside a `FlowRoute`) will **NOT** be considered
-and are not reachable. If you want to create a deepLink to a flow, be sure to add it to the `@NuRoute` annotation in the 
-Router that declares the `FlowRoute`.
-
 ## Code Generators
 
 You probably noted in the examples above that we have methods that will be created by the Nuvigator generator. So while
 they don't exists you can just make they return `null` or leave un-implemented. 
 
 Before running the generator we recommend being sure that each Router is in a separated file, and also make sure that you
-have added the `part 'my_custom_router.g.dart';` directive and the required imports (`package:nuvigator/nuvigator.dart` and `package:flutter/widgets.dart`) in your router file. 
+have added the `part 'my_custom_router.g.dart';` directive and the required imports (`package:nuvigator/nuvigator.dart` 
+and `package:flutter/widgets.dart`) in your router file. 
 
 After running the generator (`flutter pub run build_runner build --delete-conflicting-outputs`), you will notice that 
 each router file will have it's part of file created. Now you can complete the `screensMap` and `routersList` functions
@@ -300,3 +283,17 @@ await router.sampleOneRouter.toScreenOne(testId: 'From Home');
 await router.toSecond(testId: 'From Home');
 ```
 
+## Custom Routes/Transitions
+
+Nuvigator uses the concept of `ScreenType` on top of Routes. A `ScreenType` is basically a class that knows how to transform
+a builder function into a Flutter `Route`. Nuvigator ships with the default Flutter `Material` and `Cupertino` screenTypes,
+but this is a extensible mechanism and it's very easy to create your own `ScreenTypes`. 
+
+You can take a look at how Nuvigator implements the `Material` screenType [here](lib/src/screen_types/material_screen_type.dart).
+Basically you should create a class that extends `ScreenType` and implement the `toRoute` method, and that's all! One pro tip
+about using custom Routes is: when creating your custom Flutter `Route` class, be sure use the mixin `NuvigatorPageRoute`, it will
+add some behavior override, that will make your Screen handle correctly leadingIcons in AppBars, and other default Flutter stuff in
+nested Nuvigators.
+
+We also provide some helpers to build simpler Route transitions, you can take a look at `NuvigatorRouteBuilder` and `ScreenTypeBuilder`
+classes.
