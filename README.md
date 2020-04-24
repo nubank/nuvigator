@@ -297,3 +297,14 @@ nested Nuvigators.
 
 We also provide some helpers to build simpler Route transitions, you can take a look at `NuvigatorRouteBuilder` and `ScreenTypeBuilder`
 classes.
+
+## Dynamic API
+
+If you with to use Nuvigator without code generation features, you can rely on defining things dynamically.
+Providing a Router instance with the public methods implemented is enough to make it work properly with Nuvigator, this
+way you can implement any custom logic you want in your Router.
+
+If you just want to construct Routers dynamically you can use the helpers:
+ - `mergeRouters` that will return a Router with all Routers passed as argument Grouped into it.
+ - `RouteHandler` will return a Router that handles just one Route, you need to provide just the DeepLink and a screenRoute.
+ - `GenericRouter` is a class that can receive in the constructor arguments to create a simple router.
