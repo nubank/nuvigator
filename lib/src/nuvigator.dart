@@ -81,8 +81,14 @@ class Nuvigator<T extends Router> extends Navigator {
             ...observers,
           ],
           onGenerateRoute: (settings) {
+            final initialDeepLinkRouteName = initialDeepLink != null
+                ? router.getScreenNameFromDeepLink(initialDeepLink)
+                : null;
             var finalSettings = settings;
-            if (settings.isInitialRoute && settings.arguments == null) {
+
+            if ((settings.name == initialRoute ||
+                    settings.name == initialDeepLinkRouteName) &&
+                settings.arguments == null) {
               if (initialArguments != null) {
                 finalSettings = settings.copyWith(arguments: initialArguments);
               } else if (initialDeepLink != null) {
@@ -300,23 +306,23 @@ class NuvigatorState<T extends Router> extends NavigatorState
   }
 
   @override
-  bool pop<T extends Object>([T result]) {
+  void pop<T extends Object>([T result]) {
     var isPopped = false;
     if (canPop()) {
-      isPopped = super.pop<T>(result);
+      isPopped = super.canPop();
+      super.pop<T>(result);
     } else if (widget.shouldPopRoot && this == rootNuvigator) {
       isPopped = true;
       SystemNavigator.pop();
     }
     if (!isPopped && this != rootNuvigator && parent != null) {
-      return parentPop<T>(result);
+      parentPop<T>(result);
     }
-    return isPopped;
   }
 
-  bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
+  void parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
-  bool rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
+  void rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
 
   void closeFlow<T extends Object>([T result]) {
     if (isNested) {
