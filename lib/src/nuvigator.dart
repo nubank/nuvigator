@@ -273,23 +273,22 @@ class NuvigatorState<T extends Router> extends NavigatorState
   }
 
   @override
-  bool pop<T extends Object>([T result]) {
-    var isPopped = false;
-    if (canPop()) {
-      isPopped = super.pop<T>(result);
+  void pop<T extends Object>([T result]) {
+    var isPoppable = canPop();
+    if (isPoppable) {
+      super.pop<T>(result);
     } else if (widget.shouldPopRoot && this == rootNuvigator) {
-      isPopped = true;
+      isPoppable = true;
       SystemNavigator.pop();
     }
-    if (!isPopped && this != rootNuvigator && parent != null) {
-      return parentPop<T>(result);
+    if (!isPoppable && this != rootNuvigator && parent != null) {
+      parentPop<T>(result);
     }
-    return isPopped;
   }
 
-  bool parentPop<T extends Object>([T result]) => parent.pop<T>(result);
+  void parentPop<T extends Object>([T result]) => parent.pop<T>(result);
 
-  bool rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
+  void rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
 
   void closeFlow<T extends Object>([T result]) {
     if (isNested) {
@@ -319,7 +318,6 @@ class NuvigatorState<T extends Router> extends NavigatorState
   Route _buildNativeRoute(String deepLink, Map<String, String> arguments) {
     final routeSettings = RouteSettings(
       name: deepLink,
-      isInitialRoute: false,
       arguments: arguments,
     );
     final route = router.getRoute<T>(routeSettings);

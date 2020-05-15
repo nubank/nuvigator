@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.5.0
+## 0.6.0
 - First Class DeepLink support edition, now every Route **SHOULD** have a deepLink
 - In this version route names and deepLinks where unified under just deepLinks. This aims
 to provide a more concise and easy to understand API without confusions between deepLinks and
@@ -26,6 +26,9 @@ this (`currentDeepLink(context)`), but in the future we may look into making thi
     - `NuRoute` annotation had the `routeName` removed and `deepLink` is now a positional required attribute
     - `NuRouter` had the `routeNamePrefix` removed
 
+## 0.5.0
+- Updates the codebase to flutter 1.17 (stable) version
+
 ## 0.4.6
 - Support query parameters with dashes by converting them to camelCase
 
@@ -49,8 +52,8 @@ this (`currentDeepLink(context)`), but in the future we may look into making thi
 - **[BREAKING]** API Simplifications/Changes.
     - Removal of `ScreenWidget` and related generated classes.
     - Removal of `FlowRoute`, now you can use the default `ScreenRoute` and pass the Nuvigator to the builder function.
-    - Removal of `GlobalRouter`, every `Router` had it's capabilities incorporated, you can override previous `GlobalRouter` 
-    properties directly in your topmost Router class, and pass it directly to the Nuvigator. 
+    - Removal of `GlobalRouter`, every `Router` had it's capabilities incorporated, you can override previous `GlobalRouter`
+    properties directly in your topmost Router class, and pass it directly to the Nuvigator.
     - Removal of Nuvigator `initialArgs` auto-passing, now you should explicitly provide the arguments required to the
     nested nuvigator. The suggestion is to pass it to the Router constructor.
     - Removal of `FlowRouters`.
@@ -61,7 +64,7 @@ this (`currentDeepLink(context)`), but in the future we may look into making thi
     the private getter `_$screensMap` and `_$routers` in the `Router` class.
     - Unify `Router` and `BaseRouter`, instead of extending `BaseRouter` you should extend `Router` directly.
     - Rename `getDeepLinkPrefix` to `deepLinkPrefix`.
-    - `initialRoute` is now a required argument to Nuvigator. 
+    - `initialRoute` is now a required argument to Nuvigator.
 - **[IMPORTANT]** Router instances should be unique per Nuvigator. The same Router instance SHOULD NOT be shared by different
 Nuvigator (we advise to create new instances together with the Nuvigator).
 - A bug was fixed were the `maybePop` method was not consistent with the Android back button behavior. Now the expected
@@ -69,7 +72,7 @@ behavior is to always pop the Route of the active Nuvigator.
 - Nuvigator now keeps track of it's Route stack.
 - Added debug flag to Nuvigator to log all route transitions/changes.
 - Observers management was moved into the state lifecycle to ensure that inheritableObservers are always going to be
-considered. 
+considered.
 - **[BUMP]** Updates to **Flutter 1.12.1**, resolves some deprecation warnings.
 - A `toMap` getter was added to `Args*` classes to serialize them into `Map<String, Object>`.
 - Added new mixin `NuvigatorRoute` that should be incorporated by `PageRoutes` used in custom `ScreenType`s. While this
@@ -82,9 +85,9 @@ screensTypes Material and Cupertino have already been update to include this new
 - Increase plugins version range
 
 ## 0.2.1
-- Fix the bug when Android back button is pressed closing the app. Now, 
-  when the back button is pressed, the nuvigator will try to close the 
-  current page and will just close the app when doesn't have any pages to pop. 
+- Fix the bug when Android back button is pressed closing the app. Now,
+  when the back button is pressed, the nuvigator will try to close the
+  current page and will just close the app when doesn't have any pages to pop.
 
 ## 0.2.0
 - Add `FlowRouter` back, compatible with the new API of nested Nuvigators
@@ -106,7 +109,7 @@ screensTypes Material and Cupertino have already been update to include this new
 - `Screen` was renamed to `ScreenRoute`
 - `FlowRoute` is a `ScreenRoute` for nested Nuvigators.
 - Make `ScreenRoute` cary information about DeepLinks
-- Make `GlobalRouter` able to be created with callbacks and a baseRouter 
+- Make `GlobalRouter` able to be created with callbacks and a baseRouter
 - Add `cupertinoDialogScreenType` ScreenType
 - Provide access to the `GlobalRouter` through `InheritedWidgets`
 - Remove the need to extend the `GlobalRouter`
