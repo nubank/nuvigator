@@ -108,7 +108,6 @@ abstract class Router {
       ...settingsArgs,
     };
     final finalSettings = settings.copyWith(arguments: computedArguments);
-    print(nuvigator);
     final route = routeEntry
         .screenBuilder(finalSettings)
         .fallbackScreenType(fallbackScreenType ?? nuvigator?.widget?.screenType)
