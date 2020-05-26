@@ -41,6 +41,9 @@ extension SampleTwoRouterNavigation on SampleTwoRouter {
     );
   }
 
+  String screenOneDeepLink() => encodeDeepLink(
+      pathWithPrefix(_SampleTwoRoutes.screenOne), <String, dynamic>{});
+
   Future<String> toScreenTwo() {
     return nuvigator.pushNamed<String>(
       pathWithPrefix(_SampleTwoRoutes.screenTwo),
@@ -68,6 +71,9 @@ extension SampleTwoRouterNavigation on SampleTwoRouter {
       result: result,
     );
   }
+
+  String screenTwoDeepLink() => encodeDeepLink(
+      pathWithPrefix(_SampleTwoRoutes.screenTwo), <String, dynamic>{});
 }
 
 extension SampleTwoRouterScreensAndRouters on SampleTwoRouter {

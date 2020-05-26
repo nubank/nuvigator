@@ -85,6 +85,10 @@ extension SampleOneRouterNavigation on SampleOneRouter {
     );
   }
 
+  String screenOneDeepLink({@required String testId}) => encodeDeepLink(
+          pathWithPrefix(_SampleOneRoutes.screenOne), <String, dynamic>{
+        'testId': testId,
+      });
   Future<int> toScreenTwo() {
     return nuvigator.pushNamed<int>(
       pathWithPrefix(_SampleOneRoutes.screenTwo),
@@ -112,6 +116,9 @@ extension SampleOneRouterNavigation on SampleOneRouter {
       result: result,
     );
   }
+
+  String screenTwoDeepLink() => encodeDeepLink(
+      pathWithPrefix(_SampleOneRoutes.screenTwo), <String, dynamic>{});
 }
 
 extension SampleOneRouterScreensAndRouters on SampleOneRouter {

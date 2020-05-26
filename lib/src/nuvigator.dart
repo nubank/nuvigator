@@ -5,6 +5,7 @@ import 'package:nuvigator/nuvigator.dart';
 import 'router.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
+typedef InitialDeepLinkFn<T> = String Function(T router);
 
 NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
     NuvigatorState nuvigatorState) {
@@ -77,7 +78,7 @@ class Nuvigator<T extends Router> extends Navigator {
           onGenerateRoute: (settings) =>
               router.getRoute<dynamic>(settings, screenType),
           key: key,
-          initialRoute: initialDeepLink,
+          initialRoute: initialDeepLink(router),
         );
 
   Nuvigator<T> copyWith({
@@ -87,7 +88,7 @@ class Nuvigator<T extends Router> extends Navigator {
     bool debugLog,
     ScreenType screenType,
     List<ObserverBuilder> inheritableObservers,
-    String initialDeepLink,
+    InitialDeepLinkFn initialDeepLink,
   }) {
     return Nuvigator<T>(
       router: router,
@@ -101,7 +102,7 @@ class Nuvigator<T extends Router> extends Navigator {
   }
 
   final T router;
-  final String initialDeepLink;
+  final InitialDeepLinkFn<T> initialDeepLink;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;

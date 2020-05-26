@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         ],
         router: SamplesRouter(),
 //        initialRoute: SamplesRoutes.home,
-        initialDeepLink: 'exapp://home',
+        initialDeepLink: (SamplesRouter router) => router.homeDeepLink(),
       ),
     );
   }

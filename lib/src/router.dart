@@ -4,6 +4,23 @@ import '../nuvigator.dart';
 import 'helpers.dart';
 import 'screen_route.dart';
 
+String encodeDeepLink(String path, Map<String, dynamic> params) {
+  final queryParams = <String, dynamic>{};
+
+  final interpolated = params.entries.fold<String>(path, (value, element) {
+    final elementName = element.key;
+    if (value.contains(':$element')) {
+      return value.replaceAll(':$elementName', element.value);
+    } else {
+      queryParams[elementName] = element.value;
+      return value;
+    }
+  });
+  return queryParams.isNotEmpty
+      ? interpolated + Uri(queryParameters: queryParams).toString()
+      : interpolated;
+}
+
 class RoutePath {
   RoutePath(this.path, {this.prefix = false});
 

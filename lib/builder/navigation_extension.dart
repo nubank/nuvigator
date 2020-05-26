@@ -167,6 +167,19 @@ class NavigationExtension extends BaseBuilder {
     );
   }
 
+  Method _getDeepLinkMethod(String deepLink, MethodElement method) {
+    final parameters = <Parameter>[];
+    final args = _getArgs(parameters, method);
+    return Method(
+      (m) => m
+        ..name = '${method.name}DeepLink'
+        ..returns = refer('String')
+        ..optionalParameters.addAll(parameters)
+        ..body = Code('encodeDeepLink($deepLink, <String, dynamic>$args)')
+        ..lambda = true,
+    );
+  }
+
   void checkPushMethodsAndAdd(
       List<Method> methods, String className, MethodElement method) {
     final nuRouteFieldAnnotation =
@@ -200,6 +213,7 @@ class NavigationExtension extends BaseBuilder {
           _pushReplacementMethod(routeName, screenReturn, method),
           _pushAndRemoveUntilMethod(routeName, screenReturn, method),
           _popAndPushMethod(routeName, screenReturn, method),
+          _getDeepLinkMethod(routeName, method),
         ]);
       }
     }

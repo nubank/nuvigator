@@ -26,6 +26,7 @@ class SecondArgs {
   Map<String, Object> get toMap => {
         'testId': testId,
       };
+
   static SecondArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
@@ -71,6 +72,9 @@ extension SamplesRouterNavigation on SamplesRouter {
     );
   }
 
+  String homeDeepLink() =>
+      encodeDeepLink(pathWithPrefix(_SamplesRoutes.home), <String, dynamic>{});
+
   Future<String> toSecond({@required String testId}) {
     return nuvigator.pushNamed<String>(
       pathWithPrefix(_SamplesRoutes.second),
@@ -113,6 +117,11 @@ extension SamplesRouterNavigation on SamplesRouter {
     );
   }
 
+  String secondDeepLink({@required String testId}) =>
+      encodeDeepLink(pathWithPrefix(_SamplesRoutes.second), <String, dynamic>{
+        'testId': testId,
+      });
+
   SampleOneRouter get sampleOneRouter => getRouter<SampleOneRouter>();
 }
 
@@ -120,6 +129,7 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
   List<Router> get _$routers => [
         sampleOneRouter,
       ];
+
   Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
       RoutePath(_SamplesRoutes.home, prefix: false): (RouteSettings settings) {

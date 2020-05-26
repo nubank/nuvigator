@@ -91,7 +91,7 @@ Widget testApp(Router router, String initialDeepLink, [WrapperFn wrapper]) {
   return MaterialApp(
     builder: Nuvigator(
       router: router,
-      initialDeepLink: initialDeepLink,
+      initialDeepLink: (Router _) => initialDeepLink,
       wrapper: wrapper,
     ),
   );

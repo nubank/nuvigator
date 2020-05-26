@@ -21,7 +21,8 @@ class SamplesRouter extends Router {
   ScreenRoute<String> second({@required String testId}) => ScreenRoute(
         builder: (context) => Nuvigator(
           router: SampleTwoRouter(testId: testId),
-          initialDeepLink: currentDeepLink(context),
+          initialDeepLink: (SampleTwoRouter router) =>
+              router.screenOneDeepLink(),
           screenType: cupertinoScreenType,
           wrapper: (BuildContext context, Widget child) => Provider(
             create: (_) => SampleFlowBloc(),
