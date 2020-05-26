@@ -186,6 +186,7 @@ class NavigationExtension extends BaseBuilder {
         nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
     final routeName =
         'pathWithPrefix(_${removeRouterKey(className)}Routes.${method.name})';
+    methods.add(_getDeepLinkMethod(routeName, method));
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
       final screenReturn =
@@ -213,7 +214,6 @@ class NavigationExtension extends BaseBuilder {
           _pushReplacementMethod(routeName, screenReturn, method),
           _pushAndRemoveUntilMethod(routeName, screenReturn, method),
           _popAndPushMethod(routeName, screenReturn, method),
-          _getDeepLinkMethod(routeName, method),
         ]);
       }
     }
