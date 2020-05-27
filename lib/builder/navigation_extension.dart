@@ -186,8 +186,8 @@ class NavigationExtension extends BaseBuilder {
         nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
     final routeName =
         'pathWithPrefix(_${removeRouterKey(className)}Routes.${method.name})';
-    methods.add(_getDeepLinkMethod(routeName, method));
     if (nuRouteFieldAnnotation != null) {
+      methods.add(_getDeepLinkMethod(routeName, method));
       final generics = getGenericTypes(method.returnType);
       final screenReturn =
           generics.length > 1 ? generics[1].name : generics.first.name;
