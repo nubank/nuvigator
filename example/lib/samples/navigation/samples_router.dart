@@ -12,17 +12,16 @@ part 'samples_router.g.dart';
 
 @NuRouter()
 class SamplesRouter extends Router {
-  @NuRoute('exapp://home')
+  @NuRoute(deepLink: 'exapp://home')
   ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => HomeScreen(),
       );
 
-  @NuRoute('exapp://sampleTwo', prefix: true)
+  @NuRoute(deepLink: 'exapp://sampleTwo', prefix: true)
   ScreenRoute<String> second({@required String testId}) => ScreenRoute(
-        builder: (context) => Nuvigator(
+        builder: (context) => Nuvigator<SampleTwoRouter>(
           router: SampleTwoRouter(testId: testId),
-          initialDeepLink: (SampleTwoRouter router) =>
-              router.screenOneDeepLink(),
+          initialRouteBuilder: (router) => router.screenOneDeepLink(),
           screenType: cupertinoScreenType,
           wrapper: (BuildContext context, Widget child) => Provider(
             create: (_) => SampleFlowBloc(),

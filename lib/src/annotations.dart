@@ -104,7 +104,7 @@ class NuRouter {
 /// generate a method for all types of push. You can specify which methods you
 /// need and avoid unused code.
 class NuRoute {
-  const NuRoute(this.deepLink, {this.pushMethods, this.prefix = false});
+  const NuRoute({this.deepLink, this.pushMethods, this.prefix = false});
 
   final String deepLink;
   final bool prefix;

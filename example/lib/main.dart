@@ -35,15 +35,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nubank',
-      builder: Nuvigator(
-//        debug: true,
+      builder: Nuvigator<SamplesRouter>(
         screenType: cupertinoDialogScreenType,
         inheritableObservers: [
           () => TestObserver(),
         ],
         router: SamplesRouter(),
-//        initialRoute: SamplesRoutes.home,
-        initialDeepLink: (SamplesRouter router) => router.homeDeepLink(),
+        initialRouteBuilder: (router) => router.homeDeepLink(),
       ),
     );
   }

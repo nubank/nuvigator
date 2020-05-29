@@ -31,7 +31,7 @@ class SampleTwoRouter extends Router {
         );
       };
 
-  @NuRoute('/screenOne')
+  @NuRoute(deepLink: '/screenOne')
   ScreenRoute screenOne() => ScreenRoute(
         builder: (context) => ScreenOne(
           toScreenTwo: () =>
@@ -39,7 +39,7 @@ class SampleTwoRouter extends Router {
         ),
       );
 
-  @NuRoute('/screenTwo')
+  @NuRoute(deepLink: '/screenTwo')
   ScreenRoute<String> screenTwo() => ScreenRoute<String>(
         builder: (context) => ScreenTwo(
           closeFlow: () => nuvigator.closeFlow<String>('ClosedNestedNuvigator'),

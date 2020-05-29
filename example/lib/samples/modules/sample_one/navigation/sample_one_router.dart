@@ -14,7 +14,7 @@ class SampleOneRouter extends Router {
   @override
   String get prefix => 'exapp://sampleOne';
 
-  @NuRoute('/screenOne/:testId')
+  @NuRoute(deepLink: '/screenOne/:testId')
   ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
         builder: (context) => ScreenOne(
           toBack: () => nuvigator.pop('ResultFromScreenOne'),
@@ -24,7 +24,7 @@ class SampleOneRouter extends Router {
         ),
       );
 
-  @NuRoute('/screenTwo')
+  @NuRoute(deepLink: '/screenTwo')
   ScreenRoute<int> screenTwo() => ScreenRoute<int>(
         builder: (context) => ScreenTwo(
           toSampleTwo: () => Router.of<SamplesRouter>(context)

@@ -60,7 +60,8 @@ class NuvigatorStateTracker extends NavigatorObserver {
 class Nuvigator<T extends Router> extends Navigator {
   Nuvigator({
     @required this.router,
-    @required this.initialDeepLink,
+    String initialRoute,
+    this.initialRouteBuilder,
     Key key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
@@ -69,7 +70,7 @@ class Nuvigator<T extends Router> extends Navigator {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
   })  : assert(router != null),
-        assert(initialDeepLink != null),
+        assert(initialRoute != null || initialRouteBuilder != null),
         super(
           observers: [
             HeroController(),
@@ -78,7 +79,9 @@ class Nuvigator<T extends Router> extends Navigator {
           onGenerateRoute: (settings) =>
               router.getRoute<dynamic>(settings, screenType),
           key: key,
-          initialRoute: initialDeepLink(router),
+          initialRoute: initialRouteBuilder != null
+              ? initialRouteBuilder(router)
+              : initialRoute,
         );
 
   Nuvigator<T> copyWith({
@@ -88,11 +91,13 @@ class Nuvigator<T extends Router> extends Navigator {
     bool debugLog,
     ScreenType screenType,
     List<ObserverBuilder> inheritableObservers,
-    InitialDeepLinkFn initialDeepLink,
+    String initialRoute,
+    InitialDeepLinkFn<T> initialRouteBuilder,
   }) {
     return Nuvigator<T>(
       router: router,
-      initialDeepLink: initialDeepLink ?? this.initialDeepLink,
+      initialRoute: initialRoute ?? this.initialRoute,
+      initialRouteBuilder: initialRouteBuilder ?? this.initialRouteBuilder,
       debug: debugLog ?? debug,
       inheritableObservers: inheritableObservers ?? this.inheritableObservers,
       screenType: screenType ?? this.screenType,
@@ -102,7 +107,7 @@ class Nuvigator<T extends Router> extends Navigator {
   }
 
   final T router;
-  final InitialDeepLinkFn<T> initialDeepLink;
+  final InitialDeepLinkFn<T> initialRouteBuilder;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;

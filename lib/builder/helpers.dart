@@ -29,14 +29,11 @@ String getRouterName(Element element) {
 }
 
 String getRouteString(ClassElement routerElement, MethodElement element) {
-//  String routerName = getRouterName(routerElement);
-//  final needsFormat = prefix.isEmpty || prefix.endsWith('/');
-//  routerName = needsFormat ? lowerCamelCase(routerName) : routerName;
-
   final routeName = nuRouteChecker
-      .firstAnnotationOfExact(element)
-      ?.getField('deepLink')
-      ?.toStringValue();
+          .firstAnnotationOfExact(element)
+          ?.getField('deepLink')
+          ?.toStringValue() ??
+      element.name;
 
   return routeName;
 }
