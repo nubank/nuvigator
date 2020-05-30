@@ -61,6 +61,24 @@ class RouteEntry {
       other is RouteEntry && other.routePath == routePath;
 }
 
+class ScreenRouter<T extends Router> extends InheritedWidget {
+  const ScreenRouter({Key key, @required this.router, @required Widget child})
+      : assert(router != null),
+        assert(child != null),
+        super(key: key, child: child);
+
+  final T router;
+
+  static ScreenRouter<R> of<R extends Router>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ScreenRouter<R>>();
+  }
+
+  @override
+  bool updateShouldNotify(ScreenRouter oldWidget) {
+    return oldWidget.router != router;
+  }
+}
+
 abstract class Router {
   static T of<T extends Router>(
     BuildContext context, {
@@ -86,7 +104,21 @@ abstract class Router {
 
   NuvigatorState get nuvigator => _nuvigator;
 
+  // Public Override API
   String get prefix => '';
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => {};
+  List<Router> get routers => [];
+
+  String get _prefix {
+    // In case of Nuvigator being null, it means this Router is uncontextualized
+    if (nuvigator == null || nuvigator.isRoot) {
+      return prefix;
+    }
+    // TODO: We need to consider the parent RoutePath, and not the prefix
+    final parentRouter = ScreenRouter.of(nuvigator.context);
+    final parentPrefix = parentRouter.router._prefix;
+    return parentPrefix + prefix;
+  }
 
   set nuvigator(NuvigatorState newNuvigator) {
     _nuvigator = newNuvigator;
@@ -97,14 +129,9 @@ abstract class Router {
 
   WrapperFn get screensWrapper => null;
 
-  List<Router> get routers => [];
-
-  // Public Override API
-  Map<RoutePath, ScreenRouteBuilder> get screensMap => {};
-
   // Used internally
   Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
-      screensMap.map((k, v) => MapEntry(k.copyWith(path: prefix + k.path), v));
+      screensMap.map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
 
   /// Get the specified router that can be grouped in this router
   T getRouter<T extends Router>() {
@@ -128,7 +155,7 @@ abstract class Router {
     final route = routeEntry
         .screenBuilder(finalSettings)
         .fallbackScreenType(fallbackScreenType ?? nuvigator?.widget?.screenType)
-        .toRoute(finalSettings);
+        .toRoute(finalSettings, this);
     return route;
   }
 
@@ -152,7 +179,7 @@ abstract class Router {
   }
 
   String pathWithPrefix(String path) {
-    return prefix + path;
+    return _prefix + path;
   }
 
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {

@@ -18,7 +18,7 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
 }
 
 String currentDeepLink(BuildContext context) {
-  return ModalRoute.of(context).settings.name;
+  return ModalRoute.of(context)?.settings?.name;
 }
 
 class NuvigatorStateTracker extends NavigatorObserver {
@@ -70,7 +70,6 @@ class Nuvigator<T extends Router> extends Navigator {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
   })  : assert(router != null),
-        assert(initialRoute != null || initialRouteBuilder != null),
         super(
           observers: [
             HeroController(),
@@ -79,6 +78,17 @@ class Nuvigator<T extends Router> extends Navigator {
           onGenerateRoute: (settings) =>
               router.getRoute<dynamic>(settings, screenType),
           key: key,
+          onGenerateInitialRoutes: (state, ir) {
+            final deepLink = currentDeepLink(state.context);
+            if (initialRoute != null || initialRouteBuilder != null) {
+              return Navigator.defaultGenerateInitialRoutes(state, ir);
+            } else if (deepLink != null) {
+              return Navigator.defaultGenerateInitialRoutes(state, deepLink);
+            } else {
+              throw FlutterError(
+                  'This Nuvigator is not nested and do not has a initialRoute declared!');
+            }
+          },
           initialRoute: initialRouteBuilder != null
               ? initialRouteBuilder(router)
               : initialRoute,
@@ -184,10 +194,10 @@ class NuvigatorState<T extends Router> extends NavigatorState
     widget.observers.addAll(_collectObservers().map((f) => f()));
     stateTracker = NuvigatorStateTracker();
     widget.observers.add(stateTracker);
-    super.initState();
     WidgetsBinding.instance.addObserver(this);
     assert(widget.router.nuvigator == null);
     widget.router.nuvigator = this;
+    super.initState();
   }
 
   @override

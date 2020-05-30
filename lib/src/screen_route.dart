@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
+import 'router.dart';
 import 'screen_type.dart';
 
 typedef WrapperFn = Widget Function(BuildContext context, Widget child);
@@ -56,9 +57,12 @@ class ScreenRoute<T extends Object> {
     );
   }
 
-  Route<T> toRoute(RouteSettings settings) {
+  Route<T> toRoute(RouteSettings settings, Router router) {
     return _toRouteType(
-      (BuildContext context) => _buildScreen(context, settings),
+      (BuildContext context) => ScreenRouter(
+        router: router,
+        child: _buildScreen(context, settings),
+      ),
       settings,
     );
   }
