@@ -23,6 +23,16 @@ class NuRouteSettings extends RouteSettings {
   @override
   String toString() =>
       '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$routePath", $arguments)';
+
+  @override
+  int get hashCode => hashList([name, arguments, routePath]);
+
+  @override
+  bool operator ==(Object other) =>
+      other is NuRouteSettings &&
+      other.routePath == routePath &&
+      other.name == name &&
+      other.arguments == arguments;
 }
 
 NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
