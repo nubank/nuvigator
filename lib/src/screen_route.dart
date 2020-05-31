@@ -83,16 +83,3 @@ class ScreenRoute<T extends Object> {
     );
   }
 }
-
-class FlowRoute<T extends Object> extends ScreenRoute<T> {
-  FlowRoute({
-    @required Router router,
-    List<NavigatorObserver> observers = const [],
-    ScreenType screenType,
-    WrapperFn wrapper,
-  }) : super(
-            screenType: screenType,
-            wrapper: wrapper,
-            builder: Nuvigator(
-                router: router, observers: observers, screenType: screenType));
-}

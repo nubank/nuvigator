@@ -6,7 +6,7 @@ part of 'sample_one_router.dart';
 // NuvigatorGenerator
 // **************************************************************************
 
-class _SampleOneRoutes {
+class SampleOneRoutes {
   static const screenOne = '/screenOne/:testId';
 
   static const screenTwo = '/screenTwo';
@@ -29,7 +29,7 @@ class ScreenOneArgs {
   static ScreenOneArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
-    if (routeSettings?.name == _SampleOneRoutes.screenOne) {
+    if (routeSettings?.name == SampleOneRoutes.screenOne) {
       final args = routeSettings?.arguments;
       if (args == null)
         throw FlutterError('ScreenOneArgs requires Route arguments');
@@ -43,9 +43,13 @@ class ScreenOneArgs {
 }
 
 extension SampleOneRouterNavigation on SampleOneRouter {
+  String screenOneDeepLink({@required String testId}) => encodeDeepLink(
+          pathWithPrefix(SampleOneRoutes.screenOne), <String, dynamic>{
+        'testId': testId,
+      });
   Future<String> toScreenOne({@required String testId}) {
     return nuvigator.pushNamed<String>(
-      pathWithPrefix(_SampleOneRoutes.screenOne),
+      pathWithPrefix(SampleOneRoutes.screenOne),
       arguments: {
         'testId': testId,
       },
@@ -55,7 +59,7 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> pushReplacementToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
-      pathWithPrefix(_SampleOneRoutes.screenOne),
+      pathWithPrefix(SampleOneRoutes.screenOne),
       arguments: {
         'testId': testId,
       },
@@ -66,7 +70,7 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> pushAndRemoveUntilToScreenOne<TO extends Object>(
       {@required String testId, @required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<String>(
-      pathWithPrefix(_SampleOneRoutes.screenOne),
+      pathWithPrefix(SampleOneRoutes.screenOne),
       predicate,
       arguments: {
         'testId': testId,
@@ -77,7 +81,7 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<String> popAndPushToScreenOne<TO extends Object>(
       {@required String testId, TO result}) {
     return nuvigator.popAndPushNamed<String, TO>(
-      pathWithPrefix(_SampleOneRoutes.screenOne),
+      pathWithPrefix(SampleOneRoutes.screenOne),
       arguments: {
         'testId': testId,
       },
@@ -85,19 +89,17 @@ extension SampleOneRouterNavigation on SampleOneRouter {
     );
   }
 
-  String screenOneDeepLink({@required String testId}) => encodeDeepLink(
-          pathWithPrefix(_SampleOneRoutes.screenOne), <String, dynamic>{
-        'testId': testId,
-      });
+  String screenTwoDeepLink() => encodeDeepLink(
+      pathWithPrefix(SampleOneRoutes.screenTwo), <String, dynamic>{});
   Future<int> toScreenTwo() {
     return nuvigator.pushNamed<int>(
-      pathWithPrefix(_SampleOneRoutes.screenTwo),
+      pathWithPrefix(SampleOneRoutes.screenTwo),
     );
   }
 
   Future<int> pushReplacementToScreenTwo<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<int, TO>(
-      pathWithPrefix(_SampleOneRoutes.screenTwo),
+      pathWithPrefix(SampleOneRoutes.screenTwo),
       result: result,
     );
   }
@@ -105,31 +107,28 @@ extension SampleOneRouterNavigation on SampleOneRouter {
   Future<int> pushAndRemoveUntilToScreenTwo<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<int>(
-      pathWithPrefix(_SampleOneRoutes.screenTwo),
+      pathWithPrefix(SampleOneRoutes.screenTwo),
       predicate,
     );
   }
 
   Future<int> popAndPushToScreenTwo<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<int, TO>(
-      pathWithPrefix(_SampleOneRoutes.screenTwo),
+      pathWithPrefix(SampleOneRoutes.screenTwo),
       result: result,
     );
   }
-
-  String screenTwoDeepLink() => encodeDeepLink(
-      pathWithPrefix(_SampleOneRoutes.screenTwo), <String, dynamic>{});
 }
 
 extension SampleOneRouterScreensAndRouters on SampleOneRouter {
   Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
-      RoutePath(_SampleOneRoutes.screenOne, prefix: false):
+      RoutePath(SampleOneRoutes.screenOne, prefix: false):
           (RouteSettings settings) {
         final Map<String, Object> args = settings.arguments ?? const {};
         return screenOne(testId: args['testId']);
       },
-      RoutePath(_SampleOneRoutes.screenTwo, prefix: false):
+      RoutePath(SampleOneRoutes.screenTwo, prefix: false):
           (RouteSettings settings) {
         return screenTwo();
       },

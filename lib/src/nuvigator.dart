@@ -447,12 +447,13 @@ class Nuvigator<T extends Router> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeSettings = NuRouteSettingsProvider.of(context);
+    final prefix = routeSettings?.routePath?.path ?? '';
     return _NuvigatorInner(
       router: router,
       debug: debug,
       inheritableObservers: inheritableObservers,
       observers: observers,
-      initialRoute: initialRoute ?? routeSettings?.name,
+      initialRoute: prefix + initialRoute ?? routeSettings?.name,
       key: key,
       parentRoute: routeSettings,
       screenType: screenType,

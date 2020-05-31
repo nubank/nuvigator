@@ -87,7 +87,7 @@ class BuilderLibrary extends BaseBuilder {
               'return ${method.name}($paramsStr);'));
 
         screensMapBuffer.write(
-            'RoutePath(_${removeRouterKey(className)}Routes.${method.name}, prefix: $prefix): ${screenRouteBuilder.accept(DartEmitter())},\n');
+            'RoutePath(${removeRouterKey(className)}Routes.${method.name}, prefix: $prefix): ${screenRouteBuilder.accept(DartEmitter())},\n');
       }
     }
 

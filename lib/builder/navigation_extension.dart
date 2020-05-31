@@ -7,7 +7,8 @@ import 'helpers.dart';
 class NavigationExtension extends BaseBuilder {
   NavigationExtension(ClassElement classElement) : super(classElement);
 
-  String _getArgs(List<Parameter> parameters, MethodElement method) {
+  String _getArgs(
+      List<Parameter> parameters, MethodElement method, bool isPrefix) {
     final argumentsMapBuffer = StringBuffer('{');
     final hasParameters =
         method?.parameters != null && method.parameters.isNotEmpty;
@@ -29,14 +30,21 @@ class NavigationExtension extends BaseBuilder {
         argumentsMapBuffer.write("'$argName': $argName,");
       }
     }
+    if (isPrefix) {
+      parameters.add(Parameter((p) => p
+        ..name = 'path'
+        ..annotations.add(refer('required'))
+        ..named = true
+        ..type = refer('String')));
+    }
     argumentsMapBuffer.write('}');
     return argumentsMapBuffer.toString();
   }
 
-  Method _pushMethod(
-      String routeName, String screenReturn, MethodElement method) {
+  Method _pushMethod(String routeName, String screenReturn,
+      MethodElement method, bool isPrefix) {
     final parameters = <Parameter>[];
-    final args = _getArgs(parameters, method);
+    final args = _getArgs(parameters, method, isPrefix);
     final hasParameters = parameters.isNotEmpty;
 
     return Method(
@@ -54,10 +62,10 @@ class NavigationExtension extends BaseBuilder {
     );
   }
 
-  Method _pushReplacementMethod(
-      String routeName, String screenReturn, MethodElement method) {
+  Method _pushReplacementMethod(String routeName, String screenReturn,
+      MethodElement method, bool isPrefix) {
     final parameters = <Parameter>[];
-    final args = _getArgs(parameters, method);
+    final args = _getArgs(parameters, method, isPrefix);
     final hasParameters = parameters.isNotEmpty;
 
     parameters.add(
@@ -87,10 +95,10 @@ class NavigationExtension extends BaseBuilder {
     );
   }
 
-  Method _pushAndRemoveUntilMethod(
-      String routeName, String screenReturn, MethodElement method) {
+  Method _pushAndRemoveUntilMethod(String routeName, String screenReturn,
+      MethodElement method, bool isPrefix) {
     final parameters = <Parameter>[];
-    final args = _getArgs(parameters, method);
+    final args = _getArgs(parameters, method, isPrefix);
     final hasParameters = parameters.isNotEmpty;
 
     parameters.add(
@@ -121,10 +129,10 @@ class NavigationExtension extends BaseBuilder {
     );
   }
 
-  Method _popAndPushMethod(
-      String routeName, String screenReturn, MethodElement method) {
+  Method _popAndPushMethod(String routeName, String screenReturn,
+      MethodElement method, bool isPrefix) {
     final parameters = <Parameter>[];
-    final args = _getArgs(parameters, method);
+    final args = _getArgs(parameters, method, isPrefix);
     final hasParameters = parameters.isNotEmpty;
 
     parameters.add(
@@ -167,9 +175,10 @@ class NavigationExtension extends BaseBuilder {
     );
   }
 
-  Method _getDeepLinkMethod(String deepLink, MethodElement method) {
+  Method _getDeepLinkMethod(
+      String deepLink, MethodElement method, bool isPrefix) {
     final parameters = <Parameter>[];
-    final args = _getArgs(parameters, method);
+    final args = _getArgs(parameters, method, isPrefix);
     return Method(
       (m) => m
         ..name = '${method.name}DeepLink'
@@ -184,10 +193,12 @@ class NavigationExtension extends BaseBuilder {
       List<Method> methods, String className, MethodElement method) {
     final nuRouteFieldAnnotation =
         nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
+    final isPrefix = nuRouteFieldAnnotation.getField('prefix')?.toBoolValue();
+    final extraPath = isPrefix ? ' + path' : '';
     final routeName =
-        'pathWithPrefix(_${removeRouterKey(className)}Routes.${method.name})';
+        'pathWithPrefix(${removeRouterKey(className)}Routes.${method.name})$extraPath';
     if (nuRouteFieldAnnotation != null) {
-      methods.add(_getDeepLinkMethod(routeName, method));
+      methods.add(_getDeepLinkMethod(routeName, method, isPrefix));
       final generics = getGenericTypes(method.returnType);
       final screenReturn =
           generics.length > 1 ? generics[1].name : generics.first.name;
@@ -197,23 +208,24 @@ class NavigationExtension extends BaseBuilder {
         for (final pushMethod in pushMethods) {
           final pushStr = pushMethod.toString();
           if (pushStr.contains('push =')) {
-            methods.add(_pushMethod(routeName, screenReturn, method));
+            methods.add(_pushMethod(routeName, screenReturn, method, isPrefix));
           } else if (pushStr.contains('pushReplacement =')) {
-            methods
-                .add(_pushReplacementMethod(routeName, screenReturn, method));
+            methods.add(_pushReplacementMethod(
+                routeName, screenReturn, method, isPrefix));
           } else if (pushStr.contains('popAndPush =')) {
-            methods.add(_popAndPushMethod(routeName, screenReturn, method));
-          } else if (pushStr.contains('pushAndRemoveUntil =')) {
             methods.add(
-                _pushAndRemoveUntilMethod(routeName, screenReturn, method));
+                _popAndPushMethod(routeName, screenReturn, method, isPrefix));
+          } else if (pushStr.contains('pushAndRemoveUntil =')) {
+            methods.add(_pushAndRemoveUntilMethod(
+                routeName, screenReturn, method, isPrefix));
           }
         }
       } else {
         methods.addAll([
-          _pushMethod(routeName, screenReturn, method),
-          _pushReplacementMethod(routeName, screenReturn, method),
-          _pushAndRemoveUntilMethod(routeName, screenReturn, method),
-          _popAndPushMethod(routeName, screenReturn, method),
+          _pushMethod(routeName, screenReturn, method, isPrefix),
+          _pushReplacementMethod(routeName, screenReturn, method, isPrefix),
+          _pushAndRemoveUntilMethod(routeName, screenReturn, method, isPrefix),
+          _popAndPushMethod(routeName, screenReturn, method, isPrefix),
         ]);
       }
     }

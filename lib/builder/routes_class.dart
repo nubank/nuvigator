@@ -10,7 +10,7 @@ class RoutesClass extends BaseBuilder {
   Class _generateRoutesClass(ClassElement classElement, List<Field> fields) {
     return Class(
       (b) => b
-        ..name = '_${getRouterName(classElement)}Routes'
+        ..name = '${getRouterName(classElement)}Routes'
         ..fields.addAll(fields),
     );
   }

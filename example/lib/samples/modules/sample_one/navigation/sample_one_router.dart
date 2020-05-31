@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
 import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
@@ -19,16 +20,16 @@ class SampleOneRouter extends Router {
         builder: (context) => ScreenOne(
           toBack: () => nuvigator.pop('ResultFromScreenOne'),
           toScreenTwo: toScreenTwo,
-          toSampleTwo: () => Router.of<SamplesRouter>(context)
-              .toSecond(testId: 'From SampleOne'),
+          toSampleTwo: () => Router.of<SamplesRouter>(context).toSecond(
+              testId: 'From SampleOne', path: SampleTwoRoutes.screenOne),
         ),
       );
 
   @NuRoute(deepLink: '/screenTwo')
   ScreenRoute<int> screenTwo() => ScreenRoute<int>(
         builder: (context) => ScreenTwo(
-          toSampleTwo: () => Router.of<SamplesRouter>(context)
-              .toSecond(testId: 'From SampleOne'),
+          toSampleTwo: () => Router.of<SamplesRouter>(context).toSecond(
+              testId: 'From SampleOne', path: SampleTwoRoutes.screenOne),
         ),
       );
 

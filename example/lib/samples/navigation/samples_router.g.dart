@@ -6,7 +6,7 @@ part of 'samples_router.dart';
 // NuvigatorGenerator
 // **************************************************************************
 
-class _SamplesRoutes {
+class SamplesRoutes {
   static const home = 'exapp://home';
 
   static const second = 'exapp://sampleTwo';
@@ -26,11 +26,10 @@ class SecondArgs {
   Map<String, Object> get toMap => {
         'testId': testId,
       };
-
   static SecondArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
-    if (routeSettings?.name == _SamplesRoutes.second) {
+    if (routeSettings?.name == SamplesRoutes.second) {
       final args = routeSettings?.arguments;
       if (args == null)
         throw FlutterError('SecondArgs requires Route arguments');
@@ -44,15 +43,17 @@ class SecondArgs {
 }
 
 extension SamplesRouterNavigation on SamplesRouter {
+  String homeDeepLink() =>
+      encodeDeepLink(pathWithPrefix(SamplesRoutes.home), <String, dynamic>{});
   Future<void> toHome() {
     return nuvigator.pushNamed<void>(
-      pathWithPrefix(_SamplesRoutes.home),
+      pathWithPrefix(SamplesRoutes.home),
     );
   }
 
   Future<void> pushReplacementToHome<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
-      pathWithPrefix(_SamplesRoutes.home),
+      pathWithPrefix(SamplesRoutes.home),
       result: result,
     );
   }
@@ -60,24 +61,26 @@ extension SamplesRouterNavigation on SamplesRouter {
   Future<void> pushAndRemoveUntilToHome<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
-      pathWithPrefix(_SamplesRoutes.home),
+      pathWithPrefix(SamplesRoutes.home),
       predicate,
     );
   }
 
   Future<void> popAndPushToHome<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<void, TO>(
-      pathWithPrefix(_SamplesRoutes.home),
+      pathWithPrefix(SamplesRoutes.home),
       result: result,
     );
   }
 
-  String homeDeepLink() =>
-      encodeDeepLink(pathWithPrefix(_SamplesRoutes.home), <String, dynamic>{});
-
-  Future<String> toSecond({@required String testId}) {
+  String secondDeepLink({@required String testId, @required String path}) =>
+      encodeDeepLink(
+          pathWithPrefix(SamplesRoutes.second) + path, <String, dynamic>{
+        'testId': testId,
+      });
+  Future<String> toSecond({@required String testId, @required String path}) {
     return nuvigator.pushNamed<String>(
-      pathWithPrefix(_SamplesRoutes.second),
+      pathWithPrefix(SamplesRoutes.second) + path,
       arguments: {
         'testId': testId,
       },
@@ -85,9 +88,9 @@ extension SamplesRouterNavigation on SamplesRouter {
   }
 
   Future<String> pushReplacementToSecond<TO extends Object>(
-      {@required String testId, TO result}) {
+      {@required String testId, @required String path, TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
-      pathWithPrefix(_SamplesRoutes.second),
+      pathWithPrefix(SamplesRoutes.second) + path,
       arguments: {
         'testId': testId,
       },
@@ -96,9 +99,11 @@ extension SamplesRouterNavigation on SamplesRouter {
   }
 
   Future<String> pushAndRemoveUntilToSecond<TO extends Object>(
-      {@required String testId, @required RoutePredicate predicate}) {
+      {@required String testId,
+      @required String path,
+      @required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<String>(
-      pathWithPrefix(_SamplesRoutes.second),
+      pathWithPrefix(SamplesRoutes.second) + path,
       predicate,
       arguments: {
         'testId': testId,
@@ -107,20 +112,15 @@ extension SamplesRouterNavigation on SamplesRouter {
   }
 
   Future<String> popAndPushToSecond<TO extends Object>(
-      {@required String testId, TO result}) {
+      {@required String testId, @required String path, TO result}) {
     return nuvigator.popAndPushNamed<String, TO>(
-      pathWithPrefix(_SamplesRoutes.second),
+      pathWithPrefix(SamplesRoutes.second) + path,
       arguments: {
         'testId': testId,
       },
       result: result,
     );
   }
-
-  String secondDeepLink({@required String testId}) =>
-      encodeDeepLink(pathWithPrefix(_SamplesRoutes.second), <String, dynamic>{
-        'testId': testId,
-      });
 
   SampleOneRouter get sampleOneRouter => getRouter<SampleOneRouter>();
 }
@@ -129,13 +129,12 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
   List<Router> get _$routers => [
         sampleOneRouter,
       ];
-
   Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
-      RoutePath(_SamplesRoutes.home, prefix: false): (RouteSettings settings) {
+      RoutePath(SamplesRoutes.home, prefix: false): (RouteSettings settings) {
         return home();
       },
-      RoutePath(_SamplesRoutes.second, prefix: true): (RouteSettings settings) {
+      RoutePath(SamplesRoutes.second, prefix: true): (RouteSettings settings) {
         final Map<String, Object> args = settings.arguments ?? const {};
         return second(testId: args['testId']);
       },
