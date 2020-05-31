@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../nuvigator.dart';
 import 'helpers.dart';
+import 'nuvigator.dart';
 import 'screen_route.dart';
+import 'screen_type.dart';
 
 String encodeDeepLink(String path, Map<String, dynamic> params) {
   final queryParams = <String, dynamic>{};
@@ -41,6 +43,10 @@ class RoutePath {
   bool operator ==(Object other) {
     return other is RoutePath && other.path == path && other.prefix == prefix;
   }
+
+  @override
+  String toString() =>
+      '${objectRuntimeType(this, 'RoutePath')}("$path", prefix: "$prefix")';
 }
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
@@ -61,21 +67,24 @@ class RouteEntry {
       other is RouteEntry && other.routePath == routePath;
 }
 
-class ScreenRouter<T extends Router> extends InheritedWidget {
-  const ScreenRouter({Key key, @required this.router, @required Widget child})
-      : assert(router != null),
+class NuRouteSettingsProvider extends InheritedWidget {
+  const NuRouteSettingsProvider(
+      {Key key, @required this.routeSettings, @required Widget child})
+      : assert(routeSettings != null),
         assert(child != null),
         super(key: key, child: child);
 
-  final T router;
+  final NuRouteSettings routeSettings;
 
-  static ScreenRouter<R> of<R extends Router>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ScreenRouter<R>>();
+  static NuRouteSettings of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<NuRouteSettingsProvider>()
+        ?.routeSettings;
   }
 
   @override
-  bool updateShouldNotify(ScreenRouter oldWidget) {
-    return oldWidget.router != router;
+  bool updateShouldNotify(NuRouteSettingsProvider oldWidget) {
+    return oldWidget.routeSettings != routeSettings;
   }
 }
 
@@ -108,16 +117,12 @@ abstract class Router {
   String get prefix => '';
   Map<RoutePath, ScreenRouteBuilder> get screensMap => {};
   List<Router> get routers => [];
+  WrapperFn get screensWrapper => null;
+
+  // Private Downbelow
 
   String get _prefix {
-    // In case of Nuvigator being null, it means this Router is uncontextualized
-    if (nuvigator == null || nuvigator.isRoot) {
-      return prefix;
-    }
-    // TODO: We need to consider the parent RoutePath, and not the prefix
-    final parentRouter = ScreenRouter.of(nuvigator.context);
-    final parentPrefix = parentRouter.router._prefix;
-    return parentPrefix + prefix;
+    return (nuvigator?.widget?.parentRoute?.routePath?.path ?? '') + prefix;
   }
 
   set nuvigator(NuvigatorState newNuvigator) {
@@ -126,8 +131,6 @@ abstract class Router {
       router.nuvigator = newNuvigator;
     }
   }
-
-  WrapperFn get screensWrapper => null;
 
   // Used internally
   Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
@@ -155,7 +158,7 @@ abstract class Router {
     final route = routeEntry
         .screenBuilder(finalSettings)
         .fallbackScreenType(fallbackScreenType ?? nuvigator?.widget?.screenType)
-        .toRoute(finalSettings, this);
+        .toRoute(finalSettings, routeEntry.routePath);
     return route;
   }
 

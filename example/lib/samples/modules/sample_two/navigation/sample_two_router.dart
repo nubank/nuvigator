@@ -9,19 +9,12 @@ import '../screen/screen_two.dart';
 
 part 'sample_two_router.g.dart';
 
-String exAppLink(String path) {
-  return 'exapp://$path';
-}
-
 @NuRouter()
 class SampleTwoRouter extends Router {
   SampleTwoRouter({@required this.testId});
 
   final String testId;
   final SampleTwoBloc sampleTwoBloc = SampleTwoBloc();
-
-  @override
-  String get prefix => exAppLink('sampleTwo');
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget screenWidget) {

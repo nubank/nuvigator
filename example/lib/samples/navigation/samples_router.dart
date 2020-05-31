@@ -18,15 +18,12 @@ class SamplesRouter extends Router {
       );
 
   @NuRoute(deepLink: 'exapp://sampleTwo', prefix: true)
-  ScreenRoute<String> second({@required String testId}) => ScreenRoute(
-        builder: (context) => Nuvigator<SampleTwoRouter>(
-          router: SampleTwoRouter(testId: testId),
-          initialRouteBuilder: (router) => router.screenOneDeepLink(),
-          screenType: cupertinoScreenType,
-          wrapper: (BuildContext context, Widget child) => Provider(
-            create: (_) => SampleFlowBloc(),
-            child: child,
-          ),
+  FlowRoute<String> second({@required String testId}) => FlowRoute(
+        router: SampleTwoRouter(testId: testId),
+        screenType: cupertinoScreenType,
+        wrapper: (BuildContext context, Widget child) => Provider(
+          create: (_) => SampleFlowBloc(),
+          child: child,
         ),
       );
 

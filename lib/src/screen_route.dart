@@ -42,27 +42,9 @@ class ScreenRoute<T extends Object> {
     );
   }
 
-  ScreenRoute<T> copyWith({
-    WidgetBuilder builder,
-    ScreenType screenType,
-    WrapperFn wrapper,
-    String debugKey,
-    String deepLink,
-  }) {
-    return ScreenRoute<T>(
-      builder: builder ?? this.builder,
-      screenType: screenType ?? this.screenType,
-      wrapper: wrapper ?? this.wrapper,
-      debugKey: debugKey ?? this.debugKey,
-    );
-  }
-
-  Route<T> toRoute(RouteSettings settings, Router router) {
+  Route<T> toRoute(RouteSettings settings, RoutePath routePath) {
     return _toRouteType(
-      (BuildContext context) => ScreenRouter(
-        router: router,
-        child: _buildScreen(context, settings),
-      ),
+      (BuildContext context) => _buildScreen(context, settings, routePath),
       settings,
     );
   }
@@ -83,13 +65,34 @@ class ScreenRoute<T extends Object> {
   Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
       screenType.toRoute<T>(builder, settings);
 
-  Widget _buildScreen(BuildContext context, RouteSettings settings) {
-    if (wrapper == null) return builder(context);
-    return wrapper(
-      context,
-      Builder(
-        builder: (innerContext) => builder(innerContext),
-      ),
+  Widget _buildScreen(
+      BuildContext context, RouteSettings settings, RoutePath routePath) {
+    final nuRouteSettings = NuRouteSettings(
+      routePath: routePath,
+      name: settings.name,
+      arguments: settings.arguments,
+    );
+    print('Current NuRouteSettings: $nuRouteSettings');
+    final child = wrapper == null
+        ? builder(context)
+        : wrapper(
+            context, Builder(builder: (innerContext) => builder(innerContext)));
+    return NuRouteSettingsProvider(
+      child: child,
+      routeSettings: nuRouteSettings,
     );
   }
+}
+
+class FlowRoute<T extends Object> extends ScreenRoute<T> {
+  FlowRoute({
+    @required Router router,
+    List<NavigatorObserver> observers = const [],
+    ScreenType screenType,
+    WrapperFn wrapper,
+  }) : super(
+            screenType: screenType,
+            wrapper: wrapper,
+            builder: Nuvigator(
+                router: router, observers: observers, screenType: screenType));
 }
