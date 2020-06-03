@@ -1,7 +1,8 @@
 # CHANGELOG
 
 ## 0.6.0
-- First Class DeepLink support edition, now every Route **SHOULD** have a deepLink
+- First Class DeepLink support edition, now every Route **SHOULD** have a deepLink, when no deepLink is provided the lib
+will generate one based on the Route method name.
 - In this version route names and deepLinks where unified under just deepLinks. This aims
 to provide a more concise and easy to understand API without confusions between deepLinks and
 Route names. With this change, we also were able to implement some new features requested before.
@@ -13,17 +14,17 @@ can just grab the Root Nuvigator and call the openDeepLink method directly in it
 be required for most users).
 - Introduction of dynamic API helpers to be used when code generations is not desired.
 - DeepLink as prefix is now supported
+- Grouped Routers do not get the prefix from their parent, this was changed to enforce the that Grouped routers act just as
+a merge.
+- DeepLink RoutePath is applied to child nested Nuvigators. This allows for DeepLink navigation into nested Nuvigators
+when using prefixes.
 - Deep DeepLink navigation is now supported. Using the DeepLink prefix feature is now possible to
-open a specific screen of a nested flow using DeepLinks, currently we provide an explicit API to do
-this (`currentDeepLink(context)`), but in the future we may look into making this automatic. 
+open a specific screen of a nested flow using DeepLinks.
 - Fix a bad reference update between Nuvigator and Router that could lead to NullPointer exceptions.
 - Some API changes were introduced to support the new features, but they should be easy to migrate, notable changes:
     - `RouteDef` class was replaced by `RoutePath`
-    - `deepLinkPrefix` on Router was replaced by just `prefix`
-    - Generated Routes class is now private
     - DeepLinks are now treated as Strings in the whole library 
-    - DeepLinks should include the full DeepLink, and not just the part after the context where they would be grouped (including scheme)
-    - `NuRoute` annotation had the `routeName` removed and `deepLink` is now a positional required attribute
+    - DeepLinks handling is not stripping the schema from the URL anymore
     - `NuRouter` had the `routeNamePrefix` removed
 
 ## 0.5.0

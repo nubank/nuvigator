@@ -1,6 +1,7 @@
-import 'package:nuvigator/nuvigator.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
+
+import 'route_path.dart';
 
 RegExp pathToRegex(RoutePath path, {List<String> parameters}) {
   return pathToRegExp(path.path, parameters: parameters, prefix: path.prefix);

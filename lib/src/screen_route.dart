@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-import 'router.dart';
+import 'nu_route_settings.dart';
 import 'screen_type.dart';
 
 typedef WrapperFn = Widget Function(BuildContext context, Widget child);
@@ -42,10 +42,24 @@ class ScreenRoute<T extends Object> {
     );
   }
 
-  Route<T> toRoute(RouteSettings settings, RoutePath routePath) {
+  Route<T> toRoute(NuRouteSettings settings) {
     return _toRouteType(
-      (BuildContext context) => _buildScreen(context, settings, routePath),
+      (BuildContext context) => _buildScreen(context, settings),
       settings,
+    );
+  }
+
+  Route<T> _toRouteType(WidgetBuilder builder, NuRouteSettings settings) =>
+      screenType.toRoute<T>(builder, settings);
+
+  Widget _buildScreen(BuildContext context, NuRouteSettings settings) {
+    final child = wrapper == null
+        ? builder(context)
+        : wrapper(
+            context, Builder(builder: (innerContext) => builder(innerContext)));
+    return NuRouteSettingsProvider(
+      child: child,
+      routeSettings: settings,
     );
   }
 
@@ -60,26 +74,5 @@ class ScreenRoute<T extends Object> {
           );
     }
     return this.wrapper;
-  }
-
-  Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
-      screenType.toRoute<T>(builder, settings);
-
-  Widget _buildScreen(
-      BuildContext context, RouteSettings settings, RoutePath routePath) {
-    final nuRouteSettings = NuRouteSettings(
-      routePath: routePath,
-      name: settings.name,
-      arguments: settings.arguments,
-    );
-    print('Current NuRouteSettings: $nuRouteSettings');
-    final child = wrapper == null
-        ? builder(context)
-        : wrapper(
-            context, Builder(builder: (innerContext) => builder(innerContext)));
-    return NuRouteSettingsProvider(
-      child: child,
-      routeSettings: nuRouteSettings,
-    );
   }
 }

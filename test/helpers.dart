@@ -21,7 +21,7 @@ class TestRouter extends Router {
 
 class TestRouterWPrefix extends Router {
   @override
-  String get prefix => 'testapp://prefix/';
+  String get deepLinkPrefix => 'testapp://prefix/';
 
   @override
   Map<RoutePath, ScreenRouteBuilder> get screensMap => {
@@ -40,7 +40,7 @@ class TestRouterWPrefix extends Router {
 
 class GroupTestRouter extends Router {
   @override
-  String get prefix => 'testapp://group/';
+  String get deepLinkPrefix => 'testapp://group/';
 
   TestRouter testRouter = TestRouter();
 

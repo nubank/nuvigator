@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
@@ -27,7 +26,10 @@ void main() {
       builder: (_) => null,
       screenType: materialScreenType,
     );
-    final route = screenRoute.toRoute(const RouteSettings());
+    final route = screenRoute.toRoute(const NuRouteSettings(
+      routePath: null,
+      name: null,
+    ));
     expect(route is MaterialPageRoute, true);
   });
 
@@ -35,7 +37,10 @@ void main() {
     final screenRoute = ScreenRoute(
       builder: (_) => null,
     ).fallbackScreenType(materialScreenType);
-    final route = screenRoute.toRoute(const RouteSettings());
+    final route = screenRoute.toRoute(const NuRouteSettings(
+      routePath: null,
+      name: null,
+    ));
     expect(route is MaterialPageRoute, true);
   });
 

@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nuvigator/nuvigator.dart';
 
 import 'helpers.dart';
 import 'nuvigator.dart';
+import 'route_path.dart';
 import 'screen_route.dart';
 import 'screen_type.dart';
 
@@ -23,33 +25,7 @@ String encodeDeepLink(String path, Map<String, dynamic> params) {
       : interpolated;
 }
 
-class RoutePath {
-  RoutePath(this.path, {this.prefix = false});
-
-  final String path;
-  final bool prefix;
-
-  RoutePath copyWith({String path, bool prefix}) {
-    return RoutePath(
-      path ?? this.path,
-      prefix: prefix ?? this.prefix,
-    );
-  }
-
-  @override
-  int get hashCode => hashList([path.hashCode, prefix.hashCode]);
-
-  @override
-  bool operator ==(Object other) {
-    return other is RoutePath && other.path == path && other.prefix == prefix;
-  }
-
-  @override
-  String toString() =>
-      '${objectRuntimeType(this, 'RoutePath')}("$path", prefix: "$prefix")';
-}
-
-typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
+typedef ScreenRouteBuilder = ScreenRoute Function(NuRouteSettings settings);
 typedef HandleDeepLinkFn = Future<dynamic>
     Function(Router router, String deepLink, [dynamic args, bool isFromNative]);
 
@@ -65,27 +41,6 @@ class RouteEntry {
   @override
   bool operator ==(Object other) =>
       other is RouteEntry && other.routePath == routePath;
-}
-
-class NuRouteSettingsProvider extends InheritedWidget {
-  const NuRouteSettingsProvider(
-      {Key key, @required this.routeSettings, @required Widget child})
-      : assert(routeSettings != null),
-        assert(child != null),
-        super(key: key, child: child);
-
-  final NuRouteSettings routeSettings;
-
-  static NuRouteSettings of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<NuRouteSettingsProvider>()
-        ?.routeSettings;
-  }
-
-  @override
-  bool updateShouldNotify(NuRouteSettingsProvider oldWidget) {
-    return oldWidget.routeSettings != routeSettings;
-  }
 }
 
 abstract class Router {
@@ -114,15 +69,19 @@ abstract class Router {
   NuvigatorState get nuvigator => _nuvigator;
 
   // Public Override API
-  String get prefix => '';
+  String get deepLinkPrefix => '';
+
   Map<RoutePath, ScreenRouteBuilder> get screensMap => {};
+
   List<Router> get routers => [];
+
   WrapperFn get screensWrapper => null;
 
-  // Private Downbelow
+  // Private Down below
 
   String get _prefix {
-    return (nuvigator?.widget?.parentRoute?.routePath?.path ?? '') + prefix;
+    return (nuvigator?.widget?.parentRoute?.routePath?.path ?? '') +
+        deepLinkPrefix;
   }
 
   set nuvigator(NuvigatorState newNuvigator) {
@@ -154,11 +113,15 @@ abstract class Router {
       ...extractDeepLinkParameters(settings.name, routeEntry.routePath),
       ...settingsArgs,
     };
-    final finalSettings = settings.copyWith(arguments: computedArguments);
+    final nuRouteSettings = NuRouteSettings(
+      name: settings.name,
+      arguments: computedArguments,
+      routePath: routeEntry.routePath,
+    );
     final route = routeEntry
-        .screenBuilder(finalSettings)
+        .screenBuilder(nuRouteSettings)
         .fallbackScreenType(fallbackScreenType ?? nuvigator?.widget?.screenType)
-        .toRoute(finalSettings, routeEntry.routePath);
+        .toRoute(nuRouteSettings);
     return route;
   }
 

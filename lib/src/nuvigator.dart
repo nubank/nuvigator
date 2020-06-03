@@ -3,37 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/src/screen_types/material_screen_type.dart';
 
+import 'nu_route_settings.dart';
 import 'router.dart';
 import 'screen_route.dart';
 import 'screen_type.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
 typedef InitialDeepLinkFn<T> = String Function(T router);
-
-class NuRouteSettings extends RouteSettings {
-  const NuRouteSettings({
-    @required this.routePath,
-    String name,
-    Object arguments,
-  }) : super(name: name, arguments: arguments);
-
-  // Given that the matched route is not always the same as name (given we provide a pattern)
-  final RoutePath routePath;
-
-  @override
-  String toString() =>
-      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$routePath", $arguments)';
-
-  @override
-  int get hashCode => hashList([name, arguments, routePath]);
-
-  @override
-  bool operator ==(Object other) =>
-      other is NuRouteSettings &&
-      other.routePath == routePath &&
-      other.name == name &&
-      other.arguments == arguments;
-}
 
 NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
     NuvigatorState nuvigatorState) {
@@ -43,10 +19,6 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
   if (nuvigatorState != nuvigatorState.parent && nuvigatorState.parent != null)
     return _tryToFindNuvigatorForRouter<T>(nuvigatorState.parent);
   return null;
-}
-
-String currentDeepLink(BuildContext context) {
-  return ModalRoute.of(context)?.settings?.name;
 }
 
 class NuvigatorStateTracker extends NavigatorObserver {
@@ -393,19 +365,19 @@ class Nuvigator<T extends Router> extends StatelessWidget {
   const Nuvigator({
     @required this.router,
     this.initialRoute,
-    this.key,
+    Key key,
     this.observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
-  });
+  }) : innerKey = key;
 
   final String initialRoute;
   final List<NavigatorObserver> observers;
   final T router;
-  final Key key;
+  final Key innerKey;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;
@@ -453,7 +425,7 @@ class Nuvigator<T extends Router> extends StatelessWidget {
       debug: debug,
       inheritableObservers: inheritableObservers,
       observers: observers,
-      initialRoute: prefix + initialRoute ?? routeSettings?.name,
+      initialRoute: prefix + (initialRoute ?? routeSettings?.name),
       key: key,
       parentRoute: routeSettings,
       screenType: screenType,
