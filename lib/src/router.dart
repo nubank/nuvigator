@@ -8,6 +8,10 @@ import 'route_path.dart';
 import 'screen_route.dart';
 import 'screen_type.dart';
 
+typedef ScreenRouteBuilder = ScreenRoute Function(NuRouteSettings settings);
+typedef HandleDeepLinkFn = Future<dynamic>
+    Function(Router router, String deepLink, [dynamic args, bool isFromNative]);
+
 String encodeDeepLink(String path, Map<String, dynamic> params) {
   final queryParams = <String, dynamic>{};
 
@@ -24,10 +28,6 @@ String encodeDeepLink(String path, Map<String, dynamic> params) {
       ? interpolated + Uri(queryParameters: queryParams).toString()
       : interpolated;
 }
-
-typedef ScreenRouteBuilder = ScreenRoute Function(NuRouteSettings settings);
-typedef HandleDeepLinkFn = Future<dynamic>
-    Function(Router router, String deepLink, [dynamic args, bool isFromNative]);
 
 class RouteEntry {
   RouteEntry(this.routePath, this.screenBuilder);
@@ -123,6 +123,17 @@ abstract class Router {
         .fallbackScreenType(fallbackScreenType ?? nuvigator?.widget?.screenType)
         .toRoute(nuRouteSettings);
     return route;
+  }
+
+  /// Same as nuvigator.openDeepLink()
+  Future<R> openDeepLink<R extends Object>(String deepLink, {Object args}) {
+    return nuvigator.openDeepLink<R>(deepLink, args);
+  }
+
+  /// Verify if THIS router can handle the deepLink, does not checks for routers
+  /// up in the chain.
+  bool canOpenDeepLink(String deepLink) {
+    return _getRouteEntryForDeepLink(deepLink) != null;
   }
 
   RouteEntry _getRouteEntryForDeepLink(String deepLink) {

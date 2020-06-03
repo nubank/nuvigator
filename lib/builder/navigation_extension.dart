@@ -193,11 +193,11 @@ class NavigationExtension extends BaseBuilder {
       List<Method> methods, String className, MethodElement method) {
     final nuRouteFieldAnnotation =
         nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
-    final isPrefix = nuRouteFieldAnnotation.getField('prefix')?.toBoolValue();
-    final extraPath = isPrefix ? ' + path' : '';
-    final routeName =
-        'pathWithPrefix(${removeRouterKey(className)}Routes.${method.name})$extraPath';
     if (nuRouteFieldAnnotation != null) {
+      final isPrefix = nuRouteFieldAnnotation.getField('prefix')?.toBoolValue();
+      final extraPath = isPrefix ? ' + path' : '';
+      final routeName =
+          'pathWithPrefix(${removeRouterKey(className)}Routes.${method.name})$extraPath';
       methods.add(_getDeepLinkMethod(routeName, method, isPrefix));
       final generics = getGenericTypes(method.returnType);
       final screenReturn =
