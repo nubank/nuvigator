@@ -84,7 +84,7 @@ abstract class Router {
   Map<RoutePath, ScreenRouteBuilder> _prefixedScreensMap;
 
   void install(NuvigatorState nuvigator) {
-    assert(_nuvigator == null);
+    assert(_nuvigator == null && nuvigator != null);
     _nuvigator = nuvigator;
     _routers = routers;
     _prefix =
@@ -137,8 +137,9 @@ abstract class Router {
   }
 
   /// Same as nuvigator.openDeepLink()
-  Future<R> openDeepLink<R extends Object>(String deepLink, {Object args}) {
-    return nuvigator.openDeepLink<R>(deepLink, args);
+  Future<R> openDeepLink<R extends Object>(String deepLink,
+      [dynamic args, bool isFromNative]) {
+    return nuvigator.openDeepLink<R>(deepLink, args, isFromNative);
   }
 
   /// Verify if THIS router can handle the deepLink, does not checks for routers
