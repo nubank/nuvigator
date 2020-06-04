@@ -79,26 +79,37 @@ abstract class Router {
 
   // Private Down below
 
-  String get _prefix {
-    return (nuvigator?.widget?.parentRoute?.routePath?.path ?? '') +
-        deepLinkPrefix;
-  }
+  String _prefix;
+  List<Router> _routers;
+  Map<RoutePath, ScreenRouteBuilder> _prefixedScreensMap;
 
-  set nuvigator(NuvigatorState newNuvigator) {
-    _nuvigator = newNuvigator;
-    for (final router in routers) {
-      router.nuvigator = newNuvigator;
+  void install(NuvigatorState nuvigator) {
+    assert(_nuvigator == null);
+    _nuvigator = nuvigator;
+    _routers = routers;
+    _prefix =
+        (nuvigator.widget.parentRoute?.routePath?.path ?? '') + deepLinkPrefix;
+    _prefixedScreensMap = screensMap
+        .map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
+    for (final router in _routers) {
+      router.install(nuvigator);
     }
   }
 
-  // Used internally
-  Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
-      screensMap.map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
+  void uninstall() {
+    for (final router in _routers) {
+      router.uninstall();
+    }
+    _nuvigator = null;
+    _routers = null;
+    _prefix = null;
+    _prefixedScreensMap = null;
+  }
 
   /// Get the specified router that can be grouped in this router
   T getRouter<T extends Router>() {
     if (this is T) return this;
-    for (final router in routers) {
+    for (final router in _routers) {
       final r = router.getRouter<T>();
       if (r != null) return r;
     }
@@ -143,7 +154,7 @@ abstract class Router {
     if (routePath != null)
       return RouteEntry(
           routePath, _wrapScreenBuilder(_prefixedScreensMap[routePath]));
-    for (final subRouter in routers) {
+    for (final subRouter in _routers) {
       final subRouterEntry = subRouter._getRouteEntryForDeepLink(deepLink);
       if (subRouterEntry != null) {
         return RouteEntry(

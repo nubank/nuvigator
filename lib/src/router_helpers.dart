@@ -31,14 +31,8 @@ Router mergeRouters(List<Router> routers) {
   return GenericRouter(routers: routers);
 }
 
-Router singleRoute(RoutePath routePath, ScreenRoute screenRoute) {
-  return GenericRouter(screensMap: {
-    routePath: (settings) => screenRoute,
-  });
-}
-
-class RouteHandler extends GenericRouter {
-  RouteHandler(this.routePath, this.screenRoute)
+class SingleRouteHandler extends GenericRouter {
+  SingleRouteHandler(this.routePath, this.screenRoute)
       : super(screensMap: {routePath: (settings) => screenRoute});
 
   final RoutePath routePath;

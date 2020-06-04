@@ -182,16 +182,14 @@ class NuvigatorState<T extends Router> extends NavigatorState
     stateTracker = NuvigatorStateTracker();
     widget.observers.add(stateTracker);
     WidgetsBinding.instance.addObserver(this);
-    assert(widget.router.nuvigator == null);
-    widget.router.nuvigator = this;
+    widget.router.install(this);
     super.initState();
   }
 
   @override
   void didUpdateWidget(_NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
-      assert(widget.router.nuvigator == null);
-      widget.router.nuvigator = this;
+      widget.router.install(this);
       widget.observers.add(stateTracker);
       widget.observers.addAll(_collectObservers().map((f) => f()));
     }
@@ -200,7 +198,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   @override
   void dispose() {
-    widget.router.nuvigator = null;
+    widget.router.uninstall();
     stateTracker = null;
     if (isNested) {
       parent.nestedNuvigators.remove(this);
