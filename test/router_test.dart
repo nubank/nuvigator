@@ -86,14 +86,20 @@ void main() {
   });
 
   group('extracting parameters from deepLink', () {
-    test('it can correctly adapt non camelCase keys', () {
-      final result = extractDeepLinkParameters(
-          'my-route/something?another-one=hello',
-          RoutePath('my-route/:myArgument'));
+    const deepLink = 'my-route/something?another-one=hello';
+    final routePath = RoutePath('my-route/:myArgument');
+    test('it can correctly extract pathParams', () {
+      final result = deepLinkPathParams(deepLink, routePath);
       expect(result, {
         'myArgument': 'something',
+      });
+    });
+
+    test('it can correctly extract queryParams', () {
+      final result = deepLinkQueryParams(deepLink);
+      expect(result, {
         'another-one': 'hello',
-        'anotherOne': 'hello'
+        'anotherOne': 'hello',
       });
     });
   });

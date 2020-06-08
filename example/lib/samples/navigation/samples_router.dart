@@ -12,12 +12,15 @@ part 'samples_router.g.dart';
 
 @NuRouter()
 class SamplesRouter extends Router {
-  @NuRoute(deepLink: 'exapp://home')
+  @override
+  String get deepLinkPrefix => 'exapp://';
+
+  @NuRoute(deepLink: 'home')
   ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => HomeScreen(),
       );
 
-  @NuRoute(deepLink: 'exapp://sampleTwo', prefix: true)
+  @NuRoute(deepLink: 'sampleTwo', prefix: true)
   ScreenRoute<String> second({@required String testId}) => ScreenRoute(
         screenType: cupertinoDialogScreenType,
         builder: Nuvigator(
