@@ -13,9 +13,6 @@ for navigating in a nested flow using deepLinks. (If you want to have the same b
 can just grab the Root Nuvigator and call the openDeepLink method directly in it, however this should not
 be required for most users).
 - Introduction of dynamic API helpers to be used when code generations is not desired.
-- DeepLink as prefix is now supported
-- Grouped Routers do not get the prefix from their parent, this was changed to enforce the that Grouped routers act just as
-a merge.
 - DeepLink RoutePath is applied to child nested Nuvigators. This allows for DeepLink navigation into nested Nuvigators
 when using prefixes.
 - Deep DeepLink navigation is now supported. Using the DeepLink prefix feature is now possible to
@@ -24,7 +21,7 @@ open a specific screen of a nested flow using DeepLinks.
 - Some API changes were introduced to support the new features, but they should be easy to migrate, notable changes:
     - `RouteDef` class was replaced by `RoutePath`
     - DeepLinks are now treated as Strings in the whole library 
-    - DeepLinks handling is not stripping the schema from the URL anymore
+    - DeepLinks handling is not stripping the URL scheme anymore
     - `NuRouter` had the `routeNamePrefix` removed
 
 ## 0.5.0

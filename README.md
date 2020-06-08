@@ -26,7 +26,7 @@ part 'main_router.g.dart';
 @NuRouter()
 class MainRouter extends Router {
 
-  @NuRoute('myapp://myRoute')
+  @NuRoute(deepLink: 'myapp://myRoute')
   ScreenRoute myRoute() => ScreenRoute(
     builder: (context) => MyScreenWidget(),
   );
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       builder: Nuvigator(
         router: MainRouter(),
         screenType: materialScreenType,
-        initialDeepLink: 'myapp://myRoute',
+        initialRoute: 'myapp://myRoute',
       ), 
     );
   }
@@ -94,12 +94,12 @@ Example:
 @NuRouter()
 class MyCustomRouter extends Router {
   
-  @NuRoute('myapp://firstScreen')
+  @NuRoute(deepLink: 'myapp://firstScreen')
   ScreenRoute firstScreen({String argumentHere}) => ScreenRoute(
     builder: (_) => MyFirstScreen(),
   );
   
-  @NuRoute('myapp://secondScreen/:name')
+  @NuRoute(deepLink: 'myapp://secondScreen/:name')
   ScreenRoute secondScreen({String name}) => ScreenRoute(
     builder: (context) => MySecondScreen(userName: name)
   );
@@ -119,21 +119,21 @@ trying to open a new DeepLink will also be made available and can be extracted i
 ### Router Prefix
 
 Inside you Router you can define a common prefix to use for all of your Routes declared in it. To do this
-just override the `prefix` getter.
+just override the `deepLinkPrefix` getter.
 
 Example:
 ```dart
 @NuRouter()
 class MyCustomRouter extends Router {
   
-  String get prefix => 'myapp://';
+  String get deepLinkPrefix => 'myapp://';
 
-  @NuRoute('firstScreen')
+  @NuRoute(deepLink: 'firstScreen')
   ScreenRoute firstScreen({String argumentHere}) => ScreenRoute(
     builder: (_) => MyFirstScreen(),
   );
   
-  @NuRoute('secondScreen/:name')
+  @NuRoute(deepLink: 'secondScreen/:name')
   ScreenRoute secondScreen({@required String name}) => ScreenRoute(
     builder: (context) => MySecondScreen(userName: name)
   );
@@ -154,13 +154,12 @@ Screen Options:
 - screenType
 - wrapper
 
-
 ### Merging/Grouping Routers
 
 In large applications it's common to have many Routes and even having them split among several packages, to better support
 this Nuvigator has the concept of Grouped Routers. This is basically a way to merge several Routers into one final big Router
 that will be used by the application entry point. Grouping Routers does **NOT** stabilises a nesting or parent/children
-relationship, instead it just acts as a "merge" function for your Routes. You can think it as a way of merging Routers.
+relationship, instead it just acts as a "merge" function for your Routes. You can think it as a way of merging or grouping Routers.
 
 To declare that a Router should be merged into another one, you can use the `@NuRouter` annotation in a property containing 
 the Router that will include the Routes of the second Router.
@@ -182,8 +181,8 @@ class MyMain extends Router {
  obs :Remember to include the override with the generated `_$routers` field.
  
 This way all the routes declared in both `FirstRouter` and `SecondRouter` will be available to the `MainRouter`. Note that
-however, the `prefix` declared in the `MainRouter` do **NOT** take effect for the Routes declared in the other Routers, they
-will still respect the `prefix` of the original Router.
+however, the `deepLinkPrefix` declared in the `MainRouter` do take effect for the Routes declared in the other Routers, and 
+of course, after that they will respect the owns Router `deepLinkPrefix`.
 
 
 ### Wrappers
