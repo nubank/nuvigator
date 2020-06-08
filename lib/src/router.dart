@@ -153,8 +153,10 @@ abstract class Router {
     if (routePath != null)
       return RouteEntry(
           routePath, _wrapScreenBuilder(_prefixedScreensMap[routePath]));
+    final nestedDeepLink = deepLink.replaceFirst(RegExp('^$_prefix'), '');
     for (final subRouter in _routers) {
-      final subRouterEntry = subRouter._getRouteEntryForDeepLink(deepLink);
+      final subRouterEntry =
+          subRouter._getRouteEntryForDeepLink(nestedDeepLink);
       if (subRouterEntry != null) {
         return RouteEntry(
           subRouterEntry.routePath,
@@ -170,7 +172,7 @@ abstract class Router {
   }
 
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {
-    return (RouteSettings settings) =>
+    return (NuRouteSettings settings) =>
         screenRouteBuilder(settings).wrapWith(screensWrapper);
   }
 }

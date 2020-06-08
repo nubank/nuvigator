@@ -37,6 +37,3 @@ Map<String, String> deepLinkQueryParams(String deepLink) {
   final queryParameters = Uri.parse(deepLink).queryParameters;
   return convertCase(queryParameters);
 }
-
-Map<String, String> extractDeepLinkParameters(
-    String deepLink, RoutePath path) {}
