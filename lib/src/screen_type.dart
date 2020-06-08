@@ -41,5 +41,5 @@ abstract class ScreenType {
   const ScreenType();
 
   Route<T> toRoute<T extends Object>(
-      WidgetBuilder builder, RouteSettings settings);
+      WidgetBuilder builder, NuRouteSettings settings);
 }

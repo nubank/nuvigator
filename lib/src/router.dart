@@ -44,6 +44,11 @@ class RouteEntry {
 }
 
 abstract class Router {
+  Router() {
+    // Calling the getter here to cache the instances of the returned Routers
+    _routers = routers;
+  }
+
   static T of<T extends Router>(
     BuildContext context, {
     bool nullOk = false,
@@ -79,18 +84,17 @@ abstract class Router {
 
   // Private Down below
 
-  String _prefix;
   List<Router> _routers;
-  Map<RoutePath, ScreenRouteBuilder> _prefixedScreensMap;
+
+  String get _prefix =>
+      (nuvigator?.widget?.parentRoute?.routePath?.path ?? '') + deepLinkPrefix;
+
+  Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
+      screensMap.map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
 
   void install(NuvigatorState nuvigator) {
     assert(_nuvigator == null && nuvigator != null);
     _nuvigator = nuvigator;
-    _routers = routers;
-    _prefix =
-        (nuvigator.widget.parentRoute?.routePath?.path ?? '') + deepLinkPrefix;
-    _prefixedScreensMap = screensMap
-        .map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
     for (final router in _routers) {
       router.install(nuvigator);
     }
@@ -101,9 +105,6 @@ abstract class Router {
       router.uninstall();
     }
     _nuvigator = null;
-    _routers = null;
-    _prefix = null;
-    _prefixedScreensMap = null;
   }
 
   /// Get the specified router that can be grouped in this router
@@ -119,14 +120,11 @@ abstract class Router {
   Route getRoute<T>(RouteSettings settings, [ScreenType fallbackScreenType]) {
     final routeEntry = _getRouteEntryForDeepLink(settings.name);
     if (routeEntry == null) return null;
-    final Map<String, Object> settingsArgs = (settings.arguments) ?? {};
-    final Map<String, Object> computedArguments = {
-      ...extractDeepLinkParameters(settings.name, routeEntry.routePath),
-      ...settingsArgs,
-    };
     final nuRouteSettings = NuRouteSettings(
       name: settings.name,
-      arguments: computedArguments,
+      pathParams: deepLinkPathParams(settings.name, routeEntry.routePath),
+      queryParams: deepLinkQueryParams(settings.name),
+      arguments: settings.arguments,
       routePath: routeEntry.routePath,
     );
     final route = routeEntry

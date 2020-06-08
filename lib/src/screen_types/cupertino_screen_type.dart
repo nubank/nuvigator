@@ -27,7 +27,7 @@ class CupertinoScreenType extends ScreenType {
 
   @override
   Route<T> toRoute<T extends Object>(
-      WidgetBuilder builder, RouteSettings settings) {
+      WidgetBuilder builder, NuRouteSettings settings) {
     return NuvigatorCupertinoPageRoute(
       builder: builder,
       fullscreenDialog: fullscreenDialog,

@@ -31,12 +31,12 @@ class NuvigatorRouteBuilder<T> extends PageRouteBuilder<T>
 class ScreenTypeBuilder extends ScreenType {
   ScreenTypeBuilder(this.routeBuilder);
 
-  final NuvigatorRouteBuilder<T> Function<T>(WidgetBuilder, RouteSettings)
+  final NuvigatorRouteBuilder<T> Function<T>(WidgetBuilder, NuRouteSettings)
       routeBuilder;
 
   @override
   Route<T> toRoute<T extends Object>(
-      WidgetBuilder builder, RouteSettings settings) {
+      WidgetBuilder builder, NuRouteSettings settings) {
     return routeBuilder<T>(builder, settings);
   }
 }

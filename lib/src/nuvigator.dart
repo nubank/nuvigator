@@ -11,6 +11,11 @@ import 'screen_type.dart';
 typedef ObserverBuilder = NavigatorObserver Function();
 typedef InitialDeepLinkFn<T> = String Function(T router);
 
+/// Should return `true` if the deepLink was handled and should halt execution,
+/// otherwise false.
+typedef DeepLinkInterceptor = bool Function(String deepLink,
+    [Object arguments, bool isFromNative]);
+
 NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
     NuvigatorState nuvigatorState) {
   if (nuvigatorState == null) return null;
@@ -65,6 +70,8 @@ class _NuvigatorInner<T extends Router> extends Navigator {
     List<NavigatorObserver> observers = const [],
     this.parentRoute,
     this.screenType = materialScreenType,
+    this.deepLinkInterceptor,
+    this.initialArguments,
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
@@ -75,6 +82,12 @@ class _NuvigatorInner<T extends Router> extends Navigator {
             HeroController(),
             ...observers,
           ],
+          onGenerateInitialRoutes: (state, routeName) {
+            return [
+              router.getRoute<dynamic>(
+                  RouteSettings(name: routeName, arguments: initialArguments))
+            ];
+          },
           onGenerateRoute: (settings) =>
               router.getRoute<dynamic>(settings, screenType),
           key: key,
@@ -108,6 +121,8 @@ class _NuvigatorInner<T extends Router> extends Navigator {
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;
+  final Map<String, dynamic> initialArguments;
+  final DeepLinkInterceptor deepLinkInterceptor;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
 
@@ -299,11 +314,17 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   Future<R> openDeepLink<R extends Object>(String deepLink,
       [dynamic arguments, bool isFromNative = false]) async {
+    if (widget.deepLinkInterceptor != null) {
+      final handled =
+          widget.deepLinkInterceptor(deepLink, arguments, isFromNative);
+      if (handled) return Future.value(null);
+    }
     final route = router.getRoute<T>(RouteSettings(name: deepLink));
     if (route == null) {
-      if (isRoot && router.onDeepLinkNotFound != null)
+      if (isRoot && router.onDeepLinkNotFound != null) {
         return await router.onDeepLinkNotFound(
             router, deepLink, isFromNative, arguments);
+      }
       return parent.openDeepLink<R>(deepLink, arguments, isFromNative);
     }
     if (isFromNative) {
@@ -367,8 +388,10 @@ class Nuvigator<T extends Router> extends StatelessWidget {
     this.observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
+    this.initialArguments,
     this.debug = false,
     this.inheritableObservers = const [],
+    this.deepLinkInterceptor,
     this.shouldPopRoot = false,
   }) : innerKey = key;
 
@@ -377,8 +400,10 @@ class Nuvigator<T extends Router> extends StatelessWidget {
   final T router;
   final Key innerKey;
   final bool debug;
+  final Map<String, Object> initialArguments;
   final bool shouldPopRoot;
   final ScreenType screenType;
+  final DeepLinkInterceptor deepLinkInterceptor;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
 
@@ -423,6 +448,8 @@ class Nuvigator<T extends Router> extends StatelessWidget {
       debug: debug,
       inheritableObservers: inheritableObservers,
       observers: observers,
+      deepLinkInterceptor: deepLinkInterceptor,
+      initialArguments: initialArguments,
       initialRoute: prefix + (initialRoute ?? routeSettings?.name),
       key: key,
       parentRoute: routeSettings,

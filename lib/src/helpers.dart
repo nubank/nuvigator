@@ -20,13 +20,23 @@ Match matchPath(String deepLink, RoutePath path, {List<String> parameters}) {
 bool pathMatches(String deepLink, RoutePath path) =>
     matchPath(deepLink, path) != null;
 
-Map<String, String> extractDeepLinkParameters(String deepLink, RoutePath path) {
-  final parameters = <String>[];
-  final queryParameters = Uri.parse(deepLink).queryParameters;
-  final match = matchPath(deepLink, path, parameters: parameters);
-  final parametersMap = extract(parameters, match)..addAll(queryParameters);
-  final camelCasedParametersMap = parametersMap.map((k, v) {
+Map<String, String> convertCase(Map<String, String> input) {
+  return input.map((k, v) {
     return MapEntry(ReCase(k).camelCase, v);
   });
-  return {...parametersMap, ...camelCasedParametersMap};
 }
+
+Map<String, String> deepLinkPathParams(String deepLink, RoutePath path) {
+  final parameters = <String>[];
+  final match = matchPath(deepLink, path, parameters: parameters);
+  final parametersMap = extract(parameters, match);
+  return convertCase(parametersMap);
+}
+
+Map<String, String> deepLinkQueryParams(String deepLink) {
+  final queryParameters = Uri.parse(deepLink).queryParameters;
+  return convertCase(queryParameters);
+}
+
+Map<String, String> extractDeepLinkParameters(
+    String deepLink, RoutePath path) {}
