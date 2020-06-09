@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.6.0
+## 1.0.0
 - First Class DeepLink support edition, now every Route **SHOULD** have a deepLink, when no deepLink is provided the lib
 will generate one based on the Route method name.
 - In this version route names and deepLinks where unified under just deepLinks. This aims
