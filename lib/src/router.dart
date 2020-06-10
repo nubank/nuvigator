@@ -46,7 +46,7 @@ class RouteEntry {
 abstract class Router {
   Router() {
     // Calling the getter here to cache the instances of the returned Routers
-    _routers = routers;
+    _routers = routers.map((r) => r.._parentRouter = this).toList();
   }
 
   static T of<T extends Router>(
@@ -83,11 +83,16 @@ abstract class Router {
   WrapperFn get screensWrapper => null;
 
   // Private Down below
-
   List<Router> _routers;
 
+  /// If grouped into another router, this property is the parent Router.
+  Router _parentRouter;
+
   String get _prefix =>
-      (nuvigator?.widget?.parentRoute?.routePath?.path ?? '') + deepLinkPrefix;
+      (_parentRouter != null
+          ? _parentRouter._prefix
+          : nuvigator?.widget?.parentRoute?.routePath?.path ?? '') +
+      deepLinkPrefix;
 
   Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
       screensMap.map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
@@ -153,10 +158,8 @@ abstract class Router {
     if (routePath != null)
       return RouteEntry(
           routePath, _wrapScreenBuilder(_prefixedScreensMap[routePath]));
-    final nestedDeepLink = deepLink.replaceFirst(RegExp('^$_prefix'), '');
     for (final subRouter in _routers) {
-      final subRouterEntry =
-          subRouter._getRouteEntryForDeepLink(nestedDeepLink);
+      final subRouterEntry = subRouter._getRouteEntryForDeepLink(deepLink);
       if (subRouterEntry != null) {
         return RouteEntry(
           subRouterEntry.routePath,

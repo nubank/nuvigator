@@ -392,6 +392,7 @@ class Nuvigator<T extends Router> extends StatelessWidget {
     this.debug = false,
     this.inheritableObservers = const [],
     this.deepLinkInterceptor,
+    this.includePrefix = true,
     this.shouldPopRoot = false,
   }) : innerKey = key;
 
@@ -399,6 +400,7 @@ class Nuvigator<T extends Router> extends StatelessWidget {
   final List<NavigatorObserver> observers;
   final T router;
   final Key innerKey;
+  final bool includePrefix;
   final bool debug;
   final Map<String, Object> initialArguments;
   final bool shouldPopRoot;
@@ -442,7 +444,8 @@ class Nuvigator<T extends Router> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeSettings = NuRouteSettingsProvider.of(context);
-    final prefix = routeSettings?.routePath?.path ?? '';
+    final parentRoute = routeSettings?.routePath?.path ?? '';
+    final routerPrefix = includePrefix ? router.deepLinkPrefix ?? '' : '';
     return _NuvigatorInner(
       router: router,
       debug: debug,
@@ -450,7 +453,8 @@ class Nuvigator<T extends Router> extends StatelessWidget {
       observers: observers,
       deepLinkInterceptor: deepLinkInterceptor,
       initialArguments: initialArguments,
-      initialRoute: prefix + (initialRoute ?? routeSettings?.name),
+      initialRoute:
+          parentRoute + routerPrefix + (initialRoute ?? routeSettings?.name),
       key: key,
       parentRoute: routeSettings,
       screenType: screenType,

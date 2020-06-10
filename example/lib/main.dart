@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           () => TestObserver(),
         ],
         router: SamplesRouter(),
-        initialRoute: 'exapp://home',
+        initialRoute: SamplesRoutes.home,
       ),
     );
   }

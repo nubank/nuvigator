@@ -13,6 +13,10 @@ class NuRouteSettings extends RouteSettings {
   })  : _arguments = arguments,
         super(name: name);
 
+  static NuRouteSettings of(BuildContext context) {
+    return NuRouteSettingsProvider.of(context);
+  }
+
   // Given that the matched route is not always the same as name (given we provide a pattern)
   final RoutePath routePath;
 
