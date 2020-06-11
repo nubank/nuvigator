@@ -453,6 +453,9 @@ class Nuvigator<T extends Router> extends StatelessWidget {
     return null;
   }
 
+  String get prefixedInitialRoute =>
+      includePrefix ? (router.deepLinkPrefix + initialRoute) : initialRoute;
+
   @override
   Widget build(BuildContext context) {
     final routeSettings = NuRouteSettingsProvider.of(context);
@@ -460,6 +463,9 @@ class Nuvigator<T extends Router> extends StatelessWidget {
     final nestedInitialRoute = routeSettings != null
         ? trimPrefix(routeSettings.name, parentRoute)
         : null;
+
+    final ir = initialRoute != null ? prefixedInitialRoute : nestedInitialRoute;
+
     return _NuvigatorInner(
       router: router,
       debug: debug,
@@ -467,7 +473,7 @@ class Nuvigator<T extends Router> extends StatelessWidget {
       observers: observers,
       deepLinkInterceptor: deepLinkInterceptor,
       initialArguments: initialArguments,
-      initialRoute: initialRoute ?? nestedInitialRoute,
+      initialRoute: ir,
       key: key,
       parentRoute: routeSettings,
       screenType: screenType,
