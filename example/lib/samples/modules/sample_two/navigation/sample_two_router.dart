@@ -27,8 +27,7 @@ class SampleTwoRouter extends Router {
   @NuRoute(deepLink: '/screenOne')
   ScreenRoute screenOne() => ScreenRoute(
         builder: (context) => ScreenOne(
-          toScreenTwo: () =>
-              nuvigator.openDeepLink('exapp://sampleTwo/screenTwo'),
+          toScreenTwo: () => nuvigator.openDeepLink('/screenTwo'),
         ),
       );
 

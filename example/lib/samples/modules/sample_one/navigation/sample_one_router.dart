@@ -12,6 +12,9 @@ const screenOneDeepLink = 'exapp://sampleOne/screenOne/id_1234_deepLink';
 
 @NuRouter()
 class SampleOneRouter extends Router {
+  @override
+  String get deepLinkPrefix => 'sampleOne';
+
   @NuRoute(deepLink: '/screenOne/:testId')
   ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
         builder: (context) => ScreenOne(

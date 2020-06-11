@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:nuvigator/src/nuvigator_settings.dart';
 
 import 'helpers.dart';
 import 'nuvigator.dart';
@@ -46,7 +47,7 @@ class RouteEntry {
 abstract class Router {
   Router() {
     // Calling the getter here to cache the instances of the returned Routers
-    _routers = routers.map((r) => r.._parentRouter = this).toList();
+    _routers = routers;
   }
 
   static T of<T extends Router>(
@@ -82,17 +83,12 @@ abstract class Router {
 
   WrapperFn get screensWrapper => null;
 
+  String get scheme => NuvigatorSettings.appScheme;
+
   // Private Down below
   List<Router> _routers;
 
-  /// If grouped into another router, this property is the parent Router.
-  Router _parentRouter;
-
-  String get _prefix =>
-      (_parentRouter != null
-          ? _parentRouter._prefix
-          : nuvigator?.widget?.parentRoute?.routePath?.path ?? '') +
-      deepLinkPrefix;
+  String get _prefix => deepLinkPrefix;
 
   Map<RoutePath, ScreenRouteBuilder> get _prefixedScreensMap =>
       screensMap.map((k, v) => MapEntry(k.copyWith(path: _prefix + k.path), v));
@@ -123,12 +119,15 @@ abstract class Router {
   }
 
   Route getRoute<T>(RouteSettings settings, [ScreenType fallbackScreenType]) {
-    final routeEntry = _getRouteEntryForDeepLink(settings.name);
+    final scheme = Uri.parse(settings.name).scheme;
+    final path = trimPrefix(settings.name, scheme + '://');
+    final routeEntry = _getRouteEntryForDeepLink(path);
     if (routeEntry == null) return null;
     final nuRouteSettings = NuRouteSettings(
-      name: settings.name,
-      pathParams: deepLinkPathParams(settings.name, routeEntry.routePath),
-      queryParams: deepLinkQueryParams(settings.name),
+      name: path,
+      scheme: scheme,
+      pathParams: deepLinkPathParams(path, routeEntry.routePath),
+      queryParams: deepLinkQueryParams(path),
       arguments: settings.arguments,
       routePath: routeEntry.routePath,
     );
@@ -155,9 +154,12 @@ abstract class Router {
     final routePath = _prefixedScreensMap.keys.firstWhere((routePath) {
       return pathMatches(deepLink, routePath);
     }, orElse: () => null);
-    if (routePath != null)
+    if (routePath != null) {
       return RouteEntry(
-          routePath, _wrapScreenBuilder(_prefixedScreensMap[routePath]));
+        routePath,
+        _wrapScreenBuilder(_prefixedScreensMap[routePath]),
+      );
+    }
     for (final subRouter in _routers) {
       final subRouterEntry = subRouter._getRouteEntryForDeepLink(deepLink);
       if (subRouterEntry != null) {

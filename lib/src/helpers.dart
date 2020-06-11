@@ -40,3 +40,7 @@ Map<String, String> deepLinkQueryParams(String deepLink) {
     ...convertCase(queryParameters),
   };
 }
+
+String trimPrefix(String path, String prefix) {
+  return path.replaceFirst(RegExp('^$prefix'), '');
+}

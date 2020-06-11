@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nuvigator/src/helpers.dart';
 import 'package:nuvigator/src/screen_types/material_screen_type.dart';
 
 import 'nu_route_settings.dart';
@@ -319,18 +320,29 @@ class NuvigatorState<T extends Router> extends NavigatorState
           widget.deepLinkInterceptor(deepLink, arguments, isFromNative);
       if (handled) return Future.value(null);
     }
+
     final route = router.getRoute<T>(RouteSettings(name: deepLink));
+
     if (route == null) {
-      if (isRoot && router.onDeepLinkNotFound != null) {
-        return await router.onDeepLinkNotFound(
-            router, deepLink, isFromNative, arguments);
+      if (isRoot && router.onDeepLinkNotFound != null) {}
+      if (isRoot) {
+        if (router.onDeepLinkNotFound != null) {
+          return await router.onDeepLinkNotFound(
+              router, deepLink, isFromNative, arguments);
+        } else {
+          throw FlutterError('No Route was found for $deepLink, and no '
+              'onDeepLinkNotFound function was provided by the Root Router $router.');
+        }
+      } else {
+        return parent.openDeepLink<R>(deepLink, arguments, isFromNative);
       }
-      return parent.openDeepLink<R>(deepLink, arguments, isFromNative);
     }
+
     if (isFromNative) {
       final route = _buildNativeRoute(deepLink, arguments);
       return push<R>(route);
     }
+
     return push<R>(route);
   }
 
@@ -445,7 +457,9 @@ class Nuvigator<T extends Router> extends StatelessWidget {
   Widget build(BuildContext context) {
     final routeSettings = NuRouteSettingsProvider.of(context);
     final parentRoute = routeSettings?.routePath?.path ?? '';
-    final routerPrefix = includePrefix ? router.deepLinkPrefix ?? '' : '';
+    final nestedInitialRoute = routeSettings != null
+        ? trimPrefix(routeSettings.name, parentRoute)
+        : null;
     return _NuvigatorInner(
       router: router,
       debug: debug,
@@ -453,8 +467,7 @@ class Nuvigator<T extends Router> extends StatelessWidget {
       observers: observers,
       deepLinkInterceptor: deepLinkInterceptor,
       initialArguments: initialArguments,
-      initialRoute:
-          parentRoute + routerPrefix + (initialRoute ?? routeSettings?.name),
+      initialRoute: initialRoute ?? nestedInitialRoute,
       key: key,
       parentRoute: routeSettings,
       screenType: screenType,

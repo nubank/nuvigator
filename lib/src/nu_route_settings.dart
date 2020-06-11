@@ -7,6 +7,7 @@ class NuRouteSettings extends RouteSettings {
   const NuRouteSettings({
     @required this.routePath,
     @required String name,
+    @required this.scheme,
     this.queryParams = const <String, dynamic>{},
     this.pathParams = const <String, dynamic>{},
     Object arguments,
@@ -20,6 +21,7 @@ class NuRouteSettings extends RouteSettings {
   // Given that the matched route is not always the same as name (given we provide a pattern)
   final RoutePath routePath;
 
+  final String scheme;
   final Map<String, dynamic> queryParams;
   final Map<String, dynamic> pathParams;
   final Object _arguments;
@@ -32,8 +34,9 @@ class NuRouteSettings extends RouteSettings {
     } else if (_arguments != null) {
       if (queryParams.isNotEmpty || pathParams.isNotEmpty) {
         print(
-            '''Warn: Provided Route arguments is not subtype of Map<String, dynamic>,
-           query and path parameters are being ignored in favor of the passes argument.''');
+          'warn: Provided Route arguments is not subtype of Map<String, dynamic>,'
+          'query and path parameters are being ignored in favor of the passes argument.',
+        );
       }
       return _arguments;
     } else {
