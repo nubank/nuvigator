@@ -84,10 +84,15 @@ class _NuvigatorInner<T extends Router> extends Navigator {
             ...observers,
           ],
           onGenerateInitialRoutes: (state, routeName) {
-            return [
-              router.getRoute<dynamic>(
-                  RouteSettings(name: routeName, arguments: initialArguments))
-            ];
+            final route = router.getRoute<dynamic>(
+                RouteSettings(name: routeName, arguments: initialArguments));
+            if (route == null) {
+              throw FlutterError(
+                  'No Route was found for $routeName (as initialRoute) on the $router '
+                  'during the Nuvigator initialization. Check if you need to change the '
+                  'includePrefix configuration, or if the passed initialRoute is correct');
+            }
+            return [route];
           },
           onGenerateRoute: (settings) =>
               router.getRoute<dynamic>(settings, screenType),
