@@ -147,7 +147,9 @@ abstract class Router {
   /// Verify if THIS router can handle the deepLink, does not checks for routers
   /// up in the chain.
   bool canOpenDeepLink(String deepLink) {
-    return _getRouteEntryForDeepLink(deepLink) != null;
+    final scheme = Uri.parse(deepLink).scheme;
+    final path = trimPrefix(deepLink, scheme + '://');
+    return _getRouteEntryForDeepLink(path) != null;
   }
 
   RouteEntry _getRouteEntryForDeepLink(String deepLink) {
