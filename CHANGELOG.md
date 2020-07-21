@@ -21,7 +21,6 @@ open a specific screen of a nested flow using DeepLinks.
 - Some API changes were introduced to support the new features, but they should be easy to migrate, notable changes:
     - `RouteDef` class was replaced by `RoutePath`
     - DeepLinks are now treated as Strings in the whole library 
-    - DeepLinks handling is not stripping the URL scheme anymore
     - `NuRouter` had the `routeNamePrefix` removed
 
 ## 0.5.0

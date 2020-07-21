@@ -113,8 +113,11 @@ class MyCustomRouter extends Router {
 When using the `NuRoute` annotation you will need to provide a `routePath` for this Route, this is the string that
 represents the "address" of your Route. This is also referred as DeepLink, and it follows the format of an URL path pattern.
 You can use path parameters to extract those and make available to the Route, to declare a path parameter you can use `:`
-before the parameter name, just like: `myapp://routeName/:parameterHere`. In addition to that query parameters passed when
+before the parameter name, just like: `routeName/:parameterHere`. In addition to that query parameters passed when
 trying to open a new DeepLink will also be made available and can be extracted into the method parameters. 
+
+Inside the Router class you have access to the local `nuvigator` that can be used to do navigation operations, and also
+to the generated extension methods to navigate between the screens of your router.
 
 ### Router Prefix
 
@@ -126,7 +129,7 @@ Example:
 @NuRouter()
 class MyCustomRouter extends Router {
   
-  String get deepLinkPrefix => 'myapp://';
+  String get deepLinkPrefix => 'prefixHere/';
 
   @NuRoute(deepLink: 'firstScreen')
   ScreenRoute firstScreen({String argumentHere}) => ScreenRoute(
@@ -184,6 +187,23 @@ This way all the routes declared in both `FirstRouter` and `SecondRouter` will b
 however, the `deepLinkPrefix` declared in the `MainRouter` do take effect for the Routes declared in the other Routers, and 
 of course, after that they will respect the owns Router `deepLinkPrefix`.
 
+### Nested Nuvigators
+
+The concept of nested Nuvigators comes from the need of including self contained autonomous flow inside the App. Having a 
+nested Flow is nothing more than rendering another Nuvigator inside a regular route.
+
+```dart
+  @NuRoute(deepLink: 'myFlow/:id')
+  ScreenRoute myCustomFlow({@required String id}) => ScreenRoute(
+    builder: (context) => Nuvigator(
+      router: FlowRouter(),
+      initialRoute: FlowRoutes.firstScreen,
+    ),
+  );
+```
+
+Nuvigator includes a great support for this kind of pattern, for both runtime and also development experience and capabilities.
+One notable feature for example is the `nuvigator.closeFlow()` method, that allows you to close a whole nested flow easily.
 
 ### Wrappers
 
@@ -272,9 +292,6 @@ class SecondArgs {
 It's a helper class that contains a bunch of typed navigation methods to navigate through your App. Each declared `@NuRoute`
 will have several methods created, each for one of the existing push methods. You can also configure which methods you want
 to generate using the `@NuRoute.pushMethods` parameter.
-
-Nested flows (declared with the `FlowRoute`) will also have it's generated Navigation Class instance provided as a field
-in the parent Navigation. The same applies for Grouped Routers. Usage eg:
 
 ```dart
 final router = Router.of<SamplesRouter>(context);
