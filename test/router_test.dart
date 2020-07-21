@@ -8,9 +8,9 @@ import 'helpers.dart';
 void main() {
   test('router retrieves the right route for the route name', () {
     final testRouter = TestRouter();
-    final route = testRouter
-        .getRoute<void>(const RouteSettings(name: 'testapp://test/simple'));
-    expect(route.settings.name, 'testapp://test/simple');
+    final route =
+        testRouter.getRoute<void>(const RouteSettings(name: 'test/simple'));
+    expect(route.settings.name, 'test/simple');
   });
 
   test('getting router from a grouped routers', () async {

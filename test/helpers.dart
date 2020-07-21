@@ -5,13 +5,12 @@ import 'package:nuvigator/nuvigator.dart';
 class TestRouter extends Router {
   @override
   Map<RoutePath, ScreenRouteBuilder> get screensMap => {
-        RoutePath('testapp://test/simple', prefix: false): (_) => ScreenRoute(
+        RoutePath('test/simple', prefix: false): (_) => ScreenRoute(
               builder: (sc) => null,
               debugKey: 'testRouterFirstScreen',
               screenType: materialScreenType,
             ),
-        RoutePath('testapp://test/:id/params', prefix: false): (_) =>
-            ScreenRoute(
+        RoutePath('test/:id/params', prefix: false): (_) => ScreenRoute(
               builder: (sc) => null,
               debugKey: 'testRouterSecondScreen',
               screenType: materialScreenType,
@@ -40,7 +39,7 @@ class TestRouterWPrefix extends Router {
 
 class GroupTestRouter extends Router {
   @override
-  String get deepLinkPrefix => 'testapp://group/';
+  String get deepLinkPrefix => 'group/';
 
   TestRouter testRouter = TestRouter();
 

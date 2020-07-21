@@ -27,6 +27,7 @@ void main() {
       screenType: materialScreenType,
     );
     final route = screenRoute.toRoute(const NuRouteSettings(
+      scheme: 'exapp',
       routePath: null,
       name: null,
     ));
@@ -38,6 +39,7 @@ void main() {
       builder: (_) => null,
     ).fallbackScreenType(materialScreenType);
     final route = screenRoute.toRoute(const NuRouteSettings(
+      scheme: 'exapp',
       routePath: null,
       name: null,
     ));
