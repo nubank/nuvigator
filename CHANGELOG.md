@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.5.1
+- Update ReCase version support to '>= 2.0.0 <3.1.0'
+
 ## 0.5.0
 - Updates the codebase to flutter 1.17 (stable) version
 
