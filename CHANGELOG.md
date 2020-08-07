@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.6.0
+- Add support for typed screen arguments on deep links. In addition to `String`, we now support `int`, `double,` `bool`, and `DateTime`.
+
 ## 0.5.1
 - Update ReCase version support to '>= 2.0.0 <3.1.0'
 
