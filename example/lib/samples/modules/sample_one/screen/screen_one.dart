@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ScreenOne extends StatelessWidget {
-  const ScreenOne({Key key, this.toScreenTwo, this.toSampleTwo, this.toBack})
-      : super(key: key);
+  const ScreenOne({
+    Key key,
+    this.toScreenTwo,
+    this.toSampleTwo,
+    this.toBack,
+    this.magicNumber,
+  }) : super(key: key);
 
   final VoidCallback toScreenTwo;
   final VoidCallback toSampleTwo;
   final VoidCallback toBack;
+  final int magicNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +40,7 @@ class ScreenOne extends StatelessWidget {
             child: FlutterLogo(),
             tag: 'HERO',
           ),
+          Text('$magicNumber', textAlign: TextAlign.center),
         ],
       ),
     );

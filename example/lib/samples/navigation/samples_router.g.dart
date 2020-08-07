@@ -18,6 +18,9 @@ class SecondArgs {
   final String testId;
 
   static SecondArgs parse(Map<String, Object> args) {
+    if (args == null) {
+      return SecondArgs(testId: null);
+    }
     return SecondArgs(
       testId: args['testId'],
     );
@@ -126,8 +129,8 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
         return home();
       },
       RouteDef(SamplesRoutes.second): (RouteSettings settings) {
-        final Map<String, Object> args = settings.arguments;
-        return second(testId: args['testId']);
+        final args = SecondArgs.parse(settings.arguments);
+        return second(testId: args.testId);
       },
     };
   }
