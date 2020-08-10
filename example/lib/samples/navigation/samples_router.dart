@@ -1,12 +1,12 @@
-import 'package:example/samples/modules/sample_two/bloc/sample_flow_bloc.dart';
-import 'package:example/samples/modules/sample_two/navigation/sample_two_router.dart';
+import 'package:example/samples/modules/composer/navigation/composer_routes.dart';
+import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
+import 'package:example/samples/modules/friend_request/navigation/friend_request_router.dart';
+import 'package:example/samples/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
 import '../bloc/samples_bloc.dart';
-import '../modules/sample_one/navigation/sample_one_router.dart';
 
 part 'samples_router.g.dart';
 
@@ -20,25 +20,26 @@ class SamplesRouter extends Router {
         builder: (context) => HomeScreen(),
       );
 
-  @NuRoute()
-  ScreenRoute<String> second({@required String testId}) => ScreenRoute(
+  @NuRoute(deepLink: '/friendRequests')
+  ScreenRoute<String> friendRequests({@required int numberOfRequests}) =>
+      ScreenRoute(
         builder: Nuvigator(
-          router: SampleTwoRouter(testId: testId),
-          initialRoute: SampleTwoRoutes.screenOne,
-          screenType: cupertinoScreenType,
-          wrapper: (BuildContext context, Widget child) => Provider(
-            create: (_) => SampleFlowBloc(),
-            child: child,
-          ),
+          router: FriendRequestRouter(),
+          initialRoute: FriendRequestRoutes.listRequests,
+          screenType: materialScreenType,
+        ),
+        wrapper: (context, child) => ChangeNotifierProvider.value(
+          value: FriendRequestBloc(numberOfRequests),
+          child: child,
         ),
       );
 
   @NuRouter()
-  final SampleOneRouter sampleOneRouter = SampleOneRouter();
+  final composerRouter = ComposerRouter();
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget child) {
-        return Provider<SamplesBloc>.value(
+        return ChangeNotifierProvider<SamplesBloc>.value(
           value: SamplesBloc(),
           child: child,
         );
