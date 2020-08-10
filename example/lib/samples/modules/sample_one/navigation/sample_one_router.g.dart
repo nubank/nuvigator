@@ -13,18 +13,27 @@ class SampleOneRoutes {
 }
 
 class ScreenOneArgs {
-  ScreenOneArgs({@required this.testId});
+  ScreenOneArgs({@required this.testId, @required this.magicNumber});
 
   final String testId;
 
+  final int magicNumber;
+
   static ScreenOneArgs parse(Map<String, Object> args) {
+    if (args == null) {
+      return ScreenOneArgs(testId: null, magicNumber: null);
+    }
     return ScreenOneArgs(
       testId: args['testId'],
+      magicNumber: args['magicNumber'] is String
+          ? int.tryParse(args['magicNumber'])
+          : args['magicNumber'],
     );
   }
 
   Map<String, Object> get toMap => {
         'testId': testId,
+        'magicNumber': magicNumber,
       };
   static ScreenOneArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
@@ -43,43 +52,49 @@ class ScreenOneArgs {
 }
 
 extension SampleOneRouterNavigation on SampleOneRouter {
-  Future<String> toScreenOne({@required String testId}) {
+  Future<String> toScreenOne({@required String testId, int magicNumber}) {
     return nuvigator.pushNamed<String>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
+        'magicNumber': magicNumber,
       },
     );
   }
 
   Future<String> pushReplacementToScreenOne<TO extends Object>(
-      {@required String testId, TO result}) {
+      {@required String testId, int magicNumber, TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
+        'magicNumber': magicNumber,
       },
       result: result,
     );
   }
 
   Future<String> pushAndRemoveUntilToScreenOne<TO extends Object>(
-      {@required String testId, @required RoutePredicate predicate}) {
+      {@required String testId,
+      int magicNumber,
+      @required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<String>(
       SampleOneRoutes.screenOne,
       predicate,
       arguments: {
         'testId': testId,
+        'magicNumber': magicNumber,
       },
     );
   }
 
   Future<String> popAndPushToScreenOne<TO extends Object>(
-      {@required String testId, TO result}) {
+      {@required String testId, int magicNumber, TO result}) {
     return nuvigator.popAndPushNamed<String, TO>(
       SampleOneRoutes.screenOne,
       arguments: {
         'testId': testId,
+        'magicNumber': magicNumber,
       },
       result: result,
     );
@@ -119,8 +134,8 @@ extension SampleOneRouterScreensAndRouters on SampleOneRouter {
     return {
       RouteDef(SampleOneRoutes.screenOne, deepLink: '/screenOne/:testId'):
           (RouteSettings settings) {
-        final Map<String, Object> args = settings.arguments;
-        return screenOne(testId: args['testId']);
+        final args = ScreenOneArgs.parse(settings.arguments);
+        return screenOne(testId: args.testId, magicNumber: args.magicNumber);
       },
       RouteDef(SampleOneRoutes.screenTwo): (RouteSettings settings) {
         return screenTwo();

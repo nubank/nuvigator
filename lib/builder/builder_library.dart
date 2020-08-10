@@ -75,7 +75,7 @@ class BuilderLibrary extends BaseBuilder {
             nuRouteFieldAnnotation.getField('deepLink').toStringValue();
         final paramsStr = params.isEmpty
             ? ''
-            : '${params.map((p) => "$p: args['$p']").join(",")}';
+            : '${params.map((p) => "$p: args.$p").join(",")}';
 
         final screenRouteBuilder = Method((m) => m
           ..requiredParameters.add(Parameter((p) => p
@@ -84,7 +84,7 @@ class BuilderLibrary extends BaseBuilder {
           ..lambda = false
           ..body = Code((params.isEmpty
                   ? ''
-                  : 'final Map<String, Object> args = settings.arguments ?? const {};') +
+                  : 'final args = ${capitalize(method.name)}Args.parse(settings.arguments);') +
               'return ${method.name}($paramsStr);'));
 
         if (deepLink != null) {

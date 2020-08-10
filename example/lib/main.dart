@@ -34,15 +34,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nubank',
       builder: Nuvigator(
-//        debug: true,
         screenType: cupertinoDialogScreenType,
         inheritableObservers: [
           () => TestObserver(),
         ],
         router: SamplesRouter(),
         initialRoute: SamplesRoutes.home,
-//        initialDeepLink: Uri.parse(
-//            'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink'),
       ),
     );
   }
@@ -68,7 +65,7 @@ class HomeScreen extends StatelessWidget {
               child: const Text('Go to sample one with flutter navigation'),
               onPressed: () async {
                 final result = await router.sampleOneRouter
-                    .toScreenOne(testId: 'From Home');
+                    .toScreenOne(testId: 'From Home', magicNumber: 0);
                 print('ScreenOneResult: $result');
               }),
           FlatButton(

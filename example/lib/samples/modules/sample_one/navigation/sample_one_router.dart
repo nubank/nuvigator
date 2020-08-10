@@ -8,7 +8,7 @@ import '../screen/screen_two.dart';
 part 'sample_one_router.g.dart';
 
 const screenOneDeepLink =
-    'exapp://deepPrefix/sampleOne/screenOne/id_1234_deepLink';
+    'exapp://deepprefix/sampleOne/screenOne/id_1234_deepLink?magicNumber=42';
 
 @NuRouter()
 class SampleOneRouter extends Router {
@@ -16,12 +16,14 @@ class SampleOneRouter extends Router {
   String get deepLinkPrefix => '/sampleOne';
 
   @NuRoute(deepLink: '/screenOne/:testId')
-  ScreenRoute<String> screenOne({@required String testId}) => ScreenRoute(
+  ScreenRoute<String> screenOne({@required String testId, int magicNumber}) =>
+      ScreenRoute(
         builder: (context) => ScreenOne(
           toBack: () => nuvigator.pop('ResultFromScreenOne'),
           toScreenTwo: toScreenTwo,
           toSampleTwo: () => Router.of<SamplesRouter>(context)
               .toSecond(testId: 'From SampleOne'),
+          magicNumber: magicNumber,
         ),
       );
 
