@@ -49,8 +49,7 @@ class ArgsClass extends BaseBuilder {
         )
         ..returns = refer(className)
         ..static = true
-        ..body = Code(
-            'if (args == null) {'
+        ..body = Code('if (args == null) {'
             'return $className($emptyConstructorArgs);'
             '}'
             'return $className($argsCode);'),

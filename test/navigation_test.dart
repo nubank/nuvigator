@@ -4,7 +4,8 @@ import 'package:nuvigator/nuvigator.dart';
 import 'fixtures/test_router.dart';
 
 void main() {
-  Future pumpApp(WidgetTester tester, Router router, String initialRoute) async {
+  Future pumpApp(
+      WidgetTester tester, Router router, String initialRoute) async {
     await tester.pumpWidget(MaterialApp(
       title: 'Test Nuvigator',
       builder: Nuvigator(
@@ -15,7 +16,8 @@ void main() {
     ));
   }
 
-  testWidgets('Navigates to deepLink without args', (WidgetTester tester) async {
+  testWidgets('Navigates to deepLink without args',
+      (WidgetTester tester) async {
     final router = TestRouter();
     await pumpApp(tester, router, TestRoutes.home);
     router.openDeepLink<void>(Uri.parse('exapp://testargs'));
@@ -23,10 +25,12 @@ void main() {
     expect(find.text('intArg: null'), findsOneWidget);
   });
 
-  testWidgets('Navigates to deepLink with typed args', (WidgetTester tester) async {
+  testWidgets('Navigates to deepLink with typed args',
+      (WidgetTester tester) async {
     final router = TestRouter();
     await pumpApp(tester, router, TestRoutes.home);
-    router.openDeepLink<void>(Uri.parse('exapp://testargs?intArg=42&doubleArg=-4.2&boolArg=true&dateTimeArg=2020-07-07T12:34:00.000Z&dateArg=2020-08-07&stringArg=testing'));
+    router.openDeepLink<void>(Uri.parse(
+        'exapp://testargs?intArg=42&doubleArg=-4.2&boolArg=true&dateTimeArg=2020-07-07T12:34:00.000Z&dateArg=2020-08-07&stringArg=testing'));
     await tester.pumpAndSettle();
     expect(find.text('intArg: 42'), findsOneWidget);
     expect(find.text('doubleArg: -4.2'), findsOneWidget);
