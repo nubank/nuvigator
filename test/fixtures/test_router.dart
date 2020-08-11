@@ -30,8 +30,24 @@ class TestRouter extends Router {
             Text('stringArg: $stringArg'),
           ],
         ),
+        wrapper: (BuildContext context, Widget child, String routeName) {
+          return Container(
+            key: Key(routeName),
+            child: child,
+          );
+        },
       );
 
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
+
+  @override
+  WrapperFn get screensWrapper =>
+      (BuildContext context, Widget child, String routeName) {
+        print('Router $routeName');
+        return Container(
+          key: Key(routeName),
+          child: child,
+        );
+      };
 }

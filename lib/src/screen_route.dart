@@ -4,7 +4,8 @@ import 'package:nuvigator/nuvigator.dart';
 
 import 'screen_type.dart';
 
-typedef WrapperFn = Widget Function(BuildContext context, Widget child);
+typedef WrapperFn = Widget Function(
+    BuildContext context, Widget child, String routeName);
 
 class RouteDef {
   RouteDef(this.routeName, {this.deepLink});
@@ -80,12 +81,14 @@ class ScreenRoute<T extends Object> {
 
   WrapperFn _getComposedWrapper(WrapperFn wrapper) {
     if (wrapper != null) {
-      return (BuildContext c, Widget child) => wrapper(
+      return (BuildContext c, Widget child, String routeName) => wrapper(
             c,
             Builder(
-              builder: (context) =>
-                  this.wrapper != null ? this.wrapper(context, child) : child,
+              builder: (context) => this.wrapper != null
+                  ? this.wrapper(context, child, routeName)
+                  : child,
             ),
+            routeName,
           );
     }
     return this.wrapper;
@@ -101,6 +104,7 @@ class ScreenRoute<T extends Object> {
       Builder(
         builder: (innerContext) => builder(innerContext),
       ),
+      settings.name,
     );
   }
 }

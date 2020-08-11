@@ -28,7 +28,7 @@ class SamplesRouter extends Router {
           initialRoute: FriendRequestRoutes.listRequests,
           screenType: materialScreenType,
         ),
-        wrapper: (context, child) => ChangeNotifierProvider.value(
+        wrapper: (context, child, routeName) => ChangeNotifierProvider.value(
           value: FriendRequestBloc(numberOfRequests),
           child: child,
         ),
@@ -38,7 +38,8 @@ class SamplesRouter extends Router {
   final composerRouter = ComposerRouter();
 
   @override
-  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+  WrapperFn get screensWrapper =>
+      (BuildContext context, Widget child, String routeName) {
         return ChangeNotifierProvider<SamplesBloc>.value(
           value: SamplesBloc(),
           child: child,

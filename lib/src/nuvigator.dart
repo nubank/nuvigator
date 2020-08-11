@@ -18,6 +18,7 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
 
 class NuvigatorStateTracker extends NavigatorObserver {
   final List<Route> stack = [];
+  String currentRouteName;
 
   bool get debug => nuvigator.widget.debug;
 
@@ -29,18 +30,21 @@ class NuvigatorStateTracker extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     stack.add(route);
+    currentRouteName = stack.last.settings.name;
     if (debug) print('didPush $route: $stackRouteNames');
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     stack.remove(route);
+    currentRouteName = stack.last.settings.name;
     if (debug) print('didPop $route: $stackRouteNames');
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
     stack.remove(route);
+    currentRouteName = stack.last.settings.name;
     if (debug) print('didRemove $route: $stackRouteNames');
   }
 
@@ -48,6 +52,7 @@ class NuvigatorStateTracker extends NavigatorObserver {
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
     final index = stack.indexOf(oldRoute);
     stack[index] = newRoute;
+    currentRouteName = stack.last.settings.name;
     if (debug) print('didReplace $oldRoute to $newRoute: $stackRouteNames');
   }
 }
@@ -346,7 +351,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
   Widget build(BuildContext context) {
     Widget child = super.build(context);
     if (widget.wrapper != null) {
-      child = widget.wrapper(context, child);
+      child = widget.wrapper(context, child, stateTracker.currentRouteName);
     }
     if (isNested) {
       child = WillPopScope(
