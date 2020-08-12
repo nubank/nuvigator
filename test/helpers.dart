@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 class TestRouter extends Router {
@@ -23,6 +24,23 @@ class TestRouterWPrefix extends Router {
   @override
   String get deepLinkPrefix => 'prefix/';
 
+  @override
+  Map<RouteDef, ScreenRouteBuilder> get screensMap => {
+        RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterFirstScreen',
+              screenType: materialScreenType,
+            ),
+        RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
+            ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterSecondScreen',
+              screenType: materialScreenType,
+            ),
+      };
+}
+
+class TestRouterWWrapper extends Router {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
@@ -97,4 +115,15 @@ Widget testApp(Router router, String initialRoute, [WrapperFn wrapper]) {
       wrapper: wrapper,
     ),
   );
+}
+
+Future pumpApp(WidgetTester tester, Router router, String initialRoute) async {
+  await tester.pumpWidget(MaterialApp(
+    title: 'Test Nuvigator',
+    builder: Nuvigator(
+      screenType: cupertinoDialogScreenType,
+      router: router,
+      initialRoute: initialRoute,
+    ),
+  ));
 }
