@@ -55,15 +55,6 @@ class TestRouterWWrapper extends Router {
               screenType: materialScreenType,
             ),
       };
-
-  @override
-  WrapperFn get screensWrapper =>
-      (BuildContext context, Widget child, String routeName) {
-        return Container(
-          key: Key(routeName),
-          child: child,
-        );
-      };
 }
 
 class GroupTestRouter extends Router {

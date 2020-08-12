@@ -30,7 +30,9 @@ class TestRouter extends Router {
             Text('stringArg: $stringArg'),
           ],
         ),
-        wrapper: (BuildContext context, Widget child, String routeName) {
+        wrapper: (BuildContext context, Widget child) {
+          final settings = ModalRoute.of(context).settings;
+          final routeName = settings.name;
           return Container(
             key: Key(routeName),
             child: child,
@@ -42,9 +44,9 @@ class TestRouter extends Router {
   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
 
   @override
-  WrapperFn get screensWrapper =>
-      (BuildContext context, Widget child, String routeName) {
-        print('Router $routeName');
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+        final settings = ModalRoute.of(context).settings;
+        final routeName = settings.name;
         return Container(
           key: Key(routeName),
           child: child,
