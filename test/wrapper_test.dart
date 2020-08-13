@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nuvigator/nuvigator.dart';
 import 'fixtures/test_router.dart';
 import 'helpers.dart' as helpers;
 
