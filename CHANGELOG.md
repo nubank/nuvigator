@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.6.1
+- Fix a `NavigationObserver` error when the nuvigator is updated. Now we are reloading the `inheritableObservers` and `StateTracker` when has an update.
+
 ## 0.6.0
 - Add support for typed screen arguments on deep links. In addition to `String`, we now support `int`, `double,` `bool`, and `DateTime`.
 
