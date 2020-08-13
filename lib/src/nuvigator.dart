@@ -220,9 +220,13 @@ class NuvigatorState<T extends Router> extends NavigatorState
       oldWidget.router.nuvigator = null;
       assert(widget.router.nuvigator == null);
       widget.router.nuvigator = this;
-      widget.observers.add(stateTracker);
-      widget.observers.addAll(_collectObservers().map((f) => f()));
     }
+
+    /// Since every update the observers will be overridden by the constructor
+    /// parameters, the stateTracker and inheritableObservers should be injected
+    /// again.
+    widget.observers.add(stateTracker);
+    widget.observers.addAll(_collectObservers().map((f) => f()));
     super.didUpdateWidget(oldWidget);
   }
 
