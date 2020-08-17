@@ -217,7 +217,6 @@ class NuvigatorState<T extends Router> extends NavigatorState
   @override
   void didUpdateWidget(Nuvigator oldWidget) {
     if (oldWidget.router != widget.router) {
-      oldWidget.router.nuvigator = null;
       assert(widget.router.nuvigator == null);
       widget.router.nuvigator = this;
     }

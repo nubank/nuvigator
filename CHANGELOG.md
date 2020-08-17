@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.6.2
+- Fix NPE exception when a old instance of router tries calling some methods on it's nuvigator
+
 ## 0.6.1
 - Fix a `NavigationObserver` error when the nuvigator is updated. Now we are reloading the `inheritableObservers` and `StateTracker` when has an update.
 
