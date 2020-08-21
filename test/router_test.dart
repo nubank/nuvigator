@@ -107,5 +107,15 @@ void main() {
         'anotherOne': 'hello'
       });
     });
+    test('it can decode encoded values', () {
+      const uri = 'my-route/5f3fd8d0-d02a-434b-801a-c5c3d12faef6/another%20one';
+      const deepLinkTemplate = 'my-route/:id/:paramName';
+      final result =
+          extractDeepLinkParameters(Uri.parse(uri), deepLinkTemplate);
+      expect(result, {
+        'id': '5f3fd8d0-d02a-434b-801a-c5c3d12faef6',
+        'paramName': 'another one'
+      });
+    });
   });
 }
