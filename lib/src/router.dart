@@ -18,11 +18,14 @@ Map<String, String> extractDeepLinkParameters(
   final parameters = <String>[];
   final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
   final match = regExp.matchAsPrefix(deepLinkString(url));
-  final parametersMap = extract(parameters, match)..addAll(url.queryParameters);
-  final adjustParametersMap = parametersMap.map((k, v) {
-    return MapEntry(ReCase(k).camelCase, Uri.decodeFull(v));
+  final parametersMap = extract(parameters, match).map((k, v) {
+    return MapEntry(k, Uri.decodeFull(v));
+  })
+    ..addAll(url.queryParameters);
+  final camelCasedParametersMap = parametersMap.map((k, v) {
+    return MapEntry(ReCase(k).camelCase, v);
   });
-  return {...parametersMap, ...adjustParametersMap};
+  return {...parametersMap, ...camelCasedParametersMap};
 }
 
 class RouteEntry {
