@@ -5,8 +5,8 @@ import 'package:nuvigator/nuvigator.dart';
 
 part 'composer_routes.g.dart';
 
-@NuRouter()
-class ComposerRouter extends Router {
+@nuRouter
+class ComposerRouter extends NuRouter {
   @override
   String get deepLinkPrefix => '/composer';
 

@@ -63,7 +63,6 @@ class _TextComposerScreenState extends State<TextComposerScreen> {
               tag: 'HERO',
               child: FlutterLogo(
                 size: 48,
-                colors: Colors.deepPurple,
               ),
             ),
           ],

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.7.0
+- [BREAKING] Rename classes to avoid conflicts with Flutter 1.22 Router Widget
+  - `Router` was renamed to `NuRouter`
+  - The `NuRouter` annotation was renamed to `nuRouter` const or `customNuRouter` function
+
 ## 0.6.2
 - Fix NPE exception when a old instance of router tries calling some methods on it's nuvigator
 

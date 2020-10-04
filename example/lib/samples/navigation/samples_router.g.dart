@@ -122,7 +122,7 @@ extension SamplesRouterNavigation on SamplesRouter {
 }
 
 extension SamplesRouterScreensAndRouters on SamplesRouter {
-  List<Router> get _$routers => [
+  List<NuRouter> get _$routers => [
         composerRouter,
       ];
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {

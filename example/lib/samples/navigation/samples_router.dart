@@ -10,8 +10,8 @@ import '../bloc/samples_bloc.dart';
 
 part 'samples_router.g.dart';
 
-@NuRouter()
-class SamplesRouter extends Router {
+@nuRouter
+class SamplesRouter extends NuRouter {
   @override
   String get deepLinkPrefix => 'deepprefix';
 
@@ -34,8 +34,8 @@ class SamplesRouter extends Router {
         ),
       );
 
-  @NuRouter()
-  final composerRouter = ComposerRouter();
+  @nuRouter
+  final ComposerRouter composerRouter = ComposerRouter();
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget child) {
@@ -49,5 +49,5 @@ class SamplesRouter extends Router {
   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;
 
   @override
-  List<Router> get routers => _$routers;
+  List<NuRouter> get routers => _$routers;
 }

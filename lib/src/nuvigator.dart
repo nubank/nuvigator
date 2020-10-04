@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-import 'router.dart';
+import 'nurouter.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
 
-NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
+NuvigatorState _tryToFindNuvigatorForRouter<T extends NuRouter>(
     NuvigatorState nuvigatorState) {
   if (nuvigatorState == null) return null;
   final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
@@ -52,7 +52,7 @@ class NuvigatorStateTracker extends NavigatorObserver {
   }
 }
 
-class Nuvigator<T extends Router> extends Navigator {
+class Nuvigator<T extends NuRouter> extends Navigator {
   Nuvigator({
     @required this.router,
     String initialRoute,
@@ -142,13 +142,13 @@ class Nuvigator<T extends Router> extends Navigator {
     return this;
   }
 
-  static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
+  static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
     final NuvigatorState closestNuvigator =
         context.findAncestorStateOfType<NuvigatorState>();
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
-  static NuvigatorState<T> of<T extends Router>(
+  static NuvigatorState<T> of<T extends NuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
     bool nullOk = false,
@@ -176,7 +176,7 @@ class Nuvigator<T extends Router> extends Navigator {
   }
 }
 
-class NuvigatorState<T extends Router> extends NavigatorState
+class NuvigatorState<T extends NuRouter> extends NavigatorState
     with WidgetsBindingObserver {
   NuvigatorState get rootNuvigator =>
       Nuvigator.of(context, rootNuvigator: true) ?? this;
@@ -190,7 +190,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   NuvigatorStateTracker stateTracker;
 
-  R getRouter<R extends Router>() => router.getRouter<R>();
+  R getRouter<R extends NuRouter>() => router.getRouter<R>();
 
   List<ObserverBuilder> _collectObservers() {
     if (isNested) {
@@ -343,7 +343,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   bool get isRoot => this == rootNuvigator;
 
-  Router get rootRouter => rootNuvigator.router;
+  NuRouter get rootRouter => rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {
