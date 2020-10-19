@@ -7,8 +7,8 @@ import '../../composer/navigation/composer_routes.dart';
 
 part 'friend_request_router.g.dart';
 
-@NuRouter()
-class FriendRequestRouter extends Router {
+@nuRouter
+class FriendRequestRouter extends NuRouter {
   FriendRequestRouter();
 
   @NuRoute()
@@ -23,7 +23,7 @@ class FriendRequestRouter extends Router {
   ScreenRoute<void> success() => ScreenRoute(
       builder: (context) => SuccessScreen(
             closeFlow: () => nuvigator.closeFlow(),
-            toComposeText: () => Router.of<SamplesRouter>(context)
+            toComposeText: () => NuRouter.of<SamplesRouter>(context)
                 .composerRouter
                 .pushReplacementToComposeText(),
           ),

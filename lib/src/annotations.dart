@@ -61,12 +61,19 @@
 ///
 /// Obs: The [routeNamePrefix] is only used by the routes class to compose the
 /// route names.
-class NuRouter {
-  const NuRouter({this.routerName, this.routeNamePrefix});
+class NuRouterAnnotation {
+  const NuRouterAnnotation({this.routerName, this.routeNamePrefix});
 
   final String routerName;
   final String routeNamePrefix;
 }
+
+NuRouterAnnotation customNuRouter(
+        {String routeNamePrefix, String routerName}) =>
+    NuRouterAnnotation(
+        routeNamePrefix: routeNamePrefix, routerName: routerName);
+
+const nuRouter = NuRouterAnnotation();
 
 /// Annotation used to define a route.
 ///

@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<SamplesBloc>(context);
-    final router = Router.of<SamplesRouter>(context);
+    final router = NuRouter.of<SamplesRouter>(context);
     final headingStle = Theme.of(context).textTheme.headline3;
     final toggleStyle = Theme.of(context).textTheme.bodyText1;
 
@@ -27,7 +27,6 @@ class HomeScreen extends StatelessWidget {
                 const Hero(
                   tag: 'HERO',
                   child: FlutterLogo(
-                    colors: Colors.deepPurple,
                     size: 96,
                   ),
                 ),

@@ -10,7 +10,7 @@ typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 
 String deepLinkString(Uri url) => url.host + url.path;
 
-typedef HandleDeepLinkFn = Future<dynamic> Function(Router router, Uri uri,
+typedef HandleDeepLinkFn = Future<dynamic> Function(NuRouter router, Uri uri,
     [bool isFromNative, dynamic args]);
 
 Map<String, String> extractDeepLinkParameters(
@@ -38,8 +38,8 @@ class RouteEntry {
   bool operator ==(Object other) => other is RouteEntry && other.key == key;
 }
 
-abstract class Router {
-  static T of<T extends Router>(
+abstract class NuRouter {
+  static T of<T extends NuRouter>(
     BuildContext context, {
     bool nullOk = false,
     bool rootRouter = false,
@@ -73,14 +73,14 @@ abstract class Router {
 
   WrapperFn get screensWrapper => null;
 
-  List<Router> get routers => [];
+  List<NuRouter> get routers => [];
 
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {};
 
   String get deepLinkPrefix => '';
 
   /// Get the specified router that can be grouped in this router
-  T getRouter<T extends Router>() {
+  T getRouter<T extends NuRouter>() {
     if (this is T) return this;
     for (final router in routers) {
       final r = router.getRouter<T>();
@@ -93,7 +93,7 @@ abstract class Router {
     final screen = _getScreen(settings);
     if (screen != null) return screen;
 
-    for (Router router in routers) {
+    for (NuRouter router in routers) {
       final screen = router.getScreen(settings);
       if (screen != null) return screen.wrapWith(screensWrapper);
     }
@@ -107,7 +107,7 @@ abstract class Router {
     if (prefixRegex.hasMatch(deepLink)) {
       final routeEntry = _getRouteEntryForDeepLink(deepLink);
       if (routeEntry != null) return routeEntry;
-      for (final Router router in routers) {
+      for (final NuRouter router in routers) {
         final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
         final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
         if (subRouterEntry != null) {

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class TestRouter extends Router {
+class TestRouter extends NuRouter {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
@@ -20,7 +20,7 @@ class TestRouter extends Router {
       };
 }
 
-class TestRouterWPrefix extends Router {
+class TestRouterWPrefix extends NuRouter {
   @override
   String get deepLinkPrefix => 'prefix/';
 
@@ -40,7 +40,7 @@ class TestRouterWPrefix extends Router {
       };
 }
 
-class TestRouterWWrapper extends Router {
+class TestRouterWWrapper extends NuRouter {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
@@ -57,14 +57,14 @@ class TestRouterWWrapper extends Router {
       };
 }
 
-class GroupTestRouter extends Router {
+class GroupTestRouter extends NuRouter {
   @override
   String get deepLinkPrefix => 'group/';
 
   TestRouter testRouter = TestRouter();
 
   @override
-  List<Router> get routers => [
+  List<NuRouter> get routers => [
         testRouter,
       ];
 
@@ -85,10 +85,10 @@ class MockNuvigator extends NuvigatorState {
   String routePushed;
   Object argumentsPushed;
   @override
-  final Router router;
+  final NuRouter router;
 
   @override
-  NuvigatorState<Router> get rootNuvigator => this;
+  NuvigatorState<NuRouter> get rootNuvigator => this;
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName,
@@ -107,7 +107,7 @@ class TestWidget extends StatelessWidget {
   }
 }
 
-Widget testApp(Router router, String initialRoute, [WrapperFn wrapper]) {
+Widget testApp(NuRouter router, String initialRoute, [WrapperFn wrapper]) {
   return MaterialApp(
     builder: Nuvigator(
       router: router,
@@ -117,7 +117,8 @@ Widget testApp(Router router, String initialRoute, [WrapperFn wrapper]) {
   );
 }
 
-Future pumpApp(WidgetTester tester, Router router, String initialRoute) async {
+Future pumpApp(
+    WidgetTester tester, NuRouter router, String initialRoute) async {
   await tester.pumpWidget(MaterialApp(
     title: 'Test Nuvigator',
     builder: Nuvigator(

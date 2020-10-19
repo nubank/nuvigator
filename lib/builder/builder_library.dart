@@ -26,7 +26,7 @@ class BuilderLibrary extends BaseBuilder {
       (b) => b
         ..name = '_\$routers'
         ..type = MethodType.getter
-        ..returns = refer('List<Router>')
+        ..returns = refer('List<NuRouter>')
         ..lambda = true
         ..body = Code('[$code]'),
     );

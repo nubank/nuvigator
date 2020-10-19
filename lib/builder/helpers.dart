@@ -10,7 +10,7 @@ List<DartType> getGenericTypes(DartType type) {
 }
 
 const nuRouteChecker = TypeChecker.fromRuntime(NuRoute);
-const nuRouterChecker = TypeChecker.fromRuntime(NuRouter);
+const nuRouterChecker = TypeChecker.fromRuntime(NuRouterAnnotation);
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 

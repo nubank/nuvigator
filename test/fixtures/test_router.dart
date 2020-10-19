@@ -3,8 +3,8 @@ import 'package:nuvigator/nuvigator.dart';
 
 part 'test_router.g.dart';
 
-@NuRouter()
-class TestRouter extends Router {
+@nuRouter
+class TestRouter extends NuRouter {
   @NuRoute(deepLink: 'home')
   ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => const Text('Home'),

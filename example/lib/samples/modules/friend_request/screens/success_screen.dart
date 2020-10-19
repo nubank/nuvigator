@@ -32,7 +32,6 @@ class SuccessScreen extends StatelessWidget {
                   tag: 'HERO',
                   child: FlutterLogo(
                     size: 96,
-                    colors: Colors.deepPurple,
                   ),
                 ),
                 Text(
