@@ -117,7 +117,8 @@ Widget testApp(NuRouter router, String initialRoute, [WrapperFn wrapper]) {
   );
 }
 
-Future pumpApp(WidgetTester tester, NuRouter router, String initialRoute) async {
+Future pumpApp(
+    WidgetTester tester, NuRouter router, String initialRoute) async {
   await tester.pumpWidget(MaterialApp(
     title: 'Test Nuvigator',
     builder: Nuvigator(
