@@ -8,7 +8,7 @@ Routing and Navigation package.
 ## What
 
 Nuvigator provides a powerful routing abstraction over Flutter's own Navigators. Model complex navigation flows using a mostly
-declarative and concise approach, without needing to worry about several tricky behaviours that Nuvigator handles for you.
+declarative and concise approach, without needing to worry about several tricky behaviors that Nuvigator handles for you.
 
 ## Main Concepts
 
@@ -27,8 +27,8 @@ class MyScreen extends StatelessWidget {
 
 }
 
-@NuRouter()
-class MainRouter extends Router {
+@nuRouter
+class MainRouter extends NuRouter {
 
   @NuRoute()
   ScreenRoute myRoute() => ScreenRoute(
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
 
 ```
 
-## Nuvigator and Router
+## Nuvigator and NuRouter
 
 `Nuvigator` is a custom `Navigator`. It behaves just like a normal `Navigator`, but has several custom improvements and
 features. It is engineered specially to work under nested scenarios, where you can have several Flows one inside another.
@@ -69,8 +69,8 @@ navigation, and it can be easily fetched from the context, just like a normal `N
 Nuvigator includes several extra methods, like `Nuvigator.of(context).openDeepLink()` that tries to open the desired deep link.
 Another example is `Nuvigator.of(context).closeFlow()` that tries to close all screens of a nested Nuvigator.
 
-Each `Nuvigator` should have a `Router`. The `Router` acts as a routing controller. A `Nuvigator` is responsible for
-visualization, widget rendering and state keeping. A Router is a Pure class that is responsible for providing elements to
+Each `Nuvigator` should have a `NuRouter`. The `NuRouter` acts as a routing controller. A `Nuvigator` is responsible for
+visualization, widget rendering and state keeping. A NuRouter is a Pure class that is responsible for providing elements to
 be presented and managed by the Nuvigator.
 
 ## ScreenRoute
@@ -91,8 +91,8 @@ A `ScreenRoute` may return another `Nuvigator`. This is useful for defining a ne
 
 ## Creating Routers
 
-Defining a new Router is probably be the what you will do the most when working with Nuvigator, so understanding how
-to do it properly is important. A Router class is a class that extends a `Router` and is annotated with the `@NuRouter` annotation.
+Defining a new NuRouter is probably be the what you will do the most when working with Nuvigator, so understanding how
+to do it properly is important. A NuRouter class is a class that extends a `NuRouter` and is annotated with the `@nuRouter` annotation.
 
 ### Defining Routes
  
@@ -102,8 +102,8 @@ the Arguments that can be passed to your route when navigating to it.
 
 Example:
 ```dart
-@NuRouter()
-class MyCustomRouter extends Router {
+@nuRouter
+class MyCustomRouter extends NuRouter {
   
   @NuRoute()
   ScreenRoute firstScreen({String argumentHere}) => ScreenRoute(
@@ -132,8 +132,7 @@ types natively for parameters in a deep link:
 - DateTime (`?date=2020-10-01`, `?date=2020-10-01T15:32:09.123Z`)
 - String (`?name=Jane+Doe`)
 
-Any of these **can be null** if you try to open a deep link without specifing them **or if they fail to parse** (e.g. `falseee` as
-a bool outputs `null`).
+Any of these **can be null** if you try to open a deep link without specifying them **or if they fail to parse** (e.g. `false` as a bool outputs `null`).
 
 If you create a Route that takes an argument of a different type and it has a deep link, Nuvigator's code generation tool will issue
 a warning about it. This is because, when decoding something that is not declared as one of these types, the result **will be a String**.
@@ -164,10 +163,10 @@ annotation.
 
 Example:
 ```dart
-@NuRouter()
-class MyCustomRouter extends Router {
+@nuRouter
+class MyCustomRouter extends NuRouter {
   
-  @NuRouter()
+  @nuRouter
   MyOtherRouter myOtherRouter = MyOtherRouter();
 
   @override
@@ -179,36 +178,36 @@ class MyCustomRouter extends Router {
 
 ### Router Options
 
-When extending from the `Router` you can override the following properties to add custom behaviors to your routes:
+When extending from the `NuRouter` you can override the following properties to add custom behaviors to your routes:
 
 - `deepLinkPrefix`:
 A `Future<String>`, that is used as prefix for the deep links declared on each route, and also for the grouped routers.
 
 - `screensWrapper`:
 A function to wrap each route presented by this router. Should return a new Widget that wraps this child Widget. 
-The Wrapper is applied to all Screens in this Router. This function runs one time for each screen, and not one 
-time for the entire Router.
+The Wrapper is applied to all Screens in this NuRouter. This function runs one time for each screen, and not one 
+time for the entire NuRouter.
 
 - `routers`
-Sub-Routers grouped into this Router.
+Sub-Routers grouped into this NuRouter.
 
 ## Code Generators
 
 You may have noticed in the examples above that we have methods that will be created by the Nuvigator generator. So while
 they don't exists you can just make they return `null` or leave un-implemented. 
 
-Before running the generator we recommend being sure that each Router is in a separated file, and also make sure that you
+Before running the generator we recommend being sure that each NuRouter is in a separated file, and also make sure that you
 have added the `part 'my_custom_router.g.dart';` directive and the required imports (`package:nuvigator/nuvigator.dart` and `package:flutter/widgets.dart`) in your router file. 
 
 After running the generator (`flutter pub run build_runner build --delete-conflicting-outputs`), you should notice that 
 each router file will have its `part-of` file created. Now you can complete the `screensMap` and `routersList` functions
 with the generated: `_$myScreensMap(this);` and `_$samplesRoutersList(this);`. Generated code usually follows this pattern
-of stripping out the `Router` part of your Router class and using the rest of the name for generated code.
+of stripping out the `NuRouter` part of your NuRouter class and using the rest of the name for generated code.
 
 Generated code includes the following features:
 
 - Routes Enum-like class
-- Navigation extension methods to Router
+- Navigation extension methods to NuRouter
 - Typed Arguments classes
 - Implementation Methods
 
@@ -256,7 +255,7 @@ Nested flows (declared with nested Nuvigators) will also have their generated Na
 in the parent Navigation. The same applies for Grouped Routers. Usage eg:
 
 ```dart
-final router = Router.of<SamplesRouter>(context);
+final router = NuRouter.of<SamplesRouter>(context);
 await router.sampleOneRouter.toScreenOne(testId: 'From Home');
 await router.toSecond(testId: 'From Home');
 ```
