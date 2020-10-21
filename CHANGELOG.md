@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.1
+- Update README
+- Update pubspec.yaml to support analyzer up to version `0.41.0`
+
 ## 0.7.0
 - [BREAKING] Rename classes to avoid conflicts with Flutter 1.22 Router Widget
   - `Router` was renamed to `NuRouter`
