@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/nuvigator.dart';
 
-class TestRouter extends Router {
+class TestRouter extends NuRouter {
   @override
   Map<RoutePath, ScreenRouteBuilder> get screensMap => {
         RoutePath('test/simple', prefix: false): (_) => ScreenRoute(
@@ -18,7 +19,7 @@ class TestRouter extends Router {
       };
 }
 
-class TestRouterWPrefix extends Router {
+class TestRouterWPrefix extends NuRouter {
   @override
   String get deepLinkPrefix => 'testapp://prefix/';
 
@@ -37,14 +38,30 @@ class TestRouterWPrefix extends Router {
       };
 }
 
-class GroupTestRouter extends Router {
+class TestRouterWWrapper extends NuRouter {
+  @override
+  Map<RoutePath, ScreenRouteBuilder> get screensMap => {
+        RoutePath('test/simple'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterFirstScreen',
+              screenType: materialScreenType,
+            ),
+        RoutePath('test/:id/params'): (_) => ScreenRoute(
+              builder: (sc) => null,
+              debugKey: 'testRouterSecondScreen',
+              screenType: materialScreenType,
+            ),
+      };
+}
+
+class GroupTestRouter extends NuRouter {
   @override
   String get deepLinkPrefix => 'group/';
 
   TestRouter testRouter = TestRouter();
 
   @override
-  List<Router> get routers => [
+  List<NuRouter> get routers => [
         testRouter,
       ];
 
@@ -64,10 +81,10 @@ class MockNuvigator extends NuvigatorState {
   String routePushed;
   Object argumentsPushed;
   @override
-  final Router router;
+  final NuRouter router;
 
   @override
-  NuvigatorState<Router> get rootNuvigator => this;
+  NuvigatorState<NuRouter> get rootNuvigator => this;
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName,
@@ -86,7 +103,7 @@ class TestWidget extends StatelessWidget {
   }
 }
 
-Widget testApp(Router router, String initialDeepLink, [WrapperFn wrapper]) {
+Widget testApp(NuRouter router, String initialDeepLink, [WrapperFn wrapper]) {
   return MaterialApp(
     builder: Nuvigator(
       router: router,
@@ -94,4 +111,16 @@ Widget testApp(Router router, String initialDeepLink, [WrapperFn wrapper]) {
       wrapper: wrapper,
     ),
   );
+}
+
+Future pumpApp(
+    WidgetTester tester, NuRouter router, String initialRoute) async {
+  await tester.pumpWidget(MaterialApp(
+    title: 'Test Nuvigator',
+    builder: Nuvigator(
+      screenType: cupertinoDialogScreenType,
+      router: router,
+      initialRoute: initialRoute,
+    ),
+  ));
 }

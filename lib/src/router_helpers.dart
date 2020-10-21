@@ -1,17 +1,17 @@
 import 'package:flutter/widgets.dart';
 
+import 'nurouter.dart';
 import 'route_path.dart';
-import 'router.dart';
 import 'screen_route.dart';
 
-class GenericRouter extends Router {
+class GenericRouter extends NuRouter {
   GenericRouter(
-      {List<Router> routers = const [],
+      {List<NuRouter> routers = const [],
       Map<RoutePath, ScreenRouteBuilder> screensMap = const {}})
       : _routers = routers,
         _screensMap = screensMap;
 
-  final List<Router> _routers;
+  final List<NuRouter> _routers;
   final Map<RoutePath, ScreenRouteBuilder> _screensMap;
 
   void route(RoutePath path, ScreenRoute screenRoute) {
@@ -24,10 +24,10 @@ class GenericRouter extends Router {
   Map<RoutePath, ScreenRouteBuilder> get screensMap => _screensMap;
 
   @override
-  List<Router> get routers => _routers;
+  List<NuRouter> get routers => _routers;
 }
 
-Router mergeRouters(List<Router> routers) {
+NuRouter mergeRouters(List<NuRouter> routers) {
   return GenericRouter(routers: routers);
 }
 

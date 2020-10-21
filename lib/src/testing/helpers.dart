@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nuvigator/nuvigator.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nuvigator/nuvigator.dart';
 
-import '../router.dart';
+import '../nurouter.dart';
 
 const INITIAL_TEST_ROUTE = 'nuvigator://initialTestRoute';
 const START_TEST_BUTTON_TEXT = '::NUVIGATOR::START_FLOW::';
@@ -66,7 +66,8 @@ class _EmptyWidget extends StatelessWidget {
       );
 }
 
-Router makeTestRouter(Router router, String initialRoute, [Object arguments]) {
+NuRouter makeTestRouter(NuRouter router, String initialRoute,
+    [Object arguments]) {
   final nuvigatorInitialRouter = SingleRouteHandler(
     RoutePath(INITIAL_TEST_ROUTE),
     ScreenRoute(
@@ -76,7 +77,7 @@ Router makeTestRouter(Router router, String initialRoute, [Object arguments]) {
   return mergeRouters([router, nuvigatorInitialRouter]);
 }
 
-Nuvigator makeTestNuvigator(Router router, String initialRoute,
+Nuvigator makeTestNuvigator(NuRouter router, String initialRoute,
     TesterDeepLinkInterceptor deepLinkInterceptor,
     [Object arguments]) {
   final appRouter = makeTestRouter(router, initialRoute);
@@ -89,7 +90,7 @@ Nuvigator makeTestNuvigator(Router router, String initialRoute,
 
 Future<void> withMockRouter({
   @required WidgetTester tester,
-  @required Router router,
+  @required NuRouter router,
   @required String initialRoute,
   Object arguments,
 }) async {
@@ -114,7 +115,7 @@ class NuvigatorTester {
   }
 
   Nuvigator nuvigator;
-  final Router router;
+  final NuRouter router;
   final WidgetTester tester;
   final String initialRoute;
   final TesterDeepLinkInterceptor deepLinkInterceptor =

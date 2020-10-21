@@ -5,7 +5,7 @@ import 'package:nuvigator/src/helpers.dart';
 import 'package:nuvigator/src/screen_types/material_screen_type.dart';
 
 import 'nu_route_settings.dart';
-import 'router.dart';
+import 'nurouter.dart';
 import 'screen_route.dart';
 import 'screen_type.dart';
 
@@ -17,7 +17,7 @@ typedef InitialDeepLinkFn<T> = String Function(T router);
 typedef DeepLinkInterceptor = bool Function(String deepLink,
     [Object arguments, bool isFromNative]);
 
-NuvigatorState _tryToFindNuvigatorForRouter<T extends Router>(
+NuvigatorState _tryToFindNuvigatorForRouter<T extends NuRouter>(
     NuvigatorState nuvigatorState) {
   if (nuvigatorState == null) return null;
   final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
@@ -63,7 +63,7 @@ class NuvigatorStateTracker extends NavigatorObserver {
   }
 }
 
-class _NuvigatorInner<T extends Router> extends Navigator {
+class _NuvigatorInner<T extends NuRouter> extends Navigator {
   _NuvigatorInner({
     @required this.router,
     String initialRoute,
@@ -136,13 +136,13 @@ class _NuvigatorInner<T extends Router> extends Navigator {
     return this;
   }
 
-  static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
+  static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
     final NuvigatorState closestNuvigator =
         context.findAncestorStateOfType<NuvigatorState>();
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
-  static NuvigatorState<T> of<T extends Router>(
+  static NuvigatorState<T> of<T extends NuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
     bool nullOk = false,
@@ -170,7 +170,7 @@ class _NuvigatorInner<T extends Router> extends Navigator {
   }
 }
 
-class NuvigatorState<T extends Router> extends NavigatorState
+class NuvigatorState<T extends NuRouter> extends NavigatorState
     with WidgetsBindingObserver {
   NuvigatorState get rootNuvigator =>
       _NuvigatorInner.of(context, rootNuvigator: true) ?? this;
@@ -184,7 +184,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   NuvigatorStateTracker stateTracker;
 
-  R getRouter<R extends Router>() => router.getRouter<R>();
+  R getRouter<R extends NuRouter>() => router.getRouter<R>();
 
   List<ObserverBuilder> _collectObservers() {
     if (isNested) {
@@ -211,9 +211,13 @@ class NuvigatorState<T extends Router> extends NavigatorState
   void didUpdateWidget(_NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
       widget.router.install(this);
-      widget.observers.add(stateTracker);
-      widget.observers.addAll(_collectObservers().map((f) => f()));
     }
+
+    /// Since every update the observers will be overridden by the constructor
+    /// parameters, the stateTracker and inheritableObservers should be injected
+    /// again.
+    widget.observers.add(stateTracker);
+    widget.observers.addAll(_collectObservers().map((f) => f()));
     super.didUpdateWidget(oldWidget);
   }
 
@@ -376,7 +380,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 
   bool get isRoot => this == rootNuvigator;
 
-  Router get rootRouter => rootNuvigator.router;
+  NuRouter get rootRouter => rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {
@@ -397,7 +401,7 @@ class NuvigatorState<T extends Router> extends NavigatorState
 }
 
 @immutable
-class Nuvigator<T extends Router> extends StatelessWidget {
+class Nuvigator<T extends NuRouter> extends StatelessWidget {
   const Nuvigator({
     @required this.router,
     this.initialRoute,
@@ -430,13 +434,13 @@ class Nuvigator<T extends Router> extends StatelessWidget {
     return this;
   }
 
-  static NuvigatorState ofRouter<T extends Router>(BuildContext context) {
+  static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
     final NuvigatorState closestNuvigator =
         context.findAncestorStateOfType<NuvigatorState>();
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
-  static NuvigatorState<T> of<T extends Router>(
+  static NuvigatorState<T> of<T extends NuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
     bool nullOk = false,

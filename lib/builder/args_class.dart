@@ -34,7 +34,11 @@ class ArgsClass extends BaseBuilder {
     );
   }
 
-  Method _parseMethod(String className, String argsCode) {
+  Method _parseMethod(
+      String className, String argsCode, List<Field> argsFields) {
+    final emptyConstructorArgs =
+        argsFields.map((a) => '${a.name}: null').join(',');
+
     return Method(
       (m) => m
         ..name = 'parse'
@@ -45,7 +49,10 @@ class ArgsClass extends BaseBuilder {
         )
         ..returns = refer(className)
         ..static = true
-        ..body = Code('return $className($argsCode);'),
+        ..body = Code('if (args == null) {'
+            'return $className($emptyConstructorArgs);'
+            '}'
+            'return $className($argsCode);'),
     );
   }
 
@@ -101,11 +108,44 @@ class ArgsClass extends BaseBuilder {
         ..constructors.add(_constructor(constructorParameters))
         ..fields.addAll(argsFields)
         ..methods.addAll([
-          _parseMethod(className, argsCode),
+          _parseMethod(className, argsCode, argsFields),
           _toMapMethod(argsFields),
           _ofMethod(className, routerName, fieldName),
         ]),
     );
+  }
+
+  static final _tryParseableTypeNames = [
+    'int',
+    'double',
+    'DateTime',
+  ];
+
+  static final _supportedTypes = [..._tryParseableTypeNames, 'bool', 'String'];
+
+  String _safelyCastArg(ParameterElement arg, MethodElement method) {
+    final varName = arg.name.toString();
+    final typeName = arg.type.toString();
+    final nuRouteFieldAnnotation =
+        nuRouteChecker.firstAnnotationOfExact(method);
+
+    if (!(nuRouteFieldAnnotation?.getField('deepLink')?.isNull ?? true) &&
+        !_supportedTypes.contains(typeName)) {
+      print(
+        'Unsuported type `$typeName` for route argument `$varName` in route `${method.name}` that generates a deep link.\n'
+        'This will throw a runtime error when calling the deep link as the argument will be passed as a `String` to a route that expects a `$typeName`.',
+      );
+    }
+
+    if (_tryParseableTypeNames.contains(typeName)) {
+      return "args['$varName'] is String ? $typeName.tryParse(args['$varName']) : args['$varName']";
+    }
+
+    if (typeName == 'bool') {
+      return "args['$varName'] is String ? boolFromString(args['$varName']) : args['$varName']";
+    }
+
+    return "args['$varName']";
   }
 
   @override
@@ -128,7 +168,7 @@ class ArgsClass extends BaseBuilder {
         final varName = arg.name.toString();
         final typeName = arg.type.toString();
 
-        argsParserBuffer.write("$varName: args['$varName'],\n");
+        argsParserBuffer.write('$varName: ${_safelyCastArg(arg, method)},\n');
 
         constructorParameters.add(
           _constructorParameter(varName),

@@ -26,7 +26,7 @@ class BuilderLibrary extends BaseBuilder {
       (b) => b
         ..name = '_\$routers'
         ..type = MethodType.getter
-        ..returns = refer('List<Router>')
+        ..returns = refer('List<NuRouter>')
         ..lambda = true
         ..body = Code('[$code]'),
     );
@@ -74,7 +74,7 @@ class BuilderLibrary extends BaseBuilder {
         final prefix = nuRouteFieldAnnotation.getField('prefix').toBoolValue();
         final paramsStr = params.isEmpty
             ? ''
-            : '${params.map((p) => "$p: args['$p']").join(",")}';
+            : '${params.map((p) => "$p: args.$p").join(",")}';
 
         final screenRouteBuilder = Method((m) => m
           ..requiredParameters.add(Parameter((p) => p
@@ -83,7 +83,7 @@ class BuilderLibrary extends BaseBuilder {
           ..lambda = false
           ..body = Code((params.isEmpty
                   ? ''
-                  : 'final Map<String, Object> args = settings.arguments ?? const {};') +
+                  : 'final args = ${capitalize(method.name)}Args.parse(settings.arguments);') +
               'return ${method.name}($paramsStr);'));
 
         screensMapBuffer.write(

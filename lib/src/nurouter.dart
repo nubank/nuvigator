@@ -10,8 +10,9 @@ import 'screen_route.dart';
 import 'screen_type.dart';
 
 typedef ScreenRouteBuilder = ScreenRoute Function(NuRouteSettings settings);
-typedef HandleDeepLinkFn = Future<dynamic>
-    Function(Router router, String deepLink, [dynamic args, bool isFromNative]);
+typedef HandleDeepLinkFn = Future<dynamic> Function(
+    NuRouter router, String deepLink,
+    [dynamic args, bool isFromNative]);
 
 String encodeDeepLink(String path, Map<String, dynamic> params) {
   final queryParams = <String, dynamic>{};
@@ -44,13 +45,13 @@ class RouteEntry {
       other is RouteEntry && other.routePath == routePath;
 }
 
-abstract class Router {
-  Router() {
+abstract class NuRouter {
+  NuRouter() {
     // Calling the getter here to cache the instances of the returned Routers
     _routers = routers;
   }
 
-  static T of<T extends Router>(
+  static T of<T extends NuRouter>(
     BuildContext context, {
     bool nullOk = false,
     bool rootRouter = false,
@@ -79,14 +80,14 @@ abstract class Router {
 
   Map<RoutePath, ScreenRouteBuilder> get screensMap => {};
 
-  List<Router> get routers => [];
+  List<NuRouter> get routers => [];
 
   WrapperFn get screensWrapper => null;
 
   String get scheme => NuvigatorSettings.appScheme;
 
   // Private Down below
-  List<Router> _routers;
+  List<NuRouter> _routers;
 
   String get _prefix => deepLinkPrefix;
 
@@ -109,7 +110,7 @@ abstract class Router {
   }
 
   /// Get the specified router that can be grouped in this router
-  T getRouter<T extends Router>() {
+  T getRouter<T extends NuRouter>() {
     if (this is T) return this;
     for (final router in _routers) {
       final r = router.getRouter<T>();

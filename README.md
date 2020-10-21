@@ -23,8 +23,8 @@ import 'package:nuvigator/nuvigator.dart';
 
 part 'main_router.g.dart';
 
-@NuRouter()
-class MainRouter extends Router {
+@nuRouter()
+class MainRouter extends NuRouter {
 
   @NuRoute(deepLink: 'myapp://myRoute')
   ScreenRoute myRoute() => ScreenRoute(
@@ -82,8 +82,8 @@ be responsible for visualization, widget render and state keeping.
 ## Router and Routes
 
 Defining a new Router will probably be the what you will do the most when working with Nuvigator, so understanding how
-to do it properly is important. A Router class is a class that should extend a `Router`. To have it's code generated you should
-also annotate it with `@NuRouter`.
+to do it properly is important. A Router class is a class that should extend a `NuRouter`. To have it's code generated you should
+also annotate it with `@nuRouter`.
  
 Inside your Router class you can define your Routes, each Route will be represented by a method annotated with the
 `@NuRoute` annotation. Those methods should return a `ScreenRoute`, and can receive any number of **named** arguments,
@@ -91,8 +91,8 @@ those will be used as the Arguments that should/can be passed to your route when
 
 Example:
 ```dart
-@NuRouter()
-class MyCustomRouter extends Router {
+@nuRouter()
+class MyCustomRouter extends NuRouter {
   
   @NuRoute(deepLink: 'myapp://firstScreen')
   ScreenRoute firstScreen({String argumentHere}) => ScreenRoute(
@@ -126,8 +126,8 @@ just override the `deepLinkPrefix` getter.
 
 Example:
 ```dart
-@NuRouter()
-class MyCustomRouter extends Router {
+@nuRouter()
+class MyCustomRouter extends NuRouter {
   
   String get deepLinkPrefix => 'prefixHere/';
 
@@ -164,17 +164,17 @@ this Nuvigator has the concept of Grouped Routers. This is basically a way to me
 that will be used by the application entry point. Grouping Routers does **NOT** stabilises a nesting or parent/children
 relationship, instead it just acts as a "merge" function for your Routes. You can think it as a way of merging or grouping Routers.
 
-To declare that a Router should be merged into another one, you can use the `@NuRouter` annotation in a property containing 
+To declare that a Router should be merged into another one, you can use the `@nuRouter` annotation in a property containing 
 the Router that will include the Routes of the second Router.
 
 Example:
 ```dart
-@NuRouter()
-class MyMain extends Router {
-  @NuRouter()
+@nuRouter()
+class MyMain extends NuRouter {
+  @nuRouter()
   FirstRouter firstRouter = FirstRouter();
 
-  @NuRouter()
+  @nuRouter()
   SecondRouter secondRouter = SecondRouter();
   
   @override
@@ -220,12 +220,12 @@ contains Grouped Routers are going to be applied too (in addition to the wrapper
 
 Example:
 ```dart
-@NuRouter()
-class MyMainRouter extends Router {
-  @NuRouter()
+@nuRouter()
+class MyMainRouter extends NuRouter {
+  @nuRouter()
   FirstRouter firstRouter = FirstRouter();
 
-  @NuRouter()
+  @nuRouter()
   SecondRouter secondRouter = SecondRouter();
   
   @override
@@ -258,7 +258,7 @@ and `package:flutter/widgets.dart`) in your router file.
 After running the generator (`flutter pub run build_runner build --delete-conflicting-outputs`), you will notice that 
 each router file will have it's part of file created. Now you can complete the `screensMap` and `routersList` functions
 with the generated: `_$myScreensMap(this);` and `_$samplesRoutersList(this);`. Generated code will usually follow this pattern
-of stripping out the `Router` part of your Router class and using the rest of the name for generated code.
+of stripping out the `NuRouter` part of your Router class and using the rest of the name for generated code.
 
 Generated code includes the following features:
 
@@ -294,7 +294,7 @@ will have several methods created, each for one of the existing push methods. Yo
 to generate using the `@NuRoute.pushMethods` parameter.
 
 ```dart
-final router = Router.of<SamplesRouter>(context);
+final router = NuRouter.of<SamplesRouter>(context);
 await router.sampleOneRouter.toScreenOne(testId: 'From Home');
 await router.toSecond(testId: 'From Home');
 ```

@@ -23,6 +23,27 @@ open a specific screen of a nested flow using DeepLinks.
     - DeepLinks are now treated as Strings in the whole library 
     - `NuRouter` had the `routeNamePrefix` removed
 
+## 0.7.1
+- Update README
+- Update pubspec.yaml to support analyzer up to version `0.41.0`
+
+## 0.7.0
+- [BREAKING] Rename classes to avoid conflicts with Flutter 1.22 Router Widget
+  - `Router` was renamed to `NuRouter`
+  - The `NuRouter` annotation was renamed to `nuRouter` const or `customNuRouter` function
+
+## 0.6.2
+- Fix NPE exception when a old instance of router tries calling some methods on it's nuvigator
+
+## 0.6.1
+- Fix a `NavigationObserver` error when the nuvigator is updated. Now we are reloading the `inheritableObservers` and `StateTracker` when has an update.
+
+## 0.6.0
+- Add support for typed screen arguments on deep links. In addition to `String`, we now support `int`, `double,` `bool`, and `DateTime`.
+
+## 0.5.1
+- Update ReCase version support to '>= 2.0.0 <3.1.0'
+
 ## 0.5.0
 - Updates the codebase to flutter 1.17 (stable) version
 

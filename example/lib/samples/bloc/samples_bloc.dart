@@ -1,11 +1,12 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class SamplesBloc extends ChangeNotifier {
-  final testText = 'SamplesBloc';
-  int counter = 0;
+  bool _navigateUsingDeepLink = false;
 
-  void increase() {
-    counter++;
+  bool get navigateUsingDeepLink => _navigateUsingDeepLink;
+
+  set navigateUsingDeepLink(bool value) {
+    _navigateUsingDeepLink = value;
     notifyListeners();
   }
 }

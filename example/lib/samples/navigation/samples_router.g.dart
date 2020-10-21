@@ -9,31 +9,36 @@ part of 'samples_router.dart';
 class SamplesRoutes {
   static const home = 'home';
 
-  static const second = 'sampleTwo';
+  static const friendRequests = '/friendRequests';
 }
 
-class SecondArgs {
-  SecondArgs({@required this.testId});
+class FriendRequestsArgs {
+  FriendRequestsArgs({@required this.numberOfRequests});
 
-  final String testId;
+  final int numberOfRequests;
 
-  static SecondArgs parse(Map<String, Object> args) {
-    return SecondArgs(
-      testId: args['testId'],
+  static FriendRequestsArgs parse(Map<String, Object> args) {
+    if (args == null) {
+      return FriendRequestsArgs(numberOfRequests: null);
+    }
+    return FriendRequestsArgs(
+      numberOfRequests: args['numberOfRequests'] is String
+          ? int.tryParse(args['numberOfRequests'])
+          : args['numberOfRequests'],
     );
   }
 
   Map<String, Object> get toMap => {
-        'testId': testId,
+        'numberOfRequests': numberOfRequests,
       };
-  static SecondArgs of(BuildContext context) {
+  static FriendRequestsArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
-    if (routeSettings?.name == SamplesRoutes.second) {
+    if (routeSettings?.name == SamplesRoutes.friendRequests) {
       final args = routeSettings?.arguments;
       if (args == null)
-        throw FlutterError('SecondArgs requires Route arguments');
-      if (args is SecondArgs) return args;
+        throw FlutterError('FriendRequestsArgs requires Route arguments');
+      if (args is FriendRequestsArgs) return args;
       if (args is Map<String, Object>) return parse(args);
     } else if (nuvigator != null) {
       return of(nuvigator.context);
@@ -73,70 +78,69 @@ extension SamplesRouterNavigation on SamplesRouter {
     );
   }
 
-  String secondDeepLink({@required String testId, @required String path}) =>
+  String friendRequestsDeepLink({@required int numberOfRequests}) =>
       encodeDeepLink(
-          pathWithPrefix(SamplesRoutes.second) + path, <String, dynamic>{
-        'testId': testId,
+          pathWithPrefix(SamplesRoutes.friendRequests), <String, dynamic>{
+        'numberOfRequests': numberOfRequests,
       });
-  Future<String> toSecond({@required String testId, @required String path}) {
+  Future<String> toFriendRequests({@required int numberOfRequests}) {
     return nuvigator.pushNamed<String>(
-      pathWithPrefix(SamplesRoutes.second) + path,
+      pathWithPrefix(SamplesRoutes.friendRequests),
       arguments: {
-        'testId': testId,
+        'numberOfRequests': numberOfRequests,
       },
     );
   }
 
-  Future<String> pushReplacementToSecond<TO extends Object>(
-      {@required String testId, @required String path, TO result}) {
+  Future<String> pushReplacementToFriendRequests<TO extends Object>(
+      {@required int numberOfRequests, TO result}) {
     return nuvigator.pushReplacementNamed<String, TO>(
-      pathWithPrefix(SamplesRoutes.second) + path,
+      pathWithPrefix(SamplesRoutes.friendRequests),
       arguments: {
-        'testId': testId,
+        'numberOfRequests': numberOfRequests,
       },
       result: result,
     );
   }
 
-  Future<String> pushAndRemoveUntilToSecond<TO extends Object>(
-      {@required String testId,
-      @required String path,
-      @required RoutePredicate predicate}) {
+  Future<String> pushAndRemoveUntilToFriendRequests<TO extends Object>(
+      {@required int numberOfRequests, @required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<String>(
-      pathWithPrefix(SamplesRoutes.second) + path,
+      pathWithPrefix(SamplesRoutes.friendRequests),
       predicate,
       arguments: {
-        'testId': testId,
+        'numberOfRequests': numberOfRequests,
       },
     );
   }
 
-  Future<String> popAndPushToSecond<TO extends Object>(
-      {@required String testId, @required String path, TO result}) {
+  Future<String> popAndPushToFriendRequests<TO extends Object>(
+      {@required int numberOfRequests, TO result}) {
     return nuvigator.popAndPushNamed<String, TO>(
-      pathWithPrefix(SamplesRoutes.second) + path,
+      pathWithPrefix(SamplesRoutes.friendRequests),
       arguments: {
-        'testId': testId,
+        'numberOfRequests': numberOfRequests,
       },
       result: result,
     );
   }
 
-  SampleOneRouter get sampleOneRouter => getRouter<SampleOneRouter>();
+  ComposerRouter get composerRouter => getRouter<ComposerRouter>();
 }
 
 extension SamplesRouterScreensAndRouters on SamplesRouter {
-  List<Router> get _$routers => [
-        sampleOneRouter,
+  List<NuRouter> get _$routers => [
+        composerRouter,
       ];
   Map<RoutePath, ScreenRouteBuilder> get _$screensMap {
     return {
       RoutePath(SamplesRoutes.home, prefix: false): (RouteSettings settings) {
         return home();
       },
-      RoutePath(SamplesRoutes.second, prefix: true): (RouteSettings settings) {
-        final Map<String, Object> args = settings.arguments ?? const {};
-        return second(testId: args['testId']);
+      RoutePath(SamplesRoutes.friendRequests, prefix: false):
+          (RouteSettings settings) {
+        final args = FriendRequestsArgs.parse(settings.arguments);
+        return friendRequests(numberOfRequests: args.numberOfRequests);
       },
     };
   }
