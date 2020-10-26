@@ -14,7 +14,7 @@ void main() {
 
   test('router onScreenNotFound', () {
     final testRouter = TestRouter();
-    bool notFound = false;
+    var notFound = false;
     testRouter.onScreenNotFound = (settings) {
       notFound = true;
       return ScreenRoute(debugKey: 'screenNotFound', builder: (_) => null);
@@ -44,7 +44,7 @@ void main() {
 
   test('router on deepLinkNotFound', () async {
     final testRouter = TestRouter();
-    bool notFound = false;
+    var notFound = false;
     final mockNuvigator = MockNuvigator(testRouter);
     testRouter.nuvigator = mockNuvigator;
     testRouter.onDeepLinkNotFound = (router, deepLink, [_, dynamic __]) async {

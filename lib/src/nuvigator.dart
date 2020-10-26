@@ -11,8 +11,10 @@ NuvigatorState _tryToFindNuvigatorForRouter<T extends NuRouter>(
   if (nuvigatorState == null) return null;
   final nuvigatorRouterForType = nuvigatorState.router.getRouter<T>();
   if (nuvigatorRouterForType != null) return nuvigatorState;
-  if (nuvigatorState != nuvigatorState.parent && nuvigatorState.parent != null)
+  if (nuvigatorState != nuvigatorState.parent &&
+      nuvigatorState.parent != null) {
     return _tryToFindNuvigatorForRouter<T>(nuvigatorState.parent);
+  }
   return null;
 }
 
@@ -143,8 +145,7 @@ class Nuvigator<T extends NuRouter> extends Navigator {
   }
 
   static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
-    final NuvigatorState closestNuvigator =
-        context.findAncestorStateOfType<NuvigatorState>();
+    final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
@@ -153,8 +154,9 @@ class Nuvigator<T extends NuRouter> extends Navigator {
     bool rootNuvigator = false,
     bool nullOk = false,
   }) {
-    if (rootNuvigator)
+    if (rootNuvigator) {
       return context.findRootAncestorStateOfType<NuvigatorState<T>>();
+    }
     final nuvigatorState = ofRouter<T>(context);
     if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
     assert(() {
@@ -250,84 +252,85 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   @override
   Future<bool> didPushRoute(String route) async {
     assert(mounted);
+    // ignore: unawaited_futures
     pushNamed(route);
     return true;
   }
 
   @override
-  Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
+  Future<R> pushNamed<R extends Object>(String routeName, {Object arguments}) {
     final possibleRoute =
         router.getScreen(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null && parent != null) {
-      return parent.pushNamed<T>(routeName, arguments: arguments);
+      return parent.pushNamed<R>(routeName, arguments: arguments);
     }
-    return super.pushNamed<T>(routeName, arguments: arguments);
+    return super.pushNamed<R>(routeName, arguments: arguments);
   }
 
   @override
-  Future<T> pushReplacementNamed<T extends Object, TO extends Object>(
+  Future<R> pushReplacementNamed<R extends Object, TO extends Object>(
       String routeName,
       {Object arguments,
       TO result}) {
     final possibleRoute =
         router.getScreen(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.pushReplacementNamed<T, TO>(routeName,
+      return parent.pushReplacementNamed<R, TO>(routeName,
           arguments: arguments, result: result);
     }
-    return super.pushReplacementNamed<T, TO>(routeName,
+    return super.pushReplacementNamed<R, TO>(routeName,
         arguments: arguments, result: result);
   }
 
   @override
-  Future<T> pushNamedAndRemoveUntil<T extends Object>(
+  Future<R> pushNamedAndRemoveUntil<R extends Object>(
       String newRouteName, RoutePredicate predicate,
       {Object arguments}) {
     final possibleRoute = router
         .getScreen(RouteSettings(name: newRouteName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
+      return parent.pushNamedAndRemoveUntil<R>(newRouteName, predicate,
           arguments: arguments);
     }
-    return super.pushNamedAndRemoveUntil<T>(newRouteName, predicate,
+    return super.pushNamedAndRemoveUntil<R>(newRouteName, predicate,
         arguments: arguments);
   }
 
   @override
-  Future<T> popAndPushNamed<T extends Object, TO extends Object>(
+  Future<R> popAndPushNamed<R extends Object, TO extends Object>(
       String routeName,
       {Object arguments,
       TO result}) {
     final possibleRoute =
         router.getScreen(RouteSettings(name: routeName, arguments: arguments));
     if (possibleRoute == null) {
-      return parent.popAndPushNamed<T, TO>(routeName,
+      return parent.popAndPushNamed<R, TO>(routeName,
           arguments: arguments, result: result);
     }
-    return super.popAndPushNamed<T, TO>(routeName,
+    return super.popAndPushNamed<R, TO>(routeName,
         arguments: arguments, result: result);
   }
 
   @override
-  void pop<T extends Object>([T result]) {
+  void pop<R extends Object>([R result]) {
     var isPopped = false;
     if (canPop()) {
       isPopped = super.canPop();
-      super.pop<T>(result);
+      super.pop<R>(result);
     } else if (widget.shouldPopRoot && this == rootNuvigator) {
       isPopped = true;
       SystemNavigator.pop();
     }
     if (!isPopped && this != rootNuvigator && parent != null) {
-      parentPop<T>(result);
+      parentPop<R>(result);
     }
   }
 
-  void parentPop<T extends Object>([T result]) => parent.pop<T>(result);
+  void parentPop<R extends Object>([R result]) => parent.pop<R>(result);
 
-  void rootPop<T extends Object>([T result]) => rootNuvigator.pop<T>(result);
+  void rootPop<R extends Object>([R result]) => rootNuvigator.pop<R>(result);
 
-  void closeFlow<T extends Object>([T result]) {
+  void closeFlow<R extends Object>([R result]) {
     if (isNested) {
       parentPop(result);
     }
@@ -347,7 +350,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 
   @override
   Widget build(BuildContext context) {
-    Widget child = super.build(context);
+    var child = super.build(context);
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
     }
