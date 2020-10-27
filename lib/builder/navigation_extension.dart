@@ -16,14 +16,15 @@ class NavigationExtension extends BaseBuilder {
       for (final arg in method.parameters) {
         final argName = arg.name.toString();
         final isRequired = arg.metadata.isNotEmpty &&
-            arg.metadata.firstWhere((e) => e.isRequired, orElse: null) != null;
+            arg.metadata.firstWhere((e) => e.isRequired, orElse: () => null) !=
+                null;
         parameters.add(
           Parameter(
             (p) => p
               ..name = argName
               ..annotations.addAll(isRequired ? [refer('required')] : [])
               ..named = true
-              ..type = refer(arg.type.toString()),
+              ..type = refer(arg.type.getDisplayString(withNullability: false)),
           ),
         );
         argumentsMapBuffer.write("'$argName': $argName,");
@@ -178,8 +179,9 @@ class NavigationExtension extends BaseBuilder {
 
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
-      final screenReturn =
-          generics.length > 1 ? generics[1].name : generics.first.name;
+      final screenReturn = generics.length > 1
+          ? generics[1].getDisplayString(withNullability: false)
+          : generics.first.getDisplayString(withNullability: false);
       final pushMethods =
           nuRouteFieldAnnotation.getField('pushMethods').toListValue();
       if (pushMethods != null) {
@@ -222,7 +224,7 @@ class NavigationExtension extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
         methods.add(
-          _subRouterMethod(field.type.name),
+          _subRouterMethod(field.type.getDisplayString(withNullability: false)),
         );
       }
     }

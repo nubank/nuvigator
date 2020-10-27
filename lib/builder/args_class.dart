@@ -125,7 +125,7 @@ class ArgsClass extends BaseBuilder {
 
   String _safelyCastArg(ParameterElement arg, MethodElement method) {
     final varName = arg.name.toString();
-    final typeName = arg.type.toString();
+    final typeName = arg.type.getDisplayString(withNullability: false);
     final nuRouteFieldAnnotation =
         nuRouteChecker.firstAnnotationOfExact(method);
 
@@ -166,7 +166,7 @@ class ArgsClass extends BaseBuilder {
 
       for (final arg in method.parameters) {
         final varName = arg.name.toString();
-        final typeName = arg.type.toString();
+        final typeName = arg.type.getDisplayString(withNullability: false);
 
         argsParserBuffer.write('$varName: ${_safelyCastArg(arg, method)},\n');
 

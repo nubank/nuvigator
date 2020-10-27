@@ -29,13 +29,13 @@ String getRouterName(Element element) {
 }
 
 String getRouteString(ClassElement routerElement, MethodElement element) {
-  String prefix = nuRouterChecker
+  var prefix = nuRouterChecker
       .firstAnnotationOfExact(routerElement)
       ?.getField('routeNamePrefix')
       ?.toStringValue();
   prefix = prefix != null && prefix.isNotEmpty ? lowerCamelCase(prefix) : '';
 
-  String routerName = getRouterName(routerElement);
+  var routerName = getRouterName(routerElement);
   final needsFormat = prefix.isEmpty || prefix.endsWith('/');
   routerName = needsFormat ? lowerCamelCase(routerName) : routerName;
 

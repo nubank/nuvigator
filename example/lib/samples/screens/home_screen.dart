@@ -74,6 +74,7 @@ class HomeScreen extends StatelessWidget {
                     }
 
                     if (text != null) {
+                      // ignore: unawaited_futures
                       showDialog<void>(
                         context: context,
                         builder: (context) => AlertDialog(

@@ -93,7 +93,7 @@ abstract class NuRouter {
     final screen = _getScreen(settings);
     if (screen != null) return screen;
 
-    for (NuRouter router in routers) {
+    for (final router in routers) {
       final screen = router.getScreen(settings);
       if (screen != null) return screen.wrapWith(screensWrapper);
     }
@@ -107,7 +107,7 @@ abstract class NuRouter {
     if (prefixRegex.hasMatch(deepLink)) {
       final routeEntry = _getRouteEntryForDeepLink(deepLink);
       if (routeEntry != null) return routeEntry;
-      for (final NuRouter router in routers) {
+      for (final router in routers) {
         final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
         final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
         if (subRouterEntry != null) {
@@ -137,8 +137,9 @@ abstract class NuRouter {
       final routeEntry = getRouteEntryForDeepLink(deepLinkString(url));
 
       if (routeEntry == null) {
-        if (onDeepLinkNotFound != null)
+        if (onDeepLinkNotFound != null) {
           return await onDeepLinkNotFound(this, url, isFromNative, arguments);
+        }
         return null;
       }
 

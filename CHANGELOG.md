@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.7.2
+- Fix problems caused by bump in `analyzer` dependency
+
 ## 0.7.1
 - Update README
 - Update pubspec.yaml to support analyzer up to version `0.41.0`

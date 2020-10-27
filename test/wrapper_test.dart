@@ -20,6 +20,7 @@ void main() {
     final router = TestRouter();
     await helpers.pumpApp(tester, router, TestRoutes.home);
 
+    // ignore: unawaited_futures
     router.openDeepLink<void>(Uri.parse('exapp://testargs'));
     await tester.pumpAndSettle();
 

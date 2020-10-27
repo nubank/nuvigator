@@ -14,7 +14,7 @@ class NuvigatorGenerator extends GeneratorForAnnotation<NuRouterAnnotation> {
   FutureOr<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is ClassElement) {
-      final ClassElement classElement = element;
+      final classElement = element;
       final lib = BuilderLibrary(classElement).build();
       return DartFormatter().format(lib.accept(DartEmitter()).toString());
     }

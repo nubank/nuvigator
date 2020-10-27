@@ -7,6 +7,7 @@ void main() {
       (WidgetTester tester) async {
     final router = TestRouter();
     await helpers.pumpApp(tester, router, TestRoutes.home);
+    // ignore: unawaited_futures
     router.openDeepLink<void>(Uri.parse('exapp://testargs'));
     await tester.pumpAndSettle();
     expect(find.text('intArg: null'), findsOneWidget);
@@ -16,6 +17,7 @@ void main() {
       (WidgetTester tester) async {
     final router = TestRouter();
     await helpers.pumpApp(tester, router, TestRoutes.home);
+    // ignore: unawaited_futures
     router.openDeepLink<void>(Uri.parse(
         'exapp://testargs?intArg=42&doubleArg=-4.2&boolArg=true&dateTimeArg=2020-07-07T12:34:00.000Z&dateArg=2020-08-07&stringArg=testing'));
     await tester.pumpAndSettle();
