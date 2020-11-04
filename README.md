@@ -132,7 +132,7 @@ types natively for parameters in a deep link:
 - DateTime (`?date=2020-10-01`, `?date=2020-10-01T15:32:09.123Z`)
 - String (`?name=Jane+Doe`)
 
-Any of these **can be null** if you try to open a deep link without specifying them **or if they fail to parse** (e.g. `false` as a bool outputs `null`).
+Any of these **can be null** if you try to open a deep link without specifying them **or if they fail to parse** (e.g. `falseee` as a bool outputs `null`).
 
 If you create a Route that takes an argument of a different type and it has a deep link, Nuvigator's code generation tool will issue
 a warning about it. This is because, when decoding something that is not declared as one of these types, the result **will be a String**.
