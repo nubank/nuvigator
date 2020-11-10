@@ -1,20 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/src/screen_route.dart';
 
 import '../nu_route_module.dart';
+import 'nuvigator_page.dart';
 
-class NuvigatorPage<A, T> extends Page<T> {
-  const NuvigatorPage({this.module, this.routeMatch});
-
-  final NuRouteModule module;
-  final RouteMatch<A> routeMatch;
-
-  @override
-  Route<T> createRoute(BuildContext context) {
-    return module.getRoute(routeMatch);
-  }
-}
+class NuRouteConfig {}
 
 abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<NuRouteConfig> {
@@ -42,9 +34,9 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
   }
 
   // Ignores the entire current stack and replaces just by this deepLink
-  void setDeepLink(String deepLink) {}
+  void setDeepLinks(List<String> deepLink) {}
 
-  Route<R> getRoute<R>(BuildContext context, RouteSettings settings) {
+  ScreenRoute<R> getRoute<R>(BuildContext context, RouteSettings settings) {
     for (final module in _modules) {
       if (module.canHandleDeepLink(settings.name)) {
         final match = module.getRouteMatchForDeepLink(settings.name);
@@ -54,7 +46,6 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
     return null;
   }
 
-  // Supporting async deepLink resolution is a cool feature, we just need to check how to handle loading in those scenarios.
   Future<R> openDeepLink<R>(String deepLink) async {
     for (final module in _modules) {
       if (module.canHandleDeepLink(deepLink)) {
@@ -62,17 +53,16 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
         final routeMatch = module.getRouteMatchForDeepLink(deepLink);
         final page = NuvigatorPage<dynamic, dynamic>(
           module: module,
-          routeMatch: routeMatch,
+          nuRouteMatch: routeMatch,
           // onPop: (result) {
           //   completer.complete(result);
           // },
         );
         _pages.add(page);
-        return completer.future;
+        return completer.future; // Simulate the pop return value behavior
       }
     }
-    // No module matched for this deepLink, what we should do?
-    return null;
+    return null; // No module matched, how we handle this?
   }
 
   @override
@@ -83,12 +73,10 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
         if (snapshot.hasData) {
           return Navigator(
             key: _navigatorKey,
-            // If we can still use the Navigator instead of a custom override it would be cool. We would probably need to move a lot of logic to this delegate to emulate the functionaly we want
             initialRoute: initialRoute,
             onPopPage: (route, dynamic result) {
               route.didPop(result);
-              // ignore: avoid_as
-              final page = route.settings as Page<dynamic>;
+              final Page<dynamic> page = route.settings;
               _pages.removeWhere((element) => element.key == page.key);
               notifyListeners();
               return true;
