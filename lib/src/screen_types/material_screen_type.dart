@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../screen_type.dart';
 
-class NuvigatorMaterialPageRoute<T> extends MaterialPageRoute<T>
+class NuMaterialPageRoute<T> extends MaterialPageRoute<T>
     with NuvigatorPageRoute<T> {
-  NuvigatorMaterialPageRoute({
+  NuMaterialPageRoute({
     @required WidgetBuilder builder,
     RouteSettings settings,
     bool maintainState = true,
@@ -23,7 +23,7 @@ class MaterialScreenType extends ScreenType {
   @override
   Route<T> toRoute<T extends Object>(
       WidgetBuilder builder, RouteSettings settings) {
-    return NuvigatorMaterialPageRoute(
+    return NuMaterialPageRoute(
       builder: builder,
       settings: settings,
     );
