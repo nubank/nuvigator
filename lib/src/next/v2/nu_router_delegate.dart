@@ -13,11 +13,14 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
   final List<Page> _pages = [];
 
   GlobalKey<NavigatorState> _navigatorKey;
+
   @override
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
   NuRouterDelegate nuvigator;
   List<NuRouteModule> _modules;
+
   Widget loadingWidget(BuildContext _) => Container();
+
   List<NuRouteModule> get modules;
 
   String get initialRoute;
@@ -38,8 +41,8 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
 
   ScreenRoute<R> getRoute<R>(BuildContext context, RouteSettings settings) {
     for (final module in _modules) {
-      if (module.canHandleDeepLink(settings.name)) {
-        final match = module.getRouteMatchForDeepLink(settings.name);
+      final match = module.getRouteMatch(settings.name);
+      if (match != null) {
         return module.getRoute(match);
       }
     }
@@ -48,9 +51,9 @@ abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
 
   Future<R> openDeepLink<R>(String deepLink) async {
     for (final module in _modules) {
-      if (module.canHandleDeepLink(deepLink)) {
+      final routeMatch = module.getRouteMatch(deepLink);
+      if (routeMatch != null) {
         final completer = Completer<dynamic>();
-        final routeMatch = module.getRouteMatchForDeepLink(deepLink);
         final page = NuvigatorPage<dynamic, dynamic>(
           module: module,
           nuRouteMatch: routeMatch,

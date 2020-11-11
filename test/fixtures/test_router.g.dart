@@ -73,7 +73,7 @@ class TestArgsArgs {
       };
   static TestArgsArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
-    final nuvigator = Nuvigator.of(context);
+    final nuvigator = NuvigatorInner.of(context);
     if (routeSettings?.name == TestRoutes.testArgs) {
       final args = routeSettings?.arguments;
       if (args == null) {

@@ -31,7 +31,7 @@ class ComposeTextArgs {
       };
   static ComposeTextArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
-    final nuvigator = Nuvigator.of(context);
+    final nuvigator = NuvigatorInner.of(context);
     if (routeSettings?.name == ComposerRoutes.composeText) {
       final args = routeSettings?.arguments;
       if (args == null)

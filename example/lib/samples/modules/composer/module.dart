@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
+
+import 'screens/help_screen.dart';
+import 'screens/text_composer_screen.dart';
 
 // ComposerTextModule
 abstract class ComposerTextDelegate extends NuModuleRouter {
@@ -8,18 +9,23 @@ abstract class ComposerTextDelegate extends NuModuleRouter {
 }
 
 class ComposerTextModule
-    extends NuRouteModule<ComposerTextDelegate, void, void> {
+    extends NuRouteModule<ComposerTextDelegate, void, String> {
   ComposerTextModule(ComposerTextDelegate delegate) : super(delegate);
 
   @override
-  Route<Object> getRoute(RouteMatch<Object> match) {
-    return MaterialPageRoute(
-      builder: (context) => Container(),
+  ScreenRoute<String> getRoute(NuRouteMatch<void> match) {
+    return ScreenRoute(
+      builder: (context) => TextComposerScreen(
+        initialText: match.parameters['initialText'],
+        submitText: (String text) => delegate.nuvigator.pop(text),
+        toHelp: () => delegate.nuvigator.openDeepLink<void>(Uri.parse('')),
+      ),
+      screenType: materialScreenType,
     );
   }
 
   @override
-  String get path => 'composer/text';
+  String get path => 'deepprefix/composer/text';
 }
 
 // ComposerHelpModule
@@ -32,14 +38,15 @@ class ComposerHelpModule
   ComposerHelpModule(ComposerHelpDelegate delegate) : super(delegate);
 
   @override
-  Route<void> getRoute(RouteMatch<void> match) {
-    return MaterialPageRoute(
-      builder: (context) => Container(),
+  ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
+    return ScreenRoute(
+      builder: (context) => HelpScreen(),
+      screenType: cupertinoScreenType,
     );
   }
 
   @override
-  String get path => 'composer/help';
+  String get path => 'deepprefix/composer/help';
 }
 
 // Export Helper
@@ -52,29 +59,4 @@ List<NuRouteModule> composerModules(ComposerModulesDelegate delegate) {
     ComposerTextModule(delegate),
     ComposerHelpModule(delegate),
   ];
-}
-
-class MainAppModuleRouter extends NuModuleRouter
-    implements ComposerModulesDelegate {
-  @override
-  String get initialRoute => 'composer/text';
-
-  @override
-  List<NuRouteModule> get modules => composerModules(this);
-
-  @override
-  void handleCompose() {
-    print('handling composer text');
-  }
-
-  @override
-  void handleHelp() {
-    print('handling composer help');
-  }
-}
-
-Widget main() {
-  return Nuvigator2(
-    moduleRouter: MainAppModuleRouter(),
-  );
 }

@@ -10,8 +10,9 @@ abstract class NuRouteModule<T, A extends Object, R extends Object> {
 
   String get path;
 
+  // TBD
   bool get prefix => false;
-  T _delegate;
+  final T _delegate;
 
   T get delegate => _delegate;
 
@@ -19,19 +20,15 @@ abstract class NuRouteModule<T, A extends Object, R extends Object> {
     return SynchronousFuture(true);
   }
 
-  void install(T delegate) {
-    _delegate = delegate;
-  }
-
-  bool canHandleDeepLink(String deepLink) {
-    return deepLink == path;
-  }
-
-  NuRouteMatch<A> getRouteMatchForDeepLink(
+  NuRouteMatch<A> getRouteMatch(
     String deepLink, {
     Map<String, dynamic> extraParameters,
   }) {
-    return null;
+    return NuRouteMatch(
+      pathTemplate: path,
+      queryParameters: extraParameters,
+      path: deepLink,
+    );
   }
 
   ScreenRoute<R> getRoute(NuRouteMatch<A> match);

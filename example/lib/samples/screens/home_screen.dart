@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<SamplesBloc>(context);
-    final router = NuRouter.of<SamplesRouter>(context);
+    final router = NuRouter.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
     final toggleStyle = Theme.of(context).textTheme.bodyText1;
 
@@ -52,12 +52,8 @@ class HomeScreen extends StatelessWidget {
                 RaisedButton(
                   child: const Text('Review friend requests'),
                   onPressed: () {
-                    if (bloc.navigateUsingDeepLink) {
-                      router.openDeepLink<void>(Uri.parse(
-                          'exapp://deepprefix/friendRequests?numberOfRequests=10'));
-                    } else {
-                      router.toFriendRequests(numberOfRequests: 5);
-                    }
+                    router.openDeepLink<void>(Uri.parse(
+                        'exapp://deepprefix/friendRequests?numberOfRequests=10'));
                   },
                 ),
                 RaisedButton(
@@ -65,13 +61,9 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () async {
                     String text;
 
-                    if (bloc.navigateUsingDeepLink) {
-                      text = await router.openDeepLink<String>(Uri.parse(
-                        'exapp://deepprefix/composer/text?initialText=Hello+deep+link%21',
-                      ));
-                    } else {
-                      text = await router.composerRouter.toComposeText();
-                    }
+                    text = await router.openDeepLink<String>(Uri.parse(
+                      'exapp://deepprefix/composer/text?initialText=Hello+deep+link%21',
+                    ));
 
                     if (text != null) {
                       // ignore: unawaited_futures

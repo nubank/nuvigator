@@ -55,8 +55,8 @@ class NuvigatorStateTracker extends NavigatorObserver {
   }
 }
 
-class Nuvigator<T extends NuRouter> extends Navigator {
-  Nuvigator({
+class NuvigatorInner<T extends NuRouter> extends Navigator {
+  NuvigatorInner({
     @required this.router,
     String initialRoute,
     Uri initialDeepLink,
@@ -114,36 +114,12 @@ class Nuvigator<T extends NuRouter> extends Navigator {
               initialRoute ?? router.getScreenNameFromDeepLink(initialDeepLink),
         );
 
-  Nuvigator<T> copyWith({
-    Object initialArguments,
-    WrapperFn wrapper,
-    Key key,
-    bool debugLog,
-    ScreenType screenType,
-    List<ObserverBuilder> inheritableObservers,
-    String initialRoute,
-  }) {
-    return Nuvigator<T>(
-      initialRoute: initialRoute ?? this.initialRoute,
-      router: router,
-      debug: debugLog ?? debug,
-      inheritableObservers: inheritableObservers ?? this.inheritableObservers,
-      screenType: screenType ?? this.screenType,
-      wrapper: wrapper ?? this.wrapper,
-      key: key ?? this.key,
-    );
-  }
-
   final T router;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
-
-  Nuvigator call(BuildContext context, [Widget child]) {
-    return this;
-  }
 
   static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
     final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();
@@ -182,10 +158,10 @@ class Nuvigator<T extends NuRouter> extends Navigator {
 class NuvigatorState<T extends NuRouter> extends NavigatorState
     with WidgetsBindingObserver {
   NuvigatorState get rootNuvigator =>
-      Nuvigator.of(context, rootNuvigator: true) ?? this;
+      NuvigatorInner.of(context, rootNuvigator: true) ?? this;
 
   @override
-  Nuvigator get widget => super.widget;
+  NuvigatorInner get widget => super.widget;
 
   List<NuvigatorState> nestedNuvigators = [];
 
@@ -204,7 +180,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 
   @override
   void initState() {
-    parent = Nuvigator.of(context, nullOk: true);
+    parent = NuvigatorInner.of(context, nullOk: true);
     if (isNested) {
       parent.nestedNuvigators.add(this);
     }
@@ -218,7 +194,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   }
 
   @override
-  void didUpdateWidget(Nuvigator oldWidget) {
+  void didUpdateWidget(NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
       assert(widget.router.nuvigator == null);
       widget.router.nuvigator = this;
@@ -349,7 +325,8 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 
   NuRouter get rootRouter => rootNuvigator.router;
 
-  Widget _build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     var child = super.build(context);
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
@@ -364,20 +341,89 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     }
     return child;
   }
+}
+
+@immutable
+class Nuvigator<T extends NuRouter> extends StatelessWidget {
+  const Nuvigator({
+    @required this.router,
+    this.initialRoute,
+    this.initialDeepLink,
+    this.initialArguments,
+    this.key,
+    this.observers = const [],
+    this.screenType = materialScreenType,
+    this.wrapper,
+    this.debug = false,
+    this.inheritableObservers = const [],
+    this.shouldPopRoot = false,
+  });
+
+  final T router;
+  final bool debug;
+  final bool shouldPopRoot;
+  final ScreenType screenType;
+  final WrapperFn wrapper;
+  final List<ObserverBuilder> inheritableObservers;
+  final List<NavigatorObserver> observers;
+  @override
+  // ignore: overridden_fields
+  final Key key;
+  final String initialRoute;
+  final Uri initialDeepLink;
+  final Map<String, Object> initialArguments;
+
+  Nuvigator<T> copyWith({
+    Object initialArguments,
+    WrapperFn wrapper,
+    Key key,
+    bool debugLog,
+    ScreenType screenType,
+    List<ObserverBuilder> inheritableObservers,
+    String initialRoute,
+  }) {
+    return Nuvigator<T>(
+      initialRoute: initialRoute ?? this.initialRoute,
+      router: router,
+      debug: debugLog ?? debug,
+      inheritableObservers: inheritableObservers ?? this.inheritableObservers,
+      screenType: screenType ?? this.screenType,
+      wrapper: wrapper ?? this.wrapper,
+      key: key ?? this.key,
+    );
+  }
+
+  Nuvigator call(BuildContext context, [Widget child]) {
+    return this;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final nuvigatorInner = NuvigatorInner<T>(
+      router: router,
+      debug: debug,
+      inheritableObservers: inheritableObservers,
+      observers: observers,
+      initialRoute: initialRoute,
+      initialDeepLink: initialDeepLink,
+      screenType: screenType,
+      key: key,
+      wrapper: wrapper,
+      shouldPopRoot: shouldPopRoot,
+    );
     if (router is NuModuleRouter) {
       // ignore: avoid_as
       final moduleRouter = router as NuModuleRouter;
       return FutureBuilder(
-        future: moduleRouter.init(context),
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
-            snapshot.connectionState == ConnectionState.done
-                ? _build(context)
-                : moduleRouter.loadingWidget(context),
+        future: moduleRouter.initRouter(context),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          return snapshot.connectionState == ConnectionState.done
+              ? nuvigatorInner
+              : moduleRouter.loadingWidget(context);
+        },
       );
+    } else {
+      return nuvigatorInner;
     }
-    return _build(context);
   }
 }

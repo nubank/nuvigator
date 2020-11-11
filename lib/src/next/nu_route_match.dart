@@ -15,7 +15,7 @@ class NuRouteMatch<A> {
   final Map<String, String> pathParameters;
 
   Map<String, String> get parameters => {
-        ...queryParameters,
-        ...pathParameters,
+        ...queryParameters ?? {},
+        ...pathParameters ?? {},
       };
 }

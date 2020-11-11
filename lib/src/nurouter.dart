@@ -44,8 +44,9 @@ abstract class NuRouter {
     bool nullOk = false,
     bool rootRouter = false,
   }) {
-    if (rootRouter) return Nuvigator.of(context, rootNuvigator: true).router;
-    final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
+    if (rootRouter)
+      return NuvigatorInner.of(context, rootNuvigator: true).router;
+    final router = NuvigatorInner.ofRouter<T>(context)?.getRouter<T>();
     assert(() {
       if (!nullOk && router == null) {
         throw FlutterError(
