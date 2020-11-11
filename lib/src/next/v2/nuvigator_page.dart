@@ -8,7 +8,7 @@ class NuvigatorPage<A, T> extends Page<T> {
   NuvigatorPage({this.module, this.nuRouteMatch})
       : super(
           name: nuRouteMatch.path,
-          arguments: nuRouteMatch.arguments,
+          arguments: nuRouteMatch.args,
         );
 
   final NuRouteModule module;

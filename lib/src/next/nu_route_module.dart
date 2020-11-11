@@ -7,9 +7,12 @@ import 'nu_route_match.dart';
 
 abstract class NuRouteModule<T, A extends Object, R extends Object> {
   NuRouteModule(this._delegate);
+
   String get path;
+
   bool get prefix => false;
   T _delegate;
+
   T get delegate => _delegate;
 
   Future<bool> init(BuildContext context) {
@@ -24,11 +27,10 @@ abstract class NuRouteModule<T, A extends Object, R extends Object> {
     return deepLink == path;
   }
 
-  NuRouteMatch<A> getRouteMatchForDeepLink(String deepLink) {
-    return _parseRoute(deepLink);
-  }
-
-  NuRouteMatch<A> _parseRoute(String deepLink) {
+  NuRouteMatch<A> getRouteMatchForDeepLink(
+    String deepLink, {
+    Map<String, dynamic> extraParameters,
+  }) {
     return null;
   }
 
