@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:nuvigator/src/next/v1/nu_module_router.dart';
 
 import 'nurouter.dart';
 
@@ -348,8 +349,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 
   NuRouter get rootRouter => rootNuvigator.router;
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _build(BuildContext context) {
     var child = super.build(context);
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
@@ -363,5 +363,21 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
       );
     }
     return child;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (router is NuModuleRouter) {
+      // ignore: avoid_as
+      final moduleRouter = router as NuModuleRouter;
+      return FutureBuilder(
+        future: moduleRouter.init(context),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+            snapshot.connectionState == ConnectionState.done
+                ? _build(context)
+                : moduleRouter.loadingWidget(context),
+      );
+    }
+    return _build(context);
   }
 }
