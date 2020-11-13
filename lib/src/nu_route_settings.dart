@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-class NuRouteSettings<A> extends RouteSettings {
+class NuRouteSettings<A extends Object> extends RouteSettings {
   const NuRouteSettings({
     @required String name,
     @required this.pathTemplate,
@@ -17,10 +17,12 @@ class NuRouteSettings<A> extends RouteSettings {
   final Map<String, dynamic> pathParams;
   final Map<String, dynamic> extraParams;
 
-  @override
   Map<String, dynamic> get rawParams {
     return <String, dynamic>{...queryParams, ...pathParams, ...extraParams};
   }
+
+  @override
+  A get arguments => null;
 
   @override
   String toString() =>
