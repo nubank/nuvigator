@@ -1,7 +1,7 @@
 import 'package:example/samples/modules/composer/module.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/nuvigator.dart';
+import 'package:nuvigator/next.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/samples_bloc.dart';
@@ -9,8 +9,8 @@ import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
 import 'screens/home_screen.dart';
 
-class HomeModule extends NuRouteModule<NuModuleRouter, void, void> {
-  HomeModule(NuModuleRouter delegate) : super(delegate);
+class HomeRoute extends NuRoute {
+  HomeRoute(NuModule delegate) : super(delegate);
 
   @override
   Future<bool> init(BuildContext context) {
@@ -28,8 +28,8 @@ class HomeModule extends NuRouteModule<NuModuleRouter, void, void> {
   }
 }
 
-class FriendRequestModule extends NuRouteModule<NuModuleRouter, void, void> {
-  FriendRequestModule(NuModuleRouter delegate) : super(delegate);
+class FriendRequestRoute extends NuRoute {
+  FriendRequestRoute(NuModule delegate) : super(delegate);
 
   @override
   String get path => 'friend-requests';
@@ -43,7 +43,7 @@ class FriendRequestModule extends NuRouteModule<NuModuleRouter, void, void> {
   ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
     return ScreenRoute(
       builder: Nuvigator(
-        router: FriendRequestModuleRouter(),
+        router: NuModuleRouter(FriendRequestModule()),
         screenType: materialScreenType,
       ),
       wrapper: (context, child) => ChangeNotifierProvider.value(
@@ -56,8 +56,7 @@ class FriendRequestModule extends NuRouteModule<NuModuleRouter, void, void> {
 
 // MainAppModuleRouter
 
-class MainAppModuleRouter extends NuModuleRouter
-    implements ComposerModulesDelegate {
+class MainAppModule extends NuModule {
   @override
   String get initialRoute => 'home';
 
@@ -71,31 +70,21 @@ class MainAppModuleRouter extends NuModuleRouter
   }
 
   @override
-  List<NuRouteModule> get modules => [
-        HomeModule(this),
-        FriendRequestModule(this),
+  List<NuRoute> get createRoutes => [
+        HomeRoute(this),
+        FriendRequestRoute(this),
       ];
 
   @override
-  List<NuRouter> get createRouters => [
-        ComposerModulesRouter(),
+  List<NuModule> get createModules => [
+        ComposerModule(),
       ];
 
   @override
-  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
-        return ChangeNotifierProvider<SamplesBloc>.value(
-          value: SamplesBloc(),
-          child: child,
-        );
-      };
-
-  @override
-  void handleCompose() {
-    // TODO: implement handleCompose
-  }
-
-  @override
-  void handleHelp() {
-    // TODO: implement handleHelp
+  Widget routeWrapper(BuildContext context, Widget child) {
+    return ChangeNotifierProvider<SamplesBloc>.value(
+      value: SamplesBloc(),
+      child: child,
+    );
   }
 }

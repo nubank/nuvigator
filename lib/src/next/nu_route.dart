@@ -4,9 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import '../screen_route.dart';
 import 'nu_route_match.dart';
+import 'v1/nu_module.dart';
 
-abstract class NuRouteModule<T, A extends Object, R extends Object> {
-  NuRouteModule(this._delegate);
+abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
+  NuRoute(this._delegate);
 
   String get path;
 
@@ -30,6 +31,8 @@ abstract class NuRouteModule<T, A extends Object, R extends Object> {
       path: deepLink,
     );
   }
+
+  Widget wrapper(BuildContext context, Widget child) => child;
 
   ScreenRoute<R> getRoute(NuRouteMatch<A> match);
 }

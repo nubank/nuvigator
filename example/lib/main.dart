@@ -1,6 +1,6 @@
 import 'package:example/samples/module.dart';
 import 'package:flutter/material.dart';
-import 'package:nuvigator/nuvigator.dart';
+import 'package:nuvigator/next.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         inheritableObservers: [
           () => TestObserver(),
         ],
-        router: MainAppModuleRouter(),
+        module: MainAppModule(),
       ),
     );
   }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:nuvigator/src/next/v1/nu_module_router.dart';
-
+import 'next/v1/nu_module.dart';
 import 'nurouter.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
@@ -323,9 +322,10 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 @immutable
 class Nuvigator<T extends NuRouter> extends StatelessWidget {
   const Nuvigator({
-    @required this.router,
+    this.router,
     this.initialRoute,
     this.initialDeepLink,
+    this.module,
     this.initialArguments,
     this.key,
     this.observers = const [],
@@ -334,9 +334,10 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
-  });
+  }) : assert((module != null) != (router != null));
 
   final T router;
+  final NuModule module;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;
@@ -404,27 +405,27 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (router is NuModuleRouter) {
-      // ignore: avoid_as
-      final moduleRouter = router as NuModuleRouter;
+    if (router is NuModuleRouter || module != null) {
+      final NuModuleRouter moduleRouter = router ?? NuModuleRouter(module);
       return FutureBuilder(
-        future: moduleRouter.initRouter(context),
+        future: moduleRouter.initModule(context),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           return snapshot.connectionState == ConnectionState.done
               ? NuvigatorInner<T>(
-                  router: router,
+                  // ignore: avoid_as
+                  router: moduleRouter as T,
                   debug: debug,
                   inheritableObservers: inheritableObservers,
                   observers: observers,
-                  initialDeepLink: moduleRouter.initialRoute != null
-                      ? Uri.parse(moduleRouter.initialRoute)
+                  initialDeepLink: moduleRouter.module.initialRoute != null
+                      ? Uri.parse(moduleRouter.module.initialRoute)
                       : initialDeepLink,
                   screenType: screenType,
                   key: key,
                   wrapper: wrapper,
                   shouldPopRoot: shouldPopRoot,
                 )
-              : moduleRouter.loadingWidget(context);
+              : moduleRouter.module.loadingWidget(context);
         },
       );
     } else {
