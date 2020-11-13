@@ -44,9 +44,8 @@ abstract class NuRouter {
     bool nullOk = false,
     bool rootRouter = false,
   }) {
-    if (rootRouter)
-      return NuvigatorInner.of(context, rootNuvigator: true).router;
-    final router = NuvigatorInner.ofRouter<T>(context)?.getRouter<T>();
+    if (rootRouter) return Nuvigator.of(context, rootNuvigator: true).router;
+    final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
     assert(() {
       if (!nullOk && router == null) {
         throw FlutterError(
@@ -133,27 +132,24 @@ abstract class NuRouter {
   }
 
   Future<T> openDeepLink<T>(Uri url,
-      [dynamic arguments, bool isFromNative = false]) async {
-    if (this == nuvigator.rootRouter) {
-      final routeEntry = getRouteEntryForDeepLink(deepLinkString(url));
+      [dynamic arguments, bool isFromNative = false]) {
+    final routeEntry = getRouteEntryForDeepLink(deepLinkString(url));
 
-      if (routeEntry == null) {
-        if (onDeepLinkNotFound != null) {
-          return await onDeepLinkNotFound(this, url, isFromNative, arguments);
-        }
-        return null;
+    if (routeEntry == null) {
+      if (onDeepLinkNotFound != null) {
+        return onDeepLinkNotFound(this, url, isFromNative, arguments);
       }
-
-      final mapArguments =
-          extractDeepLinkParameters(url, routeEntry.key.deepLink);
-      if (isFromNative) {
-        final route = _buildNativeRoute(routeEntry, mapArguments);
-        return nuvigator.push<T>(route);
-      }
-      return nuvigator.pushNamed<T>(routeEntry.key.routeName,
-          arguments: mapArguments);
+      return null;
     }
-    return nuvigator.openDeepLink<T>(url, arguments);
+
+    final mapArguments =
+        extractDeepLinkParameters(url, routeEntry.key.deepLink);
+    if (isFromNative) {
+      final route = _buildNativeRoute(routeEntry, mapArguments);
+      return nuvigator.push<T>(route);
+    }
+    return nuvigator.pushNamed<T>(routeEntry.key.routeName,
+        arguments: mapArguments);
   }
 
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {

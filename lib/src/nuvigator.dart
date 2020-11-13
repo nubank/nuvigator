@@ -121,34 +121,6 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
 
-  static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
-    final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();
-    return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
-  }
-
-  static NuvigatorState<T> of<T extends NuRouter>(
-    BuildContext context, {
-    bool rootNuvigator = false,
-    bool nullOk = false,
-  }) {
-    if (rootNuvigator) {
-      return context.findRootAncestorStateOfType<NuvigatorState<T>>();
-    }
-    final nuvigatorState = ofRouter<T>(context);
-    if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
-    assert(() {
-      if (!nullOk) {
-        throw FlutterError(
-            'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
-            'The context used to push or pop routes from the Nuvigator must be that of a '
-            'widget that is a descendant of a Nuvigator widget.'
-            'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
-      }
-      return true;
-    }());
-    return null;
-  }
-
   @override
   NavigatorState createState() {
     return NuvigatorState<T>();
@@ -158,7 +130,7 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
 class NuvigatorState<T extends NuRouter> extends NavigatorState
     with WidgetsBindingObserver {
   NuvigatorState get rootNuvigator =>
-      NuvigatorInner.of(context, rootNuvigator: true) ?? this;
+      Nuvigator.of(context, rootNuvigator: true) ?? this;
 
   @override
   NuvigatorInner get widget => super.widget;
@@ -180,7 +152,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 
   @override
   void initState() {
-    parent = NuvigatorInner.of(context, nullOk: true);
+    parent = Nuvigator.of(context, nullOk: true);
     if (isNested) {
       parent.nestedNuvigators.add(this);
     }
@@ -314,7 +286,12 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   }
 
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return rootRouter.openDeepLink<R>(deepLink, arguments, false);
+    final hasOpen = router.openDeepLink<R>(deepLink, arguments, false);
+    if (hasOpen != null) {
+      return hasOpen;
+    } else {
+      return parent.openDeepLink(deepLink, arguments);
+    }
   }
 
   NuvigatorState parent;
@@ -373,6 +350,34 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
   final Uri initialDeepLink;
   final Map<String, Object> initialArguments;
 
+  static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
+    final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();
+    return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
+  }
+
+  static NuvigatorState<T> of<T extends NuRouter>(
+    BuildContext context, {
+    bool rootNuvigator = false,
+    bool nullOk = false,
+  }) {
+    if (rootNuvigator) {
+      return context.findRootAncestorStateOfType<NuvigatorState<T>>();
+    }
+    final nuvigatorState = ofRouter<T>(context);
+    if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
+    assert(() {
+      if (!nullOk) {
+        throw FlutterError(
+            'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
+            'The context used to push or pop routes from the Nuvigator must be that of a '
+            'widget that is a descendant of a Nuvigator widget.'
+            'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
+      }
+      return true;
+    }());
+    return null;
+  }
+
   Nuvigator<T> copyWith({
     Object initialArguments,
     WrapperFn wrapper,
@@ -399,18 +404,6 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nuvigatorInner = NuvigatorInner<T>(
-      router: router,
-      debug: debug,
-      inheritableObservers: inheritableObservers,
-      observers: observers,
-      initialRoute: initialRoute,
-      initialDeepLink: initialDeepLink,
-      screenType: screenType,
-      key: key,
-      wrapper: wrapper,
-      shouldPopRoot: shouldPopRoot,
-    );
     if (router is NuModuleRouter) {
       // ignore: avoid_as
       final moduleRouter = router as NuModuleRouter;
@@ -418,12 +411,34 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
         future: moduleRouter.initRouter(context),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           return snapshot.connectionState == ConnectionState.done
-              ? nuvigatorInner
+              ? NuvigatorInner<T>(
+                  router: router,
+                  debug: debug,
+                  inheritableObservers: inheritableObservers,
+                  observers: observers,
+                  initialDeepLink: moduleRouter.initialRoute != null
+                      ? Uri.parse(moduleRouter.initialRoute)
+                      : initialDeepLink,
+                  screenType: screenType,
+                  key: key,
+                  wrapper: wrapper,
+                  shouldPopRoot: shouldPopRoot,
+                )
               : moduleRouter.loadingWidget(context);
         },
       );
     } else {
-      return nuvigatorInner;
+      return NuvigatorInner<T>(
+        router: router,
+        debug: debug,
+        inheritableObservers: inheritableObservers,
+        observers: observers,
+        initialDeepLink: initialDeepLink,
+        screenType: screenType,
+        key: key,
+        wrapper: wrapper,
+        shouldPopRoot: shouldPopRoot,
+      );
     }
   }
 }

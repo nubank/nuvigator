@@ -1,4 +1,5 @@
 import 'package:example/samples/modules/composer/module.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class HomeModule extends NuRouteModule<NuModuleRouter, void, void> {
   }
 
   @override
-  String get path => 'deepprefix/home';
+  String get path => 'home';
 
   @override
   ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
@@ -31,7 +32,7 @@ class FriendRequestModule extends NuRouteModule<NuModuleRouter, void, void> {
   FriendRequestModule(NuModuleRouter delegate) : super(delegate);
 
   @override
-  String get path => 'deepprefix/friendRequests';
+  String get path => 'friend-requests';
 
   @override
   Future<bool> init(BuildContext context) {
@@ -43,7 +44,6 @@ class FriendRequestModule extends NuRouteModule<NuModuleRouter, void, void> {
     return ScreenRoute(
       builder: Nuvigator(
         router: FriendRequestModuleRouter(),
-        initialRoute: 'deepprefix/friendRequests/list',
         screenType: materialScreenType,
       ),
       wrapper: (context, child) => ChangeNotifierProvider.value(
@@ -54,18 +54,23 @@ class FriendRequestModule extends NuRouteModule<NuModuleRouter, void, void> {
   }
 }
 
+// MainAppModuleRouter
+
 class MainAppModuleRouter extends NuModuleRouter
     implements ComposerModulesDelegate {
   @override
-  String get initialRoute => 'deepprefix/home';
+  String get initialRoute => 'home';
 
   @override
   Widget loadingWidget(BuildContext _) {
-    return const Text('LOADING');
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 
   @override
-  // TODO: implement modules
   List<NuRouteModule> get modules => [
         HomeModule(this),
         FriendRequestModule(this),

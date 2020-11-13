@@ -10,13 +10,14 @@ class ListFriendRequestModule
   ListFriendRequestModule(ListFriendRequestDelegate delegate) : super(delegate);
 
   @override
-  String get path => 'deepprefix/friendRequests/list';
+  String get path => 'friend-requests/list';
 
   @override
   ScreenRoute<Object> getRoute(NuRouteMatch<Object> match) {
     return ScreenRoute(
       builder: (context) => ListRequestScreen(
-        toSuccess: () => delegate.nuvigator.openDeepLink<void>(Uri.parse('')),
+        toSuccess: () => delegate.nuvigator
+            .openDeepLink<void>(Uri.parse('friend-requests/success')),
       ),
       screenType: materialScreenType,
     );
@@ -31,7 +32,7 @@ class FriendRequestSuccessModule
       : super(delegate);
 
   @override
-  String get path => 'deepprefix/friendRequests/success';
+  String get path => 'friend-requests/success';
 
   @override
   ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
@@ -39,17 +40,19 @@ class FriendRequestSuccessModule
       builder: (context) => SuccessScreen(
         closeFlow: () => delegate.nuvigator.closeFlow(),
         toComposeText: () =>
-            delegate.nuvigator.openDeepLink<void>(Uri.parse('')),
+            delegate.nuvigator.openDeepLink<void>(Uri.parse('composer/text')),
       ),
       screenType: materialScreenType,
     );
   }
 }
 
+// FriendRequestsModuleRouter
+
 class FriendRequestModuleRouter extends NuModuleRouter
     implements ListFriendRequestDelegate, FriendRequestSuccessDelegate {
   @override
-  String get initialRoute => 'deepprefix/friendRequests/list';
+  String get initialRoute => 'friend-requests/list';
 
   @override
   List<NuRouteModule> get modules => [

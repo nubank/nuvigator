@@ -109,7 +109,7 @@ class TestWidget extends StatelessWidget {
 
 Widget testApp(NuRouter router, String initialRoute, [WrapperFn wrapper]) {
   return MaterialApp(
-    builder: NuvigatorInner(
+    builder: Nuvigator(
       router: router,
       initialRoute: initialRoute,
       wrapper: wrapper,
@@ -121,7 +121,7 @@ Future pumpApp(
     WidgetTester tester, NuRouter router, String initialRoute) async {
   await tester.pumpWidget(MaterialApp(
     title: 'Test Nuvigator',
-    builder: NuvigatorInner(
+    builder: Nuvigator(
       screenType: cupertinoDialogScreenType,
       router: router,
       initialRoute: initialRoute,

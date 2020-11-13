@@ -18,14 +18,15 @@ class ComposerTextModule
       builder: (context) => TextComposerScreen(
         initialText: match.parameters['initialText'],
         submitText: (String text) => delegate.nuvigator.pop(text),
-        toHelp: () => delegate.nuvigator.openDeepLink<void>(Uri.parse('')),
+        toHelp: () =>
+            delegate.nuvigator.openDeepLink<void>(Uri.parse('composer/help')),
       ),
       screenType: materialScreenType,
     );
   }
 
   @override
-  String get path => 'deepprefix/composer/text';
+  String get path => 'composer/text';
 }
 
 // ComposerHelpModule
@@ -46,7 +47,7 @@ class ComposerHelpModule
   }
 
   @override
-  String get path => 'deepprefix/composer/help';
+  String get path => 'composer/help';
 }
 
 // Export Helper

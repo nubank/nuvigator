@@ -1,16 +1,13 @@
 import 'package:example/samples/bloc/samples_bloc.dart';
-import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 import 'package:provider/provider.dart';
-
-import '../modules/composer/navigation/composer_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<SamplesBloc>(context);
-    final router = NuRouter.of(context);
+    final nuvigator = Nuvigator.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
     final toggleStyle = Theme.of(context).textTheme.bodyText1;
 
@@ -52,8 +49,8 @@ class HomeScreen extends StatelessWidget {
                 RaisedButton(
                   child: const Text('Review friend requests'),
                   onPressed: () {
-                    router.openDeepLink<void>(Uri.parse(
-                        'exapp://deepprefix/friendRequests?numberOfRequests=10'));
+                    nuvigator.openDeepLink<void>(Uri.parse(
+                        'exapp://friend-requests?numberOfRequests=10'));
                   },
                 ),
                 RaisedButton(
@@ -61,8 +58,8 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () async {
                     String text;
 
-                    text = await router.openDeepLink<String>(Uri.parse(
-                      'exapp://deepprefix/composer/text?initialText=Hello+deep+link%21',
+                    text = await nuvigator.openDeepLink<String>(Uri.parse(
+                      'exapp://composer/text?initialText=Hello+deep+link%21',
                     ));
 
                     if (text != null) {

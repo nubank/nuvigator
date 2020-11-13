@@ -1,5 +1,4 @@
 import 'package:example/samples/module.dart';
-import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
