@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
           () => TestObserver(),
         ],
         router: MainAppModuleRouter(),
-        initialRoute: 'deepprefix/home',
       ),
     );
   }

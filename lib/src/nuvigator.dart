@@ -434,6 +434,7 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
         inheritableObservers: inheritableObservers,
         observers: observers,
         initialDeepLink: initialDeepLink,
+        initialRoute: initialRoute,
         screenType: screenType,
         key: key,
         wrapper: wrapper,
