@@ -3,11 +3,9 @@ import 'package:nuvigator/nuvigator.dart';
 import 'screens/list_requests_screen.dart';
 import 'screens/success_screen.dart';
 
-abstract class ListFriendRequestDelegate extends NuModuleRouter {}
-
 class ListFriendRequestModule
-    extends NuRouteModule<ListFriendRequestDelegate, void, void> {
-  ListFriendRequestModule(ListFriendRequestDelegate delegate) : super(delegate);
+    extends NuRouteModule<NuModuleRouter, void, void> {
+  ListFriendRequestModule(NuModuleRouter delegate) : super(delegate);
 
   @override
   String get path => 'friend-requests/list';
@@ -24,12 +22,9 @@ class ListFriendRequestModule
   }
 }
 
-abstract class FriendRequestSuccessDelegate extends NuModuleRouter {}
-
 class FriendRequestSuccessModule
-    extends NuRouteModule<FriendRequestSuccessDelegate, void, void> {
-  FriendRequestSuccessModule(FriendRequestSuccessDelegate delegate)
-      : super(delegate);
+    extends NuRouteModule<NuModuleRouter, void, void> {
+  FriendRequestSuccessModule(NuModuleRouter delegate) : super(delegate);
 
   @override
   String get path => 'friend-requests/success';
@@ -49,8 +44,7 @@ class FriendRequestSuccessModule
 
 // FriendRequestsModuleRouter
 
-class FriendRequestModuleRouter extends NuModuleRouter
-    implements ListFriendRequestDelegate, FriendRequestSuccessDelegate {
+class FriendRequestModuleRouter extends NuModuleRouter {
   @override
   String get initialRoute => 'friend-requests/list';
 

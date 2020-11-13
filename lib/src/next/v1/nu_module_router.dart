@@ -9,11 +9,16 @@ abstract class NuModuleRouter extends NuRouter {
 
   Widget loadingWidget(BuildContext _) => Container();
   List<NuRouteModule> _modules;
+  @override
+  List<NuRouter> routers;
+
+  List<NuRouter> get createRouters => [];
 
   String get initialRoute;
 
   /// Do not override, this will call a custom [NuModuleRouter.init]
   Future<void> initRouter(BuildContext context) async {
+    await init(context);
     final modulesToRegister = <NuRouteModule>[];
     final futures = modules.map((module) async {
       final shouldRegister = await module.init(context);
@@ -23,8 +28,12 @@ abstract class NuModuleRouter extends NuRouter {
     });
     await Future.wait(futures);
     _modules = modulesToRegister;
-    print(_modules);
-    await init(context);
+    routers = createRouters;
+    await Future.wait(routers.map((router) async {
+      if (router is NuModuleRouter) {
+        return router.initRouter(context);
+      }
+    }));
   }
 
   Future<void> init(BuildContext context) async {}

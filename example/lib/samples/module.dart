@@ -74,7 +74,11 @@ class MainAppModuleRouter extends NuModuleRouter
   List<NuRouteModule> get modules => [
         HomeModule(this),
         FriendRequestModule(this),
-        ...composerModules(this),
+      ];
+
+  @override
+  List<NuRouter> get createRouters => [
+        ComposerModulesRouter(),
       ];
 
   @override

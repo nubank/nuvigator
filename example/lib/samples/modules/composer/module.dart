@@ -55,9 +55,24 @@ class ComposerHelpModule
 abstract class ComposerModulesDelegate
     implements ComposerHelpDelegate, ComposerTextDelegate {}
 
-List<NuRouteModule> composerModules(ComposerModulesDelegate delegate) {
-  return [
-    ComposerTextModule(delegate),
-    ComposerHelpModule(delegate),
-  ];
+class ComposerModulesRouter extends NuModuleRouter
+    implements ComposerModulesDelegate {
+  @override
+  String get initialRoute => null;
+
+  @override
+  List<NuRouteModule> get modules => [
+        ComposerTextModule(this),
+        ComposerHelpModule(this),
+      ];
+
+  @override
+  void handleCompose() {
+    // TODO: implement handleCompose
+  }
+
+  @override
+  void handleHelp() {
+    // TODO: implement handleHelp
+  }
 }
