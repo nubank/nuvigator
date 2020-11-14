@@ -1,41 +1,43 @@
+import 'package:flutter/material.dart';
 import 'package:nuvigator/next.dart';
 
 import 'screens/list_requests_screen.dart';
 import 'screens/success_screen.dart';
 
 class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
-  ListFriendRequestRoute(NuModule delegate) : super(delegate);
+  ListFriendRequestRoute(NuModule module) : super(module);
 
   @override
   String get path => 'friend-requests/list';
 
   @override
-  ScreenRoute<Object> getRoute(NuRouteMatch<Object> match) {
-    return ScreenRoute(
-      builder: (context) => ListRequestScreen(
-        toSuccess: () => delegate.nuvigator
+  ScreenType get screenType => materialScreenType;
+
+  @override
+  Widget build(BuildContext context, NuRouteMatch<void> match) {
+    return  ListRequestScreen(
+        toSuccess: () => module.nuvigator
             .openDeepLink<void>(Uri.parse('friend-requests/success')),
-      ),
-      screenType: materialScreenType,
-    );
+      );
   }
+
 }
 
 class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
-  FriendRequestSuccessRoute(NuModule delegate) : super(delegate);
+  FriendRequestSuccessRoute(NuModule module) : super(module);
 
   @override
   String get path => 'friend-requests/success';
 
   @override
-  ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
-    return ScreenRoute(
-      builder: (context) => SuccessScreen(
-        closeFlow: () => delegate.nuvigator.closeFlow(),
-        toComposeText: () =>
-            delegate.nuvigator.openDeepLink<void>(Uri.parse('composer/text')),
-      ),
-      screenType: materialScreenType,
+  ScreenType get screenType => materialScreenType;
+
+  @override
+  Widget build(BuildContext context, NuRouteMatch<void> match) {
+    return SuccessScreen(
+      closeFlow: () => module.nuvigator.closeFlow(),
+      toComposeText: () =>
+          module.nuvigator.openDeepLink<void>(Uri.parse('composer/text')),
     );
   }
 }

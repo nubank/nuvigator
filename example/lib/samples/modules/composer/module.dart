@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:nuvigator/next.dart';
 
 import 'screens/help_screen.dart';
@@ -9,23 +10,23 @@ abstract class ComposerTextDelegate extends NuModule {
 }
 
 class ComposerTextRoute extends NuRoute<ComposerTextDelegate, void, String> {
-  ComposerTextRoute(ComposerTextDelegate delegate) : super(delegate);
+  ComposerTextRoute(ComposerTextDelegate module) : super(module);
 
   @override
   String get path => 'composer/text';
 
   @override
-  ScreenRoute<String> getRoute(NuRouteMatch<void> match) {
-    return ScreenRoute(
-      builder: (context) => TextComposerScreen(
-        initialText: match.parameters['initialText'],
-        submitText: (String text) => delegate.nuvigator.pop(text),
-        toHelp: () {
-          delegate.handleCompose();
-          delegate.nuvigator.openDeepLink<void>(Uri.parse('composer/help'));
-        },
-      ),
-      screenType: materialScreenType,
+  ScreenType get screenType => materialScreenType;
+
+  @override
+  Widget build(BuildContext context, NuRouteMatch<void> match) {
+    return TextComposerScreen(
+      initialText: match.parameters['initialText'],
+      submitText: (String text) => module.nuvigator.pop(text),
+      toHelp: () {
+        module.handleCompose();
+        module.nuvigator.openDeepLink<void>(Uri.parse('composer/help'));
+      },
     );
   }
 }
@@ -36,17 +37,17 @@ abstract class ComposerHelpDelegate extends NuModule {
 }
 
 class ComposerHelpRoute extends NuRoute<ComposerHelpDelegate, void, void> {
-  ComposerHelpRoute(ComposerHelpDelegate delegate) : super(delegate);
+  ComposerHelpRoute(ComposerHelpDelegate module) : super(module);
 
   @override
   String get path => 'composer/help';
 
   @override
-  ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
-    return ScreenRoute(
-      builder: (context) => HelpScreen(),
-      screenType: cupertinoScreenType,
-    );
+  ScreenType get screenType => cupertinoScreenType;
+
+  @override
+  Widget build(BuildContext context, NuRouteMatch<void> match) {
+    return HelpScreen();
   }
 }
 

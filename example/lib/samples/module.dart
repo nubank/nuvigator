@@ -10,7 +10,7 @@ import 'modules/friend_request/module.dart';
 import 'screens/home_screen.dart';
 
 class HomeRoute extends NuRoute {
-  HomeRoute(NuModule delegate) : super(delegate);
+  HomeRoute(NuModule module) : super(module);
 
   @override
   Future<bool> init(BuildContext context) {
@@ -21,15 +21,16 @@ class HomeRoute extends NuRoute {
   String get path => 'home';
 
   @override
-  ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
-    return ScreenRoute(
-      builder: (context) => HomeScreen(),
-    );
+  ScreenType get screenType => materialScreenType;
+
+  @override
+  Widget build(BuildContext context, NuRouteMatch<Object> match) {
+    return HomeScreen();
   }
 }
 
 class FriendRequestRoute extends NuRoute {
-  FriendRequestRoute(NuModule delegate) : super(delegate);
+  FriendRequestRoute(NuModule module) : super(module);
 
   @override
   String get path => 'friend-requests';
@@ -40,15 +41,15 @@ class FriendRequestRoute extends NuRoute {
   }
 
   @override
-  ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
-    return ScreenRoute(
-      builder: Nuvigator(
+  ScreenType get screenType => materialScreenType;
+
+  @override
+  Widget build(BuildContext context, NuRouteMatch<Object> match) {
+    return ChangeNotifierProvider.value(
+      value: FriendRequestBloc(10),
+      child: Nuvigator(
         module: FriendRequestModule(),
         screenType: materialScreenType,
-      ),
-      wrapper: (context, child) => ChangeNotifierProvider.value(
-        value: FriendRequestBloc(10),
-        child: child,
       ),
     );
   }

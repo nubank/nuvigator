@@ -2,20 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/next.dart';
 import '../screen_route.dart';
 import 'nu_route_match.dart';
 import 'v1/nu_module.dart';
 
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
-  NuRoute(this._delegate);
+  NuRoute(this._module);
 
   String get path;
 
   // TBD
   bool get prefix => false;
-  final T _delegate;
+  final T _module;
 
-  T get delegate => _delegate;
+  T get module => _module;
 
   Future<bool> init(BuildContext context) {
     return SynchronousFuture(true);
@@ -32,8 +33,15 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     );
   }
 
-  // TODO
-  // Widget wrapper(BuildContext context, Widget child) => child;
+  Widget wrapper(BuildContext context, Widget child) => child;
 
-  ScreenRoute<R> getRoute(NuRouteMatch<A> match);
+  ScreenType get screenType;
+
+  Widget build(BuildContext context, NuRouteMatch<A> match);
+
+  ScreenRoute<R> getRoute(NuRouteMatch<A> match) => ScreenRoute(
+        builder: (context) => build(context, match),
+        screenType: screenType,
+        wrapper: wrapper,
+      );
 }
