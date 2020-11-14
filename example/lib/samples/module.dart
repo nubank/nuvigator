@@ -43,7 +43,7 @@ class FriendRequestRoute extends NuRoute {
   ScreenRoute<void> getRoute(NuRouteMatch<void> match) {
     return ScreenRoute(
       builder: Nuvigator(
-        router: NuModuleRouter(FriendRequestModule()),
+        module: FriendRequestModule(),
         screenType: materialScreenType,
       ),
       wrapper: (context, child) => ChangeNotifierProvider.value(

@@ -32,7 +32,8 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     );
   }
 
-  Widget wrapper(BuildContext context, Widget child) => child;
+  // TODO
+  // Widget wrapper(BuildContext context, Widget child) => child;
 
   ScreenRoute<R> getRoute(NuRouteMatch<A> match);
 }

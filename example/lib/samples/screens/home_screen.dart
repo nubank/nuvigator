@@ -1,15 +1,11 @@
-import 'package:example/samples/bloc/samples_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<SamplesBloc>(context);
     final nuvigator = Nuvigator.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
-    final toggleStyle = Theme.of(context).textTheme.bodyText1;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,19 +29,6 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Navigate using deep links',
-                      style: toggleStyle,
-                    ),
-                    Switch(
-                      value: bloc.navigateUsingDeepLink,
-                      onChanged: (value) => bloc.navigateUsingDeepLink = value,
-                    ),
-                  ],
-                ),
                 RaisedButton(
                   child: const Text('Review friend requests'),
                   onPressed: () {
