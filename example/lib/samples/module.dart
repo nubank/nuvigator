@@ -9,6 +9,8 @@ import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
 import 'screens/home_screen.dart';
 
+part 'module.g.dart';
+
 class HomeRoute extends NuRoute {
   @override
   Future<bool> init(BuildContext context) {
@@ -25,9 +27,18 @@ class HomeRoute extends NuRoute {
   Widget build(BuildContext context, NuRouteMatch<Object> match) {
     return HomeScreen();
   }
+
+  @override
+  Object parseParameters(Map<String, dynamic> map) {
+    return null;
+  }
 }
 
-class FriendRequestRoute extends NuRoute<NuModule, void, void> {
+class FriendRequestArgs {
+  int numberOfRequests;
+}
+
+class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
 
@@ -40,7 +51,7 @@ class FriendRequestRoute extends NuRoute<NuModule, void, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteMatch<FriendRequestArgs> match) {
     return ChangeNotifierProvider.value(
       value: FriendRequestBloc(10),
       child: Nuvigator(
@@ -48,6 +59,11 @@ class FriendRequestRoute extends NuRoute<NuModule, void, void> {
         screenType: materialScreenType,
       ),
     );
+  }
+
+  @override
+  FriendRequestArgs parseParameters(Map<String, dynamic> map) {
+    return _$parseParameters(map);
   }
 }
 
