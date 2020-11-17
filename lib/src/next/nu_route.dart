@@ -21,7 +21,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 
   DeepLinkParser get parser => DeepLinkParser(path, prefix: prefix);
 
-  A parseParameters(Map<String, dynamic> map);
+  A parseParameters(Map<String, dynamic> map) => null;
 
   void install(T module) {
     _module = module;
@@ -35,7 +35,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     String deepLink, {
     Map<String, dynamic> extraParameters,
   }) {
-    return NuRouteMatch(
+    return NuRouteMatch<A>(
       args: parseParameters(
         parser.getParams(deepLink),
       ),

@@ -92,3 +92,37 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
         },
       );
 }
+
+class NuModuleLoader extends StatefulWidget {
+  const NuModuleLoader({Key key, this.module, this.builder}) : super(key: key);
+
+  final NuModule module;
+  final Widget Function(NuModuleRouter router) builder;
+
+  @override
+  _NuModuleLoaderState createState() => _NuModuleLoaderState();
+}
+
+class _NuModuleLoaderState extends State<NuModuleLoader> {
+  bool loading = true;
+  NuModuleRouter router;
+
+  @override
+  void initState() {
+    router = NuModuleRouter(widget.module);
+    router.initModule(context).then((value) {
+      setState(() {
+        loading = false;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (loading) {
+      return widget.module.loadingWidget(context);
+    }
+    return widget.builder(router);
+  }
+}
