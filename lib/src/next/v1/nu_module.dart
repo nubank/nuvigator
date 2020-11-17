@@ -8,6 +8,8 @@ import '../nu_route.dart';
 abstract class NuModule {
   NuModule() {
     _subModules = createModules;
+    _routes = createRoutes;
+    _subModules = createModules;
   }
 
   List<NuRoute> _routes;
@@ -28,20 +30,16 @@ abstract class NuModule {
 
   NuvigatorState get nuvigator => _router.nuvigator;
 
-  /// Do not override, this will call a custom [NuModuleRouter.init]
+  void _syncInit(NuModuleRouter router) {
+    _router = router;
+    _subModules.map((module) => module._syncInit(router));
+  }
+
   Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
     await init(context);
-    _router = router;
-    final routesToRegister = <NuRoute>[];
-    final futures = createRoutes.map((route) async {
-      final shouldRegister = await route.init(context);
-      if (shouldRegister) {
-        routesToRegister.add(route);
-      }
-    });
-    await Future.wait(futures);
-    _routes = routesToRegister;
-    _subModules = createModules;
+    await Future.wait(_routes.map((route) async {
+      await route.init(context);
+    }));
     await Future.wait(_subModules.map((module) async {
       return module._initModule(context, router);
     }));
@@ -55,15 +53,16 @@ abstract class NuModule {
 }
 
 class NuModuleRouter<T extends NuModule> extends NuRouter {
-  NuModuleRouter(this.module);
+  NuModuleRouter(this.module) {
+    module._syncInit(this);
+    _subRouters = module.subModules.map((e) => NuModuleRouter(e)).toList();
+  }
 
   final T module;
   List<NuModuleRouter> _subRouters;
 
   Future<NuModuleRouter> initModule(BuildContext context) async {
     await module._initModule(context, this);
-    _subRouters = module.subModules.map((e) => NuModuleRouter(e)).toList();
-    print(module.subModules);
     return this;
   }
 

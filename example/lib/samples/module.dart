@@ -29,7 +29,7 @@ class HomeRoute extends NuRoute {
   }
 }
 
-class FriendRequestRoute extends NuRoute {
+class FriendRequestRoute extends NuRoute<NuModule, void, void> {
   FriendRequestRoute(NuModule module) : super(module);
 
   @override
@@ -44,7 +44,7 @@ class FriendRequestRoute extends NuRoute {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<Object> match) {
+  Widget build(BuildContext context, NuRouteMatch<void> match) {
     return ChangeNotifierProvider.value(
       value: FriendRequestBloc(10),
       child: Nuvigator(

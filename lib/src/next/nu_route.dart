@@ -18,6 +18,8 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 
   T get module => _module;
 
+  NuvigatorState get nuvigator => module.nuvigator;
+
   Future<bool> init(BuildContext context) {
     return SynchronousFuture(true);
   }
@@ -28,7 +30,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   }) {
     return NuRouteMatch(
       pathTemplate: path,
-      queryParameters: extraParameters,
+      extraParameter: extraParameters,
       path: deepLink,
     );
   }

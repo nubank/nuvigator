@@ -4,12 +4,13 @@ import 'package:nuvigator/nuvigator.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('BUILDING HOME');
     final nuvigator = Nuvigator.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nuvigator example'),
+        title: const Text('Nuvigator Example'),
       ),
       body: Center(
         child: SingleChildScrollView(

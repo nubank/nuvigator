@@ -30,15 +30,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Nuvigator example',
+      title: 'Nuvigator Example',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
-        inheritableObservers: [
-          () => TestObserver(),
-        ],
         module: MainAppModule(),
       ),
     );

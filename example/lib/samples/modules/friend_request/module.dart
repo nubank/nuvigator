@@ -15,12 +15,11 @@ class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
 
   @override
   Widget build(BuildContext context, NuRouteMatch<void> match) {
-    return  ListRequestScreen(
-        toSuccess: () => module.nuvigator
-            .openDeepLink<void>(Uri.parse('friend-requests/success')),
-      );
+    return ListRequestScreen(
+      toSuccess: () => module.nuvigator
+          .openDeepLink<void>(Uri.parse('friend-requests/success')),
+    );
   }
-
 }
 
 class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
