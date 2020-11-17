@@ -53,7 +53,7 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
   Widget build(BuildContext context, NuRouteMatch<FriendRequestArgs> match) {
     return ChangeNotifierProvider.value(
-      value: FriendRequestBloc(10),
+      value: FriendRequestBloc(match.args.numberOfRequests),
       child: Nuvigator(
         module: FriendRequestModule(),
         screenType: materialScreenType,

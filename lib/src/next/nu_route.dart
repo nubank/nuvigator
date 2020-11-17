@@ -37,7 +37,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   }) {
     return NuRouteMatch<A>(
       args: parseParameters(
-        parser.getParams(deepLink),
+        <String, dynamic>{...parser.getParams(deepLink), ...extraParameters},
       ),
       pathTemplate: path,
       extraParameter: extraParameters,

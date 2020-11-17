@@ -17,6 +17,7 @@ class DeepLinkParser {
   }
 
   Map<String, String> getQueryParams(String deepLink) {
+    print(deepLink);
     final parametersMap = Uri.parse(deepLink).queryParameters;
     return parametersMap.map((k, v) {
       return MapEntry(ReCase(k).camelCase, v);
