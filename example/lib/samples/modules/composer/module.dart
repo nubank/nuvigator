@@ -10,8 +10,6 @@ abstract class ComposerTextDelegate extends NuModule {
 }
 
 class ComposerTextRoute extends NuRoute<ComposerTextDelegate, void, String> {
-  ComposerTextRoute(ComposerTextDelegate module) : super(module);
-
   @override
   String get path => 'composer/text';
 
@@ -37,8 +35,6 @@ abstract class ComposerHelpDelegate extends NuModule {
 }
 
 class ComposerHelpRoute extends NuRoute<ComposerHelpDelegate, void, void> {
-  ComposerHelpRoute(ComposerHelpDelegate module) : super(module);
-
   @override
   String get path => 'composer/help';
 
@@ -62,8 +58,8 @@ class ComposerModule extends NuModule implements ComposerModulesDelegate {
 
   @override
   List<NuRoute> get createRoutes => [
-        ComposerHelpRoute(this),
-        ComposerTextRoute(this),
+        ComposerHelpRoute(),
+        ComposerTextRoute(),
       ];
 
   @override

@@ -10,8 +10,6 @@ import 'modules/friend_request/module.dart';
 import 'screens/home_screen.dart';
 
 class HomeRoute extends NuRoute {
-  HomeRoute(NuModule module) : super(module);
-
   @override
   Future<bool> init(BuildContext context) {
     return Future.delayed(const Duration(seconds: 2), () => true);
@@ -30,8 +28,6 @@ class HomeRoute extends NuRoute {
 }
 
 class FriendRequestRoute extends NuRoute<NuModule, void, void> {
-  FriendRequestRoute(NuModule module) : super(module);
-
   @override
   String get path => 'friend-requests';
 
@@ -72,8 +68,8 @@ class MainAppModule extends NuModule {
 
   @override
   List<NuRoute> get createRoutes => [
-        HomeRoute(this),
-        FriendRequestRoute(this),
+        HomeRoute(),
+        FriendRequestRoute(),
       ];
 
   @override

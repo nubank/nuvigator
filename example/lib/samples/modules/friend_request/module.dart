@@ -5,8 +5,6 @@ import 'screens/list_requests_screen.dart';
 import 'screens/success_screen.dart';
 
 class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
-  ListFriendRequestRoute(NuModule module) : super(module);
-
   @override
   String get path => 'friend-requests/list';
 
@@ -23,8 +21,6 @@ class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
 }
 
 class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
-  FriendRequestSuccessRoute(NuModule module) : super(module);
-
   @override
   String get path => 'friend-requests/success';
 
@@ -49,7 +45,7 @@ class FriendRequestModule extends NuModule {
 
   @override
   List<NuRoute> get createRoutes => [
-        ListFriendRequestRoute(this),
-        FriendRequestSuccessRoute(this),
+        ListFriendRequestRoute(),
+        FriendRequestSuccessRoute(),
       ];
 }

@@ -8,17 +8,19 @@ import 'nu_route_match.dart';
 import 'v1/nu_module.dart';
 
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
-  NuRoute(this._module);
-
   String get path;
 
   // TBD
   bool get prefix => false;
-  final T _module;
+  T _module;
 
   T get module => _module;
 
   NuvigatorState get nuvigator => module.nuvigator;
+
+  void install(T module) {
+    _module = module;
+  }
 
   Future<bool> init(BuildContext context) {
     return SynchronousFuture(true);

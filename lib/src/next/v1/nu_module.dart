@@ -9,6 +9,9 @@ abstract class NuModule {
   NuModule() {
     _subModules = createModules;
     _routes = createRoutes;
+    for (final route in _routes) {
+      route.install(this);
+    }
     _subModules = createModules;
   }
 
