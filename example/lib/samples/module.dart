@@ -62,9 +62,8 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   }
 
   @override
-  FriendRequestArgs parseParameters(Map<String, dynamic> map) {
-    return _$parseParameters(map);
-  }
+  FriendRequestArgs parseParameters(Map<String, dynamic> map) =>
+      _$parseParameters(map);
 }
 
 // MainAppModuleRouter

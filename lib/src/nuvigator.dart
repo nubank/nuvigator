@@ -405,28 +405,22 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (router is NuModuleRouter || module != null) {
-      final NuModuleRouter moduleRouter = router ?? NuModuleRouter(module);
-      return FutureBuilder(
-        future: moduleRouter.initModule(context),
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          return snapshot.connectionState == ConnectionState.done
-              ? NuvigatorInner<T>(
-                  // ignore: avoid_as
-                  router: moduleRouter as T,
-                  debug: debug,
-                  inheritableObservers: inheritableObservers,
-                  observers: observers,
-                  initialDeepLink: moduleRouter.module.initialRoute != null
-                      ? Uri.parse(moduleRouter.module.initialRoute)
-                      : initialDeepLink,
-                  screenType: screenType,
-                  key: key,
-                  wrapper: wrapper,
-                  shouldPopRoot: shouldPopRoot,
-                )
-              : moduleRouter.module.loadingWidget(context);
-        },
+    if (module != null) {
+      return NuModuleLoader(
+        module: module,
+        builder: (moduleRouter) => NuvigatorInner(
+          router: moduleRouter,
+          debug: debug,
+          inheritableObservers: inheritableObservers,
+          observers: observers,
+          initialDeepLink: moduleRouter.module.initialRoute != null
+              ? Uri.parse(moduleRouter.module.initialRoute)
+              : initialDeepLink,
+          screenType: screenType,
+          key: key,
+          wrapper: wrapper,
+          shouldPopRoot: shouldPopRoot,
+        ),
       );
     } else {
       return NuvigatorInner<T>(

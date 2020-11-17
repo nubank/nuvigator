@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Nuvigator',
+                  'Nuvigator V2',
                   style: headingStle,
                   textAlign: TextAlign.center,
                 ),

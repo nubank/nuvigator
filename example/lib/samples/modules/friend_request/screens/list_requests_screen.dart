@@ -17,7 +17,7 @@ class ListRequestScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Review requests'),
+        title: const Text('Review Requests'),
         actions: [
           IconButton(
             icon: const Icon(Icons.done),
