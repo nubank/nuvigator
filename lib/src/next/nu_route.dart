@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
+import 'package:nuvigator/src/deeplink.dart';
 import '../screen_route.dart';
 import 'nu_route_match.dart';
 import 'v1/nu_module.dart';
@@ -18,6 +19,8 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 
   NuvigatorState get nuvigator => module.nuvigator;
 
+  DeepLinkParser get parser => DeepLinkParser(path, prefix: prefix);
+
   void install(T module) {
     _module = module;
   }
@@ -31,8 +34,11 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     Map<String, dynamic> extraParameters,
   }) {
     return NuRouteMatch(
+      args: null,
       pathTemplate: path,
       extraParameter: extraParameters,
+      pathParameters: parser.getPathParams(deepLink),
+      queryParameters: parser.getQueryParams(deepLink),
       path: deepLink,
     );
   }

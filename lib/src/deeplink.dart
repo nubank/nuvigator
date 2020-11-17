@@ -12,15 +12,24 @@ class DeepLinkParser {
     return regExp.hasMatch(deepLink);
   }
 
-  Map<String, String> extractArgs(String deepLink) {
+  Map<String, String> getParams(String deepLink) {
+    return {...getQueryParams(deepLink), ...getPathParams(deepLink)};
+  }
+
+  Map<String, String> getQueryParams(String deepLink) {
+    final parametersMap = Uri.parse(deepLink).queryParameters;
+    return parametersMap.map((k, v) {
+      return MapEntry(ReCase(k).camelCase, v);
+    });
+  }
+
+  Map<String, String> getPathParams(String deepLink) {
     final parameters = <String>[];
     final regExp = pathToRegExp(template, parameters: parameters);
     final match = regExp.matchAsPrefix(deepLink);
-    final parametersMap = extract(parameters, match)
-      ..addAll(Uri.parse(deepLink).queryParameters);
-    final camelCasedParametersMap = parametersMap.map((k, v) {
+    final parametersMap = extract(parameters, match);
+    return parametersMap.map((k, v) {
       return MapEntry(ReCase(k).camelCase, v);
     });
-    return {...parametersMap, ...camelCasedParametersMap};
   }
 }
