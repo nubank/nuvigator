@@ -12,7 +12,7 @@ part 'samples_router.g.dart';
 
 @nuRouter
 class SamplesRouter extends NuRouter {
-  @NuRoute()
+  @NuRoute(deepLink: 'home')
   ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => HomeScreen(),
       );

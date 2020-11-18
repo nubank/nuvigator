@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:nuvigator/src/deeplink.dart';
 
 import 'next/v1/nu_module.dart';
 import 'nurouter.dart';
@@ -60,7 +59,7 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
   NuvigatorInner({
     @required this.router,
     String initialRoute,
-    Uri initialDeepLink,
+    String initialDeepLink,
     Map<String, Object> initialArguments,
     Key key,
     List<NavigatorObserver> observers = const [],
@@ -100,7 +99,7 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
             } else if (initialDeepLink != null) {
               return [
                 router.getRoute<dynamic>(
-                  initialDeepLink.toString(),
+                  initialDeepLink,
                   parameters: initialArguments,
                   fallbackScreenType: screenType,
                 ),
@@ -300,7 +299,11 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   }
 
   Future<R> open<R>(String deepLink, {Map<String, dynamic> parameters}) {
-    final route = router.getRoute<R>(deepLink, parameters: parameters);
+    final route = router.getRoute<R>(
+      deepLink,
+      parameters: parameters,
+      fallbackScreenType: widget.screenType,
+    );
     if (route != null) {
       return push(route);
     } else if (!isRoot) {
@@ -365,7 +368,7 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
   // ignore: overridden_fields
   final Key key;
   final String initialRoute;
-  final Uri initialDeepLink;
+  final String initialDeepLink;
   final Map<String, Object> initialArguments;
 
   static NuvigatorState ofRouter<T extends NuRouter>(BuildContext context) {
@@ -430,9 +433,7 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
           debug: debug,
           inheritableObservers: inheritableObservers,
           observers: observers,
-          initialDeepLink: moduleRouter.module.initialRoute != null
-              ? Uri.parse(moduleRouter.module.initialRoute)
-              : initialDeepLink,
+          initialDeepLink: moduleRouter.module.initialRoute ?? initialDeepLink,
           screenType: screenType,
           key: key,
           wrapper: wrapper,

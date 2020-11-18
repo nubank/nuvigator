@@ -8,7 +8,7 @@ part 'composer_routes.g.dart';
 @nuRouter
 class ComposerRouter extends NuRouter {
   @override
-  String get deepLinkPrefix => '/composer';
+  String get deepLinkPrefix => 'composer';
 
   @NuRoute(
     deepLink: '/text',

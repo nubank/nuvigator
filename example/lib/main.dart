@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
         router: SamplesRouter(),
-        initialRoute: SamplesRoutes.home,
+        initialDeepLink: 'exapp://home',
       ),
     );
   }

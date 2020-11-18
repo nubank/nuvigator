@@ -127,7 +127,7 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
       ];
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
     return {
-      RouteDef(SamplesRoutes.home): (RouteSettings settings) {
+      RouteDef(SamplesRoutes.home, deepLink: 'home'): (RouteSettings settings) {
         return home();
       },
       RouteDef(SamplesRoutes.friendRequests, deepLink: 'friend-requests'):

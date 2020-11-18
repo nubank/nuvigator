@@ -128,17 +128,17 @@ abstract class NuRouter {
       return null;
     }
     // 2. Build NuRouteSettings
-    final nuRouteSettings =
+    final settings =
         DeepLinkParser(template: routeEntry.key.deepLink).toNuRouteSettings(
       deepLink,
       parameters: parameters,
     );
     // 3. Convert ScreenRoute to Route
     return routeEntry
-        .value(nuRouteSettings)
+        .value(settings)
         .wrapWith(screensWrapper)
         .fallbackScreenType(fallbackScreenType)
-        .toRoute(nuRouteSettings);
+        .toRoute(settings);
   }
 
   @deprecated
