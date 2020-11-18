@@ -9,10 +9,6 @@ abstract class NuModule {
   NuModule() {
     _subModules = createModules;
     _routes = createRoutes;
-    for (final route in _routes) {
-      route.install(this);
-    }
-    _subModules = createModules;
   }
 
   List<NuRoute> _routes;
@@ -36,6 +32,9 @@ abstract class NuModule {
   void _syncInit(NuModuleRouter router) {
     _router = router;
     _subModules.map((module) => module._syncInit(router));
+    for (final route in _routes) {
+      route.install(this);
+    }
   }
 
   Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
@@ -59,13 +58,13 @@ abstract class NuModule {
     for (final route in routes) {
       final match = route.getRouteMatch(deepLink, extraParameters: parameters);
       if (match != null) {
-        return route.getScreenRoute(match).wrapWith(routeWrapper);
+        return route.getScreenRoute(match)?.wrapWith(routeWrapper);
       }
     }
     for (final subModule in subModules) {
       return subModule
           ._getScreenRoute(deepLink, parameters: parameters)
-          .wrapWith(routeWrapper);
+          ?.wrapWith(routeWrapper);
     }
     return null;
   }
@@ -86,7 +85,8 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
   @override
   Route<R> getRoute<R>(String deepLink, {Map<String, dynamic> parameters}) {
     return module
-        ._getScreenRoute(deepLink, parameters: parameters)
+        ._getScreenRoute(deepLink,
+            parameters: parameters ?? <String, dynamic>{})
         ?.toRouteUsingMatch();
   }
 }

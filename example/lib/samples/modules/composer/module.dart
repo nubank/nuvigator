@@ -23,7 +23,7 @@ class ComposerTextRoute extends NuRoute<ComposerTextDelegate, void, String> {
       submitText: (String text) => module.nuvigator.pop(text),
       toHelp: () {
         module.handleCompose();
-        module.nuvigator.openDeepLink<void>(Uri.parse('composer/help'));
+        module.nuvigator.open<void>('composer/help');
       },
     );
   }

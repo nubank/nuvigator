@@ -33,8 +33,8 @@ class HomeScreen extends StatelessWidget {
                 RaisedButton(
                   child: const Text('Review friend requests'),
                   onPressed: () {
-                    nuvigator.openDeepLink<void>(Uri.parse(
-                        'exapp://friend-requests?numberOfRequests=10'));
+                    nuvigator.open<void>(
+                        'exapp://friend-requests?numberOfRequests=10');
                   },
                 ),
                 RaisedButton(
@@ -42,9 +42,8 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () async {
                     String text;
 
-                    text = await nuvigator.openDeepLink<String>(Uri.parse(
-                      'exapp://composer/text?initialText=Hello+deep+link%21',
-                    ));
+                    text = await nuvigator.open<String>(
+                        'exapp://composer/text?initialText=Hello+deep+link%21');
 
                     if (text != null) {
                       // ignore: unawaited_futures

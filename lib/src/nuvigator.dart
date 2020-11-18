@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
+
 import 'next/v1/nu_module.dart';
 import 'nurouter.dart';
 
@@ -82,7 +83,7 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
             HeroController(),
             ...observers,
           ],
-          onGenerateInitialRoutes: (_, _) {
+          onGenerateInitialRoutes: (_, __) {
             return [
               router.getRoute<dynamic>(initialDeepLink.toString(),
                   parameters: initialArguments),

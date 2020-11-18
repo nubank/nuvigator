@@ -14,8 +14,7 @@ class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
   @override
   Widget build(BuildContext context, NuRouteMatch<void> match) {
     return ListRequestScreen(
-      toSuccess: () => module.nuvigator
-          .openDeepLink<void>(Uri.parse('friend-requests/success')),
+      toSuccess: () => module.nuvigator.open<void>('friend-requests/success'),
     );
   }
 }
@@ -31,8 +30,7 @@ class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
   Widget build(BuildContext context, NuRouteMatch<void> match) {
     return SuccessScreen(
       closeFlow: () => module.nuvigator.closeFlow(),
-      toComposeText: () =>
-          module.nuvigator.openDeepLink<void>(Uri.parse('composer/text')),
+      toComposeText: () => module.nuvigator.open<void>('composer/text'),
     );
   }
 }

@@ -55,6 +55,7 @@ class ScreenRoute<T extends Object> {
       builder: builder,
       debugKey: debugKey,
       screenType: screenType,
+      nuRouteMatch: nuRouteMatch,
       wrapper: _getComposedWrapper(wrapper),
     );
   }

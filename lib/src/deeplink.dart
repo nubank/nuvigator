@@ -8,8 +8,14 @@ class DeepLinkParser {
   final bool prefix;
 
   bool matches(String deepLink) {
+    // TODO: Create a test with something like this
+    // nuapp://blabla?route=http://bla2?route=bla
+    final deepLinkWithoutScheme =
+        deepLink.replaceFirst(RegExp(r'[\w]+://'), '');
+    final deepLinkWithoutQueryParameters =
+        deepLinkWithoutScheme.split('?').first;
     final regExp = pathToRegExp(template, prefix: prefix);
-    return regExp.hasMatch(deepLink);
+    return regExp.hasMatch(deepLinkWithoutQueryParameters);
   }
 
   Map<String, String> getParams(String deepLink) {
