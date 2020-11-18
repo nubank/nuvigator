@@ -2,7 +2,7 @@ import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
 
-class DeepLinkParser<A> {
+class DeepLinkParser<A extends Object> {
   DeepLinkParser({
     this.template,
     this.prefix = false,
@@ -29,7 +29,6 @@ class DeepLinkParser<A> {
   }
 
   Map<String, String> getQueryParams(String deepLink) {
-    print(deepLink);
     final parametersMap = Uri.parse(deepLink).queryParameters;
     return parametersMap.map((k, v) {
       return MapEntry(ReCase(k).camelCase, v);
@@ -61,7 +60,11 @@ class DeepLinkParser<A> {
   }) {
     final qParams = getQueryParams(deepLink);
     final pParams = getPathParams(deepLink);
-    final allParams = <String, dynamic>{...qParams, ...pParams, ...parameters};
+    final allParams = <String, dynamic>{
+      ...qParams ?? const <String, dynamic>{},
+      ...pParams ?? const <String, dynamic>{},
+      ...parameters ?? const <String, dynamic>{},
+    };
     return NuRouteSettings(
       name: deepLink,
       pathTemplate: template,

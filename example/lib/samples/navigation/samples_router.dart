@@ -12,15 +12,12 @@ part 'samples_router.g.dart';
 
 @nuRouter
 class SamplesRouter extends NuRouter {
-  @override
-  String get deepLinkPrefix => 'deepprefix';
-
   @NuRoute()
   ScreenRoute<void> home() => ScreenRoute(
         builder: (context) => HomeScreen(),
       );
 
-  @NuRoute(deepLink: '/friendRequests')
+  @NuRoute(deepLink: 'friend-requests')
   ScreenRoute<String> friendRequests({@required int numberOfRequests}) =>
       ScreenRoute(
         builder: Nuvigator(
@@ -28,6 +25,7 @@ class SamplesRouter extends NuRouter {
           initialRoute: FriendRequestRoutes.listRequests,
           screenType: materialScreenType,
         ),
+        screenType: materialScreenType,
         wrapper: (context, child) => ChangeNotifierProvider.value(
           value: FriendRequestBloc(numberOfRequests),
           child: child,

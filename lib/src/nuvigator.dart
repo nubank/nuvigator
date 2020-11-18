@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:nuvigator/src/deeplink.dart';
 
 import 'next/v1/nu_module.dart';
 import 'nurouter.dart';
@@ -84,40 +85,36 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
             ...observers,
           ],
           onGenerateInitialRoutes: (_, __) {
-            return [
-              router.getRoute<dynamic>(initialDeepLink.toString(),
-                  parameters: initialArguments),
-            ];
+            // Using route name is deprecated
+            if (initialRoute != null) {
+              final settings = RouteSettings(
+                name: initialRoute,
+                arguments: initialArguments,
+              );
+              return [
+                router
+                    .getScreen(settings)
+                    ?.fallbackScreenType(screenType)
+                    ?.toRoute(settings),
+              ];
+            } else if (initialDeepLink != null) {
+              return [
+                router.getRoute<dynamic>(
+                  initialDeepLink.toString(),
+                  parameters: initialArguments,
+                  fallbackScreenType: screenType,
+                ),
+              ];
+            }
+            return [];
           },
           onGenerateRoute: (settings) {
-            final initialDeepLinkRouteName = initialDeepLink != null
-                ? router.getScreenNameFromDeepLink(initialDeepLink)
-                : null;
-            var finalSettings = settings;
-
-            if ((settings.name == initialRoute ||
-                    settings.name == initialDeepLinkRouteName) &&
-                settings.arguments == null) {
-              if (initialArguments != null) {
-                finalSettings = settings.copyWith(arguments: initialArguments);
-              } else if (initialDeepLink != null) {
-                final deepLinkTemplate = router
-                    .getRouteEntryForDeepLink(deepLinkString(initialDeepLink))
-                    ?.key
-                    ?.deepLink;
-                final args = extractDeepLinkParameters(
-                    initialDeepLink, deepLinkTemplate);
-                finalSettings = settings.copyWith(arguments: args);
-              }
-            }
             return router
-                .getScreen(finalSettings)
+                .getScreen(settings)
                 ?.fallbackScreenType(screenType)
-                ?.toRoute(finalSettings);
+                ?.toRoute(settings);
           },
           key: key,
-          initialRoute:
-              initialRoute ?? router.getScreenNameFromDeepLink(initialDeepLink),
         );
 
   final T router;

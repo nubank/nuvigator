@@ -33,7 +33,7 @@ class FriendRequestsArgs {
       };
   static FriendRequestsArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
-    final nuvigator = NuvigatorInner.of(context);
+    final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == SamplesRoutes.friendRequests) {
       final args = routeSettings?.arguments;
       if (args == null)
@@ -130,7 +130,7 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
       RouteDef(SamplesRoutes.home): (RouteSettings settings) {
         return home();
       },
-      RouteDef(SamplesRoutes.friendRequests, deepLink: '/friendRequests'):
+      RouteDef(SamplesRoutes.friendRequests, deepLink: 'friend-requests'):
           (RouteSettings settings) {
         final args = FriendRequestsArgs.parse(settings.arguments);
         return friendRequests(numberOfRequests: args.numberOfRequests);

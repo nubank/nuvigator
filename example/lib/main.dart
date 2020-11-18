@@ -2,6 +2,8 @@ import 'package:example/samples/module.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/next.dart';
 
+import 'samples/navigation/samples_router.dart';
+
 void main() => runApp(MyApp());
 
 class TestObserver extends NavigatorObserver {
@@ -36,7 +38,8 @@ class MyApp extends StatelessWidget {
       ),
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
-        module: MainAppModule(),
+        router: SamplesRouter(),
+        initialRoute: SamplesRoutes.home,
       ),
     );
   }

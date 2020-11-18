@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nuvigator/src/deeplink.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:recase/recase.dart';
 
 import '../nuvigator.dart';
 import 'screen_route.dart';
-
-abstract class DeepLinkRouter {
-  Route getScreenRoute(String deepLink, {Map<String, dynamic> extraParams});
-}
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 
@@ -17,18 +13,6 @@ String deepLinkString(Uri url) => url.host + url.path;
 
 typedef HandleDeepLinkFn = Future<dynamic> Function(NuRouter router, Uri uri,
     [bool isFromNative, dynamic args]);
-
-Map<String, String> extractDeepLinkParameters(
-    Uri url, String deepLinkTemplate) {
-  final parameters = <String>[];
-  final regExp = pathToRegExp(deepLinkTemplate, parameters: parameters);
-  final match = regExp.matchAsPrefix(deepLinkString(url));
-  final parametersMap = extract(parameters, match)..addAll(url.queryParameters);
-  final camelCasedParametersMap = parametersMap.map((k, v) {
-    return MapEntry(ReCase(k).camelCase, v);
-  });
-  return {...parametersMap, ...camelCasedParametersMap};
-}
 
 class RouteEntry {
   RouteEntry(this.key, this.value);
@@ -108,21 +92,18 @@ abstract class NuRouter {
 
   RouteEntry getRouteEntryForDeepLink(String deepLink) {
     final thisDeepLinkPrefix = deepLinkPrefix;
-    final prefixRegex = RegExp('^$thisDeepLinkPrefix.*');
-    if (prefixRegex.hasMatch(deepLink)) {
-      final routeEntry = _getRouteEntryForDeepLink(deepLink);
-      if (routeEntry != null) return routeEntry;
-      for (final router in routers) {
-        final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
-        final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
-        if (subRouterEntry != null) {
-          final fullTemplate =
-              thisDeepLinkPrefix + (subRouterEntry.key.deepLink ?? '');
-          return RouteEntry(
-            RouteDef(subRouterEntry.key.routeName, deepLink: fullTemplate),
-            _wrapScreenBuilder(subRouterEntry.value),
-          );
-        }
+    final routeEntry = _getRouteEntryForDeepLink(deepLink);
+    if (routeEntry != null) return routeEntry;
+    for (final router in routers) {
+      final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
+      final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
+      if (subRouterEntry != null) {
+        final fullTemplate =
+            thisDeepLinkPrefix + (subRouterEntry.key.deepLink ?? '');
+        return RouteEntry(
+          RouteDef(subRouterEntry.key.routeName, deepLink: fullTemplate),
+          _wrapScreenBuilder(subRouterEntry.value),
+        );
       }
     }
     return null;
@@ -136,17 +117,28 @@ abstract class NuRouter {
     return getRouteEntryForDeepLink(deepLinkString(url)) != null;
   }
 
-  Route<T> getRoute<T>(String deepLink, {Map<String, dynamic> parameters}) {
+  Route<T> getRoute<T>(
+    String deepLink, {
+    Map<String, dynamic> parameters,
+    ScreenType fallbackScreenType,
+  }) {
     // 1. Get ScreeRouter for DeepLink
     final routeEntry = getRouteEntryForDeepLink(deepLink);
+    if (routeEntry == null) {
+      return null;
+    }
     // 2. Build NuRouteSettings
-    final nuRouteSettings = NuRouteSettings(
-      name: deepLink,
-      pathTemplate: routeEntry.key.deepLink,
-      extraParameter: parameters,
+    final nuRouteSettings =
+        DeepLinkParser(template: routeEntry.key.deepLink).toNuRouteSettings(
+      deepLink,
+      parameters: parameters,
     );
     // 3. Convert ScreenRoute to Route
-    return routeEntry.value(nuRouteSettings).toRoute(nuRouteSettings);
+    return routeEntry
+        .value(nuRouteSettings)
+        .wrapWith(screensWrapper)
+        .fallbackScreenType(fallbackScreenType)
+        .toRoute(nuRouteSettings);
   }
 
   @deprecated
@@ -161,8 +153,8 @@ abstract class NuRouter {
       return null;
     }
 
-    final mapArguments =
-        extractDeepLinkParameters(url, routeEntry.key.deepLink);
+    final mapArguments = DeepLinkParser(template: routeEntry.key.deepLink)
+        .getParams(url.toString());
 
     if (isFromNative) {
       final route = _buildNativeRoute(routeEntry, mapArguments);
@@ -191,8 +183,7 @@ abstract class NuRouter {
       final currentDeepLink = routeDef.deepLink;
       if (currentDeepLink == null) continue;
       final fullTemplate = deepLinkPrefix + currentDeepLink;
-      final regExp = pathToRegExp(fullTemplate);
-      if (regExp.hasMatch(deepLink)) {
+      if (DeepLinkParser(template: fullTemplate).matches(deepLink)) {
         return RouteEntry(
           RouteDef(routeDef.routeName, deepLink: fullTemplate),
           _wrapScreenBuilder(screenBuilder),

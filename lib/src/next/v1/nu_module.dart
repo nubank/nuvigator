@@ -147,10 +147,15 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
   }
 
   @override
-  Route<R> getRoute<R>(String deepLink, {Map<String, dynamic> parameters}) {
+  Route<R> getRoute<R>(
+    String deepLink, {
+    Map<String, dynamic> parameters,
+    ScreenType fallbackScreenType,
+  }) {
     return module
         ._getScreenRoute(deepLink,
             parameters: parameters ?? <String, dynamic>{})
+        .fallbackScreenType(fallbackScreenType)
         ?.toRoute();
   }
 }

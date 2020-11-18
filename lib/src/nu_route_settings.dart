@@ -8,9 +8,9 @@ class NuRouteSettings<A extends Object> extends RouteSettings {
     @required String name,
     this.scheme,
     this.pathTemplate,
-    this.queryParameters,
-    this.pathParameters,
-    this.extraParameter,
+    this.queryParameters = const <String, dynamic>{},
+    this.pathParameters = const <String, dynamic>{},
+    this.extraParameter = const <String, dynamic>{},
     this.args,
   }) : super(name: name);
 
@@ -26,9 +26,9 @@ class NuRouteSettings<A extends Object> extends RouteSettings {
 
   Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
-      ...queryParameters,
-      ...pathParameters,
-      ...extraParameter,
+      ...queryParameters ?? const <String, dynamic>{},
+      ...pathParameters ?? const <String, dynamic>{},
+      ...extraParameter ?? const <String, dynamic>{},
     };
   }
 
