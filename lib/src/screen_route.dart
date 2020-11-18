@@ -28,14 +28,14 @@ class ScreenRoute<T extends Object> {
     @required this.builder,
     this.wrapper,
     this.screenType,
-    this.nuRouteMatch,
+    this.nuRouteSettings,
     this.debugKey,
   }) : assert(builder != null);
 
   final WidgetBuilder builder;
   final ScreenType screenType;
   final WrapperFn wrapper;
-  final NuRouteMatch nuRouteMatch;
+  final NuRouteSettings nuRouteSettings;
   final String debugKey;
 
   ScreenRoute<T> fallbackScreenType(ScreenType fallbackScreenType) {
@@ -55,7 +55,7 @@ class ScreenRoute<T extends Object> {
       builder: builder,
       debugKey: debugKey,
       screenType: screenType,
-      nuRouteMatch: nuRouteMatch,
+      nuRouteSettings: nuRouteSettings,
       wrapper: _getComposedWrapper(wrapper),
     );
   }
@@ -75,22 +75,10 @@ class ScreenRoute<T extends Object> {
     );
   }
 
-  Route<T> toRoute(RouteSettings settings) {
+  Route<T> toRoute([RouteSettings settings]) {
     return _toRouteType(
       (BuildContext context) => _buildScreen(context),
-      settings,
-    );
-  }
-
-  Route<T> toRouteUsingMatch() {
-    final settings = NuRouteSettings(
-      name: nuRouteMatch.path,
-      parameters: nuRouteMatch.extraParameter,
-      pathTemplate: nuRouteMatch.pathTemplate,
-    );
-    return _toRouteType(
-      (BuildContext context) => _buildScreen(context),
-      settings,
+      settings ?? nuRouteSettings,
     );
   }
 

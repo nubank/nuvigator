@@ -143,7 +143,7 @@ abstract class NuRouter {
     final nuRouteSettings = NuRouteSettings(
       name: deepLink,
       pathTemplate: routeEntry.key.deepLink,
-      parameters: parameters,
+      extraParameter: parameters,
     );
     // 3. Convert ScreenRoute to Route
     return routeEntry.value(nuRouteSettings).toRoute(nuRouteSettings);

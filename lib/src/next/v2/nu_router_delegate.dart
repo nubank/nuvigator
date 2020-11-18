@@ -1,12 +1,9 @@
-import 'dart:async';
-
-import 'package:flutter/widgets.dart';
-import 'package:nuvigator/src/screen_route.dart';
-
-import '../nu_route.dart';
-import 'nuvigator_page.dart';
-
-class NuRouteConfig {}
+// import 'dart:async';
+//
+// import 'package:flutter/widgets.dart';
+// import 'package:nuvigator/src/screen_route.dart';
+//
+// import 'nuvigator_page.dart';
 //
 // abstract class NuRouterDelegate extends RouterDelegate<NuRouteConfig>
 //     with ChangeNotifier, PopNavigatorRouterDelegateMixin<NuRouteConfig> {

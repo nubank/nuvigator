@@ -12,7 +12,7 @@ class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return ListRequestScreen(
       toSuccess: () => module.nuvigator.open<void>('friend-requests/success'),
     );
@@ -27,7 +27,7 @@ class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return SuccessScreen(
       closeFlow: () => module.nuvigator.closeFlow(),
       toComposeText: () => module.nuvigator.open<void>('composer/text'),

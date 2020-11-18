@@ -1,24 +1,75 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
+import 'package:nuvigator/src/nu_route_settings.dart';
+import 'package:path_to_regexp/path_to_regexp.dart';
 
+import '../../deeplink.dart';
 import '../../nurouter.dart';
 import '../../screen_route.dart';
-import '../nu_route.dart';
+
+abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
+  String get path;
+
+  // TBD
+  bool get prefix => false;
+  T _module;
+
+  T get module => _module;
+
+  NuvigatorState get nuvigator => module.nuvigator;
+
+  DeepLinkParser get parser => DeepLinkParser(path, prefix: prefix);
+
+  bool canOpen(String deepLink) => parser.matches(deepLink);
+
+  A parseParameters(Map<String, dynamic> map) => null;
+
+  Future<bool> init(BuildContext context) {
+    return SynchronousFuture(true);
+  }
+
+  NuRouteSettings<A> _getNuRouteSettings(
+    String deepLink, {
+    Map<String, dynamic> extraParameters,
+  }) {
+    if (canOpen(deepLink)) {
+      return parser.toNuRouteSettings(deepLink, parameters: extraParameters);
+    } else {
+      return null;
+    }
+  }
+
+  Widget wrapper(BuildContext context, Widget child) => child;
+
+  ScreenType get screenType;
+
+  Widget build(BuildContext context, NuRouteSettings<A> settings);
+
+  void _install(T module) {
+    _module = module;
+  }
+
+  ScreenRoute<R> _getScreenRoute(NuRouteSettings<A> settings) => ScreenRoute(
+        builder: (context) => build(context, settings),
+        screenType: screenType,
+        nuRouteSettings: settings,
+        wrapper: wrapper,
+      );
+}
 
 abstract class NuModule {
   NuModule() {
     _subModules = createModules;
     _routes = createRoutes;
     for (final route in _routes) {
-      route.install(this);
+      route._install(this);
     }
   }
 
   List<NuRoute> _routes;
   List<NuModule> _subModules;
   NuModuleRouter _router;
-
-  Widget loadingWidget(BuildContext _) => Container();
 
   String get initialRoute => null;
 
@@ -31,6 +82,19 @@ abstract class NuModule {
   List<NuModule> get subModules => _subModules;
 
   NuvigatorState get nuvigator => _router.nuvigator;
+
+  /// While the module is initializing this Widget is going to be displaye.d
+  Widget loadingWidget(BuildContext _) => Container();
+
+  /// Override to perform some processing/initialization when this module
+  /// is first initialized into a [Nuvigator].
+  Future<void> init(BuildContext context) async {}
+
+  /// A common wrapper that is going to be applied to all Routes returned by
+  /// this Module.
+  Widget routeWrapper(BuildContext context, Widget child) {
+    return child;
+  }
 
   void _syncInit(NuModuleRouter router) {
     _router = router;
@@ -49,18 +113,13 @@ abstract class NuModule {
     }));
   }
 
-  Future<void> init(BuildContext context) async {}
-
-  Widget routeWrapper(BuildContext context, Widget child) {
-    return child;
-  }
-
   ScreenRoute _getScreenRoute(String deepLink,
       {Map<String, dynamic> parameters}) {
     for (final route in routes) {
-      final match = route.getRouteMatch(deepLink, extraParameters: parameters);
-      if (match != null) {
-        return route.getScreenRoute(match)?.wrapWith(routeWrapper);
+      final nuRouteSettings =
+          route._getNuRouteSettings(deepLink, extraParameters: parameters);
+      if (nuRouteSettings != null) {
+        return route._getScreenRoute(nuRouteSettings)?.wrapWith(routeWrapper);
       }
     }
     for (final subModule in subModules) {
@@ -79,7 +138,7 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
 
   final T module;
 
-  Future<NuModuleRouter> initModule(BuildContext context) async {
+  Future<NuModuleRouter> _initModule(BuildContext context) async {
     await module._initModule(context, this);
     return this;
   }
@@ -89,7 +148,7 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
     return module
         ._getScreenRoute(deepLink,
             parameters: parameters ?? <String, dynamic>{})
-        ?.toRouteUsingMatch();
+        ?.toRoute();
   }
 }
 
@@ -110,7 +169,7 @@ class _NuModuleLoaderState extends State<NuModuleLoader> {
   @override
   void initState() {
     router = NuModuleRouter(widget.module);
-    router.initModule(context).then((value) {
+    router._initModule(context).then((value) {
       setState(() {
         loading = false;
       });

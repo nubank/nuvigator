@@ -2,46 +2,47 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/src/deeplink.dart';
 
-class NuRouteSettings extends RouteSettings {
+/// [name] will be the full DeepLink String
+class NuRouteSettings<A extends Object> extends RouteSettings {
   const NuRouteSettings({
     @required String name,
-    this.pathTemplate,
     this.scheme,
-    this.parameters = const <String, dynamic>{},
+    this.pathTemplate,
+    this.queryParameters,
+    this.pathParameters,
+    this.extraParameter,
+    this.args,
   }) : super(name: name);
 
   final String pathTemplate;
   final String scheme;
-  final Map<String, dynamic> parameters;
-
-  Map<String, dynamic> get queryParams => _parser.getPathParams(name);
+  final A args;
+  final Map<String, dynamic> queryParameters;
+  final Map<String, dynamic> pathParameters;
+  final Map<String, dynamic> extraParameter;
 
   @override
-  Map<String, dynamic> get arguments => rawParams;
+  Map<String, dynamic> get arguments => rawParameters;
 
-  Map<String, dynamic> get pathParams => _parser.getPathParams(name);
-
-  DeepLinkParser get _parser => DeepLinkParser(pathTemplate);
-
-  Map<String, dynamic> get rawParams {
+  Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
-      ...queryParams,
-      ...pathParams,
-      ...parameters,
+      ...queryParameters,
+      ...pathParameters,
+      ...extraParameter,
     };
   }
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParams)';
+      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParameters)';
 
   @override
-  int get hashCode => hashList([name, rawParams, pathTemplate]);
+  int get hashCode => hashList([name, rawParameters, pathTemplate]);
 
   @override
   bool operator ==(Object other) =>
       other is NuRouteSettings &&
       other.pathTemplate == pathTemplate &&
       other.name == name &&
-      other.rawParams == rawParams;
+      other.rawParameters == rawParameters;
 }
