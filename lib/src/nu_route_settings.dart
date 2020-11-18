@@ -5,17 +5,19 @@ import 'package:nuvigator/src/deeplink.dart';
 class NuRouteSettings extends RouteSettings {
   const NuRouteSettings({
     @required String name,
-    this.deepLink,
     this.pathTemplate,
     this.scheme,
-    Map<String, dynamic> arguments = const <String, dynamic>{},
-  }) : super(name: name, arguments: arguments);
+    this.parameters = const <String, dynamic>{},
+  }) : super(name: name);
 
   final String pathTemplate;
   final String scheme;
-  final String deepLink;
+  final Map<String, dynamic> parameters;
 
   Map<String, dynamic> get queryParams => _parser.getPathParams(name);
+
+  @override
+  Map<String, dynamic> get arguments => rawParams;
 
   Map<String, dynamic> get pathParams => _parser.getPathParams(name);
 
@@ -25,8 +27,7 @@ class NuRouteSettings extends RouteSettings {
     return <String, dynamic>{
       ...queryParams,
       ...pathParams,
-      // ignore: avoid_as
-      ...arguments as Map<String, dynamic>
+      ...parameters,
     };
   }
 

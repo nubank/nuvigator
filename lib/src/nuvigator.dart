@@ -82,6 +82,12 @@ class NuvigatorInner<T extends NuRouter> extends Navigator {
             HeroController(),
             ...observers,
           ],
+          onGenerateInitialRoutes: (_, _) {
+            return [
+              router.getRoute<dynamic>(initialDeepLink.toString(),
+                  parameters: initialArguments),
+            ];
+          },
           onGenerateRoute: (settings) {
             final initialDeepLinkRouteName = initialDeepLink != null
                 ? router.getScreenNameFromDeepLink(initialDeepLink)
@@ -284,12 +290,25 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     }
   }
 
+  /// Prefer using [Nuvigator.open]
+  @deprecated
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
     final hasOpen = router.openDeepLink<R>(deepLink, arguments, false);
     if (hasOpen != null) {
       return hasOpen;
     } else {
       return parent.openDeepLink(deepLink, arguments);
+    }
+  }
+
+  Future<R> open<R>(String deepLink, {Map<String, dynamic> parameters}) {
+    final route = router.getRoute<R>(deepLink, parameters: parameters);
+    if (route != null) {
+      return push(route);
+    } else if (!isRoot) {
+      return parent.open(deepLink, parameters: parameters);
+    } else {
+      return null; // TODO
     }
   }
 
@@ -437,4 +456,10 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
       );
     }
   }
+}
+
+class DeepLinkController {
+  NuvigatorState nuvigator;
+
+  void open(String deepLink, {Map<String, dynamic> params}) {}
 }

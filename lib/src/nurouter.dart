@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
 
 import '../nuvigator.dart';
 import 'screen_route.dart';
+
+abstract class DeepLinkRouter {
+  Route getScreenRoute(String deepLink, {Map<String, dynamic> extraParams});
+}
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
 
@@ -131,6 +136,20 @@ abstract class NuRouter {
     return getRouteEntryForDeepLink(deepLinkString(url)) != null;
   }
 
+  Route<T> getRoute<T>(String deepLink, {Map<String, dynamic> parameters}) {
+    // 1. Get ScreeRouter for DeepLink
+    final routeEntry = getRouteEntryForDeepLink(deepLink);
+    // 2. Build NuRouteSettings
+    final nuRouteSettings = NuRouteSettings(
+      name: deepLink,
+      pathTemplate: routeEntry.key.deepLink,
+      parameters: parameters,
+    );
+    // 3. Convert ScreenRoute to Route
+    return routeEntry.value(nuRouteSettings).toRoute(nuRouteSettings);
+  }
+
+  @deprecated
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) {
     final routeEntry = getRouteEntryForDeepLink(deepLinkString(url));
@@ -144,10 +163,12 @@ abstract class NuRouter {
 
     final mapArguments =
         extractDeepLinkParameters(url, routeEntry.key.deepLink);
+
     if (isFromNative) {
       final route = _buildNativeRoute(routeEntry, mapArguments);
       return nuvigator.push<T>(route);
     }
+
     return nuvigator.pushNamed<T>(routeEntry.key.routeName,
         arguments: mapArguments);
   }

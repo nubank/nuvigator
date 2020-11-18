@@ -53,16 +53,30 @@ abstract class NuModule {
   Widget routeWrapper(BuildContext context, Widget child) {
     return child;
   }
+
+  ScreenRoute _getScreenRoute(String deepLink,
+      {Map<String, dynamic> parameters}) {
+    for (final route in routes) {
+      final match = route.getRouteMatch(deepLink, extraParameters: parameters);
+      if (match != null) {
+        return route.getScreenRoute(match).wrapWith(routeWrapper);
+      }
+    }
+    for (final subModule in subModules) {
+      return subModule
+          ._getScreenRoute(deepLink, parameters: parameters)
+          .wrapWith(routeWrapper);
+    }
+    return null;
+  }
 }
 
 class NuModuleRouter<T extends NuModule> extends NuRouter {
   NuModuleRouter(this.module) {
     module._syncInit(this);
-    _subRouters = module.subModules.map((e) => NuModuleRouter(e)).toList();
   }
 
   final T module;
-  List<NuModuleRouter> _subRouters;
 
   Future<NuModuleRouter> initModule(BuildContext context) async {
     await module._initModule(context, this);
@@ -70,27 +84,11 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
   }
 
   @override
-  WrapperFn get screensWrapper => module.routeWrapper;
-
-  @override
-  List<NuRouter> get routers => _subRouters ?? [];
-
-  @override
-  Map<RouteDef, ScreenRouteBuilder> get screensMap => module.routes.fold(
-        {},
-        (acc, route) => {
-          ...acc,
-          RouteDef(route.path, deepLink: route.path): (settings) {
-            final Map<String, dynamic> params =
-                (settings.arguments is Map<String, dynamic>)
-                    ? settings.arguments
-                    : null;
-            final match =
-                route.getRouteMatch(settings.name, extraParameters: params);
-            return route.getRoute(match);
-          },
-        },
-      );
+  Route<R> getRoute<R>(String deepLink, {Map<String, dynamic> parameters}) {
+    return module
+        ._getScreenRoute(deepLink, parameters: parameters)
+        ?.toRouteUsingMatch();
+  }
 }
 
 class NuModuleLoader extends StatefulWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:nuvigator/src/nu_route_settings.dart';
 
 import 'screen_type.dart';
 
@@ -27,12 +28,14 @@ class ScreenRoute<T extends Object> {
     @required this.builder,
     this.wrapper,
     this.screenType,
+    this.nuRouteMatch,
     this.debugKey,
   }) : assert(builder != null);
 
   final WidgetBuilder builder;
   final ScreenType screenType;
   final WrapperFn wrapper;
+  final NuRouteMatch nuRouteMatch;
   final String debugKey;
 
   ScreenRoute<T> fallbackScreenType(ScreenType fallbackScreenType) {
@@ -73,7 +76,19 @@ class ScreenRoute<T extends Object> {
 
   Route<T> toRoute(RouteSettings settings) {
     return _toRouteType(
-      (BuildContext context) => _buildScreen(context, settings),
+      (BuildContext context) => _buildScreen(context),
+      settings,
+    );
+  }
+
+  Route<T> toRouteUsingMatch() {
+    final settings = NuRouteSettings(
+      name: nuRouteMatch.path,
+      parameters: nuRouteMatch.extraParameter,
+      pathTemplate: nuRouteMatch.pathTemplate,
+    );
+    return _toRouteType(
+      (BuildContext context) => _buildScreen(context),
       settings,
     );
   }
@@ -94,7 +109,7 @@ class ScreenRoute<T extends Object> {
   Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
       screenType.toRoute<T>(builder, settings);
 
-  Widget _buildScreen(BuildContext context, RouteSettings settings) {
+  Widget _buildScreen(BuildContext context) {
     if (wrapper == null) return builder(context);
     return wrapper(
       context,
