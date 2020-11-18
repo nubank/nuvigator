@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
-import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../../deeplink.dart';
 import '../../nurouter.dart';
@@ -19,7 +18,11 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 
   NuvigatorState get nuvigator => module.nuvigator;
 
-  DeepLinkParser get parser => DeepLinkParser(path, prefix: prefix);
+  DeepLinkParser get parser => DeepLinkParser<A>(
+        template: path,
+        prefix: prefix,
+        argumentParser: parseParameters,
+      );
 
   bool canOpen(String deepLink) => parser.matches(deepLink);
 

@@ -2,10 +2,15 @@ import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
 
-class DeepLinkParser {
-  DeepLinkParser(this.template, {this.prefix = false});
+class DeepLinkParser<A> {
+  DeepLinkParser({
+    this.template,
+    this.prefix = false,
+    this.argumentParser,
+  });
 
   final String template;
+  final A Function(Map<String, dynamic>) argumentParser;
   final bool prefix;
 
   bool matches(String deepLink) {
@@ -41,17 +46,30 @@ class DeepLinkParser {
     });
   }
 
-  NuRouteSettings toNuRouteSettings(
+  String getSchema(String deepLink) {
+    return Uri.parse(deepLink).scheme;
+  }
+
+  A parseParams(Map<String, dynamic> params) {
+    return argumentParser != null ? argumentParser(params) : null;
+  }
+
+  NuRouteSettings<A> toNuRouteSettings(
     String deepLink, {
     Map<String, dynamic> parameters,
+    A args,
   }) {
+    final qParams = getQueryParams(deepLink);
+    final pParams = getPathParams(deepLink);
+    final allParams = <String, dynamic>{...qParams, ...pParams, ...parameters};
     return NuRouteSettings(
       name: deepLink,
       pathTemplate: template,
-      queryParameters: getQueryParams(deepLink),
-      pathParameters: getPathParams(deepLink),
+      queryParameters: qParams,
+      pathParameters: pParams,
       extraParameter: parameters,
-      scheme: '',
+      args: parseParams(allParams),
+      scheme: getSchema(deepLink),
     );
   }
 }
