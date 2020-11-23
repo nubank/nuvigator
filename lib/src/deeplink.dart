@@ -13,13 +13,14 @@ class DeepLinkParser<A extends Object> {
   final A Function(Map<String, dynamic>) argumentParser;
   final bool prefix;
 
-  bool matches(String deepLink) {
-    // TODO: Create a test with something like this
-    // nuapp://blabla?route=http://bla2?route=bla
+  String getPath(String deepLink) {
     final deepLinkWithoutScheme =
         deepLink.replaceFirst(RegExp(r'[\w]+://'), '');
-    final deepLinkWithoutQueryParameters =
-        deepLinkWithoutScheme.split('?').first;
+    return deepLinkWithoutScheme.split('?').first;
+  }
+
+  bool matches(String deepLink) {
+    final deepLinkWithoutQueryParameters = getPath(deepLink);
     final regExp = pathToRegExp(template, prefix: prefix);
     return regExp.hasMatch(deepLinkWithoutQueryParameters);
   }
@@ -30,22 +31,26 @@ class DeepLinkParser<A extends Object> {
 
   Map<String, String> getQueryParams(String deepLink) {
     final parametersMap = Uri.parse(deepLink).queryParameters;
-    return parametersMap.map((k, v) {
-      return MapEntry(ReCase(k).camelCase, v);
-    });
+    return {
+      ...parametersMap,
+      ...parametersMap.map((k, v) {
+        return MapEntry(ReCase(k).camelCase, v);
+      }),
+    };
   }
 
   Map<String, String> getPathParams(String deepLink) {
     final parameters = <String>[];
+    final deepLinkPath = getPath(deepLink);
     final regExp = pathToRegExp(template, parameters: parameters);
-    final match = regExp.matchAsPrefix(deepLink);
+    final match = regExp.matchAsPrefix(deepLinkPath);
     final parametersMap = extract(parameters, match);
     return parametersMap.map((k, v) {
       return MapEntry(ReCase(k).camelCase, v);
     });
   }
 
-  String getSchema(String deepLink) {
+  String getScheme(String deepLink) {
     return Uri.parse(deepLink).scheme;
   }
 
@@ -72,7 +77,7 @@ class DeepLinkParser<A extends Object> {
       pathParameters: pParams,
       extraParameter: parameters,
       args: parseParams(allParams),
-      scheme: getSchema(deepLink),
+      scheme: getScheme(deepLink),
     );
   }
 }

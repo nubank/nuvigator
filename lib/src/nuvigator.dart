@@ -451,9 +451,3 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     }
   }
 }
-
-class DeepLinkController {
-  NuvigatorState nuvigator;
-
-  void open(String deepLink, {Map<String, dynamic> params}) {}
-}
