@@ -15,6 +15,7 @@ extension FriendRequestArgsParser on FriendRequestArgs {
       ..precision = map['precision'] is String
           ? double.tryParse(map['precision'])
           : map['precision']
-      ..name = map['name'];
+      ..name = map['name']
+      ..age = map['age'] is String ? int.tryParse(map['age']) : map['age'];
   }
 }
