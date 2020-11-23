@@ -3,9 +3,9 @@ import 'package:nuvigator/nuvigator.dart';
 
 import '../screen_type.dart';
 
-class NuvigatorCupertinoPageRoute<T> extends CupertinoPageRoute<T>
+class _NuCupertinoPageRoute<T> extends CupertinoPageRoute<T>
     with NuvigatorPageRoute<T> {
-  NuvigatorCupertinoPageRoute({
+  _NuCupertinoPageRoute({
     @required WidgetBuilder builder,
     String title,
     RouteSettings settings,
@@ -28,7 +28,7 @@ class CupertinoScreenType extends ScreenType {
   @override
   Route<T> toRoute<T extends Object>(
       WidgetBuilder builder, RouteSettings settings) {
-    return NuvigatorCupertinoPageRoute(
+    return _NuCupertinoPageRoute(
       builder: builder,
       fullscreenDialog: fullscreenDialog,
       settings: settings,
