@@ -42,7 +42,7 @@ class FriendRequestModule extends NuModule {
   String get initialRoute => 'friend-requests/list';
 
   @override
-  List<NuRoute> get createRoutes => [
+  List<NuRoute> get registerRoutes => [
         ListFriendRequestRoute(),
         FriendRequestSuccessRoute(),
       ];

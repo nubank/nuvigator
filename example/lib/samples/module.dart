@@ -83,13 +83,13 @@ class MainAppModule extends NuModule {
   }
 
   @override
-  List<NuRoute> get createRoutes => [
+  List<NuRoute> get registerRoutes => [
         HomeRoute(),
         FriendRequestRoute(),
       ];
 
   @override
-  List<NuModule> get createModules => [
+  List<NuModule> get registerModules => [
         ComposerModule(),
       ];
 

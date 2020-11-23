@@ -57,7 +57,7 @@ class ComposerModule extends NuModule implements ComposerModulesDelegate {
   String get initialRoute => null;
 
   @override
-  List<NuRoute> get createRoutes => [
+  List<NuRoute> get registerRoutes => [
         ComposerHelpRoute(),
         ComposerTextRoute(),
       ];

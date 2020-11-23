@@ -8,23 +8,13 @@ import '../../nurouter.dart';
 import '../../screen_route.dart';
 
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
-  String get path;
-
-  // TBD
-  bool get prefix => false;
   T _module;
 
   T get module => _module;
 
   NuvigatorState get nuvigator => module.nuvigator;
 
-  DeepLinkParser get parser => DeepLinkParser<A>(
-        template: path,
-        prefix: prefix,
-        argumentParser: parseParameters,
-      );
-
-  bool canOpen(String deepLink) => parser.matches(deepLink);
+  bool canOpen(String deepLink) => _parser.matches(deepLink);
 
   A parseParameters(Map<String, dynamic> map) => null;
 
@@ -32,20 +22,31 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     return SynchronousFuture(true);
   }
 
+  // TBD
+  bool get prefix => false;
+
+  ScreenType get screenType;
+
+  String get path;
+
+  Widget build(BuildContext context, NuRouteSettings<A> settings);
+
+  DeepLinkParser get _parser => DeepLinkParser<A>(
+        template: path,
+        prefix: prefix,
+        argumentParser: parseParameters,
+      );
+
   NuRouteSettings<A> _getNuRouteSettings(
     String deepLink, {
     Map<String, dynamic> extraParameters,
   }) {
     if (canOpen(deepLink)) {
-      return parser.toNuRouteSettings(deepLink, parameters: extraParameters);
+      return _parser.toNuRouteSettings(deepLink, parameters: extraParameters);
     } else {
       return null;
     }
   }
-
-  ScreenType get screenType;
-
-  Widget build(BuildContext context, NuRouteSettings<A> settings);
 
   void _install(T module) {
     _module = module;
@@ -60,8 +61,8 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 
 abstract class NuModule {
   NuModule() {
-    _subModules = createModules;
-    _routes = createRoutes;
+    _subModules = registerModules;
+    _routes = registerRoutes;
     for (final route in _routes) {
       route._install(this);
     }
@@ -73,9 +74,9 @@ abstract class NuModule {
 
   String get initialRoute => null;
 
-  List<NuRoute> get createRoutes;
+  List<NuRoute> get registerRoutes;
 
-  List<NuModule> get createModules => [];
+  List<NuModule> get registerModules => [];
 
   List<NuRoute> get routes => _routes;
 
@@ -83,7 +84,7 @@ abstract class NuModule {
 
   NuvigatorState get nuvigator => _router.nuvigator;
 
-  /// While the module is initializing this Widget is going to be displaye.d
+  /// While the module is initializing this Widget is going to be displayed
   Widget loadingWidget(BuildContext _) => Container();
 
   /// Override to perform some processing/initialization when this module
