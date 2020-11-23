@@ -43,8 +43,6 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     }
   }
 
-  Widget wrapper(BuildContext context, Widget child) => child;
-
   ScreenType get screenType;
 
   Widget build(BuildContext context, NuRouteSettings<A> settings);
@@ -57,7 +55,6 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
         builder: (context) => build(context, settings),
         screenType: screenType,
         nuRouteSettings: settings,
-        wrapper: wrapper,
       );
 }
 
@@ -147,6 +144,7 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
   }
 
   @override
+  @deprecated
   RouteEntry getRouteEntryForDeepLink(String deepLink) {
     throw UnimplementedError(
         'getRouteEntryForDeepLink is deprecated and not implemented for NuModule API');
@@ -158,6 +156,7 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
   }
 
   @override
+  @deprecated
   Future<R> openDeepLink<R>(Uri url,
       [dynamic arguments, bool isFromNative = false]) {
     return nuvigator.open<R>(url.toString(), parameters: arguments);
