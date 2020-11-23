@@ -10,7 +10,7 @@ class NextBuilderLibrary {
 
     final stringBuffer = StringBuffer();
     stringBuffer.writeln(
-        'extension ${elementSuperType.displayName}Parser on ${elementSuperType.displayName} {');
+        'extension ${elementSuperType.displayName}Parser on ${element.displayName} {');
     stringBuffer.writeln(
         '${elementSuperType.displayName} _\$parseParameters(Map<String, dynamic> map) {');
     stringBuffer.writeln(' return ${elementSuperType.displayName}()');

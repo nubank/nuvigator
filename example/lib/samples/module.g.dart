@@ -6,7 +6,7 @@ part of 'module.dart';
 // NextGenerator
 // **************************************************************************
 
-extension FriendRequestArgsParser on FriendRequestArgs {
+extension FriendRequestArgsParser on FriendRequestRoute {
   FriendRequestArgs _$parseParameters(Map<String, dynamic> map) {
     return FriendRequestArgs()
       ..numberOfRequests = map['numberOfRequests'] is String
