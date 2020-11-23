@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nuvigator/nuvigator.dart';
 
 import 'helpers.dart';
 
@@ -10,19 +9,6 @@ void main() {
     final screen =
         testRouter.getScreen(const RouteSettings(name: 'firstScreen'));
     expect(screen.debugKey, 'testRouterFirstScreen');
-  });
-
-  test('router onScreenNotFound', () {
-    final testRouter = TestRouter();
-    var notFound = false;
-    testRouter.onScreenNotFound = (settings) {
-      notFound = true;
-      return ScreenRoute(debugKey: 'screenNotFound', builder: (_) => null);
-    };
-    final screen =
-        testRouter.getScreen(const RouteSettings(name: 'notExisting'));
-    expect(screen.debugKey, 'screenNotFound');
-    expect(notFound, true);
   });
 
   test('router retrieves the right screen for the deepLink', () async {
@@ -79,20 +65,5 @@ void main() {
     expect(mainRouter.getRouter<TestRouter>(), mainRouter.testRouter);
     expect(mainRouter.getRouter<GroupTestRouter>(), mainRouter);
     expect(mainRouter.getRouter<TestRouterWPrefix>(), null);
-  });
-
-  group('screen name from deep link', () {
-    test('when its a known deep link', () async {
-      final testRouter = TestRouter();
-      expect(testRouter.getScreenNameFromDeepLink(Uri.parse('test/simple')),
-          'firstScreen');
-    });
-
-    test('when its an unknown deep link returns null', () async {
-      final testRouter = TestRouter();
-      expect(
-          testRouter.getScreenNameFromDeepLink(Uri.parse('this/doesnt/exist')),
-          null);
-    });
   });
 }

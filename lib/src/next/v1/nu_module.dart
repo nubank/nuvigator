@@ -147,6 +147,23 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
   }
 
   @override
+  RouteEntry getRouteEntryForDeepLink(String deepLink) {
+    throw UnimplementedError(
+        'getRouteEntryForDeepLink is deprecated and not implemented for NuModule API');
+  }
+
+  @override
+  bool canOpenDeepLink(Uri url) {
+    return getRoute<dynamic>(url.toString()) != null;
+  }
+
+  @override
+  Future<R> openDeepLink<R>(Uri url,
+      [dynamic arguments, bool isFromNative = false]) {
+    return nuvigator.open<R>(url.toString(), parameters: arguments);
+  }
+
+  @override
   Route<R> getRoute<R>(
     String deepLink, {
     Map<String, dynamic> parameters,

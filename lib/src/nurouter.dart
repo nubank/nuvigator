@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/src/deeplink.dart';
-import 'package:nuvigator/src/nu_route_settings.dart';
-import 'package:path_to_regexp/path_to_regexp.dart';
 
 import '../nuvigator.dart';
 import 'screen_route.dart';
 
 typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
-
-String deepLinkString(Uri url) => url.host + url.path;
 
 typedef HandleDeepLinkFn = Future<dynamic> Function(NuRouter router, Uri uri,
     [bool isFromNative, dynamic args]);
@@ -47,8 +43,10 @@ abstract class NuRouter {
     return router;
   }
 
+  /// Deprecated: Will be moved to [Nuvigator.onDeepLinkNotFound]
+  @deprecated
   HandleDeepLinkFn onDeepLinkNotFound;
-  ScreenRoute Function(RouteSettings settings) onScreenNotFound;
+
   NuvigatorState _nuvigator;
 
   NuvigatorState get nuvigator => _nuvigator;
@@ -78,6 +76,7 @@ abstract class NuRouter {
     return null;
   }
 
+  @deprecated
   ScreenRoute getScreen(RouteSettings settings) {
     final screen = _getScreen(settings);
     if (screen != null) return screen;
@@ -86,14 +85,28 @@ abstract class NuRouter {
       final screen = router.getScreen(settings);
       if (screen != null) return screen.wrapWith(screensWrapper);
     }
-    if (onScreenNotFound != null) return onScreenNotFound(settings);
     return null;
   }
 
+  /// Deprecated: Prefer using getRoute
+  @deprecated
   RouteEntry getRouteEntryForDeepLink(String deepLink) {
     final thisDeepLinkPrefix = deepLinkPrefix;
-    final routeEntry = _getRouteEntryForDeepLink(deepLink);
-    if (routeEntry != null) return routeEntry;
+    // Looks for match in this Router screens
+    for (var screenEntry in screensMap.entries) {
+      final routeDef = screenEntry.key;
+      final screenBuilder = screenEntry.value;
+      final currentDeepLink = routeDef.deepLink;
+      if (currentDeepLink == null) continue;
+      final fullTemplate = deepLinkPrefix + currentDeepLink;
+      if (DeepLinkParser(template: fullTemplate).matches(deepLink)) {
+        return RouteEntry(
+          RouteDef(routeDef.routeName, deepLink: fullTemplate),
+          _wrapScreenBuilder(screenBuilder),
+        );
+      }
+    }
+    // If not found, iterates on the grouped routers
     for (final router in routers) {
       final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
       final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
@@ -107,14 +120,6 @@ abstract class NuRouter {
       }
     }
     return null;
-  }
-
-  String getScreenNameFromDeepLink(Uri url) {
-    return getRouteEntryForDeepLink(deepLinkString(url))?.key?.routeName;
-  }
-
-  bool canOpenDeepLink(Uri url) {
-    return getRouteEntryForDeepLink(deepLinkString(url)) != null;
   }
 
   Route<T> getRoute<T>(
@@ -141,12 +146,16 @@ abstract class NuRouter {
         .toRoute(settings);
   }
 
+  bool canOpenDeepLink(Uri url) {
+    return getRouteEntryForDeepLink(url.toString()) != null;
+  }
+
   /// Deprecated: Prefer using [NuvigatorState.open]
   @deprecated
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
     if (this == nuvigator.rootRouter) {
-      final routeEntry = getRouteEntryForDeepLink(deepLinkString(url));
+      final routeEntry = getRouteEntryForDeepLink(url.toString());
 
       if (routeEntry == null) {
         if (onDeepLinkNotFound != null) {
@@ -179,23 +188,6 @@ abstract class NuRouter {
     final screenBuilder = screensMap[RouteDef(settings.name)];
     if (screenBuilder == null) return null;
     return screenBuilder(settings).wrapWith(screensWrapper);
-  }
-
-  RouteEntry _getRouteEntryForDeepLink(String deepLink) {
-    for (var screenEntry in screensMap.entries) {
-      final routeDef = screenEntry.key;
-      final screenBuilder = screenEntry.value;
-      final currentDeepLink = routeDef.deepLink;
-      if (currentDeepLink == null) continue;
-      final fullTemplate = deepLinkPrefix + currentDeepLink;
-      if (DeepLinkParser(template: fullTemplate).matches(deepLink)) {
-        return RouteEntry(
-          RouteDef(routeDef.routeName, deepLink: fullTemplate),
-          _wrapScreenBuilder(screenBuilder),
-        );
-      }
-    }
-    return null;
   }
 
   // When building a native route we assume we already the first route in the stack
