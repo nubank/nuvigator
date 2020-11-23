@@ -33,7 +33,7 @@ class FriendRequestsArgs {
       };
   static FriendRequestsArgs of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
-    final nuvigator = NuvigatorInner.of(context);
+    final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == SamplesRoutes.friendRequests) {
       final args = routeSettings?.arguments;
       if (args == null)

@@ -1,3 +1,4 @@
+import 'package:example/samples/module_arguments.dart';
 import 'package:example/samples/modules/composer/module.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -34,10 +35,7 @@ class HomeRoute extends NuRoute {
   }
 }
 
-class FriendRequestArgs {
-  int numberOfRequests;
-}
-
+@ModuleArguments()
 class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
@@ -53,7 +51,7 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
   Widget build(BuildContext context, NuRouteMatch<FriendRequestArgs> match) {
     return ChangeNotifierProvider.value(
-      value: FriendRequestBloc(10),
+      value: FriendRequestBloc(match.args.numberOfRequests),
       child: Nuvigator(
         module: FriendRequestModule(),
         screenType: materialScreenType,
@@ -62,8 +60,7 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   }
 
   @override
-  FriendRequestArgs parseParameters(Map<String, dynamic> map) =>
-      _$parseParameters(map);
+  FriendRequestArgs parseParameters(Map<String, dynamic> map) => null;
 }
 
 // MainAppModuleRouter

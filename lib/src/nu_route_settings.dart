@@ -1,28 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/src/deeplink.dart';
 
-class NuRouteSettings<A extends Object> extends RouteSettings {
+class NuRouteSettings extends RouteSettings {
   const NuRouteSettings({
     @required String name,
-    @required this.pathTemplate,
-    @required this.scheme,
-    this.extraParams = const <String, dynamic>{},
-    this.queryParams = const <String, dynamic>{},
-    this.pathParams = const <String, dynamic>{},
-  }) : super(name: name);
+    this.deepLink,
+    this.pathTemplate,
+    this.scheme,
+    Map<String, dynamic> arguments = const <String, dynamic>{},
+  }) : super(name: name, arguments: arguments);
 
   final String pathTemplate;
   final String scheme;
-  final Map<String, dynamic> queryParams;
-  final Map<String, dynamic> pathParams;
-  final Map<String, dynamic> extraParams;
+  final String deepLink;
+
+  Map<String, dynamic> get queryParams => _parser.getPathParams(name);
+
+  Map<String, dynamic> get pathParams => _parser.getPathParams(name);
+
+  DeepLinkParser get _parser => DeepLinkParser(pathTemplate);
 
   Map<String, dynamic> get rawParams {
-    return <String, dynamic>{...queryParams, ...pathParams, ...extraParams};
+    return <String, dynamic>{
+      ...queryParams,
+      ...pathParams,
+      // ignore: avoid_as
+      ...arguments as Map<String, dynamic>
+    };
   }
-
-  @override
-  A get arguments => null;
 
   @override
   String toString() =>
