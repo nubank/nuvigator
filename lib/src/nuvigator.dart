@@ -287,15 +287,10 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     }
   }
 
-  /// Prefer using [Nuvigator.open]
+  /// Prefer using [NuvigatorState.open]
   @deprecated
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    final hasOpen = router.openDeepLink<R>(deepLink, arguments, false);
-    if (hasOpen != null) {
-      return hasOpen;
-    } else {
-      return parent.openDeepLink(deepLink, arguments);
-    }
+    return rootRouter.openDeepLink<R>(deepLink, arguments, false);
   }
 
   Future<R> open<R>(String deepLink, {Map<String, dynamic> parameters}) {

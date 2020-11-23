@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/src/deeplink.dart';
 
 /// [name] will be the full DeepLink String
 class NuRouteSettings<A extends Object> extends RouteSettings {
