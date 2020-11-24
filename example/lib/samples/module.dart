@@ -1,4 +1,3 @@
-import 'package:example/samples/modules/composer/module.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
@@ -86,11 +85,6 @@ class MainAppModule extends NuModule {
   List<NuRoute> get registerRoutes => [
         HomeRoute(),
         FriendRequestRoute(),
-      ];
-
-  @override
-  List<NuModule> get registerModules => [
-        ComposerModule(),
       ];
 
   @override

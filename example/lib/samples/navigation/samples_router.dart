@@ -1,7 +1,6 @@
 import 'package:example/samples/modules/composer/navigation/composer_routes.dart';
 import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
 import 'package:example/samples/modules/friend_request/module.dart';
-import 'package:example/samples/modules/friend_request/navigation/friend_request_router.dart';
 import 'package:example/samples/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
