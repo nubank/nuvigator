@@ -111,7 +111,9 @@ abstract class NuModule {
   ScreenRoute _getScreenRoute(String deepLink,
       {Map<String, dynamic> parameters}) {
     for (final route in routes) {
-      return route._getScreenRoute(deepLink, extraParameters: parameters);
+      final screenRoute =
+          route._getScreenRoute(deepLink, extraParameters: parameters);
+      if (screenRoute != null) return screenRoute;
     }
     // TODO: Evaluate the need for subModules
     // for (final subModule in subModules) {
@@ -161,7 +163,7 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
     return module
         ._getScreenRoute(deepLink,
             parameters: parameters ?? <String, dynamic>{})
-        .fallbackScreenType(fallbackScreenType)
+        ?.fallbackScreenType(fallbackScreenType)
         ?.toRoute();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:example/samples/modules/composer/navigation/composer_routes.dart';
 import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
+import 'package:example/samples/modules/friend_request/module.dart';
 import 'package:example/samples/modules/friend_request/navigation/friend_request_router.dart';
 import 'package:example/samples/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,9 @@ class SamplesRouter extends NuRouter {
   ScreenRoute<String> friendRequests({@required int numberOfRequests}) =>
       ScreenRoute(
         builder: Nuvigator(
-          router: FriendRequestRouter(),
-          initialRoute: FriendRequestRoutes.listRequests,
+          module: FriendRequestModule(),
+          // router: FriendRequestRouter(),
+          // initialRoute: FriendRequestRoutes.listRequests,
           screenType: materialScreenType,
         ),
         screenType: materialScreenType,
