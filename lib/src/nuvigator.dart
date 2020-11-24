@@ -55,8 +55,8 @@ class NuvigatorStateTracker extends NavigatorObserver {
   }
 }
 
-class NuvigatorInner<T extends NuRouter> extends Navigator {
-  NuvigatorInner({
+class _NuvigatorInner<T extends NuRouter> extends Navigator {
+  _NuvigatorInner({
     @required this.router,
     String initialRoute,
     String initialDeepLink,
@@ -135,7 +135,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
       Nuvigator.of(context, rootNuvigator: true) ?? this;
 
   @override
-  NuvigatorInner get widget => super.widget;
+  _NuvigatorInner get widget => super.widget;
 
   List<NuvigatorState> nestedNuvigators = [];
 
@@ -168,7 +168,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   }
 
   @override
-  void didUpdateWidget(NuvigatorInner oldWidget) {
+  void didUpdateWidget(_NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
       assert(widget.router.nuvigator == null);
       widget.router.nuvigator = this;
@@ -293,6 +293,9 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     return rootRouter.openDeepLink<R>(deepLink, arguments, false);
   }
 
+  /// Open the requested deepLink, if the current Nuvigator is not able to handle
+  /// it, and not [NuRouter.onDeepLinkNotFound] is provided, then we try to open the
+  /// deepLink in the parent Nuvigator.
   Future<R> open<R>(String deepLink, {Map<String, dynamic> parameters}) {
     final route = router.getRoute<R>(
       deepLink,
@@ -301,10 +304,14 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     );
     if (route != null) {
       return push(route);
-    } else if (!isRoot) {
+    } else if (router.onDeepLinkNotFound != null) {
+      return router.onDeepLinkNotFound(
+          router, Uri.parse(deepLink), false, parameters);
+    } else if (isNested) {
       return parent.open(deepLink, parameters: parameters);
     } else {
-      return null; // TODO
+      throw FlutterError(
+          'DeepLink $deepLink was not found, and no `onDeepLinkNotFound` was specified.');
     }
   }
 
@@ -350,6 +357,12 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
   }) : assert((module != null) != (router != null));
+
+  factory Nuvigator.module({NuModule module}) {
+    return Nuvigator(
+      module: module,
+    );
+  }
 
   final T router;
   final NuModule module;
@@ -418,36 +431,45 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     return this;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (module != null) {
-      return NuModuleLoader(
-        module: module,
-        builder: (moduleRouter) => NuvigatorInner(
-          router: moduleRouter,
-          debug: debug,
-          inheritableObservers: inheritableObservers,
-          observers: observers,
-          initialDeepLink: moduleRouter.module.initialRoute ?? initialDeepLink,
-          screenType: screenType,
-          key: key,
-          wrapper: wrapper,
-          shouldPopRoot: shouldPopRoot,
-        ),
-      );
-    } else {
-      return NuvigatorInner<T>(
-        router: router,
+  Widget _buildModule(BuildContext context) {
+    return NuModuleLoader(
+      module: module,
+      builder: (moduleRouter) => _NuvigatorInner(
+        router: moduleRouter,
         debug: debug,
         inheritableObservers: inheritableObservers,
         observers: observers,
-        initialDeepLink: initialDeepLink,
-        initialRoute: initialRoute,
-        screenType: screenType,
+        initialDeepLink: moduleRouter.module.initialRoute ?? initialDeepLink,
+        screenType: module.screenType ?? screenType,
         key: key,
-        wrapper: wrapper,
+        initialArguments: initialArguments,
+        wrapper: module.routeWrapper ?? wrapper,
         shouldPopRoot: shouldPopRoot,
-      );
+      ),
+    );
+  }
+
+  Widget _buildRouter(BuildContext context) {
+    return _NuvigatorInner<T>(
+      router: router,
+      debug: debug,
+      inheritableObservers: inheritableObservers,
+      observers: observers,
+      initialDeepLink: initialDeepLink,
+      initialRoute: initialRoute,
+      screenType: screenType,
+      key: key,
+      wrapper: wrapper,
+      shouldPopRoot: shouldPopRoot,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (module != null) {
+      return _buildModule(context);
+    } else {
+      return _buildRouter(context);
     }
   }
 }

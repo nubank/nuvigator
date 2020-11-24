@@ -37,50 +37,48 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
         argumentParser: parseParameters,
       );
 
-  NuRouteSettings<A> _getNuRouteSettings(
-    String deepLink, {
-    Map<String, dynamic> extraParameters,
-  }) {
-    if (canOpen(deepLink)) {
-      return _parser.toNuRouteSettings(deepLink, parameters: extraParameters);
-    } else {
-      return null;
-    }
-  }
-
   void _install(T module) {
     _module = module;
   }
 
-  ScreenRoute<R> _getScreenRoute(NuRouteSettings<A> settings) => ScreenRoute(
+  ScreenRoute<R> _getScreenRoute(
+    String deepLink, {
+    Map<String, dynamic> extraParameters,
+  }) {
+    if (canOpen(deepLink)) {
+      final settings =
+          _parser.toNuRouteSettings(deepLink, parameters: extraParameters);
+      return ScreenRoute(
         builder: (context) => build(context, settings),
         screenType: screenType,
         nuRouteSettings: settings,
       );
+    }
+    return null;
+  }
 }
 
 abstract class NuModule {
-  NuModule() {
-    _subModules = registerModules;
-    _routes = registerRoutes;
-    for (final route in _routes) {
-      route._install(this);
-    }
-  }
-
   List<NuRoute> _routes;
-  List<NuModule> _subModules;
+
+  // List<NuModule> _subModules;
   NuModuleRouter _router;
 
-  String get initialRoute => null;
+  String get initialRoute;
 
   List<NuRoute> get registerRoutes;
 
-  List<NuModule> get registerModules => [];
+  // List<NuModule> get registerModules => [];
+
+  /// ScreenType to be used by the [NuRoute] registered in this Module
+  /// ScreenType defined on the [NuRoute] takes precedence over the default one
+  /// declared in the [NuModule]
+  ScreenType get screenType => null;
 
   List<NuRoute> get routes => _routes;
 
-  List<NuModule> get subModules => _subModules;
+  // TODO: Evaluate the need for subModules
+  // List<NuModule> get subModules => _subModules;
 
   NuvigatorState get nuvigator => _router.nuvigator;
 
@@ -97,45 +95,36 @@ abstract class NuModule {
     return child;
   }
 
-  void _syncInit(NuModuleRouter router) {
-    _router = router;
-    for (final subModule in _subModules) {
-      subModule._syncInit(router);
-    }
-  }
-
   Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
+    _router = router;
     await init(context);
+    _routes = registerRoutes;
     await Future.wait(_routes.map((route) async {
+      route._install(this);
       await route.init(context);
-    }));
-    await Future.wait(_subModules.map((module) async {
-      return module._initModule(context, router);
-    }));
+    }).toList());
+    // await Future.wait(_subModules.map((module) async {
+    //   return module._initModule(context, router);
+    // }));
   }
 
   ScreenRoute _getScreenRoute(String deepLink,
       {Map<String, dynamic> parameters}) {
     for (final route in routes) {
-      final nuRouteSettings =
-          route._getNuRouteSettings(deepLink, extraParameters: parameters);
-      if (nuRouteSettings != null) {
-        return route._getScreenRoute(nuRouteSettings)?.wrapWith(routeWrapper);
-      }
+      return route._getScreenRoute(deepLink, extraParameters: parameters);
     }
-    for (final subModule in subModules) {
-      return subModule
-          ._getScreenRoute(deepLink, parameters: parameters)
-          ?.wrapWith(routeWrapper);
-    }
+    // TODO: Evaluate the need for subModules
+    // for (final subModule in subModules) {
+    //   return subModule
+    //       ._getScreenRoute(deepLink, parameters: parameters)
+    //       ?.wrapWith(routeWrapper);
+    // }
     return null;
   }
 }
 
 class NuModuleRouter<T extends NuModule> extends NuRouter {
-  NuModuleRouter(this.module) {
-    module._syncInit(this);
-  }
+  NuModuleRouter(this.module);
 
   final T module;
 
