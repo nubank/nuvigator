@@ -35,7 +35,7 @@ class HomeRoute extends NuRoute {
   }
 }
 
-@ModuleArguments()
+@NuModuleParser()
 class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';

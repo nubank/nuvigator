@@ -1,3 +1,3 @@
-class ModuleArguments {
-  const ModuleArguments();
+class NuModuleParser {
+  const NuModuleParser();
 }
