@@ -127,10 +127,10 @@ extension SamplesRouterScreensAndRouters on SamplesRouter {
       ];
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
     return {
-      RouteDef(SamplesRoutes.home): (RouteSettings settings) {
+      RouteDef(SamplesRoutes.home, deepLink: 'home'): (RouteSettings settings) {
         return home();
       },
-      RouteDef(SamplesRoutes.friendRequests, deepLink: '/friendRequests'):
+      RouteDef(SamplesRoutes.friendRequests, deepLink: 'friend-requests'):
           (RouteSettings settings) {
         final args = FriendRequestsArgs.parse(settings.arguments);
         return friendRequests(numberOfRequests: args.numberOfRequests);
