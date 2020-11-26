@@ -38,6 +38,7 @@ class ScreenRoute<T extends Object> {
   final NuRouteSettings nuRouteSettings;
   final String debugKey;
 
+  /// Creates a copy of the [ScreenRoute] with the new screen type
   ScreenRoute<T> fallbackScreenType(ScreenType fallbackScreenType) {
     return ScreenRoute<T>(
       builder: builder,
@@ -47,19 +48,8 @@ class ScreenRoute<T extends Object> {
     );
   }
 
-  ScreenRoute<T> wrapWith(WrapperFn wrapper) {
-    if (wrapper == null) {
-      return this;
-    }
-    return ScreenRoute<T>(
-      builder: builder,
-      debugKey: debugKey,
-      screenType: screenType,
-      nuRouteSettings: nuRouteSettings,
-      wrapper: _getComposedWrapper(wrapper),
-    );
-  }
-
+  /// Creates a copy of the [ScreenRoute] replacing the old properties with the
+  /// new provided. For the non properties provided the old will be used.
   ScreenRoute<T> copyWith({
     WidgetBuilder builder,
     ScreenType screenType,
@@ -75,24 +65,37 @@ class ScreenRoute<T extends Object> {
     );
   }
 
+  ///
+  ScreenRoute<T> wrapWith(WrapperFn wrapper) {
+    if (wrapper == null) {
+      return this;
+    }
+    return ScreenRoute<T>(
+      builder: builder,
+      debugKey: debugKey,
+      screenType: screenType,
+      nuRouteSettings: nuRouteSettings,
+      wrapper: _getComposedWrapper(wrapper),
+    );
+  }
+
+  WrapperFn _getComposedWrapper(WrapperFn wrapper) {
+    if (wrapper == null) return this.wrapper;
+    return (BuildContext context, Widget child) => wrapper(
+          context,
+          Builder(
+            builder: (innerContext) => this.wrapper != null
+                ? this.wrapper(innerContext, child)
+                : child,
+          ),
+        );
+  }
+
   Route<T> toRoute([RouteSettings settings]) {
     return _toRouteType(
       (BuildContext context) => _buildScreen(context),
       settings ?? nuRouteSettings,
     );
-  }
-
-  WrapperFn _getComposedWrapper(WrapperFn wrapper) {
-    if (wrapper != null) {
-      return (BuildContext c, Widget child) => wrapper(
-            c,
-            Builder(
-              builder: (context) =>
-                  this.wrapper != null ? this.wrapper(context, child) : child,
-            ),
-          );
-    }
-    return this.wrapper;
   }
 
   Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
@@ -101,10 +104,6 @@ class ScreenRoute<T extends Object> {
   Widget _buildScreen(BuildContext context) {
     if (wrapper == null) return builder(context);
     return wrapper(
-      context,
-      Builder(
-        builder: (innerContext) => builder(innerContext),
-      ),
-    );
+        context, Builder(builder: (innerContext) => builder(innerContext)));
   }
 }
