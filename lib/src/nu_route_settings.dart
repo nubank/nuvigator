@@ -39,9 +39,11 @@ class NuRouteSettings<A extends Object> extends RouteSettings {
   int get hashCode => hashList([name, rawParameters, pathTemplate]);
 
   @override
-  bool operator ==(Object other) =>
-      other is NuRouteSettings &&
-      other.pathTemplate == pathTemplate &&
-      other.name == name &&
-      other.rawParameters == rawParameters;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is NuRouteSettings &&
+        other.pathTemplate == pathTemplate &&
+        other.name == name &&
+        other.rawParameters == rawParameters;
+  }
 }
