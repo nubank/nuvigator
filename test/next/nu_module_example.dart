@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:nuvigator/next.dart';
 import 'package:nuvigator/src/next/v1/annotations.dart';
 
@@ -9,6 +10,25 @@ class FriendRequestArgs {
   double precision;
   String name;
   int age;
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is FriendRequestArgs &&
+        o.numberOfRequests == numberOfRequests &&
+        o.precision == precision &&
+        o.name == name &&
+        o.age == age;
+  }
+
+  @override
+  int get hashCode {
+    return numberOfRequests.hashCode ^
+        precision.hashCode ^
+        name.hashCode ^
+        age.hashCode;
+  }
 }
 
 @NuModuleParser()
