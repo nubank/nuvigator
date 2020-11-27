@@ -21,6 +21,14 @@ class FriendRequestArgs {
         o.name == name &&
         o.age == age;
   }
+
+  @override
+  int get hashCode {
+    return numberOfRequests.hashCode ^
+        precision.hashCode ^
+        name.hashCode ^
+        age.hashCode;
+  }
 }
 
 @NuModuleParser()
