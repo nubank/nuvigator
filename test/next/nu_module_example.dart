@@ -21,14 +21,6 @@ class FriendRequestArgs {
         o.name == name &&
         o.age == age;
   }
-
-  @override
-  int get hashCode {
-    return numberOfRequests.hashCode ^
-        precision.hashCode ^
-        name.hashCode ^
-        age.hashCode;
-  }
 }
 
 @NuModuleParser()
@@ -46,7 +38,8 @@ class FriendRequestRouteExample
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<FriendRequestArgs> match) {
+  Widget build(
+      BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
     return Nuvigator(
       module: null,
       screenType: materialScreenType,

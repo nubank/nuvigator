@@ -1,5 +1,4 @@
 import 'package:example/samples/module_arguments.dart';
-import 'package:example/samples/modules/composer/module.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
@@ -25,7 +24,7 @@ class HomeRoute extends NuRoute {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<Object> match) {
+  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
     return HomeScreen();
   }
 
@@ -49,9 +48,10 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<FriendRequestArgs> match) {
+  Widget build(
+      BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
     return ChangeNotifierProvider.value(
-      value: FriendRequestBloc(match.args.numberOfRequests),
+      value: FriendRequestBloc(settings.args.numberOfRequests),
       child: Nuvigator(
         module: FriendRequestModule(),
         screenType: materialScreenType,
@@ -80,14 +80,9 @@ class MainAppModule extends NuModule {
   }
 
   @override
-  List<NuRoute> get createRoutes => [
+  List<NuRoute> get registerRoutes => [
         HomeRoute(),
         FriendRequestRoute(),
-      ];
-
-  @override
-  List<NuModule> get createModules => [
-        ComposerModule(),
       ];
 
   @override

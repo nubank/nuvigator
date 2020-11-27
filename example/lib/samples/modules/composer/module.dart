@@ -17,13 +17,13 @@ class ComposerTextRoute extends NuRoute<ComposerTextDelegate, void, String> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return TextComposerScreen(
-      initialText: match.parameters['initialText'],
+      initialText: settings.rawParameters['initialText'],
       submitText: (String text) => module.nuvigator.pop(text),
       toHelp: () {
         module.handleCompose();
-        module.nuvigator.openDeepLink<void>(Uri.parse('composer/help'));
+        module.nuvigator.open<void>('composer/help');
       },
     );
   }
@@ -42,7 +42,7 @@ class ComposerHelpRoute extends NuRoute<ComposerHelpDelegate, void, void> {
   ScreenType get screenType => cupertinoScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return HelpScreen();
   }
 }
@@ -57,7 +57,7 @@ class ComposerModule extends NuModule implements ComposerModulesDelegate {
   String get initialRoute => null;
 
   @override
-  List<NuRoute> get createRoutes => [
+  List<NuRoute> get registerRoutes => [
         ComposerHelpRoute(),
         ComposerTextRoute(),
       ];

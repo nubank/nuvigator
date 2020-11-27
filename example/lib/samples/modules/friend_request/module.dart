@@ -12,10 +12,9 @@ class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return ListRequestScreen(
-      toSuccess: () => module.nuvigator
-          .openDeepLink<void>(Uri.parse('friend-requests/success')),
+      toSuccess: () => module.nuvigator.open<void>('friend-requests/success'),
     );
   }
 }
@@ -28,11 +27,10 @@ class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
-  Widget build(BuildContext context, NuRouteMatch<void> match) {
+  Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return SuccessScreen(
       closeFlow: () => module.nuvigator.closeFlow(),
-      toComposeText: () =>
-          module.nuvigator.openDeepLink<void>(Uri.parse('composer/text')),
+      toComposeText: () => module.nuvigator.open<void>('composer/text'),
     );
   }
 }
@@ -44,7 +42,7 @@ class FriendRequestModule extends NuModule {
   String get initialRoute => 'friend-requests/list';
 
   @override
-  List<NuRoute> get createRoutes => [
+  List<NuRoute> get registerRoutes => [
         ListFriendRequestRoute(),
         FriendRequestSuccessRoute(),
       ];

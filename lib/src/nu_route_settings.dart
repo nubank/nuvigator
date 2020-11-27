@@ -2,45 +2,49 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/src/deeplink.dart';
 
-class NuRouteSettings extends RouteSettings {
+/// [name] will be the full DeepLink String
+class NuRouteSettings<A extends Object> extends RouteSettings {
   const NuRouteSettings({
     @required String name,
-    this.deepLink,
-    this.pathTemplate,
     this.scheme,
-    Map<String, dynamic> arguments = const <String, dynamic>{},
-  }) : super(name: name, arguments: arguments);
+    this.pathTemplate,
+    this.queryParameters = const <String, dynamic>{},
+    this.pathParameters = const <String, dynamic>{},
+    this.extraParameter = const <String, dynamic>{},
+    this.args,
+  }) : super(name: name);
 
   final String pathTemplate;
   final String scheme;
-  final String deepLink;
+  final A args;
+  final Map<String, dynamic> queryParameters;
+  final Map<String, dynamic> pathParameters;
+  final Map<String, dynamic> extraParameter;
 
-  Map<String, dynamic> get queryParams => _parser.getPathParams(name);
+  @override
+  Map<String, dynamic> get arguments => rawParameters;
 
-  Map<String, dynamic> get pathParams => _parser.getPathParams(name);
-
-  DeepLinkParser get _parser => DeepLinkParser(pathTemplate);
-
-  Map<String, dynamic> get rawParams {
+  Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
-      ...queryParams,
-      ...pathParams,
-      // ignore: avoid_as
-      ...arguments as Map<String, dynamic>
+      ...queryParameters ?? const <String, dynamic>{},
+      ...pathParameters ?? const <String, dynamic>{},
+      ...extraParameter ?? const <String, dynamic>{},
     };
   }
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParams)';
+      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParameters)';
 
   @override
-  int get hashCode => hashList([name, rawParams, pathTemplate]);
+  int get hashCode => hashList([name, rawParameters, pathTemplate]);
 
   @override
-  bool operator ==(Object other) =>
-      other is NuRouteSettings &&
-      other.pathTemplate == pathTemplate &&
-      other.name == name &&
-      other.rawParams == rawParams;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is NuRouteSettings &&
+        other.pathTemplate == pathTemplate &&
+        other.name == name &&
+        other.rawParameters == rawParameters;
+  }
 }
