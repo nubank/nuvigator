@@ -36,7 +36,6 @@ class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
 }
 
 // FriendRequestsModuleRouter
-
 class FriendRequestModule extends NuModule {
   @override
   String get initialRoute => 'friend-requests/list';

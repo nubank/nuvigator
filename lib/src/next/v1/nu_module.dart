@@ -7,6 +7,13 @@ import '../../deeplink.dart';
 import '../../nurouter.dart';
 import '../../screen_route.dart';
 
+typedef NuWidgetRouteBuilder = Widget Function(
+    BuildContext context, NuRouteSettings<dynamic> settings);
+
+typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
+
+typedef NuRouteInitializer = Future<bool> Function(BuildContext context);
+
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   T _module;
 
@@ -58,6 +65,45 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   }
 }
 
+class NuRouteBuilder<A extends Object, R extends Object>
+    extends NuRoute<NuModule, A, R> {
+  NuRouteBuilder({
+    @required String path,
+    @required this.builder,
+    this.initializer,
+    this.parser,
+    ScreenType screenType,
+    bool prefix = false,
+  })  : _path = path,
+        _prefix = prefix,
+        _screenType = screenType;
+
+  final String _path;
+  final NuRouteInitializer initializer;
+  final NuRouteParametersParser<A> parser;
+  final bool _prefix;
+  final ScreenType _screenType;
+  final NuWidgetRouteBuilder builder;
+
+  @override
+  A parseParameters(Map<String, dynamic> map) =>
+      parser != null ? parser(map) : null;
+
+  @override
+  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
+    return builder(context, settings);
+  }
+
+  @override
+  bool get prefix => _prefix;
+
+  @override
+  String get path => _path;
+
+  @override
+  ScreenType get screenType => _screenType;
+}
+
 abstract class NuModule {
   List<NuRoute> _routes;
 
@@ -96,10 +142,13 @@ abstract class NuModule {
   }
 
   Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
+    assert(_router == null);
     _router = router;
     await init(context);
     _routes = registerRoutes;
     await Future.wait(_routes.map((route) async {
+      // Route should not be installed to another module
+      assert(route._module == null);
       route._install(this);
       await route.init(context);
     }).toList());
