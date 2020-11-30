@@ -12,7 +12,7 @@ typedef NuWidgetRouteBuilder = Widget Function(
 
 typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
 
-typedef NuRouteInitializer = Future<bool> Function(BuildContext context);
+typedef NuInitFunction = Future<bool> Function(BuildContext context);
 
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   T _module;
@@ -79,7 +79,7 @@ class NuRouteBuilder<A extends Object, R extends Object>
         _screenType = screenType;
 
   final String _path;
-  final NuRouteInitializer initializer;
+  final NuInitFunction initializer;
   final NuRouteParametersParser<A> parser;
   final bool _prefix;
   final ScreenType _screenType;
@@ -137,7 +137,7 @@ abstract class NuModule {
   NuvigatorState get nuvigator => _router.nuvigator;
 
   /// While the module is initializing this Widget is going to be displayed
-  Widget loadingWidget(BuildContext _) => Container();
+  Widget loadingWidget(BuildContext context) => Container();
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
@@ -179,6 +179,51 @@ abstract class NuModule {
     //       ?.wrapWith(routeWrapper);
     // }
     return null;
+  }
+}
+
+class NuModuleBuilder extends NuModule {
+  NuModuleBuilder({
+    @required String initialRoute,
+    @required List<NuRoute> routes,
+    ScreenType screenType,
+    WidgetBuilder loadingWidget,
+    NuInitFunction init,
+  })  : _initialRoute = initialRoute,
+        _registerRoutes = routes,
+        _screenType = screenType,
+        _loadingWidget = loadingWidget,
+        _init = init;
+
+  final String _initialRoute;
+  final List<NuRoute> _registerRoutes;
+  final ScreenType _screenType;
+  final WidgetBuilder _loadingWidget;
+  final NuInitFunction _init;
+
+  @override
+  String get initialRoute => _initialRoute;
+
+  @override
+  List<NuRoute> get registerRoutes => _registerRoutes;
+
+  @override
+  ScreenType get screenType => _screenType;
+
+  @override
+  Widget loadingWidget(BuildContext context) {
+    if (_loadingWidget != null) {
+      return _loadingWidget(context);
+    }
+    return Container();
+  }
+
+  @override
+  Future<void> init(BuildContext context) {
+    if (_init != null) {
+      return _init(context);
+    }
+    return super.init(context);
   }
 }
 
