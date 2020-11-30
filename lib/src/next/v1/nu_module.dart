@@ -8,7 +8,7 @@ import '../../nurouter.dart';
 import '../../screen_route.dart';
 
 typedef NuWidgetRouteBuilder = Widget Function(
-    BuildContext context, NuRouteSettings<dynamic> settings);
+    BuildContext context, NuRoute nuRoute, NuRouteSettings<dynamic> settings);
 
 typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
 
@@ -99,7 +99,7 @@ class NuRouteBuilder<A extends Object, R extends Object>
 
   @override
   Widget build(BuildContext context, NuRouteSettings<Object> settings) {
-    return builder(context, settings);
+    return builder(context, this, settings);
   }
 
   @override
