@@ -86,6 +86,14 @@ class NuRouteBuilder<A extends Object, R extends Object>
   final NuWidgetRouteBuilder builder;
 
   @override
+  Future<bool> init(BuildContext context) {
+    if (initializer != null) {
+      return initializer(context);
+    }
+    return super.init(context);
+  }
+
+  @override
   A parseParameters(Map<String, dynamic> map) =>
       parser != null ? parser(map) : null;
 
