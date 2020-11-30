@@ -10,6 +10,13 @@
 /// This sample shows how to create a parser using [NuModuleParser] annotation.
 ///
 /// ```dart
+/// class FriendRequestArgs {
+///  int numberOfRequests;
+///  double precision;
+///  String name;
+///  int age;
+///}
+///
 /// @NuModuleParser()
 /// class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
 ///   @override
