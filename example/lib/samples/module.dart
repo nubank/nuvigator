@@ -29,9 +29,7 @@ class HomeRoute extends NuRoute {
   }
 
   @override
-  Object parseParameters(Map<String, dynamic> map) {
-    return null;
-  }
+  ParamsParser<Object> get paramsParser => null;
 }
 
 @NuModuleParser()
@@ -60,8 +58,7 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   }
 
   @override
-  FriendRequestArgs parseParameters(Map<String, dynamic> map) =>
-      _$parseParameters(map);
+  ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
 }
 
 // MainAppModuleRouter
