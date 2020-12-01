@@ -33,6 +33,18 @@ void main() {
       expect(false, parser.matches('other-route/something'));
       expect(false, parser.matches('my-route/something/nope'));
       expect(false, parser.matches('my-route/nope/something'));
+      final prefixParser = DeepLinkParser(
+        template: 'my-route/:myArgument',
+        prefix: true,
+      );
+      expect(true, prefixParser.matches('my-route/something'));
+      expect(true,
+          prefixParser.matches('nuapp://my-route/some?route=http://bla2'));
+      expect(true, prefixParser.matches('my-route/something?a=parameter'));
+      expect(false, prefixParser.matches('other-route/something'));
+      expect(true, prefixParser.matches('my-route/something/nope'));
+      expect(true, prefixParser.matches('my-route/something/nope/:otherParam'));
+      expect(false, prefixParser.matches('my-route/nope/something'));
     });
 
     test('extracting parameters from deepLink', () {

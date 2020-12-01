@@ -7,6 +7,13 @@ import '../../deeplink.dart';
 import '../../nurouter.dart';
 import '../../screen_route.dart';
 
+typedef NuWidgetRouteBuilder = Widget Function(
+    BuildContext context, NuRoute nuRoute, NuRouteSettings<dynamic> settings);
+
+typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
+
+typedef NuInitFunction = Future<bool> Function(BuildContext context);
+
 typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
 
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
@@ -60,6 +67,53 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   }
 }
 
+class NuRouteBuilder<A extends Object, R extends Object>
+    extends NuRoute<NuModule, A, R> {
+  NuRouteBuilder({
+    @required String path,
+    @required this.builder,
+    this.initializer,
+    this.parser,
+    ScreenType screenType,
+    bool prefix = false,
+  })  : _path = path,
+        _prefix = prefix,
+        _screenType = screenType;
+
+  final String _path;
+  final NuInitFunction initializer;
+  final NuRouteParametersParser<A> parser;
+  final bool _prefix;
+  final ScreenType _screenType;
+  final NuWidgetRouteBuilder builder;
+
+  @override
+  Future<bool> init(BuildContext context) {
+    if (initializer != null) {
+      return initializer(context);
+    }
+    return super.init(context);
+  }
+
+  @override
+  A parseParameters(Map<String, dynamic> map) =>
+      parser != null ? parser(map) : null;
+
+  @override
+  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
+    return builder(context, this, settings);
+  }
+
+  @override
+  bool get prefix => _prefix;
+
+  @override
+  String get path => _path;
+
+  @override
+  ScreenType get screenType => _screenType;
+}
+
 abstract class NuModule {
   List<NuRoute> _routes;
 
@@ -85,7 +139,7 @@ abstract class NuModule {
   NuvigatorState get nuvigator => _router.nuvigator;
 
   /// While the module is initializing this Widget is going to be displayed
-  Widget loadingWidget(BuildContext _) => Container();
+  Widget loadingWidget(BuildContext context) => Container();
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
@@ -98,10 +152,13 @@ abstract class NuModule {
   }
 
   Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
+    assert(_router == null);
     _router = router;
     await init(context);
     _routes = registerRoutes;
     await Future.wait(_routes.map((route) async {
+      // Route should not be installed to another module
+      assert(route._module == null);
       route._install(this);
       await route.init(context);
     }).toList());
@@ -124,6 +181,51 @@ abstract class NuModule {
     //       ?.wrapWith(routeWrapper);
     // }
     return null;
+  }
+}
+
+class NuModuleBuilder extends NuModule {
+  NuModuleBuilder({
+    @required String initialRoute,
+    @required List<NuRoute> routes,
+    ScreenType screenType,
+    WidgetBuilder loadingWidget,
+    NuInitFunction init,
+  })  : _initialRoute = initialRoute,
+        _registerRoutes = routes,
+        _screenType = screenType,
+        _loadingWidget = loadingWidget,
+        _init = init;
+
+  final String _initialRoute;
+  final List<NuRoute> _registerRoutes;
+  final ScreenType _screenType;
+  final WidgetBuilder _loadingWidget;
+  final NuInitFunction _init;
+
+  @override
+  String get initialRoute => _initialRoute;
+
+  @override
+  List<NuRoute> get registerRoutes => _registerRoutes;
+
+  @override
+  ScreenType get screenType => _screenType;
+
+  @override
+  Widget loadingWidget(BuildContext context) {
+    if (_loadingWidget != null) {
+      return _loadingWidget(context);
+    }
+    return Container();
+  }
+
+  @override
+  Future<void> init(BuildContext context) {
+    if (_init != null) {
+      return _init(context);
+    }
+    return super.init(context);
   }
 }
 
