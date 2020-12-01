@@ -96,7 +96,9 @@ class NuRouteBuilder<A extends Object, R extends Object>
   }
 
   @override
-  A parseParameters(Map<String, dynamic> map) =>
+  ParamsParser<A> get paramsParser => _parseParameters;
+
+  A _parseParameters(Map<String, dynamic> map) =>
       parser != null ? parser(map) : null;
 
   @override
@@ -167,7 +169,7 @@ abstract class NuModule {
     // }));
   }
 
-  ScreenRoute _getScreenRoute(String deepLink,
+  ScreenRoute<R> _getScreenRoute<R>(String deepLink,
       {Map<String, dynamic> parameters}) {
     for (final route in routes) {
       final screenRoute =
@@ -265,7 +267,7 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
     ScreenType fallbackScreenType,
   }) {
     return module
-        ._getScreenRoute(deepLink,
+        ._getScreenRoute<R>(deepLink,
             parameters: parameters ?? <String, dynamic>{})
         ?.fallbackScreenType(fallbackScreenType)
         ?.toRoute();
@@ -283,17 +285,32 @@ class NuModuleLoader extends StatefulWidget {
 }
 
 class _NuModuleLoaderState extends State<NuModuleLoader> {
-  bool loading = true;
+  bool loading;
   NuModuleRouter router;
 
-  @override
-  void initState() {
+  void _initModule() {
+    setState(() {
+      loading = true;
+    });
     router = NuModuleRouter(widget.module);
     router._initModule(context).then((value) {
       setState(() {
         loading = false;
       });
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant NuModuleLoader oldWidget) {
+    if (oldWidget.module != widget.module) {
+      _initModule();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    _initModule();
     super.initState();
   }
 

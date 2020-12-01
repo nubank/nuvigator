@@ -31,7 +31,7 @@ class ListRequestScreen extends StatelessWidget {
           if (index == 0) {
             return ListTile(
               title: Text(
-                'Received numberOfRequests: ${bloc.numberOfRequests} from the route',
+                'Received numberOfRequests: ${bloc.numberOfRequests} from deepLink',
                 style: bodyStyle,
               ),
             );
