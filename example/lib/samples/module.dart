@@ -1,3 +1,4 @@
+import 'package:example/samples/module_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
@@ -28,15 +29,10 @@ class HomeRoute extends NuRoute {
   }
 
   @override
-  Object parseParameters(Map<String, dynamic> map) {
-    return null;
-  }
+  ParamsParser<Object> get paramsParser => null;
 }
 
-class FriendRequestArgs {
-  int numberOfRequests;
-}
-
+@NuModuleParser()
 class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
@@ -62,8 +58,7 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
   }
 
   @override
-  FriendRequestArgs parseParameters(Map<String, dynamic> map) =>
-      _$parseParameters(map);
+  ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
 }
 
 // MainAppModuleRouter

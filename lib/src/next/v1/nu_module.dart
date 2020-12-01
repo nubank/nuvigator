@@ -14,6 +14,8 @@ typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
 
 typedef NuInitFunction = Future<bool> Function(BuildContext context);
 
+typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
+
 abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   T _module;
 
@@ -23,7 +25,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 
   bool canOpen(String deepLink) => _parser.matches(deepLink);
 
-  A parseParameters(Map<String, dynamic> map) => null;
+  ParamsParser<A> get paramsParser => null;
 
   Future<bool> init(BuildContext context) {
     return SynchronousFuture(true);
@@ -41,7 +43,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
   DeepLinkParser get _parser => DeepLinkParser<A>(
         template: path,
         prefix: prefix,
-        argumentParser: parseParameters,
+        argumentParser: paramsParser,
       );
 
   void _install(T module) {

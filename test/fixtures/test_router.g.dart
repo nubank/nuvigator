@@ -76,9 +76,8 @@ class TestArgsArgs {
     final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == TestRoutes.testArgs) {
       final args = routeSettings?.arguments;
-      if (args == null) {
+      if (args == null)
         throw FlutterError('TestArgsArgs requires Route arguments');
-      }
       if (args is TestArgsArgs) return args;
       if (args is Map<String, Object>) return parse(args);
     } else if (nuvigator != null) {

@@ -1,5 +1,7 @@
 library nuvigator;
 
+export 'src/helpers.dart';
+export 'src/next/v1/annotations.dart';
 export 'src/next/v1/nu_module.dart';
 export 'src/nu_route_settings.dart';
 export 'src/nuvigator.dart';
