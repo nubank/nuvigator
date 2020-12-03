@@ -331,7 +331,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
 @immutable
 class Nuvigator<T extends INuRouter> extends StatelessWidget {
-  const Nuvigator({
+  Nuvigator({
     @required this.router,
     this.initialRoute,
     this.initialDeepLink,
@@ -343,7 +343,15 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
-  }) : assert(router != null);
+  })  : assert(router != null),
+        assert(() {
+          if (router is NuModuleRouter) {
+            return initialDeepLink == null &&
+                initialDeepLink == null &&
+                wrapper == null;
+          }
+          return true;
+        }());
 
   /// Creates a [Nuvigator] from a list of [NuRoute]
   static Nuvigator<NuRouterBuilder> routes({
@@ -371,7 +379,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   // ignore: overridden_fields
   final Key key;
   final String initialRoute;
-  final String initialDeepLink;
+  final Uri initialDeepLink;
   final Map<String, Object> initialArguments;
 
   static NuvigatorState ofRouter<T extends INuRouter>(BuildContext context) {
@@ -417,11 +425,11 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
         debug: debug,
         inheritableObservers: inheritableObservers,
         observers: observers,
-        initialDeepLink: moduleRouter.initialRoute ?? initialDeepLink,
-        screenType: moduleRouter.screenType ?? screenType,
+        initialDeepLink: moduleRouter.initialRoute,
+        screenType: moduleRouter.screenType,
         key: key,
         initialArguments: initialArguments,
-        wrapper: moduleRouter.routeWrapper ?? wrapper,
+        wrapper: moduleRouter.routeWrapper,
         shouldPopRoot: shouldPopRoot,
       ),
     );
@@ -433,7 +441,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       debug: debug,
       inheritableObservers: inheritableObservers,
       observers: observers,
-      initialDeepLink: initialDeepLink,
+      initialDeepLink: initialDeepLink.toString(),
       initialRoute: initialRoute,
       screenType: screenType,
       key: key,
