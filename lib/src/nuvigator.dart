@@ -271,7 +271,13 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// Prefer using [NuvigatorState.open]
   @deprecated
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return rootNuvigator.open<R>(deepLink.toString(), parameters: arguments);
+    if (rootRouter is NuRouter) {
+      // ignore: avoid_as
+      return (rootRouter as NuRouter)
+          .openDeepLink<R>(deepLink, arguments, false);
+    } else {
+      return rootNuvigator.open(deepLink.toString(), parameters: arguments);
+    }
   }
 
   /// Open the requested deepLink, if the current Nuvigator is not able to handle
