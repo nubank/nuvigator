@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-dev.0
+- [WIP] New Dynamic API
+
 ## 0.7.2
 - Fix problems caused by bump in `analyzer` dependency
 
