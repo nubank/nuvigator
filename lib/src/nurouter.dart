@@ -29,7 +29,7 @@ abstract class INuRouter {
 
   void dispose();
 
-  HandleDeepLinkFn get onDeepLinkNotFound;
+  HandleDeepLinkFn onDeepLinkNotFound;
 
   @deprecated
   T getRouter<T extends INuRouter>();
@@ -63,7 +63,7 @@ abstract class NuRouter implements INuRouter {
   }
 
   @override
-  HandleDeepLinkFn get onDeepLinkNotFound => null;
+  HandleDeepLinkFn onDeepLinkNotFound;
 
   NuvigatorState _nuvigator;
 

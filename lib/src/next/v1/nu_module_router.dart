@@ -154,7 +154,7 @@ abstract class NuModuleRouter implements INuRouter {
   }
 
   @override
-  HandleDeepLinkFn get onDeepLinkNotFound => null;
+  HandleDeepLinkFn onDeepLinkNotFound;
 
   /// InitialRoute that is going to be rendered
   String get initialRoute;
