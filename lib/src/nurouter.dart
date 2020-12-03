@@ -5,7 +5,7 @@ import 'package:nuvigator/src/deeplink.dart';
 import '../nuvigator.dart';
 import 'screen_route.dart';
 
-typedef ScreenRouteBuilder = ScreenRoute Function(RouteSettings settings);
+typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(RouteSettings settings);
 
 typedef HandleDeepLinkFn = Future<dynamic> Function(NuRouter router, Uri uri,
     [bool isFromNative, dynamic args]);
@@ -165,6 +165,7 @@ abstract class NuRouter {
     return getRouteEntryForDeepLink(url.toString()) != null;
   }
 
+  /// From a deepLink (plus some option parameters) get a Route.
   Route<T> getRoute<T>(
     String deepLink, {
     Map<String, dynamic> parameters,

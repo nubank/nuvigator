@@ -68,7 +68,7 @@ class MainAppModule extends NuModule {
   String get initialRoute => 'home';
 
   @override
-  Widget loadingWidget(BuildContext _) {
+  Widget loadingWidget(BuildContext context) {
     return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),

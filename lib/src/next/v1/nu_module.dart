@@ -50,17 +50,27 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     _module = module;
   }
 
-  ScreenRoute<R> _getScreenRoute(
-    String deepLink, {
+  ScreenRoute<R> _screenRoute({
+    String deepLink,
+    Map<String, dynamic> extraParameters,
+  }) {
+    final settings =
+        _parser.toNuRouteSettings(deepLink, parameters: extraParameters);
+    return ScreenRoute(
+      builder: (context) => build(context, settings),
+      screenType: screenType,
+      nuRouteSettings: settings,
+    );
+  }
+
+  ScreenRoute<R> _tryGetScreenRoute({
+    String deepLink,
     Map<String, dynamic> extraParameters,
   }) {
     if (canOpen(deepLink)) {
-      final settings =
-          _parser.toNuRouteSettings(deepLink, parameters: extraParameters);
-      return ScreenRoute(
-        builder: (context) => build(context, settings),
-        screenType: screenType,
-        nuRouteSettings: settings,
+      _screenRoute(
+        deepLink: deepLink,
+        extraParameters: extraParameters,
       );
     }
     return null;
@@ -121,10 +131,16 @@ abstract class NuModule {
 
   // List<NuModule> _subModules;
   NuModuleRouter _router;
+  List<NuRouter> _legacyRouters;
 
+  /// InitilRoute that is going to be rendered
   String get initialRoute;
 
+  /// NuRoutes to be registered in this Module
   List<NuRoute> get registerRoutes;
+
+  /// Retrocompatibility with old routers API
+  List<NuRouter> get legacyRouters => [];
 
   // List<NuModule> get registerModules => [];
 
@@ -156,6 +172,7 @@ abstract class NuModule {
   Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
     assert(_router == null);
     _router = router;
+    _legacyRouters = legacyRouters;
     await init(context);
     _routes = registerRoutes;
     await Future.wait(_routes.map((route) async {
@@ -172,8 +189,10 @@ abstract class NuModule {
   ScreenRoute<R> _getScreenRoute<R>(String deepLink,
       {Map<String, dynamic> parameters}) {
     for (final route in routes) {
-      final screenRoute =
-          route._getScreenRoute(deepLink, extraParameters: parameters);
+      final screenRoute = route._tryGetScreenRoute(
+        deepLink: deepLink,
+        extraParameters: parameters,
+      );
       if (screenRoute != null) return screenRoute;
     }
     // TODO: Evaluate the need for subModules
@@ -266,11 +285,21 @@ class NuModuleRouter<T extends NuModule> extends NuRouter {
     Map<String, dynamic> parameters,
     ScreenType fallbackScreenType,
   }) {
-    return module
+    final route = module
         ._getScreenRoute<R>(deepLink,
             parameters: parameters ?? <String, dynamic>{})
         ?.fallbackScreenType(fallbackScreenType)
         ?.toRoute();
+    if (route != null) return route;
+    for (final legacyRouter in module._legacyRouters) {
+      final r = legacyRouter.getRoute<R>(
+        deepLink,
+        parameters: parameters,
+        fallbackScreenType: fallbackScreenType,
+      );
+      if (r != null) return r;
+    }
+    return null;
   }
 }
 

@@ -53,8 +53,7 @@ class FriendRequestRouteExample
       screenType: materialScreenType,
     );
   }
-
-  @override
+  
   FriendRequestArgs parseParameters(Map<String, dynamic> map) =>
       _$parseParameters(map);
 }
