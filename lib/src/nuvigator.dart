@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nuvigator/nuvigator.dart';
 
 import 'next/v1/nu_module.dart';
 import 'nurouter.dart';
+import 'screen_route.dart';
+import 'screen_type.dart';
+import 'screen_types/material_screen_type.dart';
 
 typedef ObserverBuilder = NavigatorObserver Function();
 
@@ -358,9 +360,25 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     this.shouldPopRoot = false,
   }) : assert((module != null) != (router != null));
 
+  /// Creates a [Nuvigator] from a [NuModule]
   factory Nuvigator.module({NuModule module}) {
     return Nuvigator(
       module: module,
+    );
+  }
+
+  /// Creates a [Nuvigator] from a list of [NuRoute]
+  factory Nuvigator.routes({
+    @required String initialRoute,
+    @required List<NuRoute> routes,
+    ScreenType screenType,
+  }) {
+    return Nuvigator.module(
+      module: NuModuleBuilder(
+        routes: routes,
+        initialRoute: initialRoute,
+        screenType: screenType,
+      ),
     );
   }
 
@@ -384,6 +402,7 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
   }
 
+  /// Fetches a [NuvigatorState] from the current BuildContext.
   static NuvigatorState<T> of<T extends NuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
@@ -407,26 +426,7 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     return null;
   }
 
-  Nuvigator<T> copyWith({
-    Object initialArguments,
-    WrapperFn wrapper,
-    Key key,
-    bool debugLog,
-    ScreenType screenType,
-    List<ObserverBuilder> inheritableObservers,
-    String initialRoute,
-  }) {
-    return Nuvigator<T>(
-      initialRoute: initialRoute ?? this.initialRoute,
-      router: router,
-      debug: debugLog ?? debug,
-      inheritableObservers: inheritableObservers ?? this.inheritableObservers,
-      screenType: screenType ?? this.screenType,
-      wrapper: wrapper ?? this.wrapper,
-      key: key ?? this.key,
-    );
-  }
-
+  /// Helper method that allows passing a Nuvigator to a builder function
   Nuvigator call(BuildContext context, [Widget child]) {
     return this;
   }
