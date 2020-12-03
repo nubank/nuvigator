@@ -4,7 +4,7 @@ import 'package:nuvigator/next.dart';
 import 'screens/list_requests_screen.dart';
 import 'screens/success_screen.dart';
 
-class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
+class ListFriendRequestRoute extends NuRoute<NuModuleRouter, void, void> {
   @override
   String get path => 'friend-requests/list';
 
@@ -19,7 +19,7 @@ class ListFriendRequestRoute extends NuRoute<NuModule, void, void> {
   }
 }
 
-class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
+class FriendRequestSuccessRoute extends NuRoute<NuModuleRouter, void, void> {
   @override
   String get path => 'friend-requests/success';
 
@@ -36,7 +36,7 @@ class FriendRequestSuccessRoute extends NuRoute<NuModule, void, void> {
 }
 
 // FriendRequestsModuleRouter
-class FriendRequestModule extends NuModule {
+class FriendRequestRouter extends NuModuleRouter {
   @override
   String get initialRoute => 'friend-requests/list';
 

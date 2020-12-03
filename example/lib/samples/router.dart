@@ -5,11 +5,11 @@ import 'package:nuvigator/next.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc/samples_bloc.dart';
+import 'modules/composer/module.dart';
 import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
+import 'modules/friend_request/navigation/friend_request_router.dart';
 import 'screens/home_screen.dart';
-
-part 'module.g.dart';
 
 class HomeRoute extends NuRoute {
   @override
@@ -32,8 +32,9 @@ class HomeRoute extends NuRoute {
   ParamsParser<Object> get paramsParser => null;
 }
 
-@NuModuleParser()
-class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
+@NuRouteParser()
+class FriendRequestRoute
+    extends NuRoute<NuModuleRouter, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
 
@@ -51,19 +52,18 @@ class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
     return ChangeNotifierProvider.value(
       value: FriendRequestBloc(settings.args.numberOfRequests),
       child: Nuvigator(
-        module: FriendRequestModule(),
+        router: FriendRequestRouter(),
         screenType: materialScreenType,
       ),
     );
   }
 
-  @override
-  ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
+// @override
+// ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
 }
 
 // MainAppModuleRouter
-
-class MainAppModule extends NuModule {
+class MainAppRouter extends NuModuleRouter {
   @override
   String get initialRoute => 'home';
 
@@ -77,9 +77,15 @@ class MainAppModule extends NuModule {
   }
 
   @override
+  List<NuRouter> get legacyRouters => [
+        OldFriendRequestRouter(),
+      ];
+
+  @override
   List<NuRoute> get registerRoutes => [
         HomeRoute(),
         FriendRequestRoute(),
+        ComposerRoute(),
       ];
 
   @override

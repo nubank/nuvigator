@@ -5,7 +5,8 @@ import 'package:nuvigator/src/deeplink.dart';
 import '../nuvigator.dart';
 import 'screen_route.dart';
 
-typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(RouteSettings settings);
+typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(
+    RouteSettings settings);
 
 typedef HandleDeepLinkFn = Future<dynamic> Function(NuRouter router, Uri uri,
     [bool isFromNative, dynamic args]);
@@ -43,8 +44,6 @@ abstract class NuRouter {
     return router;
   }
 
-  /// Deprecated: Will be moved to [Nuvigator.onDeepLinkNotFound]
-  @deprecated
   HandleDeepLinkFn onDeepLinkNotFound;
 
   NuvigatorState _nuvigator;
@@ -169,6 +168,7 @@ abstract class NuRouter {
   Route<T> getRoute<T>(
     String deepLink, {
     Map<String, dynamic> parameters,
+    bool fromLegacyRouteName = false,
     ScreenType fallbackScreenType,
   }) {
     // 1. Get ScreeRouter for DeepLink

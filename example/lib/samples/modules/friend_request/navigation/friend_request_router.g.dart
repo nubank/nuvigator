@@ -12,7 +12,7 @@ class FriendRequestRoutes {
   static const success = 'friendRequest/success';
 }
 
-extension FriendRequestRouterNavigation on FriendRequestRouter {
+extension FriendRequestRouterNavigation on OldFriendRequestRouter {
   Future<void> toListRequests() {
     return nuvigator.pushNamed<void>(
       FriendRequestRoutes.listRequests,
@@ -70,13 +70,15 @@ extension FriendRequestRouterNavigation on FriendRequestRouter {
   }
 }
 
-extension FriendRequestRouterScreensAndRouters on FriendRequestRouter {
+extension FriendRequestRouterScreensAndRouters on OldFriendRequestRouter {
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
     return {
-      RouteDef(FriendRequestRoutes.listRequests): (RouteSettings settings) {
+      RouteDef(FriendRequestRoutes.listRequests,
+          deepLink: 'old-friend-request/list'): (RouteSettings settings) {
         return listRequests();
       },
-      RouteDef(FriendRequestRoutes.success): (RouteSettings settings) {
+      RouteDef(FriendRequestRoutes.success,
+          deepLink: 'old-friend-request/success'): (RouteSettings settings) {
         return success();
       },
     };

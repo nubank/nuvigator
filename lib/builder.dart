@@ -24,7 +24,7 @@ class NuvigatorGenerator extends GeneratorForAnnotation<NuRouterAnnotation> {
   }
 }
 
-class NextGenerator extends GeneratorForAnnotation<NuModuleParser> {
+class NextGenerator extends GeneratorForAnnotation<NuRouteParser> {
   @override
   FutureOr<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {

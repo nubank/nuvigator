@@ -3,11 +3,11 @@
 /// This annotation is used by the code generator to identify a class that
 /// represents the arguments for the NuRoute and start the analysis of code generation.
 ///
-/// By default, the [NuModuleParser] generates an extension function that
+/// By default, the [NuRouteParser] generates an extension function that
 /// allow translating a map into a class that represents the argument for the module:
 ///
 /// {@tool sample}
-/// This sample shows how to create a parser using [NuModuleParser] annotation.
+/// This sample shows how to create a parser using [NuRouteParser] annotation.
 ///
 /// ```dart
 /// class FriendRequestArgs {
@@ -17,7 +17,7 @@
 ///  int age;
 ///}
 ///
-/// @NuModuleParser()
+/// @NuRouteParser()
 /// class FriendRequestRoute extends NuRoute<NuModule, FriendRequestArgs, void> {
 ///   @override
 ///   FriendRequestArgs parseParameters(Map<String, dynamic> map) =>  _$parseParameters(map);
@@ -44,6 +44,6 @@
 /// ```
 /// Obs: The annotation generates an extension function only for the second type parameter
 /// of the NuRoute class.
-class NuModuleParser {
-  const NuModuleParser();
+class NuRouteParser {
+  const NuRouteParser();
 }

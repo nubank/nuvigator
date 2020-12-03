@@ -4,12 +4,7 @@ import 'package:nuvigator/next.dart';
 import 'screens/help_screen.dart';
 import 'screens/text_composer_screen.dart';
 
-// ComposerTextModule
-abstract class ComposerTextDelegate extends NuModule {
-  void handleCompose();
-}
-
-class ComposerTextRoute extends NuRoute<ComposerTextDelegate, void, String> {
+class _ComposerTextRoute extends NuRoute<NuModuleRouter, void, String> {
   @override
   String get path => 'composer/text';
 
@@ -22,19 +17,13 @@ class ComposerTextRoute extends NuRoute<ComposerTextDelegate, void, String> {
       initialText: settings.rawParameters['initialText'],
       submitText: (String text) => module.nuvigator.pop(text),
       toHelp: () {
-        module.handleCompose();
         module.nuvigator.open<void>('composer/help');
       },
     );
   }
 }
 
-// ComposerHelpModule
-abstract class ComposerHelpDelegate extends NuModule {
-  void handleHelp();
-}
-
-class ComposerHelpRoute extends NuRoute<ComposerHelpDelegate, void, void> {
+class _ComposerHelpRoute extends NuRoute {
   @override
   String get path => 'composer/help';
 
@@ -49,26 +38,24 @@ class ComposerHelpRoute extends NuRoute<ComposerHelpDelegate, void, void> {
 
 // Export Helper
 
-abstract class ComposerModulesDelegate
-    implements ComposerHelpDelegate, ComposerTextDelegate {}
-
-class ComposerModule extends NuModule implements ComposerModulesDelegate {
+class ComposerRoute extends NuRoute<NuModuleRouter, void, String> {
   @override
-  String get initialRoute => null;
-
-  @override
-  List<NuRoute> get registerRoutes => [
-        ComposerHelpRoute(),
-        ComposerTextRoute(),
-      ];
-
-  @override
-  void handleCompose() {
-    print('HandleCompose');
+  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
+    return Nuvigator.routes(
+      initialRoute: settings.name,
+      routes: [
+        _ComposerHelpRoute(),
+        _ComposerTextRoute(),
+      ],
+    );
   }
 
   @override
-  void handleHelp() {
-    print('HandleHelp');
-  }
+  bool get prefix => true;
+
+  @override
+  String get path => 'composer/';
+
+  @override
+  ScreenType get screenType => materialScreenType;
 }

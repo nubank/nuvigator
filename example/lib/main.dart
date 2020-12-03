@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nuvigator/next.dart';
-
-import 'samples/navigation/samples_router.dart';
+import 'samples/router.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,8 +36,7 @@ class MyApp extends StatelessWidget {
       ),
       builder: Nuvigator(
         screenType: cupertinoDialogScreenType,
-        router: SamplesRouter(),
-        initialDeepLink: 'exapp://home',
+        router: MainAppRouter(),
       ),
     );
   }

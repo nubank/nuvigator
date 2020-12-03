@@ -7,6 +7,23 @@ Nuvigator is passing through a major revamp in it's API, to be able to provide a
 ```dart
 import 'package:nuvigator/next.dart'; // import the next file instead of the nuvigator.dart
 
+// Define a new NuRoute
+class MyRoute extends NuRoute {
+  
+  String get path => 'my-route';
+  
+  ScreenType get screenType => materialScreenType;
+  
+  Widget build(BuildContext context, NuRouteSettings settings) {
+    return MyScreen();
+  }
+}
+
+// Define your NuModule
+class MyModule extends NuModule {
+  
+}
+
 ```
 
 ## Defining Routes

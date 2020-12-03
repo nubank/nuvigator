@@ -12,7 +12,7 @@ class ListRequestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<FriendRequestBloc>(context);
+    // final bloc = Provider.of<FriendRequestBloc>(context);
     final bodyStyle = Theme.of(context).textTheme.bodyText1;
 
     return Scaffold(
@@ -26,22 +26,23 @@ class ListRequestScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: bloc.numberOfRequests + 1,
+        itemCount: 11,
         itemBuilder: (context, index) {
           if (index == 0) {
             return ListTile(
               title: Text(
-                'Received numberOfRequests: ${bloc.numberOfRequests} from deepLink',
+                'Received numberOfRequests: ${10} from deepLink',
                 style: bodyStyle,
               ),
             );
           }
           return ListTile(
             title: Text('Request $index'),
-            trailing: Switch(
-              value: bloc.accepted[index - 1],
-              onChanged: (value) => bloc.updateRequest(index - 1, value),
-            ),
+            // trailing:
+            // Switch(
+            //   value: bloc.accepted[index - 1],
+            //   onChanged: (value) => bloc.updateRequest(index - 1, value),
+            // ),
           );
         },
       ),

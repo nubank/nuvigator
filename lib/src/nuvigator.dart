@@ -71,22 +71,13 @@ class _NuvigatorInner<T extends NuRouter> extends Navigator {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
   })  : assert(router != null),
-        assert(initialRoute != null || initialDeepLink != null),
-        assert((initialRoute != null && initialDeepLink == null) ||
-            (initialDeepLink != null && initialRoute == null)),
-        assert(() {
-          if (initialDeepLink != null) {
-            return initialArguments == null;
-          }
-          return true;
-        }()),
+        assert((initialRoute == null) != (initialDeepLink == null)),
         super(
           observers: [
             HeroController(),
             ...observers,
           ],
           onGenerateInitialRoutes: (_, __) {
-            // Using route name is deprecated
             if (initialRoute != null) {
               final settings = RouteSettings(
                 name: initialRoute,
@@ -110,6 +101,14 @@ class _NuvigatorInner<T extends NuRouter> extends Navigator {
             return [];
           },
           onGenerateRoute: (settings) {
+            if (router is NuModuleRouter) {
+              return router.getRoute<dynamic>(
+                settings.name,
+                parameters: settings.arguments,
+                fromLegacyRouteName: true,
+                fallbackScreenType: screenType,
+              );
+            }
             return router
                 .getScreen(settings)
                 ?.fallbackScreenType(screenType)
@@ -210,11 +209,21 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     return true;
   }
 
+  bool canOpen(String route, {Object arguments}) {
+    if (isNextApi) {
+      return router.getRoute<dynamic>(route,
+              parameters: arguments, fromLegacyRouteName: true) !=
+          null;
+    } else {
+      return router
+              .getScreen(RouteSettings(name: route, arguments: arguments)) !=
+          null;
+    }
+  }
+
   @override
   Future<R> pushNamed<R extends Object>(String routeName, {Object arguments}) {
-    final possibleRoute =
-        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null && parent != null) {
+    if (canOpen(routeName, arguments: arguments) == null && isNested) {
       return parent.pushNamed<R>(routeName, arguments: arguments);
     }
     return super.pushNamed<R>(routeName, arguments: arguments);
@@ -225,9 +234,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute =
-        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null) {
+    if (canOpen(routeName, arguments: arguments) == null && isNested) {
       return parent.pushReplacementNamed<R, TO>(routeName,
           arguments: arguments, result: result);
     }
@@ -239,9 +246,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   Future<R> pushNamedAndRemoveUntil<R extends Object>(
       String newRouteName, RoutePredicate predicate,
       {Object arguments}) {
-    final possibleRoute = router
-        .getScreen(RouteSettings(name: newRouteName, arguments: arguments));
-    if (possibleRoute == null) {
+    if (canOpen(newRouteName, arguments: arguments) == null && isNested) {
       return parent.pushNamedAndRemoveUntil<R>(newRouteName, predicate,
           arguments: arguments);
     }
@@ -254,9 +259,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
       String routeName,
       {Object arguments,
       TO result}) {
-    final possibleRoute =
-        router.getScreen(RouteSettings(name: routeName, arguments: arguments));
-    if (possibleRoute == null) {
+    if (canOpen(routeName, arguments: arguments) == null && isNested) {
       return parent.popAndPushNamed<R, TO>(routeName,
           arguments: arguments, result: result);
     }
@@ -302,6 +305,7 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
     final route = router.getRoute<R>(
       deepLink,
       parameters: parameters,
+      fromLegacyRouteName: false,
       fallbackScreenType: widget.screenType,
     );
     if (route != null) {
@@ -322,6 +326,8 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
   bool get isNested => parent != null;
 
   bool get isRoot => this == rootNuvigator;
+
+  bool get isNextApi => router is NuModuleRouter;
 
   NuRouter get rootRouter => rootNuvigator.router;
 
@@ -346,10 +352,9 @@ class NuvigatorState<T extends NuRouter> extends NavigatorState
 @immutable
 class Nuvigator<T extends NuRouter> extends StatelessWidget {
   const Nuvigator({
-    this.router,
+    @required this.router,
     this.initialRoute,
     this.initialDeepLink,
-    this.module,
     this.initialArguments,
     this.key,
     this.observers = const [],
@@ -358,23 +363,16 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
-  }) : assert((module != null) != (router != null));
-
-  /// Creates a [Nuvigator] from a [NuModule]
-  factory Nuvigator.module({NuModule module}) {
-    return Nuvigator(
-      module: module,
-    );
-  }
+  }) : assert(router != null);
 
   /// Creates a [Nuvigator] from a list of [NuRoute]
-  factory Nuvigator.routes({
+  static Nuvigator<NuRouterBuilder> routes({
     @required String initialRoute,
     @required List<NuRoute> routes,
     ScreenType screenType,
   }) {
-    return Nuvigator.module(
-      module: NuModuleBuilder(
+    return Nuvigator(
+      router: NuRouterBuilder(
         routes: routes,
         initialRoute: initialRoute,
         screenType: screenType,
@@ -383,7 +381,6 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
   }
 
   final T router;
-  final NuModule module;
   final bool debug;
   final bool shouldPopRoot;
   final ScreenType screenType;
@@ -431,25 +428,26 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
     return this;
   }
 
-  Widget _buildModule(BuildContext context) {
-    return NuModuleLoader(
-      module: module,
+  Widget _buildModuleRouter(BuildContext context) {
+    return NuRouterLoader(
+      // ignore: avoid_as
+      router: router as NuModuleRouter,
       builder: (moduleRouter) => _NuvigatorInner(
         router: moduleRouter,
         debug: debug,
         inheritableObservers: inheritableObservers,
         observers: observers,
-        initialDeepLink: moduleRouter.module.initialRoute ?? initialDeepLink,
-        screenType: module.screenType ?? screenType,
+        initialDeepLink: moduleRouter.initialRoute ?? initialDeepLink,
+        screenType: moduleRouter.screenType ?? screenType,
         key: key,
         initialArguments: initialArguments,
-        wrapper: module.routeWrapper ?? wrapper,
+        wrapper: moduleRouter.routeWrapper ?? wrapper,
         shouldPopRoot: shouldPopRoot,
       ),
     );
   }
 
-  Widget _buildRouter(BuildContext context) {
+  Widget _buildLegacyRouter(BuildContext context) {
     return _NuvigatorInner<T>(
       router: router,
       debug: debug,
@@ -466,10 +464,10 @@ class Nuvigator<T extends NuRouter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (module != null) {
-      return _buildModule(context);
+    if (router is NuModuleRouter) {
+      return _buildModuleRouter(context);
     } else {
-      return _buildRouter(context);
+      return _buildLegacyRouter(context);
     }
   }
 }

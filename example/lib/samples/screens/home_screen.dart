@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/friend_request/navigation/friend_request_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
@@ -33,8 +34,10 @@ class HomeScreen extends StatelessWidget {
                 RaisedButton(
                   child: const Text('Review friend requests'),
                   onPressed: () {
+                    // final r = NuRouter.of<OldFriendRequestRouter>(context);
+                    // r.toListRequests();
                     nuvigator.open<void>(
-                        'exapp://friend-requests?numberOfRequests=10');
+                        'exapp://old-friend-request/list?numberOfRequests=10');
                   },
                 ),
                 RaisedButton(

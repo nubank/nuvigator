@@ -16,7 +16,8 @@ typedef NuInitFunction = Future<bool> Function(BuildContext context);
 
 typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
 
-abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
+abstract class NuRoute<T extends NuModuleRouter, A extends Object,
+    R extends Object> {
   T _module;
 
   T get module => _module;
@@ -68,7 +69,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
     Map<String, dynamic> extraParameters,
   }) {
     if (canOpen(deepLink)) {
-      _screenRoute(
+      return _screenRoute(
         deepLink: deepLink,
         extraParameters: extraParameters,
       );
@@ -78,7 +79,7 @@ abstract class NuRoute<T extends NuModule, A extends Object, R extends Object> {
 }
 
 class NuRouteBuilder<A extends Object, R extends Object>
-    extends NuRoute<NuModule, A, R> {
+    extends NuRoute<NuModuleRouter, A, R> {
   NuRouteBuilder({
     @required String path,
     @required this.builder,
@@ -126,23 +127,21 @@ class NuRouteBuilder<A extends Object, R extends Object>
   ScreenType get screenType => _screenType;
 }
 
-abstract class NuModule {
+abstract class NuModuleRouter extends NuRouter {
   List<NuRoute> _routes;
-
-  // List<NuModule> _subModules;
-  NuModuleRouter _router;
   List<NuRouter> _legacyRouters;
 
-  /// InitilRoute that is going to be rendered
+  /// InitialRoute that is going to be rendered
   String get initialRoute;
 
   /// NuRoutes to be registered in this Module
   List<NuRoute> get registerRoutes;
 
-  /// Retrocompatibility with old routers API
+  /// Backwards compatible with old routers API
   List<NuRouter> get legacyRouters => [];
 
-  // List<NuModule> get registerModules => [];
+  @override
+  List<NuRouter> get routers => _legacyRouters;
 
   /// ScreenType to be used by the [NuRoute] registered in this Module
   /// ScreenType defined on the [NuRoute] takes precedence over the default one
@@ -151,17 +150,14 @@ abstract class NuModule {
 
   List<NuRoute> get routes => _routes;
 
-  // TODO: Evaluate the need for subModules
-  // List<NuModule> get subModules => _subModules;
-
-  NuvigatorState get nuvigator => _router.nuvigator;
-
   /// While the module is initializing this Widget is going to be displayed
   Widget loadingWidget(BuildContext context) => Container();
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
-  Future<void> init(BuildContext context) async {}
+  Future<void> init(BuildContext context) async {
+    return SynchronousFuture(null);
+  }
 
   /// A common wrapper that is going to be applied to all Routes returned by
   /// this Module.
@@ -169,21 +165,15 @@ abstract class NuModule {
     return child;
   }
 
-  Future<void> _initModule(BuildContext context, NuModuleRouter router) async {
-    assert(_router == null);
-    _router = router;
+  Future<void> _init(BuildContext context) async {
     _legacyRouters = legacyRouters;
     await init(context);
     _routes = registerRoutes;
     await Future.wait(_routes.map((route) async {
-      // Route should not be installed to another module
       assert(route._module == null);
       route._install(this);
       await route.init(context);
     }).toList());
-    // await Future.wait(_subModules.map((module) async {
-    //   return module._initModule(context, router);
-    // }));
   }
 
   ScreenRoute<R> _getScreenRoute<R>(String deepLink,
@@ -195,18 +185,70 @@ abstract class NuModule {
       );
       if (screenRoute != null) return screenRoute;
     }
-    // TODO: Evaluate the need for subModules
-    // for (final subModule in subModules) {
-    //   return subModule
-    //       ._getScreenRoute(deepLink, parameters: parameters)
-    //       ?.wrapWith(routeWrapper);
-    // }
+    return null;
+  }
+
+  @override
+  @deprecated
+  RouteEntry getRouteEntryForDeepLink(String deepLink) {
+    throw UnimplementedError(
+        'getRouteEntryForDeepLink is deprecated and not implemented for NuModule API');
+  }
+
+  @override
+  bool canOpenDeepLink(Uri url) {
+    return getRoute<dynamic>(url.toString()) != null;
+  }
+
+  @override
+  @deprecated
+  Future<R> openDeepLink<R>(
+    Uri url, [
+    dynamic arguments,
+    bool isFromNative = false,
+  ]) {
+    return nuvigator.open<R>(url.toString(), parameters: arguments);
+  }
+
+  @override
+  Route<R> getRoute<R>(
+    String deepLink, {
+    Map<String, dynamic> parameters,
+    @deprecated bool fromLegacyRouteName = false,
+    ScreenType fallbackScreenType,
+  }) {
+    final route = _getScreenRoute<R>(deepLink,
+            parameters: parameters ?? <String, dynamic>{})
+        ?.fallbackScreenType(fallbackScreenType ?? materialScreenType)
+        ?.toRoute();
+    if (route != null) return route;
+
+    // start region: Backwards Compatible Code
+    for (final legacyRouter in _legacyRouters) {
+      if (fromLegacyRouteName) {
+        final settings = RouteSettings(name: deepLink, arguments: parameters);
+        final r = legacyRouter
+            .getScreen(settings)
+            ?.fallbackScreenType(screenType)
+            ?.toRoute(settings);
+        if (r != null) return r;
+      } else {
+        final r = legacyRouter.getRoute<R>(
+          deepLink,
+          parameters: parameters,
+          fromLegacyRouteName: fromLegacyRouteName,
+          fallbackScreenType: fallbackScreenType,
+        );
+        if (r != null) return r;
+      }
+    }
+    // end region
     return null;
   }
 }
 
-class NuModuleBuilder extends NuModule {
-  NuModuleBuilder({
+class NuRouterBuilder extends NuModuleRouter {
+  NuRouterBuilder({
     @required String initialRoute,
     @required List<NuRoute> routes,
     ScreenType screenType,
@@ -216,13 +258,13 @@ class NuModuleBuilder extends NuModule {
         _registerRoutes = routes,
         _screenType = screenType,
         _loadingWidget = loadingWidget,
-        _init = init;
+        _initFn = init;
 
   final String _initialRoute;
   final List<NuRoute> _registerRoutes;
   final ScreenType _screenType;
   final WidgetBuilder _loadingWidget;
-  final NuInitFunction _init;
+  final NuInitFunction _initFn;
 
   @override
   String get initialRoute => _initialRoute;
@@ -243,86 +285,32 @@ class NuModuleBuilder extends NuModule {
 
   @override
   Future<void> init(BuildContext context) {
-    if (_init != null) {
-      return _init(context);
+    if (_initFn != null) {
+      return _initFn(context);
     }
     return super.init(context);
   }
 }
 
-class NuModuleRouter<T extends NuModule> extends NuRouter {
-  NuModuleRouter(this.module);
+class NuRouterLoader extends StatefulWidget {
+  const NuRouterLoader({
+    Key key,
+    this.router,
+    this.builder,
+  }) : super(key: key);
 
-  final T module;
-
-  Future<NuModuleRouter> _initModule(BuildContext context) async {
-    await module._initModule(context, this);
-    return this;
-  }
-
-  @override
-  @deprecated
-  RouteEntry getRouteEntryForDeepLink(String deepLink) {
-    throw UnimplementedError(
-        'getRouteEntryForDeepLink is deprecated and not implemented for NuModule API');
-  }
-
-  @override
-  bool canOpenDeepLink(Uri url) {
-    return getRoute<dynamic>(url.toString()) != null;
-  }
-
-  @override
-  @deprecated
-  Future<R> openDeepLink<R>(Uri url,
-      [dynamic arguments, bool isFromNative = false]) {
-    return nuvigator.open<R>(url.toString(), parameters: arguments);
-  }
-
-  @override
-  Route<R> getRoute<R>(
-    String deepLink, {
-    Map<String, dynamic> parameters,
-    ScreenType fallbackScreenType,
-  }) {
-    final route = module
-        ._getScreenRoute<R>(deepLink,
-            parameters: parameters ?? <String, dynamic>{})
-        ?.fallbackScreenType(fallbackScreenType)
-        ?.toRoute();
-    if (route != null) return route;
-    for (final legacyRouter in module._legacyRouters) {
-      final r = legacyRouter.getRoute<R>(
-        deepLink,
-        parameters: parameters,
-        fallbackScreenType: fallbackScreenType,
-      );
-      if (r != null) return r;
-    }
-    return null;
-  }
-}
-
-class NuModuleLoader extends StatefulWidget {
-  const NuModuleLoader({Key key, this.module, this.builder}) : super(key: key);
-
-  final NuModule module;
+  final NuModuleRouter router;
   final Widget Function(NuModuleRouter router) builder;
 
   @override
-  _NuModuleLoaderState createState() => _NuModuleLoaderState();
+  _NuRouterLoaderState createState() => _NuRouterLoaderState();
 }
 
-class _NuModuleLoaderState extends State<NuModuleLoader> {
-  bool loading;
-  NuModuleRouter router;
+class _NuRouterLoaderState extends State<NuRouterLoader> {
+  bool loading = true;
 
   void _initModule() {
-    setState(() {
-      loading = true;
-    });
-    router = NuModuleRouter(widget.module);
-    router._initModule(context).then((value) {
+    widget.router._init(context).then((value) {
       setState(() {
         loading = false;
       });
@@ -330,8 +318,8 @@ class _NuModuleLoaderState extends State<NuModuleLoader> {
   }
 
   @override
-  void didUpdateWidget(covariant NuModuleLoader oldWidget) {
-    if (oldWidget.module != widget.module) {
+  void didUpdateWidget(covariant NuRouterLoader oldWidget) {
+    if (oldWidget.router != widget.router) {
       _initModule();
     }
     super.didUpdateWidget(oldWidget);
@@ -339,15 +327,17 @@ class _NuModuleLoaderState extends State<NuModuleLoader> {
 
   @override
   void initState() {
-    _initModule();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initModule();
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return widget.module.loadingWidget(context);
+      return widget.router.loadingWidget(context);
     }
-    return widget.builder(router);
+    return widget.builder(widget.router);
   }
 }

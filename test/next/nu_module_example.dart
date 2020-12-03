@@ -31,7 +31,7 @@ class FriendRequestArgs {
   }
 }
 
-@NuModuleParser()
+@NuRouteParser()
 class FriendRequestRouteExample
     extends NuRoute<NuModule, FriendRequestArgs, void> {
   @override
@@ -53,7 +53,7 @@ class FriendRequestRouteExample
       screenType: materialScreenType,
     );
   }
-  
+
   FriendRequestArgs parseParameters(Map<String, dynamic> map) =>
       _$parseParameters(map);
 }
