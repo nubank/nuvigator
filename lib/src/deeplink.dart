@@ -66,24 +66,34 @@ class DeepLinkParser<A extends Object> {
   }
 
   /// Converts the DeepLink + extra parameters into a [NuRouteSettings]
-  NuRouteSettings<A> toNuRouteSettings(
-    String deepLink, {
-    Map<String, dynamic> parameters,
+  NuRouteSettings<A> toNuRouteSettings({
+    String deepLink,
+    Object arguments,
   }) {
     final qParams = getQueryParams(deepLink);
     final pParams = getPathParams(deepLink);
     final allParams = <String, dynamic>{
       ...qParams ?? const <String, dynamic>{},
       ...pParams ?? const <String, dynamic>{},
-      ...parameters ?? const <String, dynamic>{},
     };
+    A parsedArgs;
+
+    if (arguments != null) {
+      if (arguments is Map<String, dynamic>) {
+        allParams.addAll(arguments);
+      } else if (arguments is A) {
+        parsedArgs = arguments;
+      } else {
+        // TODO: Error?
+      }
+    }
+
     return NuRouteSettings(
       name: deepLink,
       pathTemplate: template,
       queryParameters: qParams,
       pathParameters: pParams,
-      extraParameter: parameters,
-      args: parseParams(allParams),
+      arguments: parsedArgs ?? parseParams(allParams),
       scheme: getScheme(deepLink),
     );
   }

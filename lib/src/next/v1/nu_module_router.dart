@@ -55,8 +55,10 @@ abstract class NuRoute<T extends NuModuleRouter, A extends Object,
     String deepLink,
     Map<String, dynamic> extraParameters,
   }) {
-    final settings =
-        _parser.toNuRouteSettings(deepLink, parameters: extraParameters);
+    final settings = _parser.toNuRouteSettings(
+      deepLink: deepLink,
+      arguments: extraParameters,
+    );
     return ScreenRoute(
       builder: (context) => build(context, settings),
       screenType: screenType,
@@ -127,9 +129,32 @@ class NuRouteBuilder<A extends Object, R extends Object>
   ScreenType get screenType => _screenType;
 }
 
-abstract class NuModuleRouter extends NuRouter {
+abstract class NuModuleRouter implements INuRouter {
   List<NuRoute> _routes;
   List<NuRouter> _legacyRouters;
+  NuvigatorState _nuvigator;
+
+  NuvigatorState get nuvigator => _nuvigator;
+
+  @override
+  void install(NuvigatorState nuvigator) {
+    assert(_nuvigator == null);
+    _nuvigator = nuvigator;
+    for (final legacyRouter in _legacyRouters) {
+      legacyRouter.install(nuvigator);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nuvigator = null;
+    for (final legacyRouter in _legacyRouters) {
+      legacyRouter.dispose();
+    }
+  }
+
+  @override
+  HandleDeepLinkFn get onDeepLinkNotFound => null;
 
   /// InitialRoute that is going to be rendered
   String get initialRoute;
@@ -141,7 +166,15 @@ abstract class NuModuleRouter extends NuRouter {
   List<NuRouter> get legacyRouters => [];
 
   @override
-  List<NuRouter> get routers => _legacyRouters;
+  T getRouter<T extends INuRouter>() {
+    // ignore: avoid_as
+    if (this is T) return this as T;
+    for (final router in _legacyRouters) {
+      final r = router.getRouter<T>();
+      if (r != null) return r;
+    }
+    return null;
+  }
 
   /// ScreenType to be used by the [NuRoute] registered in this Module
   /// ScreenType defined on the [NuRoute] takes precedence over the default one
@@ -189,31 +222,9 @@ abstract class NuModuleRouter extends NuRouter {
   }
 
   @override
-  @deprecated
-  RouteEntry getRouteEntryForDeepLink(String deepLink) {
-    throw UnimplementedError(
-        'getRouteEntryForDeepLink is deprecated and not implemented for NuModule API');
-  }
-
-  @override
-  bool canOpenDeepLink(Uri url) {
-    return getRoute<dynamic>(url.toString()) != null;
-  }
-
-  @override
-  @deprecated
-  Future<R> openDeepLink<R>(
-    Uri url, [
-    dynamic arguments,
-    bool isFromNative = false,
-  ]) {
-    return nuvigator.open<R>(url.toString(), parameters: arguments);
-  }
-
-  @override
-  Route<R> getRoute<R>(
-    String deepLink, {
-    Map<String, dynamic> parameters,
+  Route<R> getRoute<R>({
+    String deepLink,
+    Object parameters,
     @deprecated bool fromLegacyRouteName = false,
     ScreenType fallbackScreenType,
   }) {
@@ -234,7 +245,7 @@ abstract class NuModuleRouter extends NuRouter {
         if (r != null) return r;
       } else {
         final r = legacyRouter.getRoute<R>(
-          deepLink,
+          deepLink: deepLink,
           parameters: parameters,
           fromLegacyRouteName: fromLegacyRouteName,
           fallbackScreenType: fallbackScreenType,

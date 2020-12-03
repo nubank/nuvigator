@@ -10,7 +10,9 @@ class OldFriendRequestRouter extends NuRouter {
   @NuRoute(deepLink: 'old-friend-request/list')
   ScreenRoute<void> listRequests() => ScreenRoute(
         builder: (context) => ListRequestScreen(
-          toSuccess: toSuccess,
+          toSuccess: () {
+            nuvigator.open<dynamic>('composer/text');
+          },
         ),
         screenType: materialScreenType,
       );

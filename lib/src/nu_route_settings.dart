@@ -5,31 +5,30 @@ import 'package:flutter/widgets.dart';
 class NuRouteSettings<A extends Object> extends RouteSettings {
   const NuRouteSettings({
     @required String name,
+    A arguments,
     this.scheme,
     this.pathTemplate,
     this.queryParameters = const <String, dynamic>{},
     this.pathParameters = const <String, dynamic>{},
-    this.extraParameter = const <String, dynamic>{},
-    this.args,
-  }) : super(name: name);
+  }) : super(name: name, arguments: arguments);
 
   final String pathTemplate;
   final String scheme;
-  final A args;
   final Map<String, dynamic> queryParameters;
   final Map<String, dynamic> pathParameters;
-  final Map<String, dynamic> extraParameter;
-
-  @override
-  Map<String, dynamic> get arguments => rawParameters;
 
   Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
       ...queryParameters ?? const <String, dynamic>{},
       ...pathParameters ?? const <String, dynamic>{},
-      ...extraParameter ?? const <String, dynamic>{},
+      ...arguments is Map<String, dynamic>
+          // ignore: avoid_as
+          ? arguments as Map<String, dynamic>
+          : const <String, dynamic>{},
     };
   }
+
+  A get args => arguments;
 
   @override
   String toString() =>

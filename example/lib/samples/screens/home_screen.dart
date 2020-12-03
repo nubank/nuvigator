@@ -1,4 +1,3 @@
-import 'package:example/samples/modules/friend_request/navigation/friend_request_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 

@@ -8,7 +8,7 @@ import 'screen_route.dart';
 typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(
     RouteSettings settings);
 
-typedef HandleDeepLinkFn = Future<dynamic> Function(NuRouter router, Uri uri,
+typedef HandleDeepLinkFn = Future<dynamic> Function(INuRouter router, Uri uri,
     [bool isFromNative, dynamic args]);
 
 class RouteEntry {
@@ -24,7 +24,25 @@ class RouteEntry {
   bool operator ==(Object other) => other is RouteEntry && other.key == key;
 }
 
-abstract class NuRouter {
+abstract class INuRouter {
+  void install(NuvigatorState nuvigator);
+
+  void dispose();
+
+  HandleDeepLinkFn get onDeepLinkNotFound;
+
+  @deprecated
+  T getRouter<T extends INuRouter>();
+
+  Route<T> getRoute<T>({
+    String deepLink,
+    Map<String, dynamic> parameters,
+    bool fromLegacyRouteName = false,
+    ScreenType fallbackScreenType,
+  });
+}
+
+abstract class NuRouter implements INuRouter {
   static T of<T extends NuRouter>(
     BuildContext context, {
     bool nullOk = false,
@@ -44,16 +62,27 @@ abstract class NuRouter {
     return router;
   }
 
-  HandleDeepLinkFn onDeepLinkNotFound;
+  @override
+  HandleDeepLinkFn get onDeepLinkNotFound => null;
 
   NuvigatorState _nuvigator;
 
   NuvigatorState get nuvigator => _nuvigator;
 
-  set nuvigator(NuvigatorState newNuvigator) {
-    _nuvigator = newNuvigator;
+  @override
+  void install(NuvigatorState nuvigator) {
+    assert(_nuvigator == null);
+    _nuvigator = nuvigator;
     for (final router in routers) {
-      router.nuvigator = newNuvigator;
+      router.install(nuvigator);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nuvigator = null;
+    for (final router in routers) {
+      router.dispose();
     }
   }
 
@@ -66,8 +95,10 @@ abstract class NuRouter {
   String get deepLinkPrefix => '';
 
   /// Get the specified router that can be grouped in this router
-  T getRouter<T extends NuRouter>() {
-    if (this is T) return this;
+  @override
+  T getRouter<T extends INuRouter>() {
+    // ignore: avoid_as
+    if (this is T) return this as T;
     for (final router in routers) {
       final r = router.getRouter<T>();
       if (r != null) return r;
@@ -165,12 +196,20 @@ abstract class NuRouter {
   }
 
   /// From a deepLink (plus some option parameters) get a Route.
-  Route<T> getRoute<T>(
-    String deepLink, {
-    Map<String, dynamic> parameters,
-    bool fromLegacyRouteName = false,
+  @override
+  Route<T> getRoute<T>({
+    String deepLink,
+    Object parameters,
+    @deprecated bool fromLegacyRouteName = false,
     ScreenType fallbackScreenType,
   }) {
+    if (fromLegacyRouteName) {
+      final settings = RouteSettings(name: deepLink, arguments: parameters);
+      return getScreen(settings)
+          ?.fallbackScreenType(fallbackScreenType)
+          ?.toRoute(settings);
+    }
+
     // 1. Get ScreeRouter for DeepLink
     final routeEntry = getRouteEntryForDeepLink(deepLink);
     if (routeEntry == null) {
@@ -179,8 +218,8 @@ abstract class NuRouter {
     // 2. Build NuRouteSettings
     final settings =
         DeepLinkParser(template: routeEntry.key.deepLink).toNuRouteSettings(
-      deepLink,
-      parameters: parameters,
+      deepLink: deepLink,
+      arguments: parameters,
     );
     // 3. Convert ScreenRoute to Route
     return routeEntry
