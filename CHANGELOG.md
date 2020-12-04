@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.0-beta.2
+- Add support from Navigation coming from Native side on Next API
+  - `INuRouter.getRoute` now accepts an optional `isFromNative` option
+  - `NuvigatorState.open` now accepts an optional `isFromNative` option
+- Remove default screenType from Nuvigator constructor
+
 ## 1.0.0-beta.1
 - Fixed asserts on Nuvigator
 - Add improved error message when a ScreenRoute is rendered without a ScreenType specified

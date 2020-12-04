@@ -52,7 +52,6 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
       value: FriendRequestBloc(settings.args.numberOfRequests),
       child: Nuvigator(
         router: FriendRequestRouter(),
-        screenType: materialScreenType,
       ),
     );
   }
@@ -65,6 +64,9 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
 class MainAppRouter extends NuRouter {
   @override
   String get initialRoute => 'home';
+
+  @override
+  ScreenType get screenType => cupertinoScreenType;
 
   @override
   Widget loadingWidget(BuildContext context) {

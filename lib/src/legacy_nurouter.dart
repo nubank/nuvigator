@@ -180,6 +180,7 @@ abstract class NuRouter implements INuRouter {
   Route<T> getRoute<T>({
     String deepLink,
     Object parameters,
+    bool isFromNative = false,
     @deprecated bool fromLegacyRouteName = false,
     ScreenType fallbackScreenType = materialScreenType,
   }) {
@@ -201,11 +202,15 @@ abstract class NuRouter implements INuRouter {
       arguments: parser.getParams(deepLink),
     );
     // 3. Convert ScreenRoute to Route
-    return routeEntry
+    final route = routeEntry
         .screenRouteBuilder(settings)
         .wrapWith(screensWrapper)
         .fallbackScreenType(fallbackScreenType)
         .toRoute(settings);
+    if (isFromNative) {
+      _addNativePopCallBack(route);
+    }
+    return route;
   }
 
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {
@@ -225,6 +230,11 @@ abstract class NuRouter implements INuRouter {
     final screenRoute = getScreen(routeSettings)
         .fallbackScreenType(nuvigator.widget.screenType);
     final route = screenRoute.toRoute(routeSettings);
+    _addNativePopCallBack(route);
+    return route;
+  }
+
+  void _addNativePopCallBack(Route route) {
     route.popped.then<dynamic>((dynamic _) async {
       if (nuvigator.stateTracker.stack.length == 1) {
         // We only have the backdrop route in the stack
@@ -232,6 +242,5 @@ abstract class NuRouter implements INuRouter {
         await SystemNavigator.pop();
       }
     });
-    return route;
   }
 }

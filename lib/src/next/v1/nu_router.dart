@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
@@ -8,15 +9,8 @@ import '../../legacy_nurouter.dart' as legacy;
 import '../../screen_route.dart';
 import '../../typings.dart';
 
-typedef NuWidgetRouteBuilder = Widget Function(
-    BuildContext context, NuRoute nuRoute, NuRouteSettings<dynamic> settings);
-
-typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
-
-typedef NuInitFunction = Future<bool> Function(BuildContext context);
-
-typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
-
+/// Extend to create your NuRoute. Contains the configuration of a Route that is
+/// going to be presented in a [Nuvigator]
 abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   T _module;
 
@@ -129,6 +123,8 @@ class NuRouteBuilder<A extends Object, R extends Object>
   ScreenType get screenType => _screenType;
 }
 
+/// Extend to create your own NuRouter. Responsible for declaring the routes and
+/// configuration of the [Nuvigator] where it will be installed.
 abstract class NuRouter implements INuRouter {
   List<NuRoute> _routes;
   List<legacy.NuRouter> _legacyRouters;
@@ -226,35 +222,43 @@ abstract class NuRouter implements INuRouter {
     String deepLink,
     Object parameters,
     @deprecated bool fromLegacyRouteName = false,
+    bool isFromNative = false,
     ScreenType fallbackScreenType,
   }) {
-    final route = _getScreenRoute<R>(deepLink,
-            parameters: parameters ?? <String, dynamic>{})
-        ?.fallbackScreenType(fallbackScreenType ?? materialScreenType)
-        ?.toRoute();
-    if (route != null) return route;
+    final route = _getScreenRoute<R>(
+      deepLink,
+      parameters: parameters ?? <String, dynamic>{},
+    )?.fallbackScreenType(fallbackScreenType)?.toRoute();
+    if (route != null) {
+      if (isFromNative) {
+        _addNativePopCallBack(route);
+      }
+      return route;
+    }
 
     // start region: Backwards Compatible Code
     for (final legacyRouter in _legacyRouters) {
-      if (fromLegacyRouteName) {
-        final settings = RouteSettings(name: deepLink, arguments: parameters);
-        final r = legacyRouter
-            .getScreen(settings)
-            ?.fallbackScreenType(screenType)
-            ?.toRoute(settings);
-        if (r != null) return r;
-      } else {
-        final r = legacyRouter.getRoute<R>(
-          deepLink: deepLink,
-          parameters: parameters,
-          fromLegacyRouteName: fromLegacyRouteName,
-          fallbackScreenType: fallbackScreenType,
-        );
-        if (r != null) return r;
-      }
+      final r = legacyRouter.getRoute<R>(
+        deepLink: deepLink,
+        parameters: parameters,
+        isFromNative: isFromNative,
+        fromLegacyRouteName: fromLegacyRouteName,
+        fallbackScreenType: fallbackScreenType,
+      );
+      if (r != null) return r;
     }
     // end region
     return null;
+  }
+
+  void _addNativePopCallBack(Route route) {
+    route.popped.then<dynamic>((dynamic _) async {
+      if (nuvigator.stateTracker.stack.length == 1) {
+        // We only have the backdrop route in the stack
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+        await SystemNavigator.pop();
+      }
+    });
   }
 }
 

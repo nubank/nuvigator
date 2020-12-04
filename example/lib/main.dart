@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       builder: Nuvigator(
-        screenType: cupertinoDialogScreenType,
         router: MainAppRouter(),
       ),
     );

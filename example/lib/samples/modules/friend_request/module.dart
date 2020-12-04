@@ -38,6 +38,9 @@ class FriendRequestSuccessRoute extends NuRoute<NuRouter, void, void> {
 // FriendRequestsModuleRouter
 class FriendRequestRouter extends NuRouter {
   @override
+  ScreenType get screenType => materialScreenType;
+
+  @override
   String get initialRoute => 'friend-requests/list';
 
   @override

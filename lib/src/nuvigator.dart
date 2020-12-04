@@ -69,6 +69,7 @@ abstract class INuRouter {
     String deepLink,
     Object parameters,
     bool fromLegacyRouteName = false,
+    bool isFromNative = false,
     ScreenType fallbackScreenType,
   });
 }
@@ -304,10 +305,15 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// Open the requested deepLink, if the current Nuvigator is not able to handle
   /// it, and no [INuRouter.onDeepLinkNotFound] is provided, then we try to open the
   /// deepLink in the parent Nuvigator.
-  Future<R> open<R>(String deepLink, {Map<String, dynamic> parameters}) {
+  Future<R> open<R>(
+    String deepLink, {
+    Map<String, dynamic> parameters,
+    bool isFromNative = false,
+  }) {
     final route = router.getRoute<R>(
       deepLink: deepLink,
       parameters: parameters,
+      isFromNative: isFromNative,
       fromLegacyRouteName: false,
       fallbackScreenType: widget.screenType,
     );
@@ -362,7 +368,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     this.initialArguments,
     Key key,
     this.observers = const [],
-    this.screenType = materialScreenType,
+    this.screenType,
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
@@ -467,7 +473,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       observers: observers,
       initialDeepLink: initialDeepLink?.toString(),
       initialRoute: initialRoute,
-      screenType: screenType,
+      screenType: screenType ?? materialScreenType,
       key: _innerKey,
       initialArguments: initialArguments,
       wrapper: wrapper,
