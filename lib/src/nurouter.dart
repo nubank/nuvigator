@@ -128,7 +128,7 @@ abstract class NuRouter implements INuRouter {
 
   /// Deprecated: Prefer using getRoute
   @deprecated
-  RouteEntry _getRouteEntryForDeepLink(String deepLink) {
+  RouteEntry getRouteEntryForDeepLink(String deepLink) {
     final thisDeepLinkPrefix = deepLinkPrefix;
     // Looks for match in this Router screens
     for (var screenEntry in screensMap.entries) {
@@ -147,7 +147,7 @@ abstract class NuRouter implements INuRouter {
     // If not found, iterates on the grouped routers
     for (final router in routers) {
       final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
-      final subRouterEntry = router._getRouteEntryForDeepLink(newDeepLink);
+      final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
       if (subRouterEntry != null) {
         final fullTemplate =
             thisDeepLinkPrefix + (subRouterEntry.key.deepLink ?? '');
@@ -164,7 +164,7 @@ abstract class NuRouter implements INuRouter {
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
     if (this == nuvigator.rootRouter) {
-      final routeEntry = _getRouteEntryForDeepLink(url.toString());
+      final routeEntry = getRouteEntryForDeepLink(url.toString());
 
       if (routeEntry == null) {
         if (onDeepLinkNotFound != null) {
@@ -191,7 +191,7 @@ abstract class NuRouter implements INuRouter {
   // endregion
 
   bool canOpenDeepLink(Uri url) {
-    return _getRouteEntryForDeepLink(url.toString()) != null;
+    return getRouteEntryForDeepLink(url.toString()) != null;
   }
 
   /// From a deepLink (plus some option parameters) get a Route.
@@ -210,7 +210,7 @@ abstract class NuRouter implements INuRouter {
     }
 
     // 1. Get ScreeRouter for DeepLink
-    final routeEntry = _getRouteEntryForDeepLink(deepLink);
+    final routeEntry = getRouteEntryForDeepLink(deepLink);
     if (routeEntry == null) {
       return null;
     }
