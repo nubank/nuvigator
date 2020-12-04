@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-beta.0+1
+- Fix conflict between `Nuvigator` and `NuvigatorInner` key
+
 ## 1.0.0-beta.0
 - Introduction of a new dynamic API (aka: `next`), more info can be found at it's own documentation
   - DeepLinks and RouteNames where unified under paths
