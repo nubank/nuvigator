@@ -127,7 +127,6 @@ abstract class NuRouter implements INuRouter {
   }
 
   /// Deprecated: Prefer using getRoute
-  @deprecated
   RouteEntry getRouteEntryForDeepLink(String deepLink) {
     final thisDeepLinkPrefix = deepLinkPrefix;
     // Looks for match in this Router screens
