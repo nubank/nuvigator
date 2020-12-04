@@ -357,14 +357,15 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     this.initialRoute,
     this.initialDeepLink,
     this.initialArguments,
-    this.key,
+    Key key,
     this.observers = const [],
     this.screenType = materialScreenType,
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
-  })  : assert(router != null),
+  })  : _innerKey = key,
+        assert(router != null),
         assert(() {
           if (router is NuRouter) {
             return initialDeepLink == null &&
@@ -396,9 +397,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
   final List<NavigatorObserver> observers;
-  @override
-  // ignore: overridden_fields
-  final Key key;
+  final Key _innerKey;
   final String initialRoute;
   final Uri initialDeepLink;
   final Map<String, Object> initialArguments;
@@ -448,7 +447,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
         observers: observers,
         initialDeepLink: moduleRouter.initialRoute,
         screenType: moduleRouter.screenType,
-        key: key,
+        key: _innerKey,
         initialArguments: initialArguments,
         wrapper: moduleRouter.routeWrapper,
         shouldPopRoot: shouldPopRoot,
@@ -465,7 +464,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       initialDeepLink: initialDeepLink?.toString(),
       initialRoute: initialRoute,
       screenType: screenType,
-      key: key,
+      key: _innerKey,
       initialArguments: initialArguments,
       wrapper: wrapper,
       shouldPopRoot: shouldPopRoot,
