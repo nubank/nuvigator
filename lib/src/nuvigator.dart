@@ -103,9 +103,8 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
             );
             if (r == null) {
               throw FlutterError(
-                  'No Route was found for the initialRoute provided: $deepLink.'
-                  ' Be sure that the provided initialRoute/initialDeepLink exists'
-                  'in this Router.');
+                  'No Route was found for the initialRoute provided: "$deepLink"'
+                  ' .Be sure that the provided initialRoute exists in this Router ($router).');
             }
             return [r];
           },
