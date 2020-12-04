@@ -116,7 +116,6 @@ abstract class NuRouter implements INuRouter {
     return screenBuilder(settings).wrapWith(screensWrapper);
   }
 
-  @deprecated
   ScreenRoute getScreen(RouteSettings settings) {
     final screen = _getScreen(settings);
     if (screen != null) return screen;
