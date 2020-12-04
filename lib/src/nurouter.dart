@@ -36,7 +36,7 @@ abstract class INuRouter {
 
   Route<T> getRoute<T>({
     String deepLink,
-    Map<String, dynamic> parameters,
+    Object parameters,
     bool fromLegacyRouteName = false,
     ScreenType fallbackScreenType,
   });
