@@ -208,17 +208,16 @@ abstract class NuRouter implements INuRouter {
           ?.fallbackScreenType(fallbackScreenType)
           ?.toRoute(settings);
     }
-
     // 1. Get ScreeRouter for DeepLink
     final routeEntry = getRouteEntryForDeepLink(deepLink);
     if (routeEntry == null) {
       return null;
     }
-    // 2. Build NuRouteSettings
-    final settings =
-        DeepLinkParser(template: routeEntry.key.deepLink).toNuRouteSettings(
-      deepLink: deepLink,
-      arguments: parameters,
+    // 2. Build Settings
+    final parser = DeepLinkParser(template: routeEntry.key.deepLink);
+    final settings = RouteSettings(
+      name: routeEntry.key.routeName,
+      arguments: parser.getParams(deepLink),
     );
     // 3. Convert ScreenRoute to Route
     return routeEntry
