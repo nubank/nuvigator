@@ -17,6 +17,8 @@ class RouteEntry {
   final RouteDef key;
   final ScreenRouteBuilder screenRouteBuilder;
 
+  ScreenRouteBuilder get value => screenRouteBuilder;
+
   @override
   int get hashCode => key.hashCode;
 
