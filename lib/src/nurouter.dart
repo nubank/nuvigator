@@ -201,7 +201,7 @@ abstract class NuRouter implements INuRouter {
     String deepLink,
     Object parameters,
     @deprecated bool fromLegacyRouteName = false,
-    ScreenType fallbackScreenType,
+    ScreenType fallbackScreenType = materialScreenType,
   }) {
     if (fromLegacyRouteName) {
       final settings = RouteSettings(name: deepLink, arguments: parameters);

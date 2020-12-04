@@ -193,6 +193,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
           deepLink: route,
           parameters: arguments,
           fromLegacyRouteName: true,
+          fallbackScreenType: widget.screenType,
         ) !=
         null;
   }
@@ -441,7 +442,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       debug: debug,
       inheritableObservers: inheritableObservers,
       observers: observers,
-      initialDeepLink: initialDeepLink.toString(),
+      initialDeepLink: initialDeepLink?.toString(),
       initialRoute: initialRoute,
       screenType: screenType,
       key: key,
