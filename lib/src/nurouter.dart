@@ -160,8 +160,7 @@ abstract class NuRouter implements INuRouter {
     return null;
   }
 
-  /// Deprecated: Prefer using [NuvigatorState.open]
-  @deprecated
+  /// Deprecated: Prefer using [NuvigatorState.open]w
   Future<T> openDeepLink<T>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
     if (this == nuvigator.rootRouter) {

@@ -270,7 +270,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 
   /// Prefer using [NuvigatorState.open]
-  @deprecated
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
     if (rootRouter is NuRouter) {
       // ignore: avoid_as
