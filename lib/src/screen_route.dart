@@ -4,8 +4,7 @@ import 'package:nuvigator/nuvigator.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
 
 import 'screen_type.dart';
-
-typedef WrapperFn = Widget Function(BuildContext context, Widget child);
+import 'typings.dart';
 
 class RouteDef {
   RouteDef(this.routeName, {this.deepLink});

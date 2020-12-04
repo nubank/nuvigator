@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'next/v1/nu_module_router.dart';
-import 'nurouter.dart';
-import 'screen_route.dart';
+import 'legacy_nurouter.dart' as legacy;
+import 'next/v1/nu_router.dart';
 import 'screen_type.dart';
 import 'screen_types/material_screen_type.dart';
-
-typedef ObserverBuilder = NavigatorObserver Function();
+import 'typings.dart';
 
 NuvigatorState _tryToFindNuvigatorForRouter<T extends INuRouter>(
     NuvigatorState nuvigatorState) {
@@ -57,6 +55,24 @@ class NuvigatorStateTracker extends NavigatorObserver {
   }
 }
 
+abstract class INuRouter {
+  void install(NuvigatorState nuvigator);
+
+  void dispose();
+
+  HandleDeepLinkFn onDeepLinkNotFound;
+
+  @deprecated
+  T getRouter<T extends INuRouter>();
+
+  Route<T> getRoute<T>({
+    String deepLink,
+    Object parameters,
+    bool fromLegacyRouteName = false,
+    ScreenType fallbackScreenType,
+  });
+}
+
 class _NuvigatorInner<T extends INuRouter> extends Navigator {
   _NuvigatorInner({
     @required this.router,
@@ -78,14 +94,20 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
             ...observers,
           ],
           onGenerateInitialRoutes: (_, __) {
-            return [
-              router.getRoute<dynamic>(
-                deepLink: initialDeepLink ?? initialRoute,
-                parameters: initialArguments,
-                fromLegacyRouteName: initialDeepLink == null,
-                fallbackScreenType: screenType,
-              ),
-            ];
+            final deepLink = initialDeepLink ?? initialRoute;
+            final r = router.getRoute<dynamic>(
+              deepLink: deepLink,
+              parameters: initialArguments,
+              fromLegacyRouteName: initialDeepLink == null,
+              fallbackScreenType: screenType,
+            );
+            if (r == null) {
+              throw FlutterError(
+                  'No Route was found for the initialRoute provided: $deepLink.'
+                  ' Be sure that the provided initialRoute/initialDeepLink exists'
+                  'in this Router.');
+            }
+            return [r];
           },
           onGenerateRoute: (settings) {
             return router.getRoute<dynamic>(
@@ -271,9 +293,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   /// Prefer using [NuvigatorState.open]
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    if (rootRouter is NuRouter) {
+    if (rootRouter is legacy.NuRouter) {
       // ignore: avoid_as
-      return (rootRouter as NuRouter)
+      return (rootRouter as legacy.NuRouter)
           .openDeepLink<R>(deepLink, arguments, false);
     } else {
       return rootNuvigator.open(deepLink.toString(), parameters: arguments);
@@ -345,7 +367,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     this.shouldPopRoot = false,
   })  : assert(router != null),
         assert(() {
-          if (router is NuModuleRouter) {
+          if (router is NuRouter) {
             return initialDeepLink == null &&
                 initialDeepLink == null &&
                 wrapper == null;
@@ -419,7 +441,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   Widget _buildModuleRouter(BuildContext context) {
     return NuRouterLoader(
       // ignore: avoid_as
-      router: router as NuModuleRouter,
+      router: router as NuRouter,
       builder: (moduleRouter) => _NuvigatorInner(
         router: moduleRouter,
         debug: debug,
@@ -453,7 +475,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (router is NuModuleRouter) {
+    if (router is NuRouter) {
       return _buildModuleRouter(context);
     } else {
       return _buildLegacyRouter(context);

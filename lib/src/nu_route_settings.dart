@@ -32,7 +32,7 @@ class NuRouteSettings<A extends Object> extends RouteSettings {
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParameters)';
+      '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParameters, $arguments)';
 
   @override
   int get hashCode => hashList([name, rawParameters, pathTemplate]);

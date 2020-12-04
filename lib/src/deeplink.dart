@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
@@ -82,9 +83,14 @@ class DeepLinkParser<A extends Object> {
       if (arguments is Map<String, dynamic>) {
         allParams.addAll(arguments);
       } else if (arguments is A) {
+        debugPrint('The provided extra argument $arguments is of type $A.'
+            ' Ignoring all deepLink encoded parameters ($allParams) for parsing purposes.');
         parsedArgs = arguments;
       } else {
-        // TODO: Error?
+        throw FlutterError(
+            'An incompatible extra argument ($arguments) was provided when trying to open'
+            'the deepLink $deepLink. The argument should be either a Map<String, dynamic>'
+            'or a instance of $A.');
       }
     }
 

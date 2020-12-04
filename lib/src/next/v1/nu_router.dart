@@ -4,8 +4,9 @@ import 'package:nuvigator/next.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
 
 import '../../deeplink.dart';
-import '../../nurouter.dart';
+import '../../legacy_nurouter.dart' as legacy;
 import '../../screen_route.dart';
+import '../../typings.dart';
 
 typedef NuWidgetRouteBuilder = Widget Function(
     BuildContext context, NuRoute nuRoute, NuRouteSettings<dynamic> settings);
@@ -16,8 +17,7 @@ typedef NuInitFunction = Future<bool> Function(BuildContext context);
 
 typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
 
-abstract class NuRoute<T extends NuModuleRouter, A extends Object,
-    R extends Object> {
+abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   T _module;
 
   T get module => _module;
@@ -81,7 +81,7 @@ abstract class NuRoute<T extends NuModuleRouter, A extends Object,
 }
 
 class NuRouteBuilder<A extends Object, R extends Object>
-    extends NuRoute<NuModuleRouter, A, R> {
+    extends NuRoute<NuRouter, A, R> {
   NuRouteBuilder({
     @required String path,
     @required this.builder,
@@ -129,9 +129,9 @@ class NuRouteBuilder<A extends Object, R extends Object>
   ScreenType get screenType => _screenType;
 }
 
-abstract class NuModuleRouter implements INuRouter {
+abstract class NuRouter implements INuRouter {
   List<NuRoute> _routes;
-  List<NuRouter> _legacyRouters;
+  List<legacy.NuRouter> _legacyRouters;
   NuvigatorState _nuvigator;
 
   NuvigatorState get nuvigator => _nuvigator;
@@ -163,7 +163,7 @@ abstract class NuModuleRouter implements INuRouter {
   List<NuRoute> get registerRoutes;
 
   /// Backwards compatible with old routers API
-  List<NuRouter> get legacyRouters => [];
+  List<INuRouter> get legacyRouters => [];
 
   @override
   T getRouter<T extends INuRouter>() {
@@ -199,7 +199,7 @@ abstract class NuModuleRouter implements INuRouter {
   }
 
   Future<void> _init(BuildContext context) async {
-    _legacyRouters = legacyRouters;
+    _legacyRouters = legacyRouters.whereType<legacy.NuRouter>().toList();
     await init(context);
     _routes = registerRoutes;
     await Future.wait(_routes.map((route) async {
@@ -258,7 +258,7 @@ abstract class NuModuleRouter implements INuRouter {
   }
 }
 
-class NuRouterBuilder extends NuModuleRouter {
+class NuRouterBuilder extends NuRouter {
   NuRouterBuilder({
     @required String initialRoute,
     @required List<NuRoute> routes,
@@ -310,8 +310,8 @@ class NuRouterLoader extends StatefulWidget {
     this.builder,
   }) : super(key: key);
 
-  final NuModuleRouter router;
-  final Widget Function(NuModuleRouter router) builder;
+  final NuRouter router;
+  final Widget Function(NuRouter router) builder;
 
   @override
   _NuRouterLoaderState createState() => _NuRouterLoaderState();

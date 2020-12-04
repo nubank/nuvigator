@@ -33,7 +33,7 @@ class FriendRequestArgs {
 
 @NuRouteParser()
 class FriendRequestRouteExample
-    extends NuRoute<NuModule, FriendRequestArgs, void> {
+    extends NuRoute<NuRouter, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
 
@@ -49,7 +49,7 @@ class FriendRequestRouteExample
   Widget build(
       BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
     return Nuvigator(
-      module: null,
+      router: null,
       screenType: materialScreenType,
     );
   }

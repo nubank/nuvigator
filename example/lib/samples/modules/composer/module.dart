@@ -4,7 +4,7 @@ import 'package:nuvigator/next.dart';
 import 'screens/help_screen.dart';
 import 'screens/text_composer_screen.dart';
 
-class _ComposerTextRoute extends NuRoute<NuModuleRouter, void, String> {
+class _ComposerTextRoute extends NuRoute<NuRouter, void, String> {
   @override
   String get path => 'composer/text';
 
@@ -38,7 +38,7 @@ class _ComposerHelpRoute extends NuRoute {
 
 // Export Helper
 
-class ComposerRoute extends NuRoute<NuModuleRouter, void, String> {
+class ComposerRoute extends NuRoute<NuRouter, void, String> {
   @override
   Widget build(BuildContext context, NuRouteSettings<Object> settings) {
     return Nuvigator.routes(

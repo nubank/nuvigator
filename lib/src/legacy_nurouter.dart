@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/src/deeplink.dart';
 
-import '../nuvigator.dart';
+import 'nuvigator.dart';
 import 'screen_route.dart';
-
-typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(
-    RouteSettings settings);
-
-typedef HandleDeepLinkFn = Future<dynamic> Function(INuRouter router, Uri uri,
-    [bool isFromNative, dynamic args]);
+import 'screen_type.dart';
+import 'screen_types/material_screen_type.dart';
+import 'typings.dart';
 
 class RouteEntry {
   RouteEntry(this.key, this.screenRouteBuilder);
@@ -24,24 +21,6 @@ class RouteEntry {
 
   @override
   bool operator ==(Object other) => other is RouteEntry && other.key == key;
-}
-
-abstract class INuRouter {
-  void install(NuvigatorState nuvigator);
-
-  void dispose();
-
-  HandleDeepLinkFn onDeepLinkNotFound;
-
-  @deprecated
-  T getRouter<T extends INuRouter>();
-
-  Route<T> getRoute<T>({
-    String deepLink,
-    Object parameters,
-    bool fromLegacyRouteName = false,
-    ScreenType fallbackScreenType,
-  });
 }
 
 abstract class NuRouter implements INuRouter {

@@ -33,8 +33,7 @@ class HomeRoute extends NuRoute {
 }
 
 @NuRouteParser()
-class FriendRequestRoute
-    extends NuRoute<NuModuleRouter, FriendRequestArgs, void> {
+class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
 
@@ -63,7 +62,7 @@ class FriendRequestRoute
 }
 
 // MainAppModuleRouter
-class MainAppRouter extends NuModuleRouter {
+class MainAppRouter extends NuRouter {
   @override
   String get initialRoute => 'home';
 
@@ -77,7 +76,7 @@ class MainAppRouter extends NuModuleRouter {
   }
 
   @override
-  List<NuRouter> get legacyRouters => [
+  List<INuRouter> get legacyRouters => [
         OldFriendRequestRouter(),
       ];
 
