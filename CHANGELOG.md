@@ -1,7 +1,16 @@
 # CHANGELOG
 
-## 1.0.0-dev.0
-- [WIP] New Dynamic API
+## 1.0.0-beta.0
+- Introduction of a new dynamic API (aka: `next`), more info can be found at it's own documentation
+  - DeepLinks and RouteNames where unified under paths
+  - New dynamic approach to define Routes and Routers
+  - More info can be found at [here](doc/next.md)
+- `initialDeepLink` and `initialRoute` have better error reporting and a more precise behavior.
+  - Just the explicitly provided initialRoute is going to be used to find the Route. 
+- Nuvigator now relies on a interface type `INuRouter` instead of a concrete specific implementation
+- `onScreenNotFound` method was removed
+- Introduction of `NuvigatorState.open` in favor of `.openDeepLink`. This new method supports nested deepLink navigation.
+- Old API can be considered deprecated from now on. Prefer using the `next` API on new projects.
 
 ## 0.7.2
 - Fix problems caused by bump in `analyzer` dependency

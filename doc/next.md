@@ -31,11 +31,11 @@ class MyRoute extends NuRoute {
 class MyRouter extends NuRouter {
   @override
   String get initialRoute => 'my-route';
-  
+
   @override
   List<NuRoute> get registerRoutes => [
-    MyRoute(),
-  ];
+        MyRoute(),
+      ];
 }
 
 ```
@@ -53,23 +53,56 @@ To create your Route, you should extend the `NuRoute` class and implement (at le
 Example:
 
 ```dart
+class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
+  // Optional
+  @override
+  Future<bool> init(BuildContext context) async {
+    // Do something
+    return true; // return true to register the route
+  }
+
+  // Optional - will use the Router default if not provided
+  @override
+  ScreenType get screenType => materialScreenType;
+
+  // Optional - converts deepLink params to MyArguments class
+  @override
+  ParamsParser<MyArguments> get paramsParser => _$paramsParser;
+
+  // Optional - The the provided path should be matched as a prefix, instead of exact 
+  @override
+  bool get prefix => false;
+
+  // Path of this route
+  @override
+  String get path => 'my-route';
+
+  // What this route will render
+  @override
+  Widget build(BuildContext context, NuRouteSettings settings) {
+    // Inside the NuRouter subclass you have access to the `nuvigator` and `router` that this route is attached to.
+    return MyScreen(
+      onClick: () => nuvigator.open('next-route'),
+    );
+  }
+}
 ```
 
 Inside your `NuRoute` class you will have access to the the `NuRouter` and `Nuvigator` that is presenting it.
 
 ### NuRoute Initialization
 
-Every `NuRoute` can override the `init(BuildContext context)` method, that allows for an asynchronous initialization of it
-when its corresponding `Nuvigator` is first presented.
+Every `NuRoute` can override the `init(BuildContext context)` method, that allows for an asynchronous initialization of
+it when its corresponding `Nuvigator` is first presented.
 
-**Important**: The `init` function is going to be executed when the `Nuvigator` in which this `NuRoute` is contained is presented,
-and not when the `NuRoute` is presented.
+**Important**: The `init` function is going to be executed when the `Nuvigator` in which this `NuRoute` is contained is
+presented, and not when the `NuRoute` is presented.
 
-You can use this function to fetch some information or prepare a common state that will need to be used when the Route is going
+You can use this function to fetch some information or prepare a common state that will need to be used when the Route
+is going to be presented.
+
+While all `NuRoute`s are initializing a `loadingWidget` (provided by the `Nuvigator` corresponding `NuRouter`) is going
 to be presented.
-
-While all `NuRoute`s are initializing a `loadingWidget` (provided by the `Nuvigator` corresponding `NuRouter`) is going to be
-presented.
 
 ### NuRouteBuilder
 
@@ -85,7 +118,7 @@ class MyRouter extends NuRouter {
 
   @override
   String get initialRoute => 'my-route-path';
-  
+
   @override
   List<NuRoute> get registerRoutes => [
         NuRouteBuilder(
@@ -106,6 +139,9 @@ implement custom initialization functions and configure itself correctly before 
 ### NuRouter
 
 ### NuRouter Initialization and Loading
+
+Similar to the `NuRoute` initialization, the `NuRouter` can perform some asynchronous initialization when it's `Nuvigator`
+is first presented.
 
 ### NuRouterBuilder
 
@@ -133,6 +169,10 @@ You can combine `NuRouterBuilder` with `NuRouteBuilder` to reach a completely in
 
 ## Nuvigator
 
+`Nuvigator` is a `Navigator` subclass that offers nested navigation capabilities and improvements in a transparent way.
+Every `Nuvigator` have a corresponding `NuRouter` that is responsible for controlling it's routing logic. Other than that,
+a `Nuvigator` shall behave very similar to a regular `Navigator`.
+
 ### Navigating
 
 Using the `NuvigatorState.open` method.
@@ -140,3 +180,27 @@ Using the `NuvigatorState.open` method.
 ### Nuvigator.routes
 
 Helper factory to create `Nuvigator` from a List of `NuRoute`s, just like a `NuRouterBuilder`.
+
+## Legacy Interop
+
+The next API offers a way to interop with the legacy Router API, this can facilitate the migration of the project to be
+done by parts.
+
+Just registers yours legacy `NuRouter`s under the `legacyRouters` getter in the new `NuRouter` class.
+
+```dart
+import 'package:nuvigator/next.dart';
+
+class MyRouter extends NuRouter {
+  // ...
+
+  List<INuRouter> get legacyRouters => [
+        MyLegacyRouter(),
+      ];
+
+// ...
+}
+```
+
+This will ensure that when no route is found using the new API (for both deepLinks and routeNames), the old API will be
+used to try to locate it.
