@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.0-beta.1
+- Fixed asserts on Nuvigator
+- Add improved error message when a ScreenRoute is rendered without a ScreenType specified
+
 ## 1.0.0-beta.0+1
 - Fix conflict between `Nuvigator` and `NuvigatorInner` key
 

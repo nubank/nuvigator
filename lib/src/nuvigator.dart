@@ -350,6 +350,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 }
 
+/// Creates a new Nuvigator. When using the Next API, several of those options
+/// are provided by the [NuRouter]. Providing them here will thrown an assertion
+/// error.
 @immutable
 class Nuvigator<T extends INuRouter> extends StatelessWidget {
   Nuvigator({
@@ -369,8 +372,9 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
         assert(() {
           if (router is NuRouter) {
             return initialDeepLink == null &&
-                initialDeepLink == null &&
-                wrapper == null;
+                initialRoute == null &&
+                wrapper == null &&
+                screenType == null;
           }
           return true;
         }());

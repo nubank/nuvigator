@@ -97,8 +97,13 @@ class ScreenRoute<T extends Object> {
     );
   }
 
-  Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) =>
-      screenType.toRoute<T>(builder, settings);
+  Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) {
+    if (screenType == null) {
+      throw FlutterError(
+          'The screenRoute of $settings does not specify a ScreenType');
+    }
+    return screenType.toRoute<T>(builder, settings);
+  }
 
   Widget _buildScreen(BuildContext context) {
     if (wrapper == null) return builder(context);
