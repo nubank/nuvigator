@@ -1,7 +1,9 @@
+import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
 import 'package:example/samples/modules/friend_request/screens/list_requests_screen.dart';
 import 'package:example/samples/modules/friend_request/screens/success_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
+import 'package:provider/provider.dart';
 
 part 'friend_request_router.g.dart';
 
@@ -24,6 +26,14 @@ class OldFriendRequestRouter extends NuRouter {
             toComposeText: () {},
           ),
       screenType: materialScreenType);
+
+  @override
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+        return ChangeNotifierProvider.value(
+          value: FriendRequestBloc(10),
+          child: child,
+        );
+      };
 
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;

@@ -1,6 +1,6 @@
 import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
@@ -12,7 +12,7 @@ class ListRequestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final bloc = Provider.of<FriendRequestBloc>(context);
+    final bloc = Provider.of<FriendRequestBloc>(context);
     final bodyStyle = Theme.of(context).textTheme.bodyText1;
 
     return Scaffold(
@@ -38,11 +38,10 @@ class ListRequestScreen extends StatelessWidget {
           }
           return ListTile(
             title: Text('Request $index'),
-            // trailing:
-            // Switch(
-            //   value: bloc.accepted[index - 1],
-            //   onChanged: (value) => bloc.updateRequest(index - 1, value),
-            // ),
+            trailing: Switch(
+              value: bloc.accepted[index - 1],
+              onChanged: (value) => bloc.updateRequest(index - 1, value),
+            ),
           );
         },
       ),
