@@ -19,8 +19,8 @@ class MyRoute extends NuRoute {
   }
 }
 
-// Define your NuModule
-class MyModule extends NuModule {
+// Define your NuRouter
+class MyRouter extends NuRouter {
   
 }
 
@@ -39,7 +39,7 @@ Example:
 ```dart
 ```
 
-Inside your `NuRoute` class you will have access to the the `NuModule` and `Nuvigator` that is presenting it.
+Inside your `NuRoute` class you will have access to the the `NuRouter` and `Nuvigator` that is presenting it.
 
 ### NuRouteBuilder
 
@@ -50,13 +50,13 @@ Example:
 ```dart
 ```
 
-## Modules
+## Routers
 
-Modules are a grouping of `NuRoute`s, there are provided to the Nuvigator as it's controller. `NuModules` can implement custom initialization functions and configure itself correctly before the `Nuvigator` is presented. 
+Modules are a grouping of `NuRoute`s, there are provided to the `Nuvigator` as it's controller. `NuModules` can implement custom initialization functions and configure itself correctly before the `Nuvigator` is presented. 
 
-### NuModule
+### NuRouter
 
-### NuModuleBuilder
+### NuRouterBuilder
 
 
 ## Nuvigator
