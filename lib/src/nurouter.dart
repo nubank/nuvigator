@@ -180,8 +180,10 @@ abstract class NuRouter implements INuRouter {
         final route = _buildNativeRoute(routeEntry, mapArguments);
         return nuvigator.push<T>(route);
       }
-      return nuvigator.pushNamed<T>(routeEntry.key.routeName,
-          arguments: mapArguments);
+      return nuvigator.pushNamed<T>(
+        routeEntry.key.routeName,
+        arguments: mapArguments,
+      );
     } else {
       return nuvigator.openDeepLink<T>(url, arguments);
     }

@@ -445,6 +445,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       initialRoute: initialRoute,
       screenType: screenType,
       key: key,
+      initialArguments: initialArguments,
       wrapper: wrapper,
       shouldPopRoot: shouldPopRoot,
     );
