@@ -15,8 +15,8 @@ typedef ObserverBuilder = NavigatorObserver Function();
 
 typedef WrapperFn = Widget Function(BuildContext context, Widget child);
 
-typedef NuWidgetRouteBuilder = Widget Function(
-    BuildContext context, NuRoute nuRoute, NuRouteSettings<dynamic> settings);
+typedef NuWidgetRouteBuilder<A extends Object, R extends Object> = Widget Function(
+    BuildContext context, NuRouteBuilder<A, R> nuRoute, NuRouteSettings<A> settings);
 
 typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
 

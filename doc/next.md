@@ -35,7 +35,14 @@ class MyRouter extends NuRouter {
   @override
   List<NuRoute> get registerRoutes => [
         MyRoute(),
-      ];
+  ];
+}
+
+// Render
+Widget build(BuildContext context) {
+  return Nuvigator(
+    router: MyRouter(),
+  );
 }
 
 ```
@@ -54,7 +61,7 @@ Example:
 
 ```dart
 class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
-  // Optional
+  // Optional - If your Router enforces a synchronous initialization this should return an instance of a SynchronousFuture
   @override
   Future<bool> init(BuildContext context) async {
     // Do something
@@ -89,6 +96,13 @@ class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
 ```
 
 Inside your `NuRoute` class you will have access to the the `NuRouter` and `Nuvigator` that is presenting it.
+
+### Route Arguments
+
+- TODO: DeepLink Parameters Support
+- TODO: NuRouteSettings class
+- TODO: Class Parser
+- TODO: Generator
 
 ### NuRoute Initialization
 
@@ -138,10 +152,58 @@ implement custom initialization functions and configure itself correctly before 
 
 ### NuRouter
 
+To create your Router, you should extend the `NuRouter` class, and implement the required methods.
+
+```dart
+class MyRouter extends NuRouter {
+
+  // The initialRoute path that should be rendered by this Router Nuvigator
+  @override
+  String get initialRoute => 'home';
+
+  // The list of NuRoutes that will be available in this Router.
+  // Important: This method should return a new instance of the NuRoute, do not re-utilize instances
+  @override
+  List<NuRoute> get registerRoutes => [
+
+  ];
+
+  // Optional - Default ScreenType to be used when a route does not specify
+  @override
+  ScreenType get screenType => materialScreenType;
+
+  // Optional - Custom initialization function of this Router
+  @override
+  Future<void> init(BuildContext context) {
+    return SynchronousFuture(null);
+  }
+
+  // Optional (defaults to true) - Enables/Disables support for asynchronous initialization (will display the loading widget) 
+  @override
+  bool get awaitForInit => true;
+
+  // Optional - If asynchronous initialization is enabled, the widget will be rendered while the Router/Routes initialize
+  @override
+  Widget get loadingWidget => Container();
+
+  // Optional - If no Route is found for the requested deepLink then this function will be called
+  @override
+  DeepLinkHandlerFn get onDeepLinkNotFound => null
+
+  // Optional - Register legacy NuRouters
+  @override
+  List<INuRouter> get legacyRouters => [
+
+  ];
+}
+```
+
 ### NuRouter Initialization and Loading
 
 Similar to the `NuRoute` initialization, the `NuRouter` can perform some asynchronous initialization when it's `Nuvigator`
-is first presented.
+is first presented. During the initialization the `loadingWidget` will be rendered instead of the Nuvigator.
+
+If for some reason you do not want to support asynchronous initialization, you can override the `awaitForInit` getter, and all init methods from NuRoute and the own init from the NuRoute will need to return a `SynchronousFuture`.
 
 ### NuRouterBuilder
 
@@ -181,6 +243,23 @@ Using the `NuvigatorState.open` method.
 
 Helper factory to create `Nuvigator` from a List of `NuRoute`s, just like a `NuRouterBuilder`.
 
+Example:
+
+```dart
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Nuvigator.routes(
+      initialRoute: 'home',
+      routes: [
+          NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
+          NuRouteBuilder(path: 'second', builder: (_, __, ___) => HomeScreen()),
+      ],
+    ),
+  }
+}
+```
+
 ## Legacy Interop
 
 The next API offers a way to interop with the legacy Router API, this can facilitate the migration of the project to be
@@ -196,7 +275,7 @@ class MyRouter extends NuRouter {
 
   List<INuRouter> get legacyRouters => [
         MyLegacyRouter(),
-      ];
+  ];
 
 // ...
 }

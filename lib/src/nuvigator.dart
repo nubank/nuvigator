@@ -459,7 +459,6 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
         screenType: moduleRouter.screenType,
         key: _innerKey,
         initialArguments: initialArguments,
-        wrapper: moduleRouter.routeWrapper,
         shouldPopRoot: shouldPopRoot,
       ),
     );

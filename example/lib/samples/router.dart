@@ -11,27 +11,6 @@ import 'modules/friend_request/module.dart';
 import 'modules/friend_request/navigation/friend_request_router.dart';
 import 'screens/home_screen.dart';
 
-class HomeRoute extends NuRoute {
-  @override
-  Future<bool> init(BuildContext context) {
-    return Future.delayed(const Duration(seconds: 2), () => true);
-  }
-
-  @override
-  String get path => 'home';
-
-  @override
-  ScreenType get screenType => materialScreenType;
-
-  @override
-  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
-    return HomeScreen();
-  }
-
-  @override
-  ParamsParser<Object> get paramsParser => null;
-}
-
 @NuRouteParser()
 class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   @override
@@ -82,7 +61,11 @@ class MainAppRouter extends NuRouter {
 
   @override
   List<NuRoute> get registerRoutes => [
-        HomeRoute(),
+        NuRouteBuilder(
+          path: 'home',
+          builder: (_, __, ___) => HomeScreen(),
+          screenType: materialScreenType,
+        ),
         FriendRequestRoute(),
         ComposerRoute(),
       ];
@@ -91,7 +74,10 @@ class MainAppRouter extends NuRouter {
   Widget routeWrapper(BuildContext context, Widget child) {
     return ChangeNotifierProvider<SamplesBloc>.value(
       value: SamplesBloc(),
-      child: child,
+      child: ChangeNotifierProvider.value(
+        value: FriendRequestBloc(10),
+        child: child,
+      ),
     );
   }
 }

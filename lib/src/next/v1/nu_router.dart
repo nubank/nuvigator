@@ -97,7 +97,7 @@ class NuRouteBuilder<A extends Object, R extends Object>
   final NuRouteParametersParser<A> parser;
   final bool _prefix;
   final ScreenType _screenType;
-  final NuWidgetRouteBuilder builder;
+  final NuWidgetRouteBuilder<A, R> builder;
 
   @override
   Future<bool> init(BuildContext context) {
@@ -114,7 +114,7 @@ class NuRouteBuilder<A extends Object, R extends Object>
       parser != null ? parser(map) : null;
 
   @override
-  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
+  Widget build(BuildContext context, NuRouteSettings<A> settings) {
     return builder(context, this, settings);
   }
 
@@ -207,12 +207,6 @@ abstract class NuRouter implements INuRouter {
   /// is first initialized into a [Nuvigator].
   Future<void> init(BuildContext context) {
     return SynchronousFuture(null);
-  }
-
-  /// A common wrapper that is going to be applied to all Routes returned by
-  /// this Module.
-  Widget routeWrapper(BuildContext context, Widget child) {
-    return child;
   }
 
   Future<void> _init(BuildContext context) {
