@@ -69,13 +69,11 @@ class MainAppRouter extends NuRouter {
   ScreenType get screenType => cupertinoScreenType;
 
   @override
-  Widget loadingWidget(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
+  Widget get loadingWidget => const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
 
   @override
   List<INuRouter> get legacyRouters => [

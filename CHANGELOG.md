@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.0.0-beta.3
+- Add `awaitForInit` option in the `NuRouter` to configure if it should support async initialization
+- Fix router property name on `NuRoute`
+- Make `loadingWidget` a getter method
+
 ## 1.0.0-beta.2
 - Add support from Navigation coming from Native side on Next API
   - `INuRouter.getRoute` now accepts an optional `isFromNative` option

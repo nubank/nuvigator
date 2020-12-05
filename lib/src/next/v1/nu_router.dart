@@ -12,11 +12,11 @@ import '../../typings.dart';
 /// Extend to create your NuRoute. Contains the configuration of a Route that is
 /// going to be presented in a [Nuvigator]
 abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
-  T _module;
+  T _router;
 
-  T get module => _module;
+  T get router => _router;
 
-  NuvigatorState get nuvigator => module.nuvigator;
+  NuvigatorState get nuvigator => router.nuvigator;
 
   bool canOpen(String deepLink) => _parser.matches(deepLink);
 
@@ -41,8 +41,13 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
         argumentParser: paramsParser,
       );
 
-  void _install(T module) {
-    _module = module;
+  void _install(T router) {
+    assert(_router == null);
+    _router = router;
+  }
+
+  void dispose() {
+    _router = null;
   }
 
   ScreenRoute<R> _screenRoute({
@@ -126,6 +131,15 @@ class NuRouteBuilder<A extends Object, R extends Object>
 /// Extend to create your own NuRouter. Responsible for declaring the routes and
 /// configuration of the [Nuvigator] where it will be installed.
 abstract class NuRouter implements INuRouter {
+  NuRouter() {
+    _legacyRouters = legacyRouters.whereType<legacy.NuRouter>().toList();
+    _routes = [];
+    for (final route in registerRoutes) {
+      route._install(this);
+      _routes.add(route);
+    }
+  }
+
   List<NuRoute> _routes;
   List<legacy.NuRouter> _legacyRouters;
   NuvigatorState _nuvigator;
@@ -144,6 +158,9 @@ abstract class NuRouter implements INuRouter {
   @override
   void dispose() {
     _nuvigator = null;
+    for (final route in _routes) {
+      route.dispose();
+    }
     for (final legacyRouter in _legacyRouters) {
       legacyRouter.dispose();
     }
@@ -160,6 +177,10 @@ abstract class NuRouter implements INuRouter {
 
   /// Backwards compatible with old routers API
   List<INuRouter> get legacyRouters => [];
+
+  /// Override to false if you want a strictly sync initialization in this Router
+  /// futures are not going to be awaited to complete!
+  bool get awaitForInit => true;
 
   @override
   T getRouter<T extends INuRouter>() {
@@ -180,11 +201,11 @@ abstract class NuRouter implements INuRouter {
   List<NuRoute> get routes => _routes;
 
   /// While the module is initializing this Widget is going to be displayed
-  Widget loadingWidget(BuildContext context) => Container();
+  Widget get loadingWidget => Container();
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
-  Future<void> init(BuildContext context) async {
+  Future<void> init(BuildContext context) {
     return SynchronousFuture(null);
   }
 
@@ -194,15 +215,32 @@ abstract class NuRouter implements INuRouter {
     return child;
   }
 
-  Future<void> _init(BuildContext context) async {
-    _legacyRouters = legacyRouters.whereType<legacy.NuRouter>().toList();
-    await init(context);
-    _routes = registerRoutes;
-    await Future.wait(_routes.map((route) async {
-      assert(route._module == null);
-      route._install(this);
-      await route.init(context);
-    }).toList());
+  Future<void> _init(BuildContext context) {
+    if (awaitForInit) {
+      return init(context).then((value) async {
+        for (final route in _routes) {
+          await route.init(context);
+        }
+      });
+    } else {
+      if (!(init(context) is SynchronousFuture)) {
+        throw FlutterError(
+            '$this Router initialization do not support Asynchronous initializations,'
+            ' but the return type of init() is not a SynchronousFuture. Make '
+            'the initialization Sync, or change the Router to support Async '
+            'initialization.');
+      }
+      for (final route in _routes) {
+        if (!(route.init(context) is SynchronousFuture)) {
+          throw FlutterError(
+              '$this Router initialization do not support Asynchronous initializations,'
+              ' but the Route $route return type of init() is not a SynchronousFuture.'
+              ' Make the initialization Sync, or change the Router to support Async'
+              ' initialization.');
+        }
+      }
+      return SynchronousFuture(null);
+    }
   }
 
   ScreenRoute<R> _getScreenRoute<R>(String deepLink,
@@ -267,19 +305,25 @@ class NuRouterBuilder extends NuRouter {
     @required String initialRoute,
     @required List<NuRoute> routes,
     ScreenType screenType,
-    WidgetBuilder loadingWidget,
+    Widget loadingWidget,
+    bool awaitForInit = true,
     NuInitFunction init,
   })  : _initialRoute = initialRoute,
         _registerRoutes = routes,
         _screenType = screenType,
         _loadingWidget = loadingWidget,
+        _awaitForInit = awaitForInit,
         _initFn = init;
 
   final String _initialRoute;
   final List<NuRoute> _registerRoutes;
+  final bool _awaitForInit;
   final ScreenType _screenType;
-  final WidgetBuilder _loadingWidget;
+  final Widget _loadingWidget;
   final NuInitFunction _initFn;
+
+  @override
+  bool get awaitForInit => _awaitForInit;
 
   @override
   String get initialRoute => _initialRoute;
@@ -291,11 +335,11 @@ class NuRouterBuilder extends NuRouter {
   ScreenType get screenType => _screenType;
 
   @override
-  Widget loadingWidget(BuildContext context) {
+  Widget get loadingWidget {
     if (_loadingWidget != null) {
-      return _loadingWidget(context);
+      return _loadingWidget;
     }
-    return Container();
+    return super.loadingWidget;
   }
 
   @override
@@ -322,9 +366,10 @@ class NuRouterLoader extends StatefulWidget {
 }
 
 class _NuRouterLoaderState extends State<NuRouterLoader> {
-  bool loading = true;
+  bool loading;
 
   void _initModule() {
+    loading = widget.router.awaitForInit;
     widget.router._init(context).then((value) {
       setState(() {
         loading = false;
@@ -342,16 +387,14 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initModule();
-    });
     super.initState();
+    _initModule();
   }
 
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return widget.router.loadingWidget(context);
+      return widget.router.loadingWidget;
     }
     return widget.builder(widget.router);
   }

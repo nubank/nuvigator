@@ -15,9 +15,9 @@ class _ComposerTextRoute extends NuRoute<NuRouter, void, String> {
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return TextComposerScreen(
       initialText: settings.rawParameters['initialText'],
-      submitText: (String text) => module.nuvigator.pop(text),
+      submitText: (String text) => router.nuvigator.pop(text),
       toHelp: () {
-        module.nuvigator.open<void>('composer/help');
+        router.nuvigator.open<void>('composer/help');
       },
     );
   }
