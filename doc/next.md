@@ -235,9 +235,39 @@ You can combine `NuRouterBuilder` with `NuRouteBuilder` to reach a completely in
 Every `Nuvigator` have a corresponding `NuRouter` that is responsible for controlling it's routing logic. Other than that,
 a `Nuvigator` shall behave very similar to a regular `Navigator`.
 
+### Nested Behaviors
+
+Big part of what Nuvigator does is related to scenarios where you have nested Nuvigators.
+
+**Opening DeepLinks**
+
+When you try to open a deepLink, Nuvigator will try to find a route that matches the provided deepLink from the closest Nuvigator, to the root one. This enables for calling deepLink from anywhere in your application, without needing to know how deeply nested your screen is in relationship to the Nuvigator/Router that can display the requested deepLink.
+
+**Popping Screens**
+
+If you are inside a nested Nuvigator and calls the `.pop` method (or variations), instead of doing nothing, it will close the nested Nuvigator, returning to the parent one. This enables for transparent navigation between nested flows.
+
+Another relevant point here is that the value passed to the `.pop` function, will be passed downstream, making your nested flow return this value to the screen that requested it's opening.
+
+**Android Back Button**
+
+When the Android back button is pressed Nuvigator will ensure that just the deepest Nuvigator responds to it, popping it's current screen (instead of the Root Nuvigator)
+
+**Hero Animations**
+
+Nuvigator comes with built in support for Here animations that happens betweens different levels of nested Nuvigators.
+
 ### Navigating
 
-Using the `NuvigatorState.open` method.
+Prefer using the `NuvigatorState.open` method when wanting to navigating to another route using it's deepLink. In case the deepLink contains a scheme (`nuapp://my-route`, `nuapp://` is the scheme part here), it will be stripped and not considered as part of the deepLink for navigation purposed.
+
+Example:
+
+```dart
+// Gets your NuvigatorState instance (can be obtained from inside NuRouters/NuRoutes without the need of context)
+final nuvigator = Nuvigator.of(context);
+final result = await nuvigator.open<String>('nuapp://next-screen');
+```
 
 ### Nuvigator.routes
 
