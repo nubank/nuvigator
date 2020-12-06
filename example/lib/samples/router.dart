@@ -1,15 +1,22 @@
-import 'package:example/samples/module_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
 import 'package:provider/provider.dart';
 
-import 'bloc/samples_bloc.dart';
 import 'modules/composer/module.dart';
 import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
 import 'modules/friend_request/navigation/friend_request_router.dart';
 import 'screens/home_screen.dart';
+
+part 'router.g.dart';
+
+class FriendRequestArgs {
+  int numberOfRequests;
+  double precision;
+  String name;
+  int age;
+}
 
 @NuRouteParser()
 class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
@@ -69,15 +76,4 @@ class MainAppRouter extends NuRouter {
         FriendRequestRoute(),
         ComposerRoute(),
       ];
-
-  @override
-  Widget routeWrapper(BuildContext context, Widget child) {
-    return ChangeNotifierProvider<SamplesBloc>.value(
-      value: SamplesBloc(),
-      child: ChangeNotifierProvider.value(
-        value: FriendRequestBloc(10),
-        child: child,
-      ),
-    );
-  }
 }

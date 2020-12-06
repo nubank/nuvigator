@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nuvigator/next.dart';
+import 'package:provider/provider.dart';
+import 'samples/bloc/samples_bloc.dart';
+import 'samples/modules/friend_request/bloc/friend_request_bloc.dart';
 import 'samples/router.dart';
 
 void main() => runApp(MyApp());
@@ -34,8 +37,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      builder: Nuvigator(
-        router: MainAppRouter(),
+      builder: (_, __) => ChangeNotifierProvider<SamplesBloc>.value(
+        value: SamplesBloc(),
+        child: ChangeNotifierProvider.value(
+          value: FriendRequestBloc(10),
+          child: Nuvigator(
+            router: MainAppRouter(),
+          ),
+        ),
       ),
     );
   }

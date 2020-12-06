@@ -4,19 +4,28 @@ class NextBuilderLibrary {
   NextBuilderLibrary(this.element);
   final ClassElement element;
 
+  ClassElement get getNuRouteArgsType => element.allSupertypes
+      .firstWhere((element) {
+        return element.getDisplayString(withNullability: false).contains('NuRoute');
+      })
+      .typeArguments[1]
+      .element;
+
   String build() {
-    final ClassElement elementSuperType =
-        element.allSupertypes.first.typeArguments[1].element;
+    final argsClassElement = getNuRouteArgsType;
 
     final stringBuffer = StringBuffer();
     stringBuffer.writeln(
-        'extension ${elementSuperType.displayName}Parser on ${element.displayName} {');
+        'extension ${argsClassElement.displayName}Parser on ${element.displayName} {');
     stringBuffer.writeln(
-        '${elementSuperType.displayName} _\$parseParameters(Map<String, dynamic> map) {');
-    stringBuffer.writeln(' return ${elementSuperType.displayName}()');
+        '${argsClassElement.displayName} _\$parseParameters(Map<String, dynamic> map) {');
+    stringBuffer.writeln(' return ${argsClassElement.displayName}()');
 
-    for (var field in elementSuperType.fields) {
-      stringBuffer.writeln('..${field.displayName} = ${_safelyCastArg(field)}');
+    for (final field in argsClassElement.fields) {
+      if (field.setter != null && field.isPublic) {
+        stringBuffer
+            .writeln('..${field.displayName} = ${_safelyCastArg(field)}');
+      }
     }
     stringBuffer.writeln(';}}');
     return stringBuffer.toString();
@@ -26,6 +35,7 @@ class NextBuilderLibrary {
     'int',
     'double',
     'DateTime',
+    'Uri',
   ];
 
   String _safelyCastArg(FieldElement field) {

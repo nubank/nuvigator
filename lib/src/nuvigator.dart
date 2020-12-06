@@ -379,7 +379,6 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
           if (router is NuRouter) {
             return initialDeepLink == null &&
                 initialRoute == null &&
-                wrapper == null &&
                 screenType == null;
           }
           return true;

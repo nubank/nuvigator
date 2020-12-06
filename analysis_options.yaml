@@ -39,6 +39,8 @@ analyzer:
   exclude:
     - monocli
     - lib/**/*.g.dart
+    - test/**/*.g.dart
+    - example/**/*.g.dart
 
 linter:
   rules:
