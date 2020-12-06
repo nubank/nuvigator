@@ -6,7 +6,9 @@ class NextBuilderLibrary {
 
   ClassElement get getNuRouteArgsType => element.allSupertypes
       .firstWhere((element) {
-        return element.getDisplayString(withNullability: false).contains('NuRoute');
+        return element
+            .getDisplayString(withNullability: false)
+            .contains('NuRoute');
       })
       .typeArguments[1]
       .element;
