@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.0-beta.4
+- Improvements on next API typings
+- Improvements to next generator
+
 ## 1.0.0-beta.3
 - Add `awaitForInit` option in the `NuRouter` to configure if it should support async initialization
 - Fix router property name on `NuRoute`
