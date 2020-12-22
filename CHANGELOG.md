@@ -1,7 +1,8 @@
 # CHANGELOG
 
 ## 1.0.0-beta.5
-Fix to use the screenType when the fallback one is not provided
+- Fix to use the screenType when the fallback one is not provided
+
 ## 1.0.0-beta.4
 - Improvements on next API typings
 - Improvements to next generator
