@@ -260,7 +260,7 @@ abstract class NuRouter implements INuRouter {
     final route = _getScreenRoute<R>(
       deepLink,
       parameters: parameters ?? <String, dynamic>{},
-    )?.fallbackScreenType(fallbackScreenType)?.toRoute();
+    )?.fallbackScreenType(fallbackScreenType ?? screenType)?.toRoute();
     if (route != null) {
       if (isFromNative) {
         _addNativePopCallBack(route);
@@ -275,7 +275,7 @@ abstract class NuRouter implements INuRouter {
         parameters: parameters,
         isFromNative: isFromNative,
         fromLegacyRouteName: fromLegacyRouteName,
-        fallbackScreenType: fallbackScreenType,
+        fallbackScreenType: fallbackScreenType ?? screenType,
       );
       if (r != null) return r;
     }
