@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-beta.6
+- Fix the `NuRouterLoader` to re-instantiate the nuvigator only if the router change
+
 ## 1.0.0-beta.5
 - Fix to use the screenType when the fallback one is not provided
 
