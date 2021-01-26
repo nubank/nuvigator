@@ -360,6 +360,7 @@ class NuRouterLoader extends StatefulWidget {
 }
 
 class _NuRouterLoaderState extends State<NuRouterLoader> {
+  Widget nuvigator;
   bool loading;
 
   void _initModule() {
@@ -375,6 +376,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   void didUpdateWidget(covariant NuRouterLoader oldWidget) {
     if (oldWidget.router != widget.router) {
       _initModule();
+      nuvigator = widget.builder(widget.router);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -390,6 +392,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
     if (loading) {
       return widget.router.loadingWidget;
     }
-    return widget.builder(widget.router);
+    nuvigator ??= widget.builder(widget.router);
+    return nuvigator;
   }
 }
