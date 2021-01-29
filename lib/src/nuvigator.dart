@@ -7,6 +7,12 @@ import 'screen_type.dart';
 import 'screen_types/material_screen_type.dart';
 import 'typings.dart';
 
+enum DeepLinkPushMethod {
+  Push,
+  PushReplacement,
+  PopAndPush,
+}
+
 NuvigatorState _tryToFindNuvigatorForRouter<T extends INuRouter>(
     NuvigatorState nuvigatorState) {
   if (nuvigatorState == null) return null;
@@ -307,6 +313,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// deepLink in the parent Nuvigator.
   Future<R> open<R>(
     String deepLink, {
+    DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
     Map<String, dynamic> parameters,
     bool isFromNative = false,
   }) {
@@ -318,7 +325,17 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       fallbackScreenType: widget.screenType,
     );
     if (route != null) {
-      return push(route);
+      switch (pushMethod) {
+        case DeepLinkPushMethod.Push:
+          return push(route);
+        case DeepLinkPushMethod.PushReplacement:
+          return pushReplacement(route);
+        case DeepLinkPushMethod.PopAndPush:
+          pop();
+          return push(route);
+        default:
+          return push(route);
+      }
     } else if (router.onDeepLinkNotFound != null) {
       return router.onDeepLinkNotFound(
           router, Uri.parse(deepLink), false, parameters);
