@@ -44,6 +44,7 @@ class ScreenRoute<T extends Object> {
       debugKey: debugKey,
       screenType: screenType ?? fallbackScreenType,
       wrapper: wrapper,
+      nuRouteSettings: nuRouteSettings,
     );
   }
 
@@ -55,12 +56,14 @@ class ScreenRoute<T extends Object> {
     WrapperFn wrapper,
     String debugKey,
     String deepLink,
+    NuRouteSettings nuRouteSettings,
   }) {
     return ScreenRoute<T>(
       builder: builder ?? this.builder,
       screenType: screenType ?? this.screenType,
       wrapper: wrapper ?? this.wrapper,
       debugKey: debugKey ?? this.debugKey,
+      nuRouteSettings: nuRouteSettings ?? this.nuRouteSettings,
     );
   }
 
