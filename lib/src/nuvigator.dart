@@ -311,7 +311,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// Open the requested deepLink, if the current Nuvigator is not able to handle
   /// it, and no [INuRouter.onDeepLinkNotFound] is provided, then we try to open the
   /// deepLink in the parent Nuvigator.
-  Future<R> open<R>(
+  Future<R> open<R extends Object>(
     String deepLink, {
     DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
     Map<String, dynamic> parameters,
@@ -327,14 +327,14 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     if (route != null) {
       switch (pushMethod) {
         case DeepLinkPushMethod.Push:
-          return push(route);
+          return push<R>(route);
         case DeepLinkPushMethod.PushReplacement:
-          return pushReplacement(route);
+          return pushReplacement<R, dynamic>(route);
         case DeepLinkPushMethod.PopAndPush:
           pop();
-          return push(route);
+          return push<R>(route);
         default:
-          return push(route);
+          return push<R>(route);
       }
     } else if (router.onDeepLinkNotFound != null) {
       return router.onDeepLinkNotFound(
