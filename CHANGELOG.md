@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-beta.9
+- Fix open method in order to transport params through actions
+
 ## 1.0.0-beta.8
 - Fix the NuRouteSettings copy and fallback methods that were not considering the settings property
 
