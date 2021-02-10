@@ -10,21 +10,20 @@ class NuRouteSettings<A extends Object> extends RouteSettings {
     this.pathTemplate,
     this.queryParameters = const <String, dynamic>{},
     this.pathParameters = const <String, dynamic>{},
+    this.extraParameters = const <String, dynamic>{},
   }) : super(name: name, arguments: arguments);
 
   final String pathTemplate;
   final String scheme;
   final Map<String, dynamic> queryParameters;
   final Map<String, dynamic> pathParameters;
+  final Map<String, dynamic> extraParameters;
 
   Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
       ...queryParameters ?? const <String, dynamic>{},
       ...pathParameters ?? const <String, dynamic>{},
-      ...arguments is Map<String, dynamic>
-          // ignore: avoid_as
-          ? arguments as Map<String, dynamic>
-          : const <String, dynamic>{},
+      ...extraParameters ?? const <String, dynamic>{},
     };
   }
 
