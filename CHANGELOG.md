@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-beta.10
+- Fix extra arguments passing on the [NuvigatorState.open] method
+
 ## 1.0.0-beta.9
 - Fix open method in order to transport params through actions
 

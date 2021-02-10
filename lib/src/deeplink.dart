@@ -73,18 +73,15 @@ class DeepLinkParser<A extends Object> {
   }) {
     final qParams = getQueryParams(deepLink);
     final pParams = getPathParams(deepLink);
-    final allParams = <String, dynamic>{
-      ...qParams ?? const <String, dynamic>{},
-      ...pParams ?? const <String, dynamic>{},
-    };
+    final eParams = <String, dynamic>{};
     A parsedArgs;
 
     if (arguments != null) {
       if (arguments is Map<String, dynamic>) {
-        allParams.addAll(arguments);
+        eParams.addAll(arguments);
       } else if (arguments is A) {
         debugPrint('The provided extra argument $arguments is of type $A.'
-            ' Ignoring all deepLink encoded parameters ($allParams) for parsing purposes.');
+            ' Ignoring all deepLink encoded parameters for parsing purposes.');
         parsedArgs = arguments;
       } else {
         throw FlutterError(
@@ -94,11 +91,18 @@ class DeepLinkParser<A extends Object> {
       }
     }
 
+    final allParams = <String, dynamic>{
+      ...qParams ?? const <String, dynamic>{},
+      ...pParams ?? const <String, dynamic>{},
+      ...eParams ?? const <String, dynamic>{},
+    };
+
     return NuRouteSettings(
       name: deepLink,
       pathTemplate: template,
       queryParameters: qParams,
       pathParameters: pParams,
+      extraParameters: eParams,
       arguments: parsedArgs ?? parseParams(allParams),
       scheme: getScheme(deepLink),
     );
