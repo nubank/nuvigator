@@ -203,6 +203,10 @@ abstract class NuRouter implements INuRouter {
   /// While the module is initializing this Widget is going to be displayed
   Widget get loadingWidget => Container();
 
+  /// In case an error happends during the NuRouter initialization, this function will be called with the error
+  /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
+  Widget onError(Error error) => null;
+
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
   Future<void> init(BuildContext context) {
@@ -362,14 +366,26 @@ class NuRouterLoader extends StatefulWidget {
 class _NuRouterLoaderState extends State<NuRouterLoader> {
   Widget nuvigator;
   bool loading;
+  Widget errorWidget;
 
-  void _initModule() {
-    loading = widget.router.awaitForInit;
-    widget.router._init(context).then((value) {
+  Future<void> _initModule() async {
+    setState(() {
+      loading = widget.router.awaitForInit;
+      errorWidget = null;
+    });
+    try {
+      await widget.router._init(context);
       setState(() {
         loading = false;
       });
-    });
+    } catch (error) {
+      final errorWidget = widget.router.onError(error);
+      if (errorWidget != null) {
+        setState(() {
+          this.errorWidget = errorWidget;
+        });
+      }
+    }
   }
 
   @override
@@ -391,6 +407,8 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   Widget build(BuildContext context) {
     if (loading) {
       return widget.router.loadingWidget;
+    } else if (errorWidget != null) {
+      return errorWidget;
     }
     nuvigator ??= widget.builder(widget.router);
     return nuvigator;
