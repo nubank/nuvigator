@@ -375,16 +375,18 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
     });
     try {
       await widget.router._init(context);
-      setState(() {
-        loading = false;
-      });
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace, label: error.toString());
       final errorWidget = widget.router.onError(error);
       if (errorWidget != null) {
         setState(() {
           this.errorWidget = errorWidget;
         });
       }
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 

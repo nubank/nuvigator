@@ -55,6 +55,19 @@ class MainAppRouter extends NuRouter {
   ScreenType get screenType => cupertinoScreenType;
 
   @override
+  Future<void> init(BuildContext context) {
+    // throw FlutterError('aaaa');
+    return super.init(context);
+  }
+
+  @override
+  Widget onError(Error error) {
+    return const Scaffold(
+      body: Text('ERROR'),
+    );
+  }
+
+  @override
   Widget get loadingWidget => const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
