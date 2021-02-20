@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-beta.11
+- Add option in NuRouter to provide an error handling function when the Router initialization fails
+
 ## 1.0.0-beta.10
 - Fix extra arguments passing on the [NuvigatorState.open] method
 
