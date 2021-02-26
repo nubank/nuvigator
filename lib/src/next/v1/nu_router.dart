@@ -146,6 +146,8 @@ abstract class NuRouter implements INuRouter {
 
   NuvigatorState get nuvigator => _nuvigator;
 
+  VoidCallback onRetry;
+
   @override
   void install(NuvigatorState nuvigator) {
     assert(_nuvigator == null);
@@ -368,7 +370,12 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   bool loading;
   Widget errorWidget;
 
+  void onRetry() {
+    _initModule();
+  }
+
   Future<void> _initModule() async {
+    widget.router.onRetry = onRetry;
     setState(() {
       loading = widget.router.awaitForInit;
       errorWidget = null;
