@@ -375,7 +375,6 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   }
 
   Future<void> _initModule() async {
-    widget.router.onRetry = onRetry;
     setState(() {
       loading = widget.router.awaitForInit;
       errorWidget = null;
@@ -409,6 +408,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   @override
   void initState() {
     super.initState();
+    widget.router.onRetry = onRetry;
     _initModule();
   }
 
