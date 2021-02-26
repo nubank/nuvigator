@@ -376,7 +376,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   bool loading;
   Widget errorWidget;
 
-  Future<void> reload() {
+  Future<void> _reload() {
     return _initModule();
   }
 
@@ -390,7 +390,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace, label: error.toString());
       final errorWidget =
-          widget.router.onError(error, NuRouterController(reload: reload));
+          widget.router.onError(error, NuRouterController(reload: _reload));
       if (errorWidget != null) {
         setState(() {
           this.errorWidget = errorWidget;
