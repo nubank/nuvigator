@@ -146,8 +146,6 @@ abstract class NuRouter implements INuRouter {
 
   NuvigatorState get nuvigator => _nuvigator;
 
-  VoidCallback onRetry;
-
   @override
   void install(NuvigatorState nuvigator) {
     assert(_nuvigator == null);
@@ -207,7 +205,7 @@ abstract class NuRouter implements INuRouter {
 
   /// In case an error happends during the NuRouter initialization, this function will be called with the error
   /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
-  Widget onError(Error error) => null;
+  Widget onError(Error error, NuRouterController controller) => null;
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
@@ -351,6 +349,14 @@ class NuRouterBuilder extends NuRouter {
   }
 }
 
+class NuRouterController {
+  const NuRouterController({
+    this.reload,
+  });
+
+  final Future<void> Function() reload;
+}
+
 class NuRouterLoader extends StatefulWidget {
   const NuRouterLoader({
     Key key,
@@ -370,8 +376,8 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   bool loading;
   Widget errorWidget;
 
-  void onRetry() {
-    _initModule();
+  Future<void> reload() {
+    return _initModule();
   }
 
   Future<void> _initModule() async {
@@ -383,7 +389,8 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
       await widget.router._init(context);
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace, label: error.toString());
-      final errorWidget = widget.router.onError(error);
+      final errorWidget =
+          widget.router.onError(error, NuRouterController(reload: reload));
       if (errorWidget != null) {
         setState(() {
           this.errorWidget = errorWidget;
@@ -408,7 +415,6 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   @override
   void initState() {
     super.initState();
-    widget.router.onRetry = onRetry;
     _initModule();
   }
 
