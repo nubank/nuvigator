@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## 1.0.0-beta.12
-- Add option in NuRouter to retry the initializatio of the Router when it fails
+- Add option in NuRouter to retry the initialization of the Router when it fails
 
 ## 1.0.0-beta.11
 - Add option in NuRouter to provide an error handling function when the Router initialization fails
