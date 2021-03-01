@@ -61,9 +61,14 @@ class MainAppRouter extends NuRouter {
   // }
 
   @override
-  Widget onError(Error error) {
-    return const Scaffold(
-      body: Text('ERROR'),
+  Widget onError(Error error, NuRouterController controller) {
+    return Scaffold(
+      body: MaterialButton(
+        onPressed: controller.reload,
+        child: const Center(
+          child: Text('Retry'),
+        ),
+      ),
     );
   }
 
