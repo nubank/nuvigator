@@ -1,4 +1,4 @@
-# Nuvigator Next API
+# Nuvigator Next API Documentation
 
 Nuvigator is passing through a major revamp in it's API, to be able to provide a more dynamic and easy to use
 experience. The core functional features of Nuvigator are going to be kept, and improved, but the development API is
@@ -7,8 +7,27 @@ when developing new flows.
 
 ## Quick Start
 
+The simplest you can get:
+
 ```dart
-import 'package:nuvigator/next.dart'; // import the next file instead of the nuvigator.dart
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Nuvigator.routes(
+      initialRoute: 'home',
+      routes: [
+          NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
+          NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),
+      ],
+    ),
+  }
+}
+```
+
+A more complete example:
+
+```dart
+import 'package:nuvigator/next.dart'; // import the next file instead of `nuvigator.dart`
 import 'package:flutter/material.dart';
 
 // Define a new NuRoute
@@ -34,7 +53,7 @@ class MyRouter extends NuRouter {
 
   @override
   List<NuRoute> get registerRoutes => [
-        MyRoute(),
+    MyRoute(),
   ];
 }
 
@@ -76,7 +95,7 @@ class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
   @override
   ParamsParser<MyArguments> get paramsParser => _$paramsParser;
 
-  // Optional - The the provided path should be matched as a prefix, instead of exact 
+  // Optional - The the provided path should be matched as a prefix, instead of exact
   @override
   bool get prefix => false;
 
@@ -95,14 +114,26 @@ class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
 }
 ```
 
-Inside your `NuRoute` class you will have access to the the `NuRouter` and `Nuvigator` that is presenting it.
+Inside the you `NuRoute` subclass you have access to the `NuRouter` it's registered and typed by the provided typing argument.
+You can also use the `NuRoute.nuvigator` getter to access the Nuvigator in which this `NuRoute` is being presented.
 
-### Route Arguments
+### Route Path
 
-- TODO: DeepLink Parameters Support
-- TODO: NuRouteSettings class
-- TODO: Class Parser
-- TODO: Generator
+Route paths are used as DeepLinks and can have path parameters to be matched against them. Path Parameters are going to be extracted and made available in the `NuRouteSettings` provided to the `NuRoute.build` function.
+
+To declare a Path Parameter you can use the `:` syntax, example:
+
+```dart
+String get path => 'myRoute/:pathParam'
+```
+
+If you override the `prefix` property in the `NuRoute` to `true` the route path is going to be matched as prefix (in regex terms: `<yourPath>.*`). This can be useful if you have a nested Nuvigator that will match against the complete path, making possible nested Deep Link navigation.
+
+### NuRouteSettings
+
+This class is a subclass of the regular Flutter `RouteSettings`, but it includes extra information and details from the matched Deep Link against the Route Path. `NuRouteSettings` accepts a generic type that regards the class that contains the parsed arguments from the Route.
+
+In the `NuRoute` class you can a `NuRoute.paramsParser` function that will receive raw parameters in `Map<String, dynamic>` and should return an instance of the declared Arguments class in you `NuRoute` subclass typing.
 
 ### NuRoute Initialization
 
@@ -178,7 +209,7 @@ class MyRouter extends NuRouter {
     return SynchronousFuture(null);
   }
 
-  // Optional (defaults to true) - Enables/Disables support for asynchronous initialization (will display the loading widget) 
+  // Optional (defaults to true) - Enables/Disables support for asynchronous initialization (will display the loading widget)
   @override
   bool get awaitForInit => true;
 
@@ -189,6 +220,9 @@ class MyRouter extends NuRouter {
   // Optional - If no Route is found for the requested deepLink then this function will be called
   @override
   DeepLinkHandlerFn get onDeepLinkNotFound => null
+
+  // Optional - If the Router initialization fails this function will be called, and it should return a Widget to be rendered instead of the Nuvigator
+  Widget onError(Error error, NuRouterController controller) => null;
 
   // Optional - Register legacy NuRouters
   @override
@@ -283,7 +317,7 @@ class MyWidget extends StatelessWidget {
       initialRoute: 'home',
       routes: [
           NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
-          NuRouteBuilder(path: 'second', builder: (_, __, ___) => HomeScreen()),
+          NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),
       ],
     ),
   }
@@ -304,7 +338,7 @@ class MyRouter extends NuRouter {
   // ...
 
   List<INuRouter> get legacyRouters => [
-        MyLegacyRouter(),
+    MyLegacyRouter(),
   ];
 
 // ...

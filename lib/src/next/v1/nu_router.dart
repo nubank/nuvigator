@@ -10,7 +10,7 @@ import '../../screen_route.dart';
 import '../../typings.dart';
 
 /// Extend to create your NuRoute. Contains the configuration of a Route that is
-/// going to be presented in a [Nuvigator]
+/// going to be presented in a [Nuvigator] by the [NuRouter]
 abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   T _router;
 
@@ -26,7 +26,6 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
     return SynchronousFuture(true);
   }
 
-  // TBD
   bool get prefix => false;
 
   ScreenType get screenType;
@@ -79,6 +78,7 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   }
 }
 
+/// Class to create an anonymous [NuRoute] that can be registered in a [NuRouter]
 class NuRouteBuilder<A extends Object, R extends Object>
     extends NuRoute<NuRouter, A, R> {
   NuRouteBuilder({
@@ -298,6 +298,7 @@ abstract class NuRouter implements INuRouter {
   }
 }
 
+/// Builder class for creating an anonymous [NuRouter]
 class NuRouterBuilder extends NuRouter {
   NuRouterBuilder({
     @required String initialRoute,
@@ -354,6 +355,7 @@ class NuRouterController {
     this.reload,
   });
 
+  /// Calling will make the [NuRouter] re-execute its initialization
   final Future<void> Function() reload;
 }
 
