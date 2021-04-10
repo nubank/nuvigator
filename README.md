@@ -56,8 +56,6 @@ class MyRoute extends NuRoute {
   }
 }
 
-// Define your NuRouter
-class MyRouter extends NuRouter {
   @override
   String get initialRoute => 'my-route';
 
