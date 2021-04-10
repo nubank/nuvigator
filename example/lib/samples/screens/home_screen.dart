@@ -31,16 +31,15 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 48),
                 RaisedButton(
-                  child: const Text('Review friend requests'),
                   onPressed: () {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
                     nuvigator.open<void>(
                         'exapp://old-friend-request/list?numberOfRequests=10');
                   },
+                  child: const Text('Review friend requests'),
                 ),
                 RaisedButton(
-                  child: const Text('Compose a message'),
                   onPressed: () async {
                     String text;
 
@@ -58,6 +57,7 @@ class HomeScreen extends StatelessWidget {
                       );
                     }
                   },
+                  child: const Text('Compose a message'),
                 ),
                 const SizedBox(height: 48),
                 const Text(

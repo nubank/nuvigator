@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0
+- First stable release with NEXT API (check past beta changelog entries for details)
+
 ## 1.0.0-beta.12
 - Add option in NuRouter to retry the initialization of the Router when it fails
 
@@ -52,7 +55,7 @@
   - New dynamic approach to define Routes and Routers
   - More info can be found at [here](doc/next.md)
 - `initialDeepLink` and `initialRoute` have better error reporting and a more precise behavior.
-  - Just the explicitly provided initialRoute is going to be used to find the Route. 
+  - Just the explicitly provided initialRoute is going to be used to find the Route.
 - Nuvigator now relies on a interface type `INuRouter` instead of a concrete specific implementation
 - `onScreenNotFound` method was removed
 - Introduction of `NuvigatorState.open` in favor of `.openDeepLink`. This new method supports nested deepLink navigation.
