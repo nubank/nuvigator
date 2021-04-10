@@ -15,6 +15,8 @@ Basic usage
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/nuvigator.dart';
 
+part 'my_screen.g.dart';
+
 class MyScreen extends StatelessWidget {
 
   @override
@@ -55,6 +57,11 @@ class MyApp extends StatelessWidget {
 }
 
 ```
+
+It's necessary add the dependency [build_runner](https://pub.dev/packages/build_runner) in `pubspec.yaml`.
+
+Then, run in your command line tool: `flutter pub run build_runner build --delete-conflicting-outputs`.
+Now, you've a route file `my_screen.g.dart` generated using `Nuvigator` for the class `MyScreen`!
 
 ## Nuvigator and NuRouter
 
