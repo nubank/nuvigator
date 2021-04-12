@@ -14,7 +14,6 @@ Nuvigator provides a powerful routing abstraction over Flutter's own Navigators.
 
 [**For the Legacy API Documentation**](./doc/legacy.md)
 > An API that is based on static typed methods and generators. It's considered deprecated and will eventually be removed
-
 ## Quick Start
 
 The simplest you can get:
@@ -56,6 +55,8 @@ class MyRoute extends NuRoute {
   }
 }
 
+// Define your NuRouter
+class MyRouter extends NuRouter {
   @override
   String get initialRoute => 'my-route';
 
