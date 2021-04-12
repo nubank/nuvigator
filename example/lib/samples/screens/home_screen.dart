@@ -1,22 +1,16 @@
-import 'package:example/samples/bloc/samples_bloc.dart';
-import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-import 'package:provider/provider.dart';
-
-import '../modules/composer/navigation/composer_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<SamplesBloc>(context);
-    final router = NuRouter.of<SamplesRouter>(context);
+    print('BUILDING HOME');
+    final nuvigator = Nuvigator.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
-    final toggleStyle = Theme.of(context).textTheme.bodyText1;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nuvigator example'),
+        title: const Text('Nuvigator Example'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -31,47 +25,26 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Nuvigator',
+                  'Nuvigator V2',
                   style: headingStle,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Navigate using deep links',
-                      style: toggleStyle,
-                    ),
-                    Switch(
-                      value: bloc.navigateUsingDeepLink,
-                      onChanged: (value) => bloc.navigateUsingDeepLink = value,
-                    ),
-                  ],
-                ),
                 RaisedButton(
-                  child: const Text('Review friend requests'),
                   onPressed: () {
-                    if (bloc.navigateUsingDeepLink) {
-                      router.openDeepLink<void>(Uri.parse(
-                          'exapp://deepprefix/friendRequests?numberOfRequests=10'));
-                    } else {
-                      router.toFriendRequests(numberOfRequests: 5);
-                    }
+                    // final r = NuRouter.of<OldFriendRequestRouter>(context);
+                    // r.toListRequests();
+                    nuvigator.open<void>(
+                        'exapp://old-friend-request/list?numberOfRequests=10');
                   },
+                  child: const Text('Review friend requests'),
                 ),
                 RaisedButton(
-                  child: const Text('Compose a message'),
                   onPressed: () async {
                     String text;
 
-                    if (bloc.navigateUsingDeepLink) {
-                      text = await router.openDeepLink<String>(Uri.parse(
-                        'exapp://deepprefix/composer/text?initialText=Hello+deep+link%21',
-                      ));
-                    } else {
-                      text = await router.composerRouter.toComposeText();
-                    }
+                    text = await nuvigator.open<String>(
+                        'exapp://composer/text?initialText=Hello+deep+link%21');
 
                     if (text != null) {
                       // ignore: unawaited_futures
@@ -84,6 +57,7 @@ class HomeScreen extends StatelessWidget {
                       );
                     }
                   },
+                  child: const Text('Compose a message'),
                 ),
                 const SizedBox(height: 48),
                 const Text(

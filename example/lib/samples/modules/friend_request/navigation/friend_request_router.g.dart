@@ -6,22 +6,22 @@ part of 'friend_request_router.dart';
 // NuvigatorGenerator
 // **************************************************************************
 
-class FriendRequestRoutes {
-  static const listRequests = 'friendRequest/listRequests';
+class OldFriendRequestRoutes {
+  static const listRequests = 'oldFriendRequest/listRequests';
 
-  static const success = 'friendRequest/success';
+  static const success = 'oldFriendRequest/success';
 }
 
-extension FriendRequestRouterNavigation on FriendRequestRouter {
+extension OldFriendRequestRouterNavigation on OldFriendRequestRouter {
   Future<void> toListRequests() {
     return nuvigator.pushNamed<void>(
-      FriendRequestRoutes.listRequests,
+      OldFriendRequestRoutes.listRequests,
     );
   }
 
   Future<void> pushReplacementToListRequests<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
-      FriendRequestRoutes.listRequests,
+      OldFriendRequestRoutes.listRequests,
       result: result,
     );
   }
@@ -29,27 +29,27 @@ extension FriendRequestRouterNavigation on FriendRequestRouter {
   Future<void> pushAndRemoveUntilToListRequests<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
-      FriendRequestRoutes.listRequests,
+      OldFriendRequestRoutes.listRequests,
       predicate,
     );
   }
 
   Future<void> popAndPushToListRequests<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<void, TO>(
-      FriendRequestRoutes.listRequests,
+      OldFriendRequestRoutes.listRequests,
       result: result,
     );
   }
 
   Future<void> toSuccess() {
     return nuvigator.pushNamed<void>(
-      FriendRequestRoutes.success,
+      OldFriendRequestRoutes.success,
     );
   }
 
   Future<void> pushReplacementToSuccess<TO extends Object>({TO result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
-      FriendRequestRoutes.success,
+      OldFriendRequestRoutes.success,
       result: result,
     );
   }
@@ -57,26 +57,28 @@ extension FriendRequestRouterNavigation on FriendRequestRouter {
   Future<void> pushAndRemoveUntilToSuccess<TO extends Object>(
       {@required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
-      FriendRequestRoutes.success,
+      OldFriendRequestRoutes.success,
       predicate,
     );
   }
 
   Future<void> popAndPushToSuccess<TO extends Object>({TO result}) {
     return nuvigator.popAndPushNamed<void, TO>(
-      FriendRequestRoutes.success,
+      OldFriendRequestRoutes.success,
       result: result,
     );
   }
 }
 
-extension FriendRequestRouterScreensAndRouters on FriendRequestRouter {
+extension OldFriendRequestRouterScreensAndRouters on OldFriendRequestRouter {
   Map<RouteDef, ScreenRouteBuilder> get _$screensMap {
     return {
-      RouteDef(FriendRequestRoutes.listRequests): (RouteSettings settings) {
+      RouteDef(OldFriendRequestRoutes.listRequests,
+          deepLink: 'old-friend-request/list'): (RouteSettings settings) {
         return listRequests();
       },
-      RouteDef(FriendRequestRoutes.success): (RouteSettings settings) {
+      RouteDef(OldFriendRequestRoutes.success,
+          deepLink: 'old-friend-request/success'): (RouteSettings settings) {
         return success();
       },
     };

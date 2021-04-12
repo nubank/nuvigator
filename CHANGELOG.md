@@ -1,5 +1,66 @@
 # CHANGELOG
 
+## 1.0.0
+- First stable release with NEXT API (check past beta changelog entries for details)
+
+## 1.0.0-beta.12
+- Add option in NuRouter to retry the initialization of the Router when it fails
+
+## 1.0.0-beta.11
+- Add option in NuRouter to provide an error handling function when the Router initialization fails
+
+## 1.0.0-beta.10
+- Fix extra arguments passing on the [NuvigatorState.open] method
+
+## 1.0.0-beta.9
+- Fix open method in order to transport params through actions
+
+## 1.0.0-beta.8
+- Fix the NuRouteSettings copy and fallback methods that were not considering the settings property
+
+## 1.0.0-beta.7
+- Allow specifying which push method to use when calling [NuvigatorState.open]
+
+## 1.0.0-beta.6
+- Fix the `NuRouterLoader` to re-instantiate the nuvigator only if the router change
+
+## 1.0.0-beta.5
+- Fix to use the screenType when the fallback one is not provided
+
+## 1.0.0-beta.4
+- Improvements on next API typings
+- Improvements to next generator
+
+## 1.0.0-beta.3
+- Add `awaitForInit` option in the `NuRouter` to configure if it should support async initialization
+- Fix router property name on `NuRoute`
+- Make `loadingWidget` a getter method
+
+## 1.0.0-beta.2
+- Add support from Navigation coming from Native side on Next API
+  - `INuRouter.getRoute` now accepts an optional `isFromNative` option
+  - `NuvigatorState.open` now accepts an optional `isFromNative` option
+- Remove default screenType from Nuvigator constructor
+
+## 1.0.0-beta.1
+- Fixed asserts on Nuvigator
+- Add improved error message when a ScreenRoute is rendered without a ScreenType specified
+
+## 1.0.0-beta.0+1
+- Fix conflict between `Nuvigator` and `NuvigatorInner` key
+
+## 1.0.0-beta.0
+- Introduction of a new dynamic API (aka: `next`), more info can be found at it's own documentation
+  - DeepLinks and RouteNames where unified under paths
+  - New dynamic approach to define Routes and Routers
+  - More info can be found at [here](doc/next.md)
+- `initialDeepLink` and `initialRoute` have better error reporting and a more precise behavior.
+  - Just the explicitly provided initialRoute is going to be used to find the Route.
+- Nuvigator now relies on a interface type `INuRouter` instead of a concrete specific implementation
+- `onScreenNotFound` method was removed
+- Introduction of `NuvigatorState.open` in favor of `.openDeepLink`. This new method supports nested deepLink navigation.
+- Old API can be considered deprecated from now on. Prefer using the `next` API on new projects.
+
 ## 0.7.2
 - Fix problems caused by bump in `analyzer` dependency
 

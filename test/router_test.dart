@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nuvigator/nuvigator.dart';
 
 import 'helpers.dart';
 
@@ -12,23 +11,10 @@ void main() {
     expect(screen.debugKey, 'testRouterFirstScreen');
   });
 
-  test('router onScreenNotFound', () {
-    final testRouter = TestRouter();
-    var notFound = false;
-    testRouter.onScreenNotFound = (settings) {
-      notFound = true;
-      return ScreenRoute(debugKey: 'screenNotFound', builder: (_) => null);
-    };
-    final screen =
-        testRouter.getScreen(const RouteSettings(name: 'notExisting'));
-    expect(screen.debugKey, 'screenNotFound');
-    expect(notFound, true);
-  });
-
   test('router retrieves the right screen for the deepLink', () async {
     final testRouter = TestRouter();
     final routeEntry = testRouter.getRouteEntryForDeepLink('test/simple');
-    expect(routeEntry.value(const RouteSettings()).debugKey,
+    expect(routeEntry.screenRouteBuilder(const RouteSettings()).debugKey,
         'testRouterFirstScreen');
   });
 
@@ -46,7 +32,7 @@ void main() {
     final testRouter = TestRouter();
     var notFound = false;
     final mockNuvigator = MockNuvigator(testRouter);
-    testRouter.nuvigator = mockNuvigator;
+    testRouter.install(mockNuvigator);
     testRouter.onDeepLinkNotFound = (router, deepLink, [_, dynamic __]) async {
       notFound = true;
     };
@@ -58,7 +44,7 @@ void main() {
   test('router open deepLink correctly', () async {
     final testRouter = TestRouter();
     final mockNuvigator = MockNuvigator(testRouter);
-    testRouter.nuvigator = mockNuvigator;
+    testRouter.install(mockNuvigator);
     await testRouter.openDeepLink<void>(Uri.parse('test/simple'));
     expect(mockNuvigator.routePushed, 'firstScreen');
   });
@@ -66,7 +52,7 @@ void main() {
   test('router open deepLink with arguments', () async {
     final testRouter = TestRouter();
     final mockNuvigator = MockNuvigator(testRouter);
-    testRouter.nuvigator = mockNuvigator;
+    testRouter.install(mockNuvigator);
     await testRouter
         .openDeepLink<void>(Uri.parse('test/12345/params?extraParam=hello'));
     expect(mockNuvigator.routePushed, 'secondScreen');
@@ -79,33 +65,5 @@ void main() {
     expect(mainRouter.getRouter<TestRouter>(), mainRouter.testRouter);
     expect(mainRouter.getRouter<GroupTestRouter>(), mainRouter);
     expect(mainRouter.getRouter<TestRouterWPrefix>(), null);
-  });
-
-  group('screen name from deep link', () {
-    test('when its a known deep link', () async {
-      final testRouter = TestRouter();
-      expect(testRouter.getScreenNameFromDeepLink(Uri.parse('test/simple')),
-          'firstScreen');
-    });
-
-    test('when its an unknown deep link returns null', () async {
-      final testRouter = TestRouter();
-      expect(
-          testRouter.getScreenNameFromDeepLink(Uri.parse('this/doesnt/exist')),
-          null);
-    });
-  });
-
-  group('extracting parameters from deepLink', () {
-    test('it can correctly adapt non camelCase keys', () {
-      final result = extractDeepLinkParameters(
-          Uri.parse('my-route/something?another-one=hello'),
-          'my-route/:myArgument');
-      expect(result, {
-        'myArgument': 'something',
-        'another-one': 'hello',
-        'anotherOne': 'hello'
-      });
-    });
   });
 }

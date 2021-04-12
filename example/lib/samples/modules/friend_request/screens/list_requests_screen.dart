@@ -1,6 +1,6 @@
 import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
@@ -17,7 +17,7 @@ class ListRequestScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Review requests'),
+        title: const Text('Review Requests'),
         actions: [
           IconButton(
             icon: const Icon(Icons.done),
@@ -26,12 +26,12 @@ class ListRequestScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: bloc.numberOfRequests + 1,
+        itemCount: 11,
         itemBuilder: (context, index) {
           if (index == 0) {
             return ListTile(
               title: Text(
-                'Received numberOfRequests: ${bloc.numberOfRequests} from the route',
+                'Received numberOfRequests: ${10} from deepLink',
                 style: bodyStyle,
               ),
             );

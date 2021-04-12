@@ -1,33 +1,39 @@
+import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
 import 'package:example/samples/modules/friend_request/screens/list_requests_screen.dart';
 import 'package:example/samples/modules/friend_request/screens/success_screen.dart';
-import 'package:example/samples/navigation/samples_router.dart';
 import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
-import '../../composer/navigation/composer_routes.dart';
+import 'package:provider/provider.dart';
 
 part 'friend_request_router.g.dart';
 
 @nuRouter
-class FriendRequestRouter extends NuRouter {
-  FriendRequestRouter();
-
-  @NuRoute()
+class OldFriendRequestRouter extends NuRouter {
+  @NuRoute(deepLink: 'old-friend-request/list')
   ScreenRoute<void> listRequests() => ScreenRoute(
         builder: (context) => ListRequestScreen(
-          toSuccess: toSuccess,
+          toSuccess: () {
+            nuvigator.open<dynamic>('composer/text');
+          },
         ),
         screenType: materialScreenType,
       );
 
-  @NuRoute()
+  @NuRoute(deepLink: 'old-friend-request/success')
   ScreenRoute<void> success() => ScreenRoute(
       builder: (context) => SuccessScreen(
             closeFlow: () => nuvigator.closeFlow(),
-            toComposeText: () => NuRouter.of<SamplesRouter>(context)
-                .composerRouter
-                .pushReplacementToComposeText(),
+            toComposeText: () {},
           ),
       screenType: materialScreenType);
+
+  @override
+  WrapperFn get screensWrapper => (BuildContext context, Widget child) {
+        return ChangeNotifierProvider.value(
+          value: FriendRequestBloc(10),
+          child: child,
+        );
+      };
 
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => _$screensMap;

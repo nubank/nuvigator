@@ -88,7 +88,7 @@ class MockNuvigator extends NuvigatorState {
   final NuRouter router;
 
   @override
-  NuvigatorState<NuRouter> get rootNuvigator => this;
+  NuvigatorState<INuRouter> get rootNuvigator => this;
 
   @override
   Future<T> pushNamed<T extends Object>(String routeName,
