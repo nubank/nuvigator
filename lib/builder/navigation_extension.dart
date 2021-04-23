@@ -7,24 +7,22 @@ import 'helpers.dart';
 class NavigationExtension extends BaseBuilder {
   NavigationExtension(ClassElement classElement) : super(classElement);
 
-  String _getArgs(List<Parameter> parameters, MethodElement method) {
+  String _getArgs(List<Parameter> parameters, MethodElement? method) {
     final argumentsMapBuffer = StringBuffer('{');
     final hasParameters =
-        method?.parameters != null && method.parameters.isNotEmpty;
+        method?.parameters != null && method!.parameters.isNotEmpty;
 
     if (hasParameters) {
-      for (final arg in method.parameters) {
+      for (final arg in method!.parameters) {
         final argName = arg.name.toString();
-        final isRequired = arg.metadata.isNotEmpty &&
-            arg.metadata.firstWhere((e) => e.isRequired, orElse: () => null) !=
-                null;
+        final isRequired = arg.metadata.any((e) => e.isRequired);
         parameters.add(
           Parameter(
             (p) => p
               ..name = argName
-              ..annotations.addAll(isRequired ? [refer('required')] : [])
+              ..required = isRequired
               ..named = true
-              ..type = refer(arg.type.getDisplayString(withNullability: false)),
+              ..type = refer(arg.type.getDisplayString(withNullability: true)),
           ),
         );
         argumentsMapBuffer.write("'$argName': $argName,");
@@ -40,6 +38,7 @@ class NavigationExtension extends BaseBuilder {
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
     final routeName = '${removeRouterKey(className)}Routes.${method.name}';
+    screenReturn = makeNullable(screenReturn);
 
     return Method(
       (m) => m
@@ -62,13 +61,14 @@ class NavigationExtension extends BaseBuilder {
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
     final routeName = '${removeRouterKey(className)}Routes.${method.name}';
+    screenReturn = makeNullable(screenReturn);
 
     parameters.add(
       Parameter(
         (p) => p
           ..name = 'result'
           ..named = true
-          ..type = refer('TO'),
+          ..type = refer('TO?'),
       ),
     );
 
@@ -96,13 +96,14 @@ class NavigationExtension extends BaseBuilder {
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
     final routeName = '${removeRouterKey(className)}Routes.${method.name}';
+    screenReturn = makeNullable(screenReturn);
 
     parameters.add(
       Parameter(
         (p) => p
           ..name = 'predicate'
           ..named = true
-          ..annotations.add(refer('required'))
+          ..required = true
           ..type = refer('RoutePredicate'),
       ),
     );
@@ -131,13 +132,14 @@ class NavigationExtension extends BaseBuilder {
     final args = _getArgs(parameters, method);
     final hasParameters = parameters.isNotEmpty;
     final routeName = '${removeRouterKey(className)}Routes.${method.name}';
+    screenReturn = makeNullable(screenReturn);
 
     parameters.add(
       Parameter(
         (p) => p
           ..name = 'result'
           ..named = true
-          ..type = refer('TO'),
+          ..type = refer('TO?'),
       ),
     );
 
@@ -179,11 +181,11 @@ class NavigationExtension extends BaseBuilder {
 
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
-      final screenReturn = generics.length > 1
+      final screenReturn = generics!.length > 1
           ? generics[1].getDisplayString(withNullability: false)
           : generics.first.getDisplayString(withNullability: false);
       final pushMethods =
-          nuRouteFieldAnnotation.getField('pushMethods').toListValue();
+          nuRouteFieldAnnotation.getField('pushMethods')!.toListValue();
       if (pushMethods != null) {
         for (final pushMethod in pushMethods) {
           final pushStr = pushMethod.toString();
@@ -224,7 +226,7 @@ class NavigationExtension extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
         methods.add(
-          _subRouterMethod(field.type.getDisplayString(withNullability: false)),
+          _subRouterMethod(field.type.getDisplayString(withNullability: true)),
         );
       }
     }

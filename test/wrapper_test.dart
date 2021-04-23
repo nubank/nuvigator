@@ -21,7 +21,7 @@ void main() {
     await helpers.pumpApp(tester, router, TestRoutes.home);
 
     // ignore: unawaited_futures
-    router.openDeepLink<void>(Uri.parse('exapp://testargs'));
+    router.openDeepLink<Object>(Uri.parse('exapp://testargs'));
     await tester.pumpAndSettle();
 
     final widgetFinder = find.byKey(const Key(TestRoutes.testArgs));

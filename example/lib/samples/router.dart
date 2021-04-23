@@ -12,14 +12,14 @@ import 'screens/home_screen.dart';
 part 'router.g.dart';
 
 class FriendRequestArgs {
-  int numberOfRequests;
-  double precision;
-  String name;
-  int age;
+  int? numberOfRequests;
+  double? precision;
+  String? name;
+  int? age;
 }
 
 @NuRouteParser()
-class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
+class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, Object> {
   @override
   String get path => 'friend-requests';
 
@@ -35,7 +35,7 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   Widget build(
       BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
     return ChangeNotifierProvider.value(
-      value: FriendRequestBloc(settings.args.numberOfRequests),
+      value: FriendRequestBloc(settings.args!.numberOfRequests!),
       child: Nuvigator(
         router: FriendRequestRouter(),
       ),

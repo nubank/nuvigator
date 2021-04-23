@@ -12,12 +12,12 @@ class TestRouter extends NuRouter {
 
   @NuRoute(deepLink: 'testargs')
   ScreenRoute<void> testArgs({
-    int intArg,
-    double doubleArg,
-    bool boolArg,
-    DateTime dateTimeArg,
-    DateTime dateArg,
-    String stringArg,
+    int? intArg,
+    double? doubleArg,
+    bool? boolArg,
+    DateTime? dateTimeArg,
+    DateTime? dateArg,
+    String? stringArg,
   }) =>
       ScreenRoute(
         builder: (context) => Column(
@@ -31,10 +31,10 @@ class TestRouter extends NuRouter {
           ],
         ),
         wrapper: (BuildContext context, Widget child) {
-          final settings = ModalRoute.of(context).settings;
+          final settings = ModalRoute.of(context)!.settings;
           final routeName = settings.name;
           return Container(
-            key: Key(routeName),
+            key: Key(routeName!),
             child: child,
           );
         },
@@ -45,10 +45,10 @@ class TestRouter extends NuRouter {
 
   @override
   WrapperFn get screensWrapper => (BuildContext context, Widget child) {
-        final settings = ModalRoute.of(context).settings;
+        final settings = ModalRoute.of(context)!.settings;
         final routeName = settings.name;
         return Container(
-          key: Key(routeName),
+          key: Key(routeName!),
           child: child,
         );
       };

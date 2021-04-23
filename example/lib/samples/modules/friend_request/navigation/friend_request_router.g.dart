@@ -19,7 +19,7 @@ extension OldFriendRequestRouterNavigation on OldFriendRequestRouter {
     );
   }
 
-  Future<void> pushReplacementToListRequests<TO extends Object>({TO result}) {
+  Future<void> pushReplacementToListRequests<TO extends Object>({TO? result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
       OldFriendRequestRoutes.listRequests,
       result: result,
@@ -27,14 +27,14 @@ extension OldFriendRequestRouterNavigation on OldFriendRequestRouter {
   }
 
   Future<void> pushAndRemoveUntilToListRequests<TO extends Object>(
-      {@required RoutePredicate predicate}) {
+      {required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
       OldFriendRequestRoutes.listRequests,
       predicate,
     );
   }
 
-  Future<void> popAndPushToListRequests<TO extends Object>({TO result}) {
+  Future<void> popAndPushToListRequests<TO extends Object>({TO? result}) {
     return nuvigator.popAndPushNamed<void, TO>(
       OldFriendRequestRoutes.listRequests,
       result: result,
@@ -47,7 +47,7 @@ extension OldFriendRequestRouterNavigation on OldFriendRequestRouter {
     );
   }
 
-  Future<void> pushReplacementToSuccess<TO extends Object>({TO result}) {
+  Future<void> pushReplacementToSuccess<TO extends Object>({TO? result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
       OldFriendRequestRoutes.success,
       result: result,
@@ -55,14 +55,14 @@ extension OldFriendRequestRouterNavigation on OldFriendRequestRouter {
   }
 
   Future<void> pushAndRemoveUntilToSuccess<TO extends Object>(
-      {@required RoutePredicate predicate}) {
+      {required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
       OldFriendRequestRoutes.success,
       predicate,
     );
   }
 
-  Future<void> popAndPushToSuccess<TO extends Object>({TO result}) {
+  Future<void> popAndPushToSuccess<TO extends Object>({TO? result}) {
     return nuvigator.popAndPushNamed<void, TO>(
       OldFriendRequestRoutes.success,
       result: result,

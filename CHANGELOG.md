@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.0-nullsafety.1
+- Add null safety support
+
 ## 1.0.0
 - First stable release with NEXT API (check past beta changelog entries for details)
 

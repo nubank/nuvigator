@@ -8,13 +8,13 @@ void main() {
     final testRouter = TestRouter();
     final screen =
         testRouter.getScreen(const RouteSettings(name: 'firstScreen'));
-    expect(screen.debugKey, 'testRouterFirstScreen');
+    expect(screen!.debugKey, 'testRouterFirstScreen');
   });
 
   test('router retrieves the right screen for the deepLink', () async {
     final testRouter = TestRouter();
     final routeEntry = testRouter.getRouteEntryForDeepLink('test/simple');
-    expect(routeEntry.screenRouteBuilder(const RouteSettings()).debugKey,
+    expect(routeEntry!.screenRouteBuilder(const RouteSettings())!.debugKey,
         'testRouterFirstScreen');
   });
 
@@ -36,7 +36,7 @@ void main() {
     testRouter.onDeepLinkNotFound = (router, deepLink, [_, dynamic __]) async {
       notFound = true;
     };
-    await testRouter.openDeepLink<void>(Uri.parse('not-found'));
+    await testRouter.openDeepLink<Object>(Uri.parse('not-found'));
     expect(notFound, true);
     expect(mockNuvigator.routePushed, null);
   });
@@ -45,7 +45,7 @@ void main() {
     final testRouter = TestRouter();
     final mockNuvigator = MockNuvigator(testRouter);
     testRouter.install(mockNuvigator);
-    await testRouter.openDeepLink<void>(Uri.parse('test/simple'));
+    await testRouter.openDeepLink<Object>(Uri.parse('test/simple'));
     expect(mockNuvigator.routePushed, 'firstScreen');
   });
 
@@ -54,7 +54,7 @@ void main() {
     final mockNuvigator = MockNuvigator(testRouter);
     testRouter.install(mockNuvigator);
     await testRouter
-        .openDeepLink<void>(Uri.parse('test/12345/params?extraParam=hello'));
+        .openDeepLink<Object>(Uri.parse('test/12345/params?extraParam=hello'));
     expect(mockNuvigator.routePushed, 'secondScreen');
     expect(
         mockNuvigator.argumentsPushed, {'id': '12345', 'extraParam': 'hello'});

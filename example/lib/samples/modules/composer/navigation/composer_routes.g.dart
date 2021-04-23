@@ -13,23 +13,23 @@ class ComposerRoutes {
 }
 
 class ComposeTextArgs {
-  ComposeTextArgs({@required this.initialText});
+  ComposeTextArgs({required this.initialText});
 
-  final String initialText;
+  final String? initialText;
 
-  static ComposeTextArgs parse(Map<String, Object> args) {
+  static ComposeTextArgs parse(Map<String, Object?>? args) {
     if (args == null) {
       return ComposeTextArgs(initialText: null);
     }
     return ComposeTextArgs(
-      initialText: args['initialText'],
+      initialText: args['initialText'] as String?,
     );
   }
 
-  Map<String, Object> get toMap => {
+  Map<String, Object?> get toMap => {
         'initialText': initialText,
       };
-  static ComposeTextArgs of(BuildContext context) {
+  static ComposeTextArgs? of(BuildContext context) {
     final routeSettings = ModalRoute.of(context)?.settings;
     final nuvigator = Nuvigator.of(context);
     if (routeSettings?.name == ComposerRoutes.composeText) {
@@ -46,8 +46,8 @@ class ComposeTextArgs {
 }
 
 extension ComposerRouterNavigation on ComposerRouter {
-  Future<String> toComposeText({String initialText}) {
-    return nuvigator.pushNamed<String>(
+  Future<String?> toComposeText({String? initialText}) {
+    return nuvigator.pushNamed<String?>(
       ComposerRoutes.composeText,
       arguments: {
         'initialText': initialText,
@@ -55,9 +55,9 @@ extension ComposerRouterNavigation on ComposerRouter {
     );
   }
 
-  Future<String> pushReplacementToComposeText<TO extends Object>(
-      {String initialText, TO result}) {
-    return nuvigator.pushReplacementNamed<String, TO>(
+  Future<String?> pushReplacementToComposeText<TO extends Object>(
+      {String? initialText, TO? result}) {
+    return nuvigator.pushReplacementNamed<String?, TO>(
       ComposerRoutes.composeText,
       arguments: {
         'initialText': initialText,
@@ -72,7 +72,7 @@ extension ComposerRouterNavigation on ComposerRouter {
     );
   }
 
-  Future<void> pushReplacementToHelp<TO extends Object>({TO result}) {
+  Future<void> pushReplacementToHelp<TO extends Object>({TO? result}) {
     return nuvigator.pushReplacementNamed<void, TO>(
       ComposerRoutes.help,
       result: result,
@@ -80,14 +80,14 @@ extension ComposerRouterNavigation on ComposerRouter {
   }
 
   Future<void> pushAndRemoveUntilToHelp<TO extends Object>(
-      {@required RoutePredicate predicate}) {
+      {required RoutePredicate predicate}) {
     return nuvigator.pushNamedAndRemoveUntil<void>(
       ComposerRoutes.help,
       predicate,
     );
   }
 
-  Future<void> popAndPushToHelp<TO extends Object>({TO result}) {
+  Future<void> popAndPushToHelp<TO extends Object>({TO? result}) {
     return nuvigator.popAndPushNamed<void, TO>(
       ComposerRoutes.help,
       result: result,
@@ -100,7 +100,8 @@ extension ComposerRouterScreensAndRouters on ComposerRouter {
     return {
       RouteDef(ComposerRoutes.composeText, deepLink: '/text'):
           (RouteSettings settings) {
-        final args = ComposeTextArgs.parse(settings.arguments);
+        final args =
+            ComposeTextArgs.parse(settings.arguments as Map<String, Object?>);
         return composeText(initialText: args.initialText);
       },
       RouteDef(ComposerRoutes.help): (RouteSettings settings) {

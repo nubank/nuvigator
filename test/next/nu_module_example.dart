@@ -6,10 +6,10 @@ import 'package:nuvigator/src/next/v1/annotations.dart';
 part 'nu_module_example.g.dart';
 
 class FriendRequestArgs {
-  int numberOfRequests;
-  double precision;
-  String name;
-  int age;
+  int? numberOfRequests;
+  double? precision;
+  String? name;
+  int? age;
 
   @override
   bool operator ==(Object o) {
@@ -33,7 +33,7 @@ class FriendRequestArgs {
 
 @NuRouteParser()
 class FriendRequestRouteExample
-    extends NuRoute<NuRouter, FriendRequestArgs, void> {
+    extends NuRoute<NuRouter, FriendRequestArgs, Object> {
   @override
   String get path => 'friend-requests';
 
