@@ -1,3 +1,5 @@
+
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:nuvigator/builder/base_builder.dart';
@@ -157,7 +159,6 @@ class ArgsClass extends BaseBuilder {
           nuRouteChecker.firstAnnotationOfExact(method);
 
       if (nuRouteFieldAnnotation == null ||
-          method?.parameters == null ||
           method.parameters.isEmpty) continue;
 
       final constructorParameters = <Parameter>[];

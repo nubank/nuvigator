@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
@@ -13,7 +14,7 @@ import 'builder/builder_library.dart';
 
 class NuvigatorGenerator extends GeneratorForAnnotation<NuRouterAnnotation> {
   @override
-  FutureOr<String> generateForAnnotatedElement(
+  FutureOr<String?> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is ClassElement) {
       final classElement = element;
@@ -26,7 +27,7 @@ class NuvigatorGenerator extends GeneratorForAnnotation<NuRouterAnnotation> {
 
 class NextGenerator extends GeneratorForAnnotation<NuRouteParser> {
   @override
-  FutureOr<String> generateForAnnotatedElement(
+  FutureOr<String?> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is ClassElement) {
       return NextBuilderLibrary(element).build();

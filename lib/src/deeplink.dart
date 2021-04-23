@@ -1,3 +1,4 @@
+
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
@@ -5,13 +6,13 @@ import 'package:recase/recase.dart';
 
 class DeepLinkParser<A extends Object> {
   DeepLinkParser({
-    this.template,
+    required this.template,
     this.prefix = false,
     this.argumentParser,
   });
 
   final String template;
-  final A Function(Map<String, dynamic>) argumentParser;
+  final A? Function(Map<String, dynamic>)? argumentParser;
   final bool prefix;
 
   /// Return the deepLink without the scheme and query parameters
@@ -50,6 +51,7 @@ class DeepLinkParser<A extends Object> {
     final deepLinkPath = getPath(deepLink);
     final regExp = pathToRegExp(template, parameters: parameters);
     final match = regExp.matchAsPrefix(deepLinkPath);
+    if (match == null) return {};
     final parametersMap = extract(parameters, match);
     return parametersMap.map((k, v) {
       return MapEntry(ReCase(k).camelCase, v);
@@ -62,19 +64,19 @@ class DeepLinkParser<A extends Object> {
   }
 
   /// Uses the provided ParserFn to parse all the params in this deepLink
-  A parseParams(Map<String, dynamic> params) {
-    return argumentParser != null ? argumentParser(params) : null;
+  A? parseParams(Map<String, dynamic> params) {
+    return argumentParser != null ? argumentParser!(params) : null;
   }
 
   /// Converts the DeepLink + extra parameters into a [NuRouteSettings]
   NuRouteSettings<A> toNuRouteSettings({
-    String deepLink,
-    Object arguments,
+    required String deepLink,
+    Object? arguments,
   }) {
     final qParams = getQueryParams(deepLink);
     final pParams = getPathParams(deepLink);
     final eParams = <String, dynamic>{};
-    A parsedArgs;
+    A? parsedArgs;
 
     if (arguments != null) {
       if (arguments is Map<String, dynamic>) {
@@ -92,9 +94,9 @@ class DeepLinkParser<A extends Object> {
     }
 
     final allParams = <String, dynamic>{
-      ...qParams ?? const <String, dynamic>{},
-      ...pParams ?? const <String, dynamic>{},
-      ...eParams ?? const <String, dynamic>{},
+      ...qParams,
+      ...pParams,
+      ...eParams,
     };
 
     return NuRouteSettings(

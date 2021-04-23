@@ -1,3 +1,5 @@
+
+
 /// Annotation used to define a module parser
 ///
 /// This annotation is used by the code generator to identify a class that

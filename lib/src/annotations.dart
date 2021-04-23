@@ -1,3 +1,5 @@
+
+
 /// Annotation used to define a router
 ///
 /// You can set a [routerName] and [routeNamePrefix].
@@ -64,12 +66,12 @@
 class NuRouterAnnotation {
   const NuRouterAnnotation({this.routerName, this.routeNamePrefix});
 
-  final String routerName;
-  final String routeNamePrefix;
+  final String? routerName;
+  final String? routeNamePrefix;
 }
 
 NuRouterAnnotation customNuRouter(
-        {String routeNamePrefix, String routerName}) =>
+        {String? routeNamePrefix, String? routerName}) =>
     NuRouterAnnotation(
         routeNamePrefix: routeNamePrefix, routerName: routerName);
 
@@ -114,9 +116,9 @@ const nuRouter = NuRouterAnnotation();
 class NuRoute {
   const NuRoute({this.deepLink, this.routeName, this.pushMethods});
 
-  final String deepLink;
-  final String routeName;
-  final List<PushMethodType> pushMethods;
+  final String? deepLink;
+  final String? routeName;
+  final List<PushMethodType>? pushMethods;
 }
 
 /// Enum to represent the push methods available on nuvigator

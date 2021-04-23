@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/widgets.dart';
 
 import 'next/v1/nu_router.dart';
@@ -5,11 +7,11 @@ import 'nu_route_settings.dart';
 import 'nuvigator.dart';
 import 'screen_route.dart';
 
-typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(
+typedef ScreenRouteBuilder = ScreenRoute<dynamic>? Function(
     RouteSettings settings);
 
-typedef HandleDeepLinkFn = Future<dynamic> Function(INuRouter router, Uri uri,
-    [bool isFromNative, dynamic args]);
+typedef HandleDeepLinkFn = Future<dynamic> Function(INuRouter? router, Uri uri,
+    [bool? isFromNative, dynamic? args]);
 
 typedef ObserverBuilder = NavigatorObserver Function();
 
@@ -23,4 +25,4 @@ typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
 
 typedef NuInitFunction = Future<bool> Function(BuildContext context);
 
-typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
+typedef ParamsParser<T> = T? Function(Map<String, dynamic> map);

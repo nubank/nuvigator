@@ -1,7 +1,10 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/src/deeplink.dart';
 
+import '../next.dart';
 import 'nuvigator.dart';
 import 'screen_route.dart';
 import 'screen_type.dart';
@@ -24,12 +27,12 @@ class RouteEntry {
 }
 
 abstract class NuRouter implements INuRouter {
-  static T of<T extends NuRouter>(
+  static T? of<T extends NuRouter>(
     BuildContext context, {
     bool nullOk = false,
     bool rootRouter = false,
   }) {
-    if (rootRouter) return Nuvigator.of(context, rootNuvigator: true).router;
+    if (rootRouter) return Nuvigator.of(context, rootNuvigator: true)!.router as T;
     final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
     assert(() {
       if (!nullOk && router == null) {
@@ -44,11 +47,11 @@ abstract class NuRouter implements INuRouter {
   }
 
   @override
-  HandleDeepLinkFn onDeepLinkNotFound;
+  HandleDeepLinkFn? onDeepLinkNotFound;
 
-  NuvigatorState _nuvigator;
+  NuvigatorState? _nuvigator;
 
-  NuvigatorState get nuvigator => _nuvigator;
+  NuvigatorState get nuvigator => _nuvigator as NuvigatorState;
 
   @override
   void install(NuvigatorState nuvigator) {
@@ -67,7 +70,7 @@ abstract class NuRouter implements INuRouter {
     }
   }
 
-  WrapperFn get screensWrapper => null;
+  WrapperFn? get screensWrapper => null;
 
   List<NuRouter> get routers => [];
 
@@ -77,7 +80,7 @@ abstract class NuRouter implements INuRouter {
 
   /// Get the specified router that can be grouped in this router
   @override
-  T getRouter<T extends INuRouter>() {
+  T? getRouter<T extends INuRouter?>() {
     // ignore: avoid_as
     if (this is T) return this as T;
     for (final router in routers) {
@@ -89,13 +92,13 @@ abstract class NuRouter implements INuRouter {
 
   // region Deprecated methods
   @deprecated
-  ScreenRoute _getScreen(RouteSettings settings) {
-    final screenBuilder = screensMap[RouteDef(settings.name)];
+  ScreenRoute? _getScreen(RouteSettings settings) {
+    final screenBuilder = screensMap[RouteDef(settings.name!)];
     if (screenBuilder == null) return null;
-    return screenBuilder(settings).wrapWith(screensWrapper);
+    return screenBuilder(settings)!.wrapWith(screensWrapper) as ScreenRoute?;
   }
 
-  ScreenRoute getScreen(RouteSettings settings) {
+  ScreenRoute? getScreen(RouteSettings settings) {
     final screen = _getScreen(settings);
     if (screen != null) return screen;
 
@@ -107,7 +110,7 @@ abstract class NuRouter implements INuRouter {
   }
 
   /// Deprecated: Prefer using getRoute
-  RouteEntry getRouteEntryForDeepLink(String deepLink) {
+  RouteEntry? getRouteEntryForDeepLink(String deepLink) {
     final thisDeepLinkPrefix = deepLinkPrefix;
     // Looks for match in this Router screens
     for (var screenEntry in screensMap.entries) {
@@ -140,25 +143,25 @@ abstract class NuRouter implements INuRouter {
   }
 
   /// Deprecated: Prefer using [NuvigatorState.open]w
-  Future<T> openDeepLink<T>(Uri url,
+  Future<T?> openDeepLink<T extends Object>(Uri url,
       [dynamic arguments, bool isFromNative = false]) async {
     if (this == nuvigator.rootRouter) {
       final routeEntry = getRouteEntryForDeepLink(url.toString());
 
       if (routeEntry == null) {
         if (onDeepLinkNotFound != null) {
-          return await onDeepLinkNotFound(this, url, isFromNative, arguments);
+          return await onDeepLinkNotFound!(this, url, isFromNative, arguments);
         }
         return null;
       }
 
       final mapArguments = DeepLinkParser(
-        template: routeEntry.key.deepLink,
+        template: routeEntry.key.deepLink!,
       ).getParams(url.toString());
 
       if (isFromNative) {
         final route = _buildNativeRoute(routeEntry, mapArguments);
-        return nuvigator.push<T>(route);
+        return nuvigator.push<T>(route as Route<T>);
       }
       return nuvigator.pushNamed<T>(
         routeEntry.key.routeName,
@@ -177,18 +180,18 @@ abstract class NuRouter implements INuRouter {
 
   /// From a deepLink (plus some option parameters) get a Route.
   @override
-  Route<T> getRoute<T>({
-    String deepLink,
-    Object parameters,
+  Route<T>? getRoute<T extends Object>({
+    required String deepLink,
+    Object? parameters,
     bool isFromNative = false,
     @deprecated bool fromLegacyRouteName = false,
-    ScreenType fallbackScreenType = materialScreenType,
+    ScreenType? fallbackScreenType = materialScreenType,
   }) {
     if (fromLegacyRouteName) {
       final settings = RouteSettings(name: deepLink, arguments: parameters);
       return getScreen(settings)
-          ?.fallbackScreenType(fallbackScreenType)
-          ?.toRoute(settings);
+          ?.fallbackScreenType(fallbackScreenType!)
+          ?.toRoute(settings) as Route<T>?;
     }
     // 1. Get ScreeRouter for DeepLink
     final routeEntry = getRouteEntryForDeepLink(deepLink);
@@ -196,26 +199,26 @@ abstract class NuRouter implements INuRouter {
       return null;
     }
     // 2. Build Settings
-    final parser = DeepLinkParser(template: routeEntry.key.deepLink);
+    final parser = DeepLinkParser(template: routeEntry.key.deepLink!);
     final settings = RouteSettings(
       name: routeEntry.key.routeName,
       arguments: parser.getParams(deepLink),
     );
     // 3. Convert ScreenRoute to Route
     final route = routeEntry
-        .screenRouteBuilder(settings)
-        .wrapWith(screensWrapper)
-        .fallbackScreenType(fallbackScreenType)
+        .screenRouteBuilder(settings)!
+        .wrapWith(screensWrapper)!
+        .fallbackScreenType(fallbackScreenType!)!
         .toRoute(settings);
     if (isFromNative) {
       _addNativePopCallBack(route);
     }
-    return route;
+    return route as Route<T>?;
   }
 
   ScreenRouteBuilder _wrapScreenBuilder(ScreenRouteBuilder screenRouteBuilder) {
     return (RouteSettings settings) =>
-        screenRouteBuilder(settings).wrapWith(screensWrapper);
+        screenRouteBuilder(settings)!.wrapWith(screensWrapper);
   }
 
   // When building a native route we assume we already the first route in the stack
@@ -227,16 +230,16 @@ abstract class NuRouter implements INuRouter {
       name: routeEntry.key.routeName,
       arguments: arguments,
     );
-    final screenRoute = getScreen(routeSettings)
-        .fallbackScreenType(nuvigator.widget.screenType);
-    final route = screenRoute.toRoute(routeSettings);
+    final screenRoute = getScreen(routeSettings)!
+        .fallbackScreenType(nuvigator.widget.screenType!);
+    final route = screenRoute!.toRoute(routeSettings);
     _addNativePopCallBack(route);
     return route;
   }
 
   void _addNativePopCallBack(Route route) {
     route.popped.then<dynamic>((dynamic _) async {
-      if (nuvigator.stateTracker.stack.length == 1) {
+      if (nuvigator.stateTracker!.stack.length == 1) {
         // We only have the backdrop route in the stack
         await Future<void>.delayed(const Duration(milliseconds: 300));
         await SystemNavigator.pop();

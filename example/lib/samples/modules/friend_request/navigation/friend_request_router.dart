@@ -13,7 +13,7 @@ class OldFriendRequestRouter extends NuRouter {
   ScreenRoute<void> listRequests() => ScreenRoute(
         builder: (context) => ListRequestScreen(
           toSuccess: () {
-            nuvigator.open<dynamic>('composer/text');
+            nuvigator.open<Object>('composer/text');
           },
         ),
         screenType: materialScreenType,

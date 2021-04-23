@@ -4,7 +4,7 @@ import 'package:nuvigator/next.dart';
 import 'screens/list_requests_screen.dart';
 import 'screens/success_screen.dart';
 
-class ListFriendRequestRoute extends NuRoute<NuRouter, void, void> {
+class ListFriendRequestRoute extends NuRoute<NuRouter, Object, Object> {
   @override
   String get path => 'friend-requests/list';
 
@@ -14,12 +14,12 @@ class ListFriendRequestRoute extends NuRoute<NuRouter, void, void> {
   @override
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return ListRequestScreen(
-      toSuccess: () => router.nuvigator.open<void>('friend-requests/success'),
+      toSuccess: () => router!.nuvigator!.open<Object>('friend-requests/success'),
     );
   }
 }
 
-class FriendRequestSuccessRoute extends NuRoute<NuRouter, void, void> {
+class FriendRequestSuccessRoute extends NuRoute<NuRouter, Object, Object> {
   @override
   String get path => 'friend-requests/success';
 
@@ -29,8 +29,8 @@ class FriendRequestSuccessRoute extends NuRoute<NuRouter, void, void> {
   @override
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return SuccessScreen(
-      closeFlow: () => router.nuvigator.closeFlow(),
-      toComposeText: () => router.nuvigator.open<void>('composer/text'),
+      closeFlow: () => router!.nuvigator!.closeFlow(),
+      toComposeText: () => router!.nuvigator!.open<Object>('composer/text'),
     );
   }
 }

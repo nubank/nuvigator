@@ -1,3 +1,4 @@
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:nuvigator/builder/base_builder.dart';
@@ -72,7 +73,7 @@ class BuilderLibrary extends BaseBuilder {
       if (nuRouteFieldAnnotation != null) {
         final params = method.parameters.map((p) => p.name);
         final deepLink =
-            nuRouteFieldAnnotation.getField('deepLink').toStringValue();
+            nuRouteFieldAnnotation.getField('deepLink')!.toStringValue();
         final paramsStr = params.isEmpty
             ? ''
             : '${params.map((p) => "$p: args.$p").join(",")}';

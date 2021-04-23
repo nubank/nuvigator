@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
-    Key key,
-    @required this.toSuccess,
+    Key? key,
+    required this.toSuccess,
   }) : super(key: key);
 
   final VoidCallback toSuccess;

@@ -1,3 +1,4 @@
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:nuvigator/builder/base_builder.dart';
@@ -7,17 +8,15 @@ import 'helpers.dart';
 class NavigationExtension extends BaseBuilder {
   NavigationExtension(ClassElement classElement) : super(classElement);
 
-  String _getArgs(List<Parameter> parameters, MethodElement method) {
+  String _getArgs(List<Parameter> parameters, MethodElement? method) {
     final argumentsMapBuffer = StringBuffer('{');
     final hasParameters =
-        method?.parameters != null && method.parameters.isNotEmpty;
+        method?.parameters != null && method!.parameters.isNotEmpty;
 
     if (hasParameters) {
-      for (final arg in method.parameters) {
+      for (final arg in method!.parameters) {
         final argName = arg.name.toString();
-        final isRequired = arg.metadata.isNotEmpty &&
-            arg.metadata.firstWhere((e) => e.isRequired, orElse: () => null) !=
-                null;
+        final isRequired = arg.metadata.any((e) => e.isRequired);
         parameters.add(
           Parameter(
             (p) => p
@@ -179,11 +178,11 @@ class NavigationExtension extends BaseBuilder {
 
     if (nuRouteFieldAnnotation != null) {
       final generics = getGenericTypes(method.returnType);
-      final screenReturn = generics.length > 1
+      final screenReturn = generics!.length > 1
           ? generics[1].getDisplayString(withNullability: false)
           : generics.first.getDisplayString(withNullability: false);
       final pushMethods =
-          nuRouteFieldAnnotation.getField('pushMethods').toListValue();
+          nuRouteFieldAnnotation.getField('pushMethods')!.toListValue();
       if (pushMethods != null) {
         for (final pushMethod in pushMethods) {
           final pushStr = pushMethod.toString();

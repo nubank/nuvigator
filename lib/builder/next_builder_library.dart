@@ -1,24 +1,25 @@
+
 import 'package:analyzer/dart/element/element.dart';
 
 class NextBuilderLibrary {
   NextBuilderLibrary(this.element);
   final ClassElement element;
 
-  ClassElement get getNuRouteArgsType => element.allSupertypes
+  ClassElement? get getNuRouteArgsType => element.allSupertypes
       .firstWhere((element) {
         return element
             .getDisplayString(withNullability: false)
             .contains('NuRoute');
       })
       .typeArguments[1]
-      .element;
+      .element as ClassElement?;
 
   String build() {
     final argsClassElement = getNuRouteArgsType;
 
     final stringBuffer = StringBuffer();
     stringBuffer.writeln(
-        'extension ${argsClassElement.displayName}Parser on ${element.displayName} {');
+        'extension ${argsClassElement!.displayName}Parser on ${element.displayName} {');
     stringBuffer.writeln(
         '${argsClassElement.displayName} _\$parseParameters(Map<String, dynamic> map) {');
     stringBuffer.writeln(' return ${argsClassElement.displayName}()');
