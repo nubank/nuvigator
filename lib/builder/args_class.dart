@@ -18,9 +18,7 @@ class ArgsClass extends BaseBuilder {
       (p) => p
         ..name = name
         ..named = true
-        ..annotations.add(
-          refer('required'),
-        )
+        ..required = true
         ..toThis = true,
     );
   }
@@ -45,7 +43,7 @@ class ArgsClass extends BaseBuilder {
         ..requiredParameters.add(
           Parameter((p) => p
             ..name = 'args'
-            ..type = refer('Map<String, Object>')),
+            ..type = refer('Map<String, Object?>?')),
         )
         ..returns = refer(className)
         ..static = true
@@ -61,7 +59,7 @@ class ArgsClass extends BaseBuilder {
       (m) => m
         ..name = 'of'
         ..static = true
-        ..returns = refer(className)
+        ..returns = refer(className + '?')
         ..requiredParameters.add(
           Parameter(
             (p) => p
@@ -94,7 +92,7 @@ class ArgsClass extends BaseBuilder {
     return Method((m) => m
       ..name = 'toMap'
       ..type = MethodType.getter
-      ..returns = refer('Map<String, Object>')
+      ..returns = refer('Map<String, Object?>')
       ..lambda = true
       ..body = Code(argsMap.toString()));
   }
@@ -117,15 +115,24 @@ class ArgsClass extends BaseBuilder {
 
   static final _tryParseableTypeNames = [
     'int',
+    'int?',
     'double',
+    'double?',
     'DateTime',
+    'DateTime?',
   ];
 
-  static final _supportedTypes = [..._tryParseableTypeNames, 'bool', 'String'];
+  static final _supportedTypes = [
+    ..._tryParseableTypeNames,
+    'bool',
+    'bool?',
+    'String',
+    'String?'
+  ];
 
   String _safelyCastArg(ParameterElement arg, MethodElement method) {
     final varName = arg.name.toString();
-    final typeName = arg.type.getDisplayString(withNullability: false);
+    final typeName = arg.type.getDisplayString(withNullability: true);
     final nuRouteFieldAnnotation =
         nuRouteChecker.firstAnnotationOfExact(method);
 
@@ -138,14 +145,14 @@ class ArgsClass extends BaseBuilder {
     }
 
     if (_tryParseableTypeNames.contains(typeName)) {
-      return "args['$varName'] is String ? $typeName.tryParse(args['$varName']) : args['$varName']";
+      return "args['$varName'] is String ? $typeName.tryParse(args['$varName'] as String) : args['$varName'] as $typeName";
     }
 
-    if (typeName == 'bool') {
-      return "args['$varName'] is String ? boolFromString(args['$varName']) : args['$varName']";
+    if (typeName == 'bool' || typeName == 'bool?') {
+      return "args['$varName'] is String ? boolFromString(args['$varName'] as String) : args['$varName'] as $typeName";
     }
 
-    return "args['$varName']";
+    return "args['$varName'] as $typeName";
   }
 
   @override
@@ -164,7 +171,7 @@ class ArgsClass extends BaseBuilder {
 
       for (final arg in method.parameters) {
         final varName = arg.name.toString();
-        final typeName = arg.type.getDisplayString(withNullability: false);
+        final typeName = arg.type.getDisplayString(withNullability: true);
 
         argsParserBuffer.write('$varName: ${_safelyCastArg(arg, method)},\n');
 

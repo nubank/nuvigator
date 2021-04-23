@@ -84,7 +84,7 @@ class BuilderLibrary extends BaseBuilder {
           ..lambda = false
           ..body = Code((params.isEmpty
                   ? ''
-                  : 'final args = ${capitalize(method.name)}Args.parse(settings.arguments);') +
+                  : 'final args = ${capitalize(method.name)}Args.parse(settings.arguments as Map<String, Object?>);') +
               'return ${method.name}($paramsStr);'));
 
         if (deepLink != null) {

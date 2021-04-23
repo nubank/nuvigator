@@ -51,3 +51,8 @@ String libraryToString(Library library) {
   final emitter = DartEmitter(allocator: Allocator.simplePrefixing());
   return DartFormatter().format('${library.accept(emitter)}');
 }
+
+String makeNullable(String typeName) {
+  if (typeName == 'void') return typeName;
+  return typeName + '?';
+}
