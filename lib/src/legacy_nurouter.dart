@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nuvigator/src/deeplink.dart';
@@ -32,7 +30,9 @@ abstract class NuRouter implements INuRouter {
     bool nullOk = false,
     bool rootRouter = false,
   }) {
-    if (rootRouter) return Nuvigator.of(context, rootNuvigator: true)!.router as T;
+    if (rootRouter) {
+      return Nuvigator.of(context, rootNuvigator: true)!.router as T;
+    }
     final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
     assert(() {
       if (!nullOk && router == null) {

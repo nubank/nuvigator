@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -227,7 +226,8 @@ class NuvigatorState<T extends INuRouter?> extends NavigatorState
   }
 
   @override
-  Future<R?> pushNamed<R extends Object?>(String routeName, {Object? arguments}) {
+  Future<R?> pushNamed<R extends Object?>(String routeName,
+      {Object? arguments}) {
     if (canOpen(routeName, arguments: arguments) == null && isNested) {
       return parent!.pushNamed<R>(routeName, arguments: arguments);
     }

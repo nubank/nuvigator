@@ -1,4 +1,3 @@
-
 bool? boolFromString(String? boolValue) {
   switch (boolValue?.toLowerCase()) {
     case 'true':

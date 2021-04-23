@@ -84,7 +84,7 @@ class MockNuvigator extends NuvigatorState {
 
   String? routePushed;
   Object? argumentsPushed;
-  
+
   @override
   final NuRouter router;
 

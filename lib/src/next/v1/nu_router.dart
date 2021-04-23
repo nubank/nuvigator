@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -394,8 +392,8 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
       await widget.router._init(context);
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace, label: error.toString());
-      final errorWidget =
-          widget.router.onError(error as Error, NuRouterController(reload: _reload));
+      final errorWidget = widget.router
+          .onError(error as Error, NuRouterController(reload: _reload));
       if (errorWidget != null) {
         setState(() {
           this.errorWidget = errorWidget;

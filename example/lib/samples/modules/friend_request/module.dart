@@ -14,7 +14,8 @@ class ListFriendRequestRoute extends NuRoute<NuRouter, Object, Object> {
   @override
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return ListRequestScreen(
-      toSuccess: () => router!.nuvigator!.open<Object>('friend-requests/success'),
+      toSuccess: () =>
+          router!.nuvigator!.open<Object>('friend-requests/success'),
     );
   }
 }

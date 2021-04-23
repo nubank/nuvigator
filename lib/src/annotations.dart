@@ -1,5 +1,3 @@
-
-
 /// Annotation used to define a router
 ///
 /// You can set a [routerName] and [routeNamePrefix].
