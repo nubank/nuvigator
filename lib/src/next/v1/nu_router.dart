@@ -20,6 +20,13 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
 
   bool canOpen(String deepLink) => _parser.matches(deepLink);
 
+  bool canOpenByAlias(String alias) {
+    if (alias != null && alias.isNotEmpty) {
+      return aliases.contains(alias);
+    }
+    return false;
+  }
+
   ParamsParser<A> get paramsParser => null;
 
   Future<bool> init(BuildContext context) {
@@ -31,6 +38,8 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   ScreenType get screenType;
 
   String get path;
+
+  Iterable<String> get aliases => [];
 
   Widget build(BuildContext context, NuRouteSettings<A> settings);
 
@@ -76,6 +85,19 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
     }
     return null;
   }
+
+  ScreenRoute<R> _tryGetScreenRouteByAlias({
+    String alias,
+    Map<String, dynamic> extraParameters,
+  }) {
+    if (canOpenByAlias(alias)) {
+      return _screenRoute(
+        deepLink: path,
+        extraParameters: extraParameters,
+      );
+    }
+    return null;
+  }
 }
 
 /// Class to create an anonymous [NuRoute] that can be registered in a [NuRouter]
@@ -84,15 +106,18 @@ class NuRouteBuilder<A extends Object, R extends Object>
   NuRouteBuilder({
     @required String path,
     @required this.builder,
+    Iterable<String> aliases,
     this.initializer,
     this.parser,
     ScreenType screenType,
     bool prefix = false,
   })  : _path = path,
         _prefix = prefix,
-        _screenType = screenType;
+        _screenType = screenType,
+        _aliases = aliases ?? [];
 
   final String _path;
+  final Iterable<String> _aliases;
   final NuInitFunction initializer;
   final NuRouteParametersParser<A> parser;
   final bool _prefix;
@@ -126,6 +151,9 @@ class NuRouteBuilder<A extends Object, R extends Object>
 
   @override
   ScreenType get screenType => _screenType;
+
+  @override
+  Iterable<String> get aliases => _aliases;
 }
 
 /// Extend to create your own NuRouter. Responsible for declaring the routes and
@@ -284,6 +312,36 @@ abstract class NuRouter implements INuRouter {
       if (r != null) return r;
     }
     // end region
+    return null;
+  }
+
+  @override
+  Route<R> getRouteByAlias<R>({
+    String alias,
+    Object parameters,
+    @deprecated bool fromLegacyRouteName = false,
+    bool isFromNative = false,
+    ScreenType fallbackScreenType,
+  }) {
+    final route = _getScreenRouteByAlias<R>(
+      alias,
+      parameters: parameters ?? <String, dynamic>{},
+    )?.fallbackScreenType(fallbackScreenType ?? screenType)?.toRoute();
+    if (route != null) {
+      return route;
+    }
+    return null;
+  }
+
+  ScreenRoute<R> _getScreenRouteByAlias<R>(String alias,
+      {Map<String, dynamic> parameters}) {
+    for (final route in routes) {
+      final screenRoute = route._tryGetScreenRouteByAlias(
+        alias: alias,
+        extraParameters: parameters,
+      );
+      if (screenRoute != null) return screenRoute;
+    }
     return null;
   }
 

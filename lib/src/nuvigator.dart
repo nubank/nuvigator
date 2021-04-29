@@ -78,6 +78,14 @@ abstract class INuRouter {
     bool isFromNative = false,
     ScreenType fallbackScreenType,
   });
+
+  Route<T> getRouteByAlias<T>({
+    String alias,
+    Object parameters,
+    bool fromLegacyRouteName = false,
+    bool isFromNative = false,
+    ScreenType fallbackScreenType,
+  });
 }
 
 class _NuvigatorInner<T extends INuRouter> extends Navigator {
@@ -344,6 +352,42 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     } else {
       throw FlutterError(
           'DeepLink $deepLink was not found, and no `onDeepLinkNotFound` was specified.');
+    }
+  }
+
+  Future<R> openByAlias<R extends Object>(
+      String alias, {
+        DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
+        Map<String, dynamic> parameters,
+        bool isFromNative = false,
+      }) {
+    final route = router.getRouteByAlias<R>(
+      alias: alias,
+      parameters: parameters,
+      isFromNative: isFromNative,
+      fromLegacyRouteName: false,
+      fallbackScreenType: widget.screenType,
+    );
+    if (route != null) {
+      switch (pushMethod) {
+        case DeepLinkPushMethod.Push:
+          return push<R>(route);
+        case DeepLinkPushMethod.PushReplacement:
+          return pushReplacement<R, dynamic>(route);
+        case DeepLinkPushMethod.PopAndPush:
+          pop();
+          return push<R>(route);
+        default:
+          return push<R>(route);
+      }
+    } else if (router.onDeepLinkNotFound != null) {
+      return router.onDeepLinkNotFound(
+          router, Uri.parse(alias), false, parameters);
+    } else if (isNested) {
+      return parent.openByAlias(alias, parameters: parameters);
+    } else {
+      throw FlutterError(
+          'DeepLink $alias was not found, and no `onDeepLinkNotFound` was specified.');
     }
   }
 
