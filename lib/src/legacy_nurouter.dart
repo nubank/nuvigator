@@ -182,12 +182,14 @@ abstract class NuRouter implements INuRouter {
     Object parameters,
     bool isFromNative = false,
     @deprecated bool fromLegacyRouteName = false,
+    ScreenType overrideScreenType,
     ScreenType fallbackScreenType = materialScreenType,
   }) {
     if (fromLegacyRouteName) {
       final settings = RouteSettings(name: deepLink, arguments: parameters);
       return getScreen(settings)
           ?.fallbackScreenType(fallbackScreenType)
+          ?.copyWith(screenType: overrideScreenType)
           ?.toRoute(settings);
     }
     // 1. Get ScreeRouter for DeepLink

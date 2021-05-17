@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
@@ -89,7 +90,9 @@ class MainAppRouter extends NuRouter {
         NuRouteBuilder(
           path: 'home',
           builder: (_, __, ___) => HomeScreen(),
-          screenType: materialScreenType,
+          screenType: ScreenTypeBuilder(
+            (WidgetBuilder builder, RouteSettings _) => CupertinoPageRoute(builder: builder),
+          ),
         ),
         FriendRequestRoute(),
         ComposerRoute(),
