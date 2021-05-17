@@ -91,7 +91,8 @@ class MainAppRouter extends NuRouter {
           path: 'home',
           builder: (_, __, ___) => HomeScreen(),
           screenType: ScreenTypeBuilder(
-            (WidgetBuilder builder, RouteSettings _) => CupertinoPageRoute(builder: builder),
+            (WidgetBuilder builder, RouteSettings _) =>
+                CupertinoPageRoute(builder: builder),
           ),
         ),
         FriendRequestRoute(),

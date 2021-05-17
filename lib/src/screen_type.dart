@@ -47,8 +47,8 @@ abstract class ScreenType {
 class ScreenTypeBuilder extends ScreenType {
   ScreenTypeBuilder(this.builder);
 
-  final Route<dynamic> Function(
-      WidgetBuilder builder, RouteSettings setting) builder;
+  final Route<dynamic> Function(WidgetBuilder builder, RouteSettings setting)
+      builder;
 
   @override
   Route<R> toRoute<R extends Object>(
