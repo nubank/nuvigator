@@ -44,7 +44,9 @@ class HomeScreen extends StatelessWidget {
                     String text;
 
                     text = await nuvigator.open<String>(
-                        'exapp://composer/text?initialText=Hello+deep+link%21');
+                      'exapp://composer/text?initialText=Hello+deep+link%21',
+                      screenType: cupertinoDialogScreenType,
+                    );
 
                     if (text != null) {
                       // ignore: unawaited_futures
