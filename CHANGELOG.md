@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.2.0-beta.0
+- Bump dependencies versions and make code adjustments to support non nullable
+
 ## 1.1.0
 - Add the `ScreenTypeBuilder` class to allow the definition and creation of `ScreenTypes` in an ad-hoc manner
 - Add the `screenType` parameter to the `NuvigatorState.open` method, allowing to override the `ScreenType` of a defined Route to be opened
