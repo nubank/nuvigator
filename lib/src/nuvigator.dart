@@ -77,6 +77,7 @@ abstract class INuRouter {
     bool fromLegacyRouteName = false,
     bool isFromNative = false,
     ScreenType fallbackScreenType,
+    ScreenType overrideScreenType,
   });
 }
 
@@ -297,7 +298,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     }
   }
 
-  /// Prefer using [NuvigatorState.open]
+  /// Prefer using [NuvigatorState.open], `.openDeepLink` does not support opening nested deepLinks
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
     if (rootRouter is legacy.NuRouter) {
       // ignore: avoid_as
@@ -311,9 +312,13 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// Open the requested deepLink, if the current Nuvigator is not able to handle
   /// it, and no [INuRouter.onDeepLinkNotFound] is provided, then we try to open the
   /// deepLink in the parent Nuvigator.
+  /// [screenType] argument can be used to override the default screenType provided by the to be opened Route
+  /// [pushMethod] allows for customizing how the new Route will be pushed into the stack
+  /// [parameters] is a helper to inject arguments that would be present in the DeepLink query/path parameters
   Future<R> open<R extends Object>(
     String deepLink, {
     DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
+    ScreenType screenType,
     Map<String, dynamic> parameters,
     bool isFromNative = false,
   }) {
@@ -323,6 +328,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       isFromNative: isFromNative,
       fromLegacyRouteName: false,
       fallbackScreenType: widget.screenType,
+      overrideScreenType: screenType,
     );
     if (route != null) {
       switch (pushMethod) {
