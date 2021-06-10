@@ -303,6 +303,18 @@ final nuvigator = Nuvigator.of(context);
 final result = await nuvigator.open<String>('nuapp://next-screen');
 ```
 
+`.open` accept a few options in addition to the deepLink itself:
+
+- pushMethod (default: DeepLinkPushMethod.Push)
+Allows to customize how the route will be pushed into the Navigation Stack, available options are: Push, PushReplacement, PopAndPush
+
+- screenType
+Allows to override the ScreenType that is going to be used to present the Route to be opened
+
+- parameters
+Additional parameters to be passed to the Route (will be merged with the query+path parameters)
+
+
 ### Nuvigator.routes
 
 Helper factory to create `Nuvigator` from a List of `NuRoute`s, just like a `NuRouterBuilder`.
@@ -320,6 +332,44 @@ class MyWidget extends StatelessWidget {
           NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),
       ],
     ),
+  }
+}
+```
+
+## ScreenTypes
+
+ScreenType is the class Nuvigator used to help you define how your NuRoute is going to be presented. It acts as an adapter between the Widget Builder and the Navigator Route to be presented. ScreenTypes allows you to define customer transitions/presentation behavior in a declarative manner. By default Nuvigator provides two default ScreenTypes:
+
+- MaterialScreenType
+- CupertinoScreenType
+
+But you can create your own ScreenTypes by extending the `ScreenType` class, and implementing the `toRoute` method. This method should return a `Route` subclass, one additional functionality is the `NuvigatorPageRoute` mixin, that can be used to improve the stack awareness of `PageRoute`s that implement it, when inside Nuvigators. One example of custom ScreenType behavior can be found below:
+
+```dart
+class _NuMaterialPageRoute<T> extends MaterialPageRoute<T> with NuvigatorPageRoute<T> {
+  _NuMaterialPageRoute({
+    @required WidgetBuilder builder,
+    RouteSettings settings,
+    bool maintainState = true,
+    bool fullscreenDialog = false,
+  }) : super(
+          builder: builder,
+          settings: settings,
+          maintainState: maintainState,
+          fullscreenDialog: fullscreenDialog,
+        );
+}
+
+class MaterialScreenType extends ScreenType {
+  const MaterialScreenType();
+
+  @override
+  Route<T> toRoute<T extends Object>(
+      WidgetBuilder builder, RouteSettings settings) {
+    return _NuMaterialPageRoute(
+      builder: builder,
+      settings: settings,
+    );
   }
 }
 ```
