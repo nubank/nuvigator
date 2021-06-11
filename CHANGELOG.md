@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0-beta.0
+- Change the `NuRouter.onError` to handle any thrown object (including `Exception`)
+
 ## 1.2.0-beta.0
 - Bump dependencies versions and make code adjustments to support non nullable
 

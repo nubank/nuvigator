@@ -205,7 +205,7 @@ abstract class NuRouter implements INuRouter {
 
   /// In case an error happends during the NuRouter initialization, this function will be called with the error
   /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
-  Widget onError(Error error, NuRouterController controller) => null;
+  Widget onError(Object error, NuRouterController controller) => null;
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
