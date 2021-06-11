@@ -48,6 +48,6 @@ String getRouteString(ClassElement routerElement, MethodElement element) {
 }
 
 String libraryToString(Library library) {
-  final emitter = DartEmitter(Allocator.simplePrefixing());
+  final emitter = DartEmitter(allocator: Allocator.simplePrefixing());
   return DartFormatter().format('${library.accept(emitter)}');
 }
