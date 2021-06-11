@@ -1,7 +1,10 @@
 # CHANGELOG
 
-## 1.2.0
+## 2.0.0-beta.0
 - Change the `NuRouter.onError` to handle any thrown object (including `Exception`)
+
+## 1.2.0-beta.0
+- Bump dependencies versions and make code adjustments to support non nullable
 
 ## 1.1.0
 - Add the `ScreenTypeBuilder` class to allow the definition and creation of `ScreenTypes` in an ad-hoc manner
