@@ -5,6 +5,8 @@ experience. The core functional features of Nuvigator are going to be kept, and 
 going to change drastically. Right now both APIs (legacy and next) can coexist, but it's preferred to use the NEXT API
 when developing new flows.
 
+Não fala bem inglês? Leia o [next_PT](./next_PT.md)
+
 ## Quick Start
 
 The simplest you can get:
