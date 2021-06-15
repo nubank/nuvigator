@@ -291,7 +291,7 @@ When the Android back button is pressed Nuvigator will ensure that just the deep
 
 **Hero Animations**
 
-Nuvigator comes with built in support for Here animations that happens betweens different levels of nested Nuvigators.
+Nuvigator comes with built in support for Hero animations that happens betweens different levels of nested Nuvigators.
 
 ### Navigating
 
