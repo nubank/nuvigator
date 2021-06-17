@@ -227,7 +227,7 @@ class MyRouter extends NuRouter {
   DeepLinkHandlerFn get onDeepLinkNotFound => null
 
   // Optional - If the Router initialization fails this function will be called, and it should return a Widget to be rendered instead of the Nuvigator
-  Widget onError(Error error, NuRouterController controller) => null;
+  Widget onError(Object error, NuRouterController controller) => null;
 
   // Optional - Register legacy NuRouters
   @override
