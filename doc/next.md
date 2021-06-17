@@ -199,6 +199,11 @@ class MyRouter extends NuRouter {
 
   ];
 
+  // Optional - Makes the `registerRoutes` method be called to create the Route instances only after the
+  // NuRouter has been initialized (instead of when the class instance is created).
+  @override
+  bool get lazyRouteRegister = true;
+
   // Optional - Default ScreenType to be used when a route does not specify
   @override
   ScreenType get screenType => materialScreenType;
