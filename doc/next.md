@@ -199,6 +199,11 @@ class MyRouter extends NuRouter {
 
   ];
 
+  // Optional - Makes the `registerRoutes` method be called to create the Route instances only after the
+  // NuRouter has been initialized (instead of when the class instance is created).
+  @override
+  bool get lazyRouteRegister = true;
+
   // Optional - Default ScreenType to be used when a route does not specify
   @override
   ScreenType get screenType => materialScreenType;
@@ -222,7 +227,7 @@ class MyRouter extends NuRouter {
   DeepLinkHandlerFn get onDeepLinkNotFound => null
 
   // Optional - If the Router initialization fails this function will be called, and it should return a Widget to be rendered instead of the Nuvigator
-  Widget onError(Error error, NuRouterController controller) => null;
+  Widget onError(Object error, NuRouterController controller) => null;
 
   // Optional - Register legacy NuRouters
   @override
