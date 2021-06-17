@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0-beta.1
+- Add option to get registered routes after NuRouter initialization when overriding the `lazyRouteRegister` option in NuRouter
+
 ## 2.0.0-beta.0
 - Change the `NuRouter.onError` to handle any thrown object (including `Exception`)
 
