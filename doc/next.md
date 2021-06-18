@@ -5,6 +5,8 @@ experience. The core functional features of Nuvigator are going to be kept, and 
 going to change drastically. Right now both APIs (legacy and next) can coexist, but it's preferred to use the NEXT API
 when developing new flows.
 
+Não fala bem inglês? Leia o [next_PT](./next_PT.md)
+
 ## Quick Start
 
 The simplest you can get:
@@ -289,7 +291,7 @@ When the Android back button is pressed Nuvigator will ensure that just the deep
 
 **Hero Animations**
 
-Nuvigator comes with built in support for Here animations that happens betweens different levels of nested Nuvigators.
+Nuvigator comes with built in support for Hero animations that happens betweens different levels of nested Nuvigators.
 
 ### Navigating
 
