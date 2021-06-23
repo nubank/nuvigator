@@ -13,57 +13,60 @@ class OldFriendRequestRoutes {
 }
 
 extension OldFriendRequestRouterNavigation on OldFriendRequestRouter {
-  Future<void> toListRequests() {
-    return nuvigator.pushNamed<void>(
+  Future<void> toListRequests() async {
+    return nuvigator?.pushNamed<void>(
       OldFriendRequestRoutes.listRequests,
     );
   }
 
-  Future<void> pushReplacementToListRequests<TO extends Object>({TO result}) {
-    return nuvigator.pushReplacementNamed<void, TO>(
+  Future<void> pushReplacementToListRequests<TO extends Object?>(
+      {TO? result}) async {
+    return nuvigator?.pushReplacementNamed<void, TO?>(
       OldFriendRequestRoutes.listRequests,
       result: result,
     );
   }
 
-  Future<void> pushAndRemoveUntilToListRequests<TO extends Object>(
-      {@required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<void>(
+  Future<void> pushAndRemoveUntilToListRequests<TO extends Object?>(
+      {required RoutePredicate predicate}) async {
+    return nuvigator?.pushNamedAndRemoveUntil<void>(
       OldFriendRequestRoutes.listRequests,
       predicate,
     );
   }
 
-  Future<void> popAndPushToListRequests<TO extends Object>({TO result}) {
-    return nuvigator.popAndPushNamed<void, TO>(
+  Future<void> popAndPushToListRequests<TO extends Object?>(
+      {TO? result}) async {
+    return nuvigator?.popAndPushNamed<void, TO?>(
       OldFriendRequestRoutes.listRequests,
       result: result,
     );
   }
 
-  Future<void> toSuccess() {
-    return nuvigator.pushNamed<void>(
+  Future<void> toSuccess() async {
+    return nuvigator?.pushNamed<void>(
       OldFriendRequestRoutes.success,
     );
   }
 
-  Future<void> pushReplacementToSuccess<TO extends Object>({TO result}) {
-    return nuvigator.pushReplacementNamed<void, TO>(
+  Future<void> pushReplacementToSuccess<TO extends Object?>(
+      {TO? result}) async {
+    return nuvigator?.pushReplacementNamed<void, TO?>(
       OldFriendRequestRoutes.success,
       result: result,
     );
   }
 
-  Future<void> pushAndRemoveUntilToSuccess<TO extends Object>(
-      {@required RoutePredicate predicate}) {
-    return nuvigator.pushNamedAndRemoveUntil<void>(
+  Future<void> pushAndRemoveUntilToSuccess<TO extends Object?>(
+      {required RoutePredicate predicate}) async {
+    return nuvigator?.pushNamedAndRemoveUntil<void>(
       OldFriendRequestRoutes.success,
       predicate,
     );
   }
 
-  Future<void> popAndPushToSuccess<TO extends Object>({TO result}) {
-    return nuvigator.popAndPushNamed<void, TO>(
+  Future<void> popAndPushToSuccess<TO extends Object?>({TO? result}) async {
+    return nuvigator?.popAndPushNamed<void, TO?>(
       OldFriendRequestRoutes.success,
       result: result,
     );

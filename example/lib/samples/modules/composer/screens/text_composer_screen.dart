@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class TextComposerScreen extends StatefulWidget {
   const TextComposerScreen({
-    Key key,
+    Key? key,
     this.initialText,
-    @required this.submitText,
-    @required this.toHelp,
+    required this.submitText,
+    required this.toHelp,
   }) : super(key: key);
 
-  final String initialText;
+  final String? initialText;
   final Function(String) submitText;
   final VoidCallback toHelp;
 
@@ -21,7 +21,7 @@ class _TextComposerScreenState extends State<TextComposerScreen> {
 
   @override
   void initState() {
-    _controller.text = widget.initialText;
+    _controller.text = widget.initialText!;
     super.initState();
   }
 

@@ -14,7 +14,7 @@ class ListFriendRequestRoute extends NuRoute<NuRouter, void, void> {
   @override
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return ListRequestScreen(
-      toSuccess: () => router.nuvigator.open<void>('friend-requests/success'),
+      toSuccess: () => router!.nuvigator!.open<void>('friend-requests/success'),
     );
   }
 }
@@ -29,8 +29,8 @@ class FriendRequestSuccessRoute extends NuRoute<NuRouter, void, void> {
   @override
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return SuccessScreen(
-      closeFlow: () => router.nuvigator.closeFlow(),
-      toComposeText: () => router.nuvigator.open<void>('composer/text'),
+      closeFlow: () => router!.nuvigator!.closeFlow(),
+      toComposeText: () => router!.nuvigator!.open<void>('composer/text'),
     );
   }
 }
@@ -45,7 +45,7 @@ class FriendRequestRouter extends NuRouter {
 
   @override
   List<NuRoute> get registerRoutes => [
-        ListFriendRequestRoute(),
-        FriendRequestSuccessRoute(),
+        ListFriendRequestRoute() as NuRoute<NuRouter, Object, Object>,
+        FriendRequestSuccessRoute() as NuRoute<NuRouter, Object, Object>,
       ];
 }

@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:nuvigator/builder/base_builder.dart';
 
 import 'helpers.dart';
@@ -9,22 +10,20 @@ class NavigationExtension extends BaseBuilder {
 
   String _getArgs(List<Parameter> parameters, MethodElement method) {
     final argumentsMapBuffer = StringBuffer('{');
-    final hasParameters =
-        method?.parameters != null && method.parameters.isNotEmpty;
+    final hasParameters = method.parameters.isNotEmpty;
 
     if (hasParameters) {
       for (final arg in method.parameters) {
         final argName = arg.name.toString();
         final isRequired = arg.metadata.isNotEmpty &&
-            arg.metadata.firstWhere((e) => e.isRequired, orElse: () => null) !=
-                null;
+            arg.metadata.firstWhereOrNull((e) => e.isRequired) != null;
         parameters.add(
           Parameter(
             (p) => p
               ..name = argName
-              ..annotations.addAll(isRequired ? [refer('required')] : [])
+              ..required = isRequired
               ..named = true
-              ..type = refer(arg.type.getDisplayString(withNullability: false)),
+              ..type = refer(arg.type.getDisplayString(withNullability: true)),
           ),
         );
         argumentsMapBuffer.write("'$argName': $argName,");
@@ -44,14 +43,16 @@ class NavigationExtension extends BaseBuilder {
     return Method(
       (m) => m
         ..name = 'to${capitalize(method.name)}'
-        ..returns = refer('Future<$screenReturn>')
+        ..returns = refer(
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
         ..optionalParameters.addAll(parameters)
+        ..modifier = MethodModifier.async
         ..body = hasParameters
             ? Code(
-                'return nuvigator.pushNamed<$screenReturn>($routeName, arguments: $args,);',
+                'return nuvigator?.pushNamed<$screenReturn>($routeName, arguments: $args,);',
               )
             : Code(
-                'return nuvigator.pushNamed<$screenReturn>($routeName,);',
+                'return nuvigator?.pushNamed<$screenReturn>($routeName,);',
               ),
     );
   }
@@ -68,24 +69,26 @@ class NavigationExtension extends BaseBuilder {
         (p) => p
           ..name = 'result'
           ..named = true
-          ..type = refer('TO'),
+          ..type = refer('TO?'),
       ),
     );
 
     return Method(
       (m) => m
         ..name = 'pushReplacementTo${capitalize(method.name)}'
-        ..returns = refer('Future<$screenReturn>')
+        ..returns = refer(
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
         ..optionalParameters.addAll([
           ...parameters,
         ])
-        ..types.add(refer('TO extends Object'))
+        ..types.add(refer('TO extends Object?'))
+        ..modifier = MethodModifier.async
         ..body = hasParameters
             ? Code(
-                'return nuvigator.pushReplacementNamed<$screenReturn, TO>($routeName, arguments: $args, result: result,);',
+                'return nuvigator?.pushReplacementNamed<$screenReturn, TO?>($routeName, arguments: $args, result: result,);',
               )
             : Code(
-                'return nuvigator.pushReplacementNamed<$screenReturn, TO>($routeName, result: result,);',
+                'return nuvigator?.pushReplacementNamed<$screenReturn, TO?>($routeName, result: result,);',
               ),
     );
   }
@@ -102,7 +105,7 @@ class NavigationExtension extends BaseBuilder {
         (p) => p
           ..name = 'predicate'
           ..named = true
-          ..annotations.add(refer('required'))
+          ..required = true
           ..type = refer('RoutePredicate'),
       ),
     );
@@ -110,17 +113,19 @@ class NavigationExtension extends BaseBuilder {
     return Method(
       (m) => m
         ..name = 'pushAndRemoveUntilTo${capitalize(method.name)}'
-        ..returns = refer('Future<$screenReturn>')
+        ..returns = refer(
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
         ..optionalParameters.addAll([
           ...parameters,
         ])
-        ..types.add(refer('TO extends Object'))
+        ..types.add(refer('TO extends Object?'))
+        ..modifier = MethodModifier.async
         ..body = hasParameters
             ? Code(
-                'return nuvigator.pushNamedAndRemoveUntil<$screenReturn>($routeName, predicate, arguments: $args,);',
+                'return nuvigator?.pushNamedAndRemoveUntil<$screenReturn>($routeName, predicate, arguments: $args,);',
               )
             : Code(
-                'return nuvigator.pushNamedAndRemoveUntil<$screenReturn>($routeName, predicate,);',
+                'return nuvigator?.pushNamedAndRemoveUntil<$screenReturn>($routeName, predicate,);',
               ),
     );
   }
@@ -137,24 +142,26 @@ class NavigationExtension extends BaseBuilder {
         (p) => p
           ..name = 'result'
           ..named = true
-          ..type = refer('TO'),
+          ..type = refer('TO?'),
       ),
     );
 
     return Method(
       (m) => m
         ..name = 'popAndPushTo${capitalize(method.name)}'
-        ..returns = refer('Future<$screenReturn>')
+        ..returns = refer(
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
         ..optionalParameters.addAll([
           ...parameters,
         ])
-        ..types.add(refer('TO extends Object'))
+        ..types.add(refer('TO extends Object?'))
+        ..modifier = MethodModifier.async
         ..body = hasParameters
             ? Code(
-                'return nuvigator.popAndPushNamed<$screenReturn, TO>($routeName, arguments: $args, result: result,);',
+                'return nuvigator?.popAndPushNamed<$screenReturn, TO?>($routeName, arguments: $args, result: result,);',
               )
             : Code(
-                'return nuvigator.popAndPushNamed<$screenReturn, TO>($routeName, result: result,);',
+                'return nuvigator?.popAndPushNamed<$screenReturn, TO?>($routeName, result: result,);',
               ),
     );
   }
@@ -178,12 +185,12 @@ class NavigationExtension extends BaseBuilder {
         nuRouteChecker.firstAnnotationOf(method, throwOnUnresolved: true);
 
     if (nuRouteFieldAnnotation != null) {
-      final generics = getGenericTypes(method.returnType);
+      final generics = getGenericTypes(method.returnType)!;
       final screenReturn = generics.length > 1
-          ? generics[1].getDisplayString(withNullability: false)
-          : generics.first.getDisplayString(withNullability: false);
+          ? generics[1].getDisplayString(withNullability: true)
+          : generics.first.getDisplayString(withNullability: true);
       final pushMethods =
-          nuRouteFieldAnnotation.getField('pushMethods').toListValue();
+          nuRouteFieldAnnotation.getField('pushMethods')!.toListValue();
       if (pushMethods != null) {
         for (final pushMethod in pushMethods) {
           final pushStr = pushMethod.toString();
@@ -224,7 +231,7 @@ class NavigationExtension extends BaseBuilder {
           nuRouterChecker.firstAnnotationOfExact(field);
       if (nuSubRouterAnnotation != null) {
         methods.add(
-          _subRouterMethod(field.type.getDisplayString(withNullability: false)),
+          _subRouterMethod(field.type.getDisplayString(withNullability: true)),
         );
       }
     }

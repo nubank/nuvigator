@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:nuvigator/next.dart';
 import 'package:nuvigator/src/next/v1/annotations.dart';
 
 part 'nu_module_example.g.dart';
 
 class FriendRequestArgs {
-  int numberOfRequests;
-  double precision;
-  String name;
-  int age;
+  int? numberOfRequests;
+  double? precision;
+  String? name;
+  int? age;
 
   @override
   bool operator ==(Object o) {
@@ -33,7 +32,7 @@ class FriendRequestArgs {
 
 @NuRouteParser()
 class FriendRequestRouteExample
-    extends NuRoute<NuRouter, FriendRequestArgs, void> {
+    extends NuRoute<NuRouter, FriendRequestArgs, Object?> {
   @override
   String get path => 'friend-requests';
 
@@ -47,11 +46,12 @@ class FriendRequestRouteExample
 
   @override
   Widget build(
-      BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
-    return Nuvigator(
-      router: null,
-      screenType: materialScreenType,
-    );
+      BuildContext context, NuRouteSettings<FriendRequestArgs?> settings) {
+    return Container();
+    // return Nuvigator(
+    //   router: null,
+    //   screenType: materialScreenType,
+    // );
   }
 
   FriendRequestArgs parseParameters(Map<String, dynamic> map) =>

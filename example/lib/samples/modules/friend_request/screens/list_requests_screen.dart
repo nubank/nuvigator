@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
-    Key key,
-    @required this.toSuccess,
+    Key? key,
+    required this.toSuccess,
   }) : super(key: key);
 
   final VoidCallback toSuccess;
@@ -39,7 +39,7 @@ class ListRequestScreen extends StatelessWidget {
           return ListTile(
             title: Text('Request $index'),
             trailing: Switch(
-              value: bloc.accepted[index - 1],
+              value: bloc.accepted[index - 1]!,
               onChanged: (value) => bloc.updateRequest(index - 1, value),
             ),
           );

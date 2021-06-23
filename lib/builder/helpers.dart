@@ -5,7 +5,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:nuvigator/src/annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
-List<DartType> getGenericTypes(DartType type) {
+List<DartType>? getGenericTypes(DartType type) {
   return type is ParameterizedType ? type.typeArguments : null;
 }
 
@@ -24,7 +24,7 @@ String getRouterName(Element element) {
           .firstAnnotationOfExact(element)
           ?.getField('routerName')
           ?.toStringValue() ??
-      removeRouterKey(element.name);
+      removeRouterKey(element.name!);
   return capitalize(name);
 }
 

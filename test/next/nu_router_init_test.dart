@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
 
@@ -7,8 +6,8 @@ import 'fixtures/test_next_router.dart';
 
 void main() {
   Future<void> pumpFakeApp({
-    @required WidgetTester tester,
-    @required NuRouter router,
+    required WidgetTester tester,
+    required NuRouter router,
   }) async {
     await tester.pumpWidget(
       MaterialApp(

@@ -14,10 +14,10 @@ class ComposerRouter extends NuRouter {
     deepLink: '/text',
     pushMethods: [PushMethodType.push, PushMethodType.pushReplacement],
   )
-  ScreenRoute<String> composeText({String initialText}) => ScreenRoute(
+  ScreenRoute<String> composeText({String? initialText}) => ScreenRoute(
         builder: (context) => TextComposerScreen(
           initialText: initialText,
-          submitText: (String text) => nuvigator.pop(text),
+          submitText: (String text) => nuvigator!.pop(text),
           toHelp: toHelp,
         ),
       );

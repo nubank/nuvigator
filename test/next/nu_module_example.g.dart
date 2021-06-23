@@ -9,13 +9,9 @@ part of 'nu_module_example.dart';
 extension FriendRequestArgsParser on FriendRequestRouteExample {
   FriendRequestArgs _$parseParameters(Map<String, dynamic> map) {
     return FriendRequestArgs()
-      ..numberOfRequests = map['numberOfRequests'] is String
-          ? int.tryParse(map['numberOfRequests'])
-          : map['numberOfRequests']
-      ..precision = map['precision'] is String
-          ? double.tryParse(map['precision'])
-          : map['precision']
+      ..numberOfRequests = map['numberOfRequests']
+      ..precision = map['precision']
       ..name = map['name']
-      ..age = map['age'] is String ? int.tryParse(map['age']) : map['age'];
+      ..age = map['age'];
   }
 }

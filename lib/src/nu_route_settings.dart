@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// [name] will be the full DeepLink String
-class NuRouteSettings<A extends Object> extends RouteSettings {
+class NuRouteSettings<A extends Object?> extends RouteSettings {
   const NuRouteSettings({
-    @required String name,
-    A arguments,
+    required String name,
+    A? arguments,
     this.scheme,
     this.pathTemplate,
     this.queryParameters = const <String, dynamic>{},
@@ -13,21 +13,21 @@ class NuRouteSettings<A extends Object> extends RouteSettings {
     this.extraParameters = const <String, dynamic>{},
   }) : super(name: name, arguments: arguments);
 
-  final String pathTemplate;
-  final String scheme;
+  final String? pathTemplate;
+  final String? scheme;
   final Map<String, dynamic> queryParameters;
   final Map<String, dynamic> pathParameters;
   final Map<String, dynamic> extraParameters;
 
   Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
-      ...queryParameters ?? const <String, dynamic>{},
-      ...pathParameters ?? const <String, dynamic>{},
-      ...extraParameters ?? const <String, dynamic>{},
+      ...queryParameters,
+      ...pathParameters,
+      ...extraParameters,
     };
   }
 
-  A get args => arguments;
+  A? get args => arguments as A?;
 
   @override
   String toString() =>

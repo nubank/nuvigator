@@ -13,7 +13,7 @@ class OldFriendRequestRouter extends NuRouter {
   ScreenRoute<void> listRequests() => ScreenRoute(
         builder: (context) => ListRequestScreen(
           toSuccess: () {
-            nuvigator.open<dynamic>('composer/text');
+            nuvigator!.open<dynamic>('composer/text');
           },
         ),
         screenType: materialScreenType,
@@ -22,7 +22,7 @@ class OldFriendRequestRouter extends NuRouter {
   @NuRoute(deepLink: 'old-friend-request/success')
   ScreenRoute<void> success() => ScreenRoute(
       builder: (context) => SuccessScreen(
-            closeFlow: () => nuvigator.closeFlow(),
+            closeFlow: () => nuvigator!.closeFlow(),
             toComposeText: () {},
           ),
       screenType: materialScreenType);

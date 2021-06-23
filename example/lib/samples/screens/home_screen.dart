@@ -34,16 +34,16 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
-                    nuvigator.open<void>(
+                    nuvigator!.open<void>(
                         'exapp://old-friend-request/list?numberOfRequests=10');
                   },
                   child: const Text('Review friend requests'),
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    String text;
+                    String? text;
 
-                    text = await nuvigator.open<String>(
+                    text = await nuvigator!.open<String>(
                       'exapp://composer/text?initialText=Hello+deep+link%21',
                       screenType: cupertinoDialogScreenType,
                     );
@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Composed message'),
-                          content: Text(text),
+                          content: Text(text!),
                         ),
                       );
                     }

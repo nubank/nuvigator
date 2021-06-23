@@ -4,17 +4,17 @@ class NextBuilderLibrary {
   NextBuilderLibrary(this.element);
   final ClassElement element;
 
-  ClassElement get getNuRouteArgsType => element.allSupertypes
+  ClassElement? get getNuRouteArgsType => element.allSupertypes
       .firstWhere((element) {
         return element
-            .getDisplayString(withNullability: false)
+            .getDisplayString(withNullability: true)
             .contains('NuRoute');
       })
       .typeArguments[1]
-      .element;
+      .element as ClassElement?;
 
   String build() {
-    final argsClassElement = getNuRouteArgsType;
+    final argsClassElement = getNuRouteArgsType!;
 
     final stringBuffer = StringBuffer();
     stringBuffer.writeln(
@@ -42,7 +42,7 @@ class NextBuilderLibrary {
 
   String _safelyCastArg(FieldElement field) {
     final varName = field.name.toString();
-    final typeName = field.type.getDisplayString(withNullability: false);
+    final typeName = field.type.getDisplayString(withNullability: true);
 
     if (_tryParseableTypeNames.contains(typeName)) {
       return "map['$varName'] is String ? $typeName.tryParse(map['$varName']) : map['$varName']";

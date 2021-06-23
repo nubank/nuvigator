@@ -15,9 +15,9 @@ class _ComposerTextRoute extends NuRoute<NuRouter, void, String> {
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
     return TextComposerScreen(
       initialText: settings.rawParameters['initialText'],
-      submitText: (String text) => router.nuvigator.pop(text),
+      submitText: (String text) => router!.nuvigator!.pop(text),
       toHelp: () {
-        router.nuvigator.open<void>('composer/help');
+        router!.nuvigator!.open<void>('composer/help');
       },
     );
   }
@@ -40,9 +40,9 @@ class _ComposerHelpRoute extends NuRoute {
 
 class ComposerRoute extends NuRoute<NuRouter, void, String> {
   @override
-  Widget build(BuildContext context, NuRouteSettings<Object> settings) {
+  Widget build(BuildContext context, NuRouteSettings<Object?> settings) {
     return Nuvigator.routes(
-      initialRoute: settings.name,
+      initialRoute: settings.name!,
       routes: [
         _ComposerHelpRoute(),
         _ComposerTextRoute(),
