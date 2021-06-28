@@ -4,7 +4,7 @@ import 'package:nuvigator/next.dart';
 import 'screens/list_requests_screen.dart';
 import 'screens/success_screen.dart';
 
-class ListFriendRequestRoute extends NuRoute<NuRouter, void, void> {
+class ListFriendRequestRoute extends NuRoute<NuRouter, Object?, Object?> {
   @override
   String get path => 'friend-requests/list';
 
@@ -45,7 +45,7 @@ class FriendRequestRouter extends NuRouter {
 
   @override
   List<NuRoute> get registerRoutes => [
-        ListFriendRequestRoute() as NuRoute<NuRouter, Object, Object>,
-        FriendRequestSuccessRoute() as NuRoute<NuRouter, Object, Object>,
+        ListFriendRequestRoute(),
+        FriendRequestSuccessRoute(),
       ];
 }
