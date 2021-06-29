@@ -24,25 +24,21 @@ class RouteEntry {
 }
 
 abstract class NuRouter implements INuRouter {
-  static T? of<T extends NuRouter>(
+  static T of<T extends NuRouter>(
     BuildContext context, {
-    bool nullOk = false,
     bool rootRouter = false,
   }) {
     if (rootRouter) {
-      return Nuvigator.of(context, rootNuvigator: true).router as T?;
+      return Nuvigator.of<T>(context, rootNuvigator: true).router;
+    } else {
+      final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
+      if (router != null) return router;
     }
-    final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
-    assert(() {
-      if (!nullOk && router == null) {
-        throw FlutterError(
-            'Router operation requested with a context that does not include a Router of the provided type.\n'
-            'The context used to get the specified Router must be that of a '
-            'widget that is a descendant of a Nuvigator widget that includes the desired Router.');
-      }
-      return true;
-    }());
-    return router;
+
+    throw FlutterError(
+        'Router operation requested with a context that does not include a Router of the provided type.\n'
+        'The context used to get the specified Router must be that of a '
+        'widget that is a descendant of a Nuvigator widget that includes the desired Router.');
   }
 
   @override
