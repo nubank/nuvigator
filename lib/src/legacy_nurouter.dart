@@ -181,7 +181,7 @@ abstract class NuRouter implements INuRouter {
   /// From a deepLink (plus some option parameters) get a Route.
   @override
   Route<T>? getRoute<T>({
-    String? deepLink,
+    required String deepLink,
     Object? parameters,
     bool isFromNative = false,
     @deprecated bool fromLegacyRouteName = false,
