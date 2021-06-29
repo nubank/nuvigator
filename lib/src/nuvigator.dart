@@ -142,8 +142,13 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
 
 class NuvigatorState<T extends INuRouter> extends NavigatorState
     with WidgetsBindingObserver {
-  NuvigatorState get rootNuvigator =>
-      Nuvigator.of(context, rootNuvigator: true) ?? this;
+  NuvigatorState get rootNuvigator {
+    try {
+      return Nuvigator.of(context, rootNuvigator: true);
+    } catch (_) {
+      return this;
+    }
+  }
 
   @override
   _NuvigatorInner get widget => super.widget as _NuvigatorInner<INuRouter>;
@@ -165,8 +170,8 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   void initState() {
-    parent = Nuvigator.of(context, nullOk: true);
     if (isNested) {
+      parent = Nuvigator.of(context);
       parent!.nestedNuvigators.add(this);
     }
     widget.observers.addAll(_collectObservers().map((f) => f()));
@@ -441,27 +446,24 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   }
 
   /// Fetches a [NuvigatorState] from the current BuildContext.
-  static NuvigatorState<T>? of<T extends INuRouter>(
+  static NuvigatorState<T> of<T extends INuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
-    bool nullOk = false,
   }) {
     if (rootNuvigator) {
-      return context.findRootAncestorStateOfType<NuvigatorState<T>>();
+      final nuvigatorState =
+          context.findRootAncestorStateOfType<NuvigatorState<T>>();
+      if (nuvigatorState != null) return nuvigatorState;
+    } else {
+      final nuvigatorState = ofRouter<T>(context);
+      if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
     }
-    final nuvigatorState = ofRouter<T>(context);
-    if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
-    assert(() {
-      if (!nullOk) {
-        throw FlutterError(
-            'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
-            'The context used to push or pop routes from the Nuvigator must be that of a '
-            'widget that is a descendant of a Nuvigator widget.'
-            'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
-      }
-      return true;
-    }());
-    return null;
+
+    throw FlutterError(
+        'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
+        'The context used to push or pop routes from the Nuvigator must be that of a '
+        'widget that is a descendant of a Nuvigator widget.'
+        'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
   }
 
   /// Helper method that allows passing a Nuvigator to a builder function

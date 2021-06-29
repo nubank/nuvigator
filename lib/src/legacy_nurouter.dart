@@ -30,7 +30,7 @@ abstract class NuRouter implements INuRouter {
     bool rootRouter = false,
   }) {
     if (rootRouter) {
-      return Nuvigator.of(context, rootNuvigator: true)!.router as T?;
+      return Nuvigator.of(context, rootNuvigator: true).router as T?;
     }
     final router = Nuvigator.ofRouter<T>(context)?.getRouter<T>();
     assert(() {
