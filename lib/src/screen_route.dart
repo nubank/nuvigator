@@ -9,7 +9,7 @@ import 'typings.dart';
 class RouteDef {
   RouteDef(this.routeName, {this.deepLink});
 
-  final String? routeName;
+  final String routeName;
   final String? deepLink;
 
   @override
@@ -96,11 +96,11 @@ class ScreenRoute<T extends Object?> {
   Route<T> toRoute([RouteSettings? settings]) {
     return _toRouteType(
       (BuildContext context) => _buildScreen(context),
-      settings ?? nuRouteSettings,
+      (settings ?? nuRouteSettings)!,
     );
   }
 
-  Route<T> _toRouteType(WidgetBuilder builder, RouteSettings? settings) {
+  Route<T> _toRouteType(WidgetBuilder builder, RouteSettings settings) {
     if (screenType == null) {
       throw FlutterError(
           'The screenRoute of $settings does not specify a ScreenType');

@@ -140,7 +140,7 @@ abstract class NuRouter implements INuRouter {
 
   /// Override to true to call and register the routes only after the NuRouter initialization
   bool lazyRouteRegister = false;
-  List<NuRoute>? _routes;
+  late List<NuRoute> _routes;
   late List<legacy.NuRouter> _legacyRouters;
   NuvigatorState? _nuvigator;
 
@@ -151,7 +151,7 @@ abstract class NuRouter implements INuRouter {
     _routes = [];
     for (final route in registerRoutes) {
       route._install(this);
-      _routes!.add(route);
+      _routes.add(route);
     }
   }
 
@@ -167,7 +167,7 @@ abstract class NuRouter implements INuRouter {
   @override
   void dispose() {
     _nuvigator = null;
-    for (final route in _routes!) {
+    for (final route in _routes) {
       route.dispose();
     }
     for (final legacyRouter in _legacyRouters) {
@@ -236,7 +236,7 @@ abstract class NuRouter implements INuRouter {
     if (lazyRouteRegister) {
       _setupRoutes();
     }
-    for (final route in _routes!) {
+    for (final route in _routes) {
       final routeInitResult = route.init(context);
       if (awaitForInit) {
         await routeInitResult;
@@ -253,11 +253,11 @@ abstract class NuRouter implements INuRouter {
     }
   }
 
-  ScreenRoute<R>? _getScreenRoute<R>(String? deepLink,
+  ScreenRoute<R>? _getScreenRoute<R>(String deepLink,
       {Map<String, dynamic>? parameters}) {
     for (final route in routes!) {
       final screenRoute = route._tryGetScreenRoute(
-        deepLink: deepLink!,
+        deepLink: deepLink,
         extraParameters: parameters,
       );
       if (screenRoute != null) return screenRoute as ScreenRoute<R>?;
@@ -267,7 +267,7 @@ abstract class NuRouter implements INuRouter {
 
   @override
   Route<R>? getRoute<R>({
-    String? deepLink,
+    required String deepLink,
     Object? parameters,
     @deprecated bool fromLegacyRouteName = false,
     bool isFromNative = false,

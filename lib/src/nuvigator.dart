@@ -26,14 +26,14 @@ NuvigatorState? _tryToFindNuvigatorForRouter<T extends INuRouter>(
 }
 
 class NuvigatorStateTracker extends NavigatorObserver {
-  final List<Route?> stack = [];
+  final List<Route> stack = [];
 
   bool get debug => nuvigator!.widget.debug;
 
   NuvigatorState? get nuvigator => navigator as NuvigatorState<INuRouter>?;
 
   List<String?> get stackRouteNames =>
-      stack.map((it) => it!.settings.name).toList();
+      stack.map((it) => it.settings.name).toList();
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
@@ -55,6 +55,7 @@ class NuvigatorStateTracker extends NavigatorObserver {
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    if (newRoute == null || oldRoute == null) return;
     final index = stack.indexOf(oldRoute);
     stack[index] = newRoute;
     if (debug) print('didReplace $oldRoute to $newRoute: $stackRouteNames');
@@ -72,7 +73,7 @@ abstract class INuRouter {
   T? getRouter<T extends INuRouter>();
 
   Route<T>? getRoute<T>({
-    String? deepLink,
+    required String deepLink,
     Object? parameters,
     bool fromLegacyRouteName = false,
     bool isFromNative = false,
@@ -101,7 +102,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
             ...observers,
           ],
           onGenerateInitialRoutes: (_, __) {
-            final deepLink = initialDeepLink ?? initialRoute;
+            final deepLink = (initialDeepLink ?? initialRoute)!;
             final r = router.getRoute<dynamic>(
               deepLink: deepLink,
               parameters: initialArguments,
@@ -117,7 +118,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
           },
           onGenerateRoute: (settings) {
             return router.getRoute<dynamic>(
-              deepLink: settings.name,
+              deepLink: settings.name!,
               parameters: settings.arguments,
               fromLegacyRouteName: true,
               fallbackScreenType: screenType,
@@ -216,7 +217,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     return true;
   }
 
-  bool canOpen(String? route, {Object? arguments}) {
+  bool canOpen(String route, {Object? arguments}) {
     return router.getRoute<dynamic>(
           deepLink: route,
           parameters: arguments,
@@ -227,12 +228,12 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 
   @override
-  Future<R?> pushNamed<R extends Object?>(String? routeName,
+  Future<R?> pushNamed<R extends Object?>(String routeName,
       {Object? arguments}) {
     if (!canOpen(routeName, arguments: arguments) && isNested) {
       return parent!.pushNamed<R>(routeName, arguments: arguments);
     }
-    return super.pushNamed<R>(routeName!, arguments: arguments);
+    return super.pushNamed<R>(routeName, arguments: arguments);
   }
 
   @override

@@ -92,7 +92,7 @@ abstract class NuRouter implements INuRouter {
   // region Deprecated methods
   @deprecated
   ScreenRoute? _getScreen(RouteSettings settings) {
-    final screenBuilder = screensMap[RouteDef(settings.name)];
+    final screenBuilder = screensMap[RouteDef(settings.name!)];
     if (screenBuilder == null) return null;
     return screenBuilder(settings).wrapWith(screensWrapper);
   }
@@ -156,7 +156,7 @@ abstract class NuRouter implements INuRouter {
       }
 
       final mapArguments = DeepLinkParser(
-        template: routeEntry.key.deepLink,
+        template: routeEntry.key.deepLink!,
       ).getParams(url.toString());
 
       if (isFromNative) {
@@ -201,7 +201,7 @@ abstract class NuRouter implements INuRouter {
       return null;
     }
     // 2. Build Settings
-    final parser = DeepLinkParser(template: routeEntry.key.deepLink);
+    final parser = DeepLinkParser(template: routeEntry.key.deepLink!);
     final settings = RouteSettings(
       name: routeEntry.key.routeName,
       arguments: parser.getParams(deepLink!),

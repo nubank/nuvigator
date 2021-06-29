@@ -42,18 +42,18 @@ abstract class ScreenType {
   const ScreenType();
 
   Route<T> toRoute<T extends Object?>(
-      WidgetBuilder builder, RouteSettings? settings);
+      WidgetBuilder builder, RouteSettings settings);
 }
 
 class ScreenTypeBuilder extends ScreenType {
   ScreenTypeBuilder(this.builder);
 
-  final Route<dynamic> Function(WidgetBuilder builder, RouteSettings? setting)
+  final Route<dynamic> Function(WidgetBuilder builder, RouteSettings setting)
       builder;
 
   @override
   Route<R> toRoute<R extends Object?>(
-      WidgetBuilder builder, RouteSettings? settings) {
+      WidgetBuilder builder, RouteSettings settings) {
     // ignore: avoid_as
     return this.builder(builder, settings) as Route<R>;
   }

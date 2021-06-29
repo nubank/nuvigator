@@ -5,12 +5,12 @@ import 'package:recase/recase.dart';
 
 class DeepLinkParser<A extends Object?> {
   DeepLinkParser({
-    this.template,
+    required this.template,
     this.prefix = false,
     this.argumentParser,
   });
 
-  final String? template;
+  final String template;
   final A Function(Map<String, dynamic>)? argumentParser;
   final bool prefix;
 
@@ -24,7 +24,7 @@ class DeepLinkParser<A extends Object?> {
   /// Verifies if the deepLink matches against this parser based on the template
   bool matches(String deepLink) {
     final deepLinkWithoutQueryParameters = getPath(deepLink);
-    final regExp = pathToRegExp(template!, prefix: prefix);
+    final regExp = pathToRegExp(template, prefix: prefix);
     return regExp.hasMatch(deepLinkWithoutQueryParameters);
   }
 
@@ -48,7 +48,7 @@ class DeepLinkParser<A extends Object?> {
   Map<String, String> getPathParams(String deepLink) {
     final parameters = <String>[];
     final deepLinkPath = getPath(deepLink);
-    final regExp = pathToRegExp(template!, parameters: parameters);
+    final regExp = pathToRegExp(template, parameters: parameters);
     final match = regExp.matchAsPrefix(deepLinkPath);
 
     if (match == null) return {};
