@@ -210,7 +210,7 @@ abstract class NuRouter implements INuRouter {
   List<NuRoute>? get routes => _routes;
 
   /// While the module is initializing this Widget is going to be displayed
-  Widget? get loadingWidget => Container();
+  Widget get loadingWidget => Container();
 
   /// In case an error happends during the NuRouter initialization, this function will be called with the error
   /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
@@ -350,9 +350,9 @@ class NuRouterBuilder extends NuRouter {
   ScreenType? get screenType => _screenType;
 
   @override
-  Widget? get loadingWidget {
+  Widget get loadingWidget {
     if (_loadingWidget != null) {
-      return _loadingWidget;
+      return _loadingWidget!;
     }
     return super.loadingWidget;
   }
@@ -439,7 +439,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return widget.router.loadingWidget!;
+      return widget.router.loadingWidget;
     } else if (errorWidget != null) {
       return errorWidget!;
     }
