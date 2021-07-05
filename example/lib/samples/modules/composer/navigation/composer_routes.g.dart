@@ -46,7 +46,7 @@ class ComposeTextArgs {
 }
 
 extension ComposerRouterNavigation on ComposerRouter {
-  Future<String?> toComposeText({String? initialText}) async {
+  Future<String> toComposeText({String? initialText}) async {
     return nuvigator?.pushNamed<String>(
       ComposerRoutes.composeText,
       arguments: {
@@ -55,7 +55,7 @@ extension ComposerRouterNavigation on ComposerRouter {
     );
   }
 
-  Future<String?> pushReplacementToComposeText<TO extends Object?>(
+  Future<String> pushReplacementToComposeText<TO extends Object?>(
       {String? initialText, TO? result}) async {
     return nuvigator?.pushReplacementNamed<String, TO?>(
       ComposerRoutes.composeText,

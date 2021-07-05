@@ -44,7 +44,7 @@ class NavigationExtension extends BaseBuilder {
       (m) => m
         ..name = 'to${capitalize(method.name)}'
         ..returns = refer(
-            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn>')
         ..optionalParameters.addAll(parameters)
         ..modifier = MethodModifier.async
         ..body = hasParameters
@@ -77,7 +77,7 @@ class NavigationExtension extends BaseBuilder {
       (m) => m
         ..name = 'pushReplacementTo${capitalize(method.name)}'
         ..returns = refer(
-            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn>')
         ..optionalParameters.addAll([
           ...parameters,
         ])
@@ -114,7 +114,7 @@ class NavigationExtension extends BaseBuilder {
       (m) => m
         ..name = 'pushAndRemoveUntilTo${capitalize(method.name)}'
         ..returns = refer(
-            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn>')
         ..optionalParameters.addAll([
           ...parameters,
         ])
@@ -150,7 +150,7 @@ class NavigationExtension extends BaseBuilder {
       (m) => m
         ..name = 'popAndPushTo${capitalize(method.name)}'
         ..returns = refer(
-            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn?>')
+            screenReturn == 'void' ? 'Future<void>' : 'Future<$screenReturn>')
         ..optionalParameters.addAll([
           ...parameters,
         ])
