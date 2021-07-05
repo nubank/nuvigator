@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({
-    Key key,
-    @required this.closeFlow,
-    @required this.toComposeText,
+    Key? key,
+    required this.closeFlow,
+    required this.toComposeText,
   }) : super(key: key);
 
   final VoidCallback closeFlow;

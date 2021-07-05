@@ -24,7 +24,7 @@ void main() {
 
   test('ScreenRoute toRoute return a valid Route given the screenType', () {
     final screenRoute = ScreenRoute(
-      builder: (_) => null,
+      builder: (_) => Container(),
       screenType: materialScreenType,
     );
     final route = screenRoute.toRoute(const RouteSettings());
@@ -33,7 +33,7 @@ void main() {
 
   test('Adding fallback screenType to ScreenRoute', () {
     final screenRoute = ScreenRoute(
-      builder: (_) => null,
+      builder: (_) => Container(),
     ).fallbackScreenType(materialScreenType);
     final route = screenRoute.toRoute(const RouteSettings());
     expect(route is MaterialPageRoute, true);
@@ -41,7 +41,7 @@ void main() {
 
   test('ScreenRoute wrapWith, with null', () {
     final screenRoute = ScreenRoute(
-      builder: (_) => null,
+      builder: (_) => Container(),
     );
     expect(screenRoute.wrapWith(null), screenRoute);
   });

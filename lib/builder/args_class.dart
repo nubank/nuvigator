@@ -18,9 +18,7 @@ class ArgsClass extends BaseBuilder {
       (p) => p
         ..name = name
         ..named = true
-        ..annotations.add(
-          refer('required'),
-        )
+        ..required = true
         ..toThis = true,
     );
   }
@@ -45,7 +43,7 @@ class ArgsClass extends BaseBuilder {
         ..requiredParameters.add(
           Parameter((p) => p
             ..name = 'args'
-            ..type = refer('Map<String, Object>')),
+            ..type = refer('Map<String, Object?>?')),
         )
         ..returns = refer(className)
         ..static = true
@@ -61,7 +59,7 @@ class ArgsClass extends BaseBuilder {
       (m) => m
         ..name = 'of'
         ..static = true
-        ..returns = refer(className)
+        ..returns = refer('$className?')
         ..requiredParameters.add(
           Parameter(
             (p) => p
@@ -77,10 +75,9 @@ class ArgsClass extends BaseBuilder {
           'if (args == null) throw FlutterError(\'$className requires Route arguments\');'
           'if (args is $className) return args;'
           'if (args is Map<String, Object>) return parse(args);'
-          '} else if (nuvigator != null) {'
+          '} else {'
           'return of(nuvigator.context);'
-          '}'
-          'return null;',
+          '}',
         ),
     );
   }
@@ -94,7 +91,7 @@ class ArgsClass extends BaseBuilder {
     return Method((m) => m
       ..name = 'toMap'
       ..type = MethodType.getter
-      ..returns = refer('Map<String, Object>')
+      ..returns = refer('Map<String, Object?>')
       ..lambda = true
       ..body = Code(argsMap.toString()));
   }
@@ -119,13 +116,16 @@ class ArgsClass extends BaseBuilder {
     'int',
     'double',
     'DateTime',
+    'int?',
+    'double?',
+    'DateTime?',
   ];
 
   static final _supportedTypes = [..._tryParseableTypeNames, 'bool', 'String'];
 
   String _safelyCastArg(ParameterElement arg, MethodElement method) {
     final varName = arg.name.toString();
-    final typeName = arg.type.getDisplayString(withNullability: false);
+    final typeName = arg.type.getDisplayString(withNullability: true);
     final nuRouteFieldAnnotation =
         nuRouteChecker.firstAnnotationOfExact(method);
 
@@ -138,14 +138,14 @@ class ArgsClass extends BaseBuilder {
     }
 
     if (_tryParseableTypeNames.contains(typeName)) {
-      return "args['$varName'] is String ? $typeName.tryParse(args['$varName']) : args['$varName']";
+      return "args['$varName'] is String ? $typeName.tryParse(args['$varName'].toString()) : args['$varName'] as $typeName";
     }
 
-    if (typeName == 'bool') {
-      return "args['$varName'] is String ? boolFromString(args['$varName']) : args['$varName']";
+    if (typeName == 'bool?') {
+      return "args['$varName'] is String ? boolFromString(args['$varName'].toString()) : args['$varName'] as $typeName";
     }
 
-    return "args['$varName']";
+    return "args['$varName'] as $typeName";
   }
 
   @override
@@ -156,9 +156,7 @@ class ArgsClass extends BaseBuilder {
       final nuRouteFieldAnnotation =
           nuRouteChecker.firstAnnotationOfExact(method);
 
-      if (nuRouteFieldAnnotation == null ||
-          method?.parameters == null ||
-          method.parameters.isEmpty) continue;
+      if (nuRouteFieldAnnotation == null || method.parameters.isEmpty) continue;
 
       final constructorParameters = <Parameter>[];
       final argsFields = <Field>[];
@@ -166,7 +164,7 @@ class ArgsClass extends BaseBuilder {
 
       for (final arg in method.parameters) {
         final varName = arg.name.toString();
-        final typeName = arg.type.getDisplayString(withNullability: false);
+        final typeName = arg.type.getDisplayString(withNullability: true);
 
         argsParserBuffer.write('$varName: ${_safelyCastArg(arg, method)},\n');
 

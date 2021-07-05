@@ -7,13 +7,13 @@ class TestRouter extends NuRouter {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'testRouterFirstScreen',
               screenType: materialScreenType,
             ),
         RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
             ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'testRouterSecondScreen',
               screenType: materialScreenType,
             ),
@@ -27,13 +27,13 @@ class TestRouterWPrefix extends NuRouter {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'testRouterFirstScreen',
               screenType: materialScreenType,
             ),
         RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
             ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'testRouterSecondScreen',
               screenType: materialScreenType,
             ),
@@ -44,13 +44,13 @@ class TestRouterWWrapper extends NuRouter {
   @override
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'test/simple'): (_) => ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'testRouterFirstScreen',
               screenType: materialScreenType,
             ),
         RouteDef('secondScreen', deepLink: 'test/:id/params'): (_) =>
             ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'testRouterSecondScreen',
               screenType: materialScreenType,
             ),
@@ -72,7 +72,7 @@ class GroupTestRouter extends NuRouter {
   Map<RouteDef, ScreenRouteBuilder> get screensMap => {
         RouteDef('firstScreen', deepLink: 'route/test'): (settings) =>
             ScreenRoute(
-              builder: (sc) => null,
+              builder: (sc) => Container(),
               debugKey: 'groupRouterFirstScreen',
               screenType: cupertinoScreenType,
             ),
@@ -82,8 +82,8 @@ class GroupTestRouter extends NuRouter {
 class MockNuvigator extends NuvigatorState {
   MockNuvigator(this.router);
 
-  String routePushed;
-  Object argumentsPushed;
+  String? routePushed;
+  Object? argumentsPushed;
   @override
   final NuRouter router;
 
@@ -91,8 +91,8 @@ class MockNuvigator extends NuvigatorState {
   NuvigatorState<INuRouter> get rootNuvigator => this;
 
   @override
-  Future<T> pushNamed<T extends Object>(String routeName,
-      {Object arguments}) async {
+  Future<T?> pushNamed<T extends Object?>(String? routeName,
+      {Object? arguments}) async {
     routePushed = routeName;
     argumentsPushed = arguments;
     return null;
@@ -103,17 +103,17 @@ class MockNuvigator extends NuvigatorState {
 class TestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return null;
+    return Container();
   }
 }
 
-Widget testApp(NuRouter router, String initialRoute, [WrapperFn wrapper]) {
+Widget testApp(NuRouter router, String initialRoute, [WrapperFn? wrapper]) {
   return MaterialApp(
     builder: Nuvigator(
       router: router,
       initialRoute: initialRoute,
       wrapper: wrapper,
-    ),
+    ) as Widget Function(BuildContext, Widget?)?,
   );
 }
 

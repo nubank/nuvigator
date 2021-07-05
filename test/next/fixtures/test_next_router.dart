@@ -1,13 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
 
 class InitTestNextRouter extends NuRouter {
   InitTestNextRouter({
-    @required this.routerInitFuture,
-    @required this.routeInitFuture,
-  })  : assert(routerInitFuture != null),
-        assert(routeInitFuture != null);
+    required this.routerInitFuture,
+    required this.routeInitFuture,
+  });
 
   static const initRoute = 'foo', successText = 'Success';
 
@@ -32,7 +30,7 @@ class InitTestNextRouter extends NuRouter {
   }
 
   @override
-  List<NuRoute<NuRouter, Object, Object>> get registerRoutes => [
+  List<NuRoute<NuRouter, Object?, Object>> get registerRoutes => [
         NuRouteBuilder(
           builder: (context, route, settings) => const Text(successText),
           path: initialRoute,

@@ -72,7 +72,7 @@ class BuilderLibrary extends BaseBuilder {
       if (nuRouteFieldAnnotation != null) {
         final params = method.parameters.map((p) => p.name);
         final deepLink =
-            nuRouteFieldAnnotation.getField('deepLink').toStringValue();
+            nuRouteFieldAnnotation.getField('deepLink')!.toStringValue();
         final paramsStr = params.isEmpty
             ? ''
             : '${params.map((p) => "$p: args.$p").join(",")}';
@@ -84,7 +84,7 @@ class BuilderLibrary extends BaseBuilder {
           ..lambda = false
           ..body = Code((params.isEmpty
                   ? ''
-                  : 'final args = ${capitalize(method.name)}Args.parse(settings.arguments);') +
+                  : 'final args = ${capitalize(method.name)}Args.parse(settings.arguments as Map<String, Object?>?);') +
               'return ${method.name}($paramsStr);'));
 
         if (deepLink != null) {

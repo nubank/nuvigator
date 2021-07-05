@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    String text;
+                    String? text;
 
                     text = await nuvigator.open<String>(
                       'exapp://composer/text?initialText=Hello+deep+link%21',
@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Composed message'),
-                          content: Text(text),
+                          content: Text(text!),
                         ),
                       );
                     }

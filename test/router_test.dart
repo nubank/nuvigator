@@ -7,13 +7,13 @@ void main() {
   test('router retrieves the right screen for the route name', () {
     final testRouter = TestRouter();
     final screen =
-        testRouter.getScreen(const RouteSettings(name: 'firstScreen'));
+        testRouter.getScreen(const RouteSettings(name: 'firstScreen'))!;
     expect(screen.debugKey, 'testRouterFirstScreen');
   });
 
   test('router retrieves the right screen for the deepLink', () async {
     final testRouter = TestRouter();
-    final routeEntry = testRouter.getRouteEntryForDeepLink('test/simple');
+    final routeEntry = testRouter.getRouteEntryForDeepLink('test/simple')!;
     expect(routeEntry.screenRouteBuilder(const RouteSettings()).debugKey,
         'testRouterFirstScreen');
   });
