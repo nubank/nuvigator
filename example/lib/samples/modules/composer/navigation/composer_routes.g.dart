@@ -38,10 +38,9 @@ class ComposeTextArgs {
         throw FlutterError('ComposeTextArgs requires Route arguments');
       if (args is ComposeTextArgs) return args;
       if (args is Map<String, Object>) return parse(args);
-    } else if (nuvigator != null) {
+    } else {
       return of(nuvigator.context);
     }
-    return null;
   }
 }
 

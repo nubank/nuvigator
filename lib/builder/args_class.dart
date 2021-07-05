@@ -75,10 +75,9 @@ class ArgsClass extends BaseBuilder {
           'if (args == null) throw FlutterError(\'$className requires Route arguments\');'
           'if (args is $className) return args;'
           'if (args is Map<String, Object>) return parse(args);'
-          '} else if (nuvigator != null) {'
+          '} else {'
           'return of(nuvigator.context);'
-          '}'
-          'return null;',
+          '}',
         ),
     );
   }

@@ -87,7 +87,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
     required this.router,
     String? initialRoute,
     String? initialDeepLink,
-    Map<String, Object>? initialArguments,
+    Map<String, Object?>? initialArguments,
     Key? key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
@@ -438,7 +438,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   final Key? _innerKey;
   final String? initialRoute;
   final Uri? initialDeepLink;
-  final Map<String, Object>? initialArguments;
+  final Map<String, Object?>? initialArguments;
 
   static NuvigatorState? ofRouter<T extends INuRouter>(BuildContext context) {
     final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();

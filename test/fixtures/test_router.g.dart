@@ -80,10 +80,9 @@ class TestArgsArgs {
         throw FlutterError('TestArgsArgs requires Route arguments');
       if (args is TestArgsArgs) return args;
       if (args is Map<String, Object>) return parse(args);
-    } else if (nuvigator != null) {
+    } else {
       return of(nuvigator.context);
     }
-    return null;
   }
 }
 
