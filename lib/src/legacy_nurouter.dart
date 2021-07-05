@@ -105,7 +105,7 @@ abstract class NuRouter implements INuRouter {
   }
 
   /// Deprecated: Prefer using getRoute
-  RouteEntry? getRouteEntryForDeepLink(String? deepLink) {
+  RouteEntry? getRouteEntryForDeepLink(String deepLink) {
     final thisDeepLinkPrefix = deepLinkPrefix;
     // Looks for match in this Router screens
     for (var screenEntry in screensMap.entries) {
@@ -114,7 +114,7 @@ abstract class NuRouter implements INuRouter {
       final currentDeepLink = routeDef.deepLink;
       if (currentDeepLink == null) continue;
       final fullTemplate = deepLinkPrefix + currentDeepLink;
-      if (DeepLinkParser(template: fullTemplate).matches(deepLink!)) {
+      if (DeepLinkParser(template: fullTemplate).matches(deepLink)) {
         return RouteEntry(
           RouteDef(routeDef.routeName, deepLink: fullTemplate),
           _wrapScreenBuilder(screenBuilder),
@@ -123,7 +123,7 @@ abstract class NuRouter implements INuRouter {
     }
     // If not found, iterates on the grouped routers
     for (final router in routers) {
-      final newDeepLink = deepLink!.replaceFirst(thisDeepLinkPrefix, '');
+      final newDeepLink = deepLink.replaceFirst(thisDeepLinkPrefix, '');
       final subRouterEntry = router.getRouteEntryForDeepLink(newDeepLink);
       if (subRouterEntry != null) {
         final fullTemplate =
