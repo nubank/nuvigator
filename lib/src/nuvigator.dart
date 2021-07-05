@@ -170,7 +170,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   void initState() {
-    parent = Nuvigator.of(context);
+    parent = Nuvigator._of(context);
     if (isNested) {
       parent!.nestedNuvigators.add(this);
     }
@@ -446,7 +446,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   }
 
   /// Fetches a [NuvigatorState] from the current BuildContext.
-  static NuvigatorState<T> of<T extends INuRouter>(
+  static NuvigatorState<T>? _of<T extends INuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
   }) {
@@ -458,6 +458,17 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       final nuvigatorState = ofRouter<T>(context);
       if (nuvigatorState is NuvigatorState<T>) return nuvigatorState;
     }
+
+    return null;
+  }
+
+  /// Fetches a [NuvigatorState] from the current BuildContext.
+  static NuvigatorState<T> of<T extends INuRouter>(
+    BuildContext context, {
+    bool rootNuvigator = false,
+  }) {
+    final result = _of<T>(context, rootNuvigator: rootNuvigator);
+    if (result != null) return result;
 
     throw FlutterError(
         'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
