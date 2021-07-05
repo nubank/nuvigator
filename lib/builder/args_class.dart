@@ -146,7 +146,7 @@ class ArgsClass extends BaseBuilder {
       return "args['$varName'] is String ? boolFromString(args['$varName'].toString()) : args['$varName'] as $typeName";
     }
 
-    return "args['$varName'].toString()";
+    return "args['$varName'] as $typeName";
   }
 
   @override

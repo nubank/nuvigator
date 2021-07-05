@@ -59,7 +59,7 @@ class TestArgsArgs {
       dateArg: args['dateArg'] is String
           ? DateTime?.tryParse(args['dateArg'].toString())
           : args['dateArg'] as DateTime?,
-      stringArg: args['stringArg'].toString(),
+      stringArg: args['stringArg'] as String?,
     );
   }
 

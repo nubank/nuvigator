@@ -22,7 +22,7 @@ class ComposeTextArgs {
       return ComposeTextArgs(initialText: null);
     }
     return ComposeTextArgs(
-      initialText: args['initialText'].toString(),
+      initialText: args['initialText'] as String?,
     );
   }
 
