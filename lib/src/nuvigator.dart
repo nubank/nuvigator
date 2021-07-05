@@ -170,8 +170,8 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   void initState() {
+    parent = Nuvigator.of(context);
     if (isNested) {
-      parent = Nuvigator.of(context);
       parent!.nestedNuvigators.add(this);
     }
     widget.observers.addAll(_collectObservers().map((f) => f()));
