@@ -170,7 +170,7 @@ class NavigationExtension extends BaseBuilder {
     return Method(
       (m) => m
         ..name = '${lowerCamelCase(className)}'
-        ..returns = refer(className)
+        ..returns = refer('$className?')
         ..type = MethodType.getter
         ..lambda = true
         ..body = Code(
