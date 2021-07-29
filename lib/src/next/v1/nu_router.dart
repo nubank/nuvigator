@@ -41,7 +41,8 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
       );
 
   void _install(T router) {
-    assert(_router == null);
+    assert(_router == null,
+        'A new instance of the route must be created every time registerRoutes is called. Returning the same instance is not supported. Route path: $path');
     _router = router;
   }
 
