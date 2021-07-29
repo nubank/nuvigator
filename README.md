@@ -5,6 +5,8 @@
 
 Routing and Navigation package.
 
+Não fala bem inglês? Leia o [README_PT](./README_PT.md)
+
 ## What
 
 Nuvigator provides a powerful routing abstraction over Flutter's own Navigators. Model complex navigation flows using a mostly declarative and concise approach, without needing to worry about several tricky behaviors that Nuvigator handles for you.
