@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0-beta.2
+- Improve error message when a NuRoute is registered twice
+
 ## 2.0.0-beta.1
 - Add option to get registered routes after NuRouter initialization when overriding the `lazyRouteRegister` option in NuRouter
 
