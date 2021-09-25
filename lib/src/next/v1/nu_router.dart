@@ -138,7 +138,7 @@ abstract class NuRouter implements INuRouter {
     }
   }
 
-  /// Override to true to call and register the routes only after the NuRouter initialization
+  /// Override to true to call and register the routes only after the NuRouter initialization has been completed
   bool lazyRouteRegister = false;
   List<NuRoute> _routes;
   List<legacy.NuRouter> _legacyRouters;
@@ -152,6 +152,12 @@ abstract class NuRouter implements INuRouter {
     for (final route in registerRoutes) {
       route._install(this);
       _routes.add(route);
+    }
+    if (_routes.isEmpty) {
+      throw FlutterError(
+        'NuRouter instance created with a empty list of NuRoutes. '
+        'This is not supported, please provide at least one valid NuRoute',
+      );
     }
   }
 
@@ -228,7 +234,7 @@ abstract class NuRouter implements INuRouter {
       await nuRouterInitResult;
     } else if (!(nuRouterInitResult is SynchronousFuture)) {
       throw FlutterError(
-          '$this Router initialization do not support Asynchronous initializations,'
+          '$this NuRouter initialization do not support Asynchronous initializations,'
           ' but the return type of init() is not a SynchronousFuture. Make '
           'the initialization Sync, or change the Router to support Async '
           'initialization.');
@@ -242,7 +248,7 @@ abstract class NuRouter implements INuRouter {
         await routeInitResult;
       } else if (!(routeInitResult is SynchronousFuture)) {
         throw FlutterError(
-            '$this Router initialization do not support Asynchronous initializations,'
+            '$this NuRouter initialization do not support Asynchronous initializations,'
             ' but the Route $route return type of init() is not a SynchronousFuture.'
             ' Make the initialization Sync, or change the Router to support Async'
             ' initialization.');
