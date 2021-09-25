@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 1.2.0
+- Improve error message when a NuRoute is registered twice
+- Improve error handling on empty NuRouters
+- Add option to get registered routes after NuRouter initialization when overriding the `lazyRouteRegister` option in NuRouter
+- [BREAKING] Change the `NuRouter.onError` to handle any thrown object (including `Exception`)
+  - Type of the `NuRouter.onError` function changed from `Exception` to `Object`
+- Bump dependencies versions and make code adjustments to support usage on non nullable projects (does not include non-nullable in Nuvigator itself)
+
+## 2.0.0-beta.2
+- Improve error message when a NuRoute is registered twice
+
+## 2.0.0-beta.1
+- Add option to get registered routes after NuRouter initialization when overriding the `lazyRouteRegister` option in NuRouter
+
+## 2.0.0-beta.0
+- Change the `NuRouter.onError` to handle any thrown object (including `Exception`)
+
+## 1.2.0-beta.0
+- Bump dependencies versions and make code adjustments to support non nullable
+
 ## 1.1.0
 - Add the `ScreenTypeBuilder` class to allow the definition and creation of `ScreenTypes` in an ad-hoc manner
 - Add the `screenType` parameter to the `NuvigatorState.open` method, allowing to override the `ScreenType` of a defined Route to be opened

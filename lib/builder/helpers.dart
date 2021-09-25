@@ -1,5 +1,5 @@
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:nuvigator/src/annotations.dart';
@@ -48,6 +48,6 @@ String getRouteString(ClassElement routerElement, MethodElement element) {
 }
 
 String libraryToString(Library library) {
-  final emitter = DartEmitter(Allocator.simplePrefixing());
+  final emitter = DartEmitter(allocator: Allocator.simplePrefixing());
   return DartFormatter().format('${library.accept(emitter)}');
 }

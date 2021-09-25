@@ -55,14 +55,21 @@ class MainAppRouter extends NuRouter {
   @override
   ScreenType get screenType => cupertinoScreenType;
 
-  // @override
-  // Future<void> init(BuildContext context) {
-  //   throw FlutterError('aaaa');
-  //   return super.init(context);
-  // }
+  List<NuRoute> _postInitRoutes;
 
   @override
-  Widget onError(Error error, NuRouterController controller) {
+  Future<void> init(BuildContext context) async {
+    _postInitRoutes = [
+      FriendRequestRoute(),
+      ComposerRoute(),
+    ];
+  }
+
+  @override
+  bool get lazyRouteRegister => true;
+
+  @override
+  Widget onError(Object error, NuRouterController controller) {
     return Scaffold(
       body: MaterialButton(
         onPressed: controller.reload,
@@ -95,7 +102,6 @@ class MainAppRouter extends NuRouter {
                 CupertinoPageRoute(builder: builder),
           ),
         ),
-        FriendRequestRoute(),
-        ComposerRoute(),
+        ..._postInitRoutes,
       ];
 }

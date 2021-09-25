@@ -12,19 +12,21 @@ Não fala bem inglês? Leia o [next_PT](./next_PT.md)
 The simplest you can get:
 
 ```dart
-class MyWidget extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Nuvigator.routes(
-      initialRoute: 'home',
-      routes: [
+    return MaterialApp(
+      title: 'Nuvigator App',
+      builder: Nuvigator.routes(
+        initialRoute: 'home',
+        routes: [
           NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
           NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),
-      ],
-    ),
+        ],
+      ),
+    );
   }
 }
-```
 
 A more complete example:
 
@@ -201,6 +203,11 @@ class MyRouter extends NuRouter {
 
   ];
 
+  // Optional - Makes the `registerRoutes` method be called to create the Route instances only after the
+  // NuRouter has been initialized (instead of when the class instance is created). Allows for async creation of NuRoutes
+  @override
+  bool get lazyRouteRegister = true;
+
   // Optional - Default ScreenType to be used when a route does not specify
   @override
   ScreenType get screenType => materialScreenType;
@@ -224,7 +231,7 @@ class MyRouter extends NuRouter {
   DeepLinkHandlerFn get onDeepLinkNotFound => null
 
   // Optional - If the Router initialization fails this function will be called, and it should return a Widget to be rendered instead of the Nuvigator
-  Widget onError(Error error, NuRouterController controller) => null;
+  Widget onError(Object error, NuRouterController controller) => null;
 
   // Optional - Register legacy NuRouters
   @override

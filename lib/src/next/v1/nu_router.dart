@@ -41,7 +41,8 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
       );
 
   void _install(T router) {
-    assert(_router == null);
+    assert(_router == null,
+        'A new instance of the route must be created every time registerRoutes is called. Returning the same instance is not supported. Route path: $path');
     _router = router;
   }
 
@@ -132,19 +133,33 @@ class NuRouteBuilder<A extends Object, R extends Object>
 /// configuration of the [Nuvigator] where it will be installed.
 abstract class NuRouter implements INuRouter {
   NuRouter() {
+    if (!lazyRouteRegister) {
+      _setupRoutes();
+    }
+  }
+
+  /// Override to true to call and register the routes only after the NuRouter initialization has been completed
+  bool lazyRouteRegister = false;
+  List<NuRoute> _routes;
+  List<legacy.NuRouter> _legacyRouters;
+  NuvigatorState _nuvigator;
+
+  NuvigatorState get nuvigator => _nuvigator;
+
+  void _setupRoutes() {
     _legacyRouters = legacyRouters.whereType<legacy.NuRouter>().toList();
     _routes = [];
     for (final route in registerRoutes) {
       route._install(this);
       _routes.add(route);
     }
+    if (_routes.isEmpty) {
+      throw FlutterError(
+        'NuRouter instance created with a empty list of NuRoutes. '
+        'This is not supported, please provide at least one valid NuRoute',
+      );
+    }
   }
-
-  List<NuRoute> _routes;
-  List<legacy.NuRouter> _legacyRouters;
-  NuvigatorState _nuvigator;
-
-  NuvigatorState get nuvigator => _nuvigator;
 
   @override
   void install(NuvigatorState nuvigator) {
@@ -205,7 +220,7 @@ abstract class NuRouter implements INuRouter {
 
   /// In case an error happends during the NuRouter initialization, this function will be called with the error
   /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
-  Widget onError(Error error, NuRouterController controller) => null;
+  Widget onError(Object error, NuRouterController controller) => null;
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
@@ -213,30 +228,33 @@ abstract class NuRouter implements INuRouter {
     return SynchronousFuture(null);
   }
 
-  Future<void> _init(BuildContext context) {
+  Future<void> _init(BuildContext context) async {
+    final nuRouterInitResult = init(context);
     if (awaitForInit) {
-      return init(context).then((value) async {
-        for (final route in _routes) {
-          await route.init(context);
-        }
-      });
-    } else {
-      if (!(init(context) is SynchronousFuture)) {
+      await nuRouterInitResult;
+    } else if (!(nuRouterInitResult is SynchronousFuture)) {
+      throw FlutterError(
+          '$this NuRouter initialization do not support Asynchronous initializations,'
+          ' but the return type of init() is not a SynchronousFuture. Make '
+          'the initialization Sync, or change the Router to support Async '
+          'initialization.');
+    }
+    if (lazyRouteRegister) {
+      _setupRoutes();
+    }
+    for (final route in _routes) {
+      final routeInitResult = route.init(context);
+      if (awaitForInit) {
+        await routeInitResult;
+      } else if (!(routeInitResult is SynchronousFuture)) {
         throw FlutterError(
-            '$this Router initialization do not support Asynchronous initializations,'
-            ' but the return type of init() is not a SynchronousFuture. Make '
-            'the initialization Sync, or change the Router to support Async '
-            'initialization.');
+            '$this NuRouter initialization do not support Asynchronous initializations,'
+            ' but the Route $route return type of init() is not a SynchronousFuture.'
+            ' Make the initialization Sync, or change the Router to support Async'
+            ' initialization.');
       }
-      for (final route in _routes) {
-        if (!(route.init(context) is SynchronousFuture)) {
-          throw FlutterError(
-              '$this Router initialization do not support Asynchronous initializations,'
-              ' but the Route $route return type of init() is not a SynchronousFuture.'
-              ' Make the initialization Sync, or change the Router to support Async'
-              ' initialization.');
-        }
-      }
+    }
+    if (!awaitForInit) {
       return SynchronousFuture(null);
     }
   }

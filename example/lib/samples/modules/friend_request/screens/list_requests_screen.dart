@@ -1,6 +1,6 @@
 import 'package:example/samples/modules/friend_request/bloc/friend_request_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
