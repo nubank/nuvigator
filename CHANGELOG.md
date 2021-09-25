@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.2.0
+- Improve error message when a NuRoute is registered twice
+- Add option to get registered routes after NuRouter initialization when overriding the `lazyRouteRegister` option in NuRouter
+- [BREAKING] Change the `NuRouter.onError` to handle any thrown object (including `Exception`)
+  - Type of the `NuRouter.onError` function changed from `Exception` to `Object`
+- Bump dependencies versions and make code adjustments to support usage on non nullable projects (does not include non-nullable in Nuvigator itself)
+
 ## 2.0.0-beta.2
 - Improve error message when a NuRoute is registered twice
 

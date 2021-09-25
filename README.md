@@ -33,16 +33,19 @@ Nuvigator can help you with:
 The simplest you can get:
 
 ```dart
-class MyWidget extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Nuvigator.routes(
-      initialRoute: 'home',
-      routes: [
+    return MaterialApp(
+      title: 'Nuvigator App',
+      builder: Nuvigator.routes(
+        initialRoute: 'home',
+        routes: [
           NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
           NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),
-      ],
-    ),
+        ],
+      ),
+    );
   }
 }
 ```
