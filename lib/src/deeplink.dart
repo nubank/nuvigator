@@ -29,13 +29,21 @@ class DeepLinkParser<A extends Object> {
   }
 
   /// Get all the query and path params of this deepLink
-  Map<String, String> getParams(String deepLink) {
+  Map<String, dynamic> getParams(String deepLink) {
     return {...getQueryParams(deepLink), ...getPathParams(deepLink)};
   }
 
   /// Get only the queryParams of this deepLink
-  Map<String, String> getQueryParams(String deepLink) {
-    final parametersMap = Uri.parse(deepLink).queryParameters;
+Map<String, dynamic> getQueryParams(String deepLink) {
+    final parametersMap = Uri.parse(deepLink).queryParametersAll.map(
+      (key, value) {
+        if (value.length == 1) {
+          return MapEntry(key, value.first);
+        } else {
+          return MapEntry(key, value);
+        }
+      },
+    );
     return {
       ...parametersMap,
       ...parametersMap.map((k, v) {
