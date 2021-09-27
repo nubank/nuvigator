@@ -34,7 +34,7 @@ class DeepLinkParser<A extends Object> {
   }
 
   /// Get only the queryParams of this deepLink
-Map<String, dynamic> getQueryParams(String deepLink) {
+  Map<String, dynamic> getQueryParams(String deepLink) {
     final parametersMap = Uri.parse(deepLink).queryParametersAll.map(
       (key, value) {
         if (value.length == 1) {
