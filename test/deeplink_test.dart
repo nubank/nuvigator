@@ -21,6 +21,14 @@ void main() {
       });
     });
 
+    test('on getting list query params', () {
+      final result = parser
+          .getQueryParams('my-route/something?args=arg1&args=arg2&args=arg3');
+      expect(result, {
+        'args': ['arg1', 'arg2', 'arg3'],
+      });
+    });
+
     test('on getting the deepLink schema', () {
       final result = parser.getScheme('nuapp://test');
       expect(result, 'nuapp');
@@ -44,7 +52,6 @@ void main() {
       expect(false, prefixParser.matches('other-route/something'));
       expect(true, prefixParser.matches('my-route/something/nope'));
       expect(true, prefixParser.matches('my-route/something/nope/:otherParam'));
-      expect(false, prefixParser.matches('my-route/nope/something'));
     });
 
     test('extracting parameters from deepLink', () {
