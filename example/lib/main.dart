@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
         child: ChangeNotifierProvider.value(
           value: FriendRequestBloc(10),
           child: Nuvigator(
+            debug: true,
             router: MainAppRouter(),
           ),
         ),
