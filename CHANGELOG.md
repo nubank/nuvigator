@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.2.1
+- [FIX] Make `Nuvigator.open` propagate all options to parent when the route is not found at the current level
+
 ## 1.2.0
 - Improve error message when a NuRoute is registered twice
 - Improve error handling on empty NuRouters
