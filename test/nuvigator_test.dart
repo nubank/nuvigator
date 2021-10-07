@@ -298,6 +298,7 @@ void main() {
     await tester.pumpAndSettle();
     expectScreen('Screen2');
 
+    // ReplaceNamed on the RootNuvigator
     tracker.rootNuvigator.replaceNamed(
       oldDeepLink: 'screen1',
       newDeepLink: 'screen4',
@@ -305,9 +306,43 @@ void main() {
     await tester.pumpAndSettle();
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
+    // Route Below was Replaced
     tracker.rootNuvigator.pop();
     await tester.pumpAndSettle();
+    expect(tracker.rootStack.length, 1);
     expectScreen('Screen4');
+
+    // start region: Setup Nested Flow
+    unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+    await tester.pumpAndSettle();
+    unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen2'));
+    await tester.pumpAndSettle();
+    expectScreen('NestedScreen2');
+    // end region
+
+    // start region: replace first route of the nested flow
+    tracker.nestedNuvigator.replaceNamed(
+      oldDeepLink: 'nestedScreen1',
+      newDeepLink: 'nestedScreen3',
+    );
+    await tester.pumpAndSettle();
+    tracker.nestedNuvigator.pop();
+    await tester.pumpAndSettle();
+    expectScreen('NestedScreen3');
+    expect(tracker.nestedStack.length, 1);
+    // end region
+
+    // start region: propagate the replace to root nuvigator
+    tracker.nestedNuvigator.replaceNamed(
+      oldDeepLink: 'screen4',
+      newDeepLink: 'screen2',
+    );
+    await tester.pumpAndSettle();
+    tracker.nestedNuvigator.closeFlow();
+    await tester.pumpAndSettle();
+    expectScreen('Screen2');
+    expect(tracker.rootStack.length, 1);
+    // end region
   });
 
   testWidgets('Nuvigator.removeByPredicate', (tester) async {});
