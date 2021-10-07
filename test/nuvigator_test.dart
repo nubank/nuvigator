@@ -345,7 +345,37 @@ void main() {
     // end region
   });
 
-  testWidgets('Nuvigator.removeByPredicate', (tester) async {});
+  testWidgets('Nuvigator.removeByPredicate', (tester) async {
+    final tracker = await pumpApp(tester);
+    unawaited(tracker.rootNuvigator.pushNamed('screen2'));
+    await tester.pumpAndSettle();
+    // start region: remove in the root Nuvigator
+    tracker.rootNuvigator.removeByPredicate(NuRoute.withPath('screen1'));
+    await tester.pumpAndSettle();
+    expect(tracker.rootStack.length, 1);
+    expect(tracker.rootStack.first.settings.name, 'screen2');
+    // end region
+
+    // start region: removing from the nested Nuvigator
+    unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+    await tester.pumpAndSettle();
+    unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen2'));
+    await tester.pumpAndSettle();
+    tracker.nestedNuvigator
+        .removeByPredicate(NuRoute.withPath('nestedScreen1'));
+    await tester.pumpAndSettle();
+    expect(tracker.nestedStack.length, 1);
+    expect(tracker.nestedStack.first.settings.name, 'nestedScreen2');
+    // end region
+
+    // start region: propagate to root Nuvigator
+    expect(tracker.rootStack.length, 2);
+    tracker.nestedNuvigator.removeByPredicate(NuRoute.withPath('screen2'));
+    await tester.pumpAndSettle();
+    expect(tracker.rootStack.length, 1);
+    expect(tracker.rootStack.first.settings.name, 'screen3');
+    // end region
+  });
 
   testWidgets('Nuvigator.open', (tester) async {});
 }
