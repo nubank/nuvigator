@@ -346,7 +346,13 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       return router.onDeepLinkNotFound(
           router, Uri.parse(deepLink), false, parameters);
     } else if (isNested) {
-      return parent.open(deepLink, parameters: parameters);
+      return parent.open<R>(
+        deepLink,
+        parameters: parameters,
+        pushMethod: pushMethod,
+        screenType: screenType,
+        isFromNative: isFromNative,
+      );
     } else {
       throw FlutterError(
           'DeepLink $deepLink was not found, and no `onDeepLinkNotFound` was specified.');
