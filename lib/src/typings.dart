@@ -8,8 +8,12 @@ import 'screen_route.dart';
 typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(
     RouteSettings settings);
 
-typedef HandleDeepLinkFn = Future<dynamic> Function(INuRouter router, Uri uri,
-    [bool isFromNative, dynamic args]);
+typedef HandleDeepLinkFn = Future<dynamic> Function(
+  INuRouter router,
+  Uri uri, [
+  bool isFromNative,
+  dynamic args,
+]);
 
 typedef ObserverBuilder = NavigatorObserver Function();
 

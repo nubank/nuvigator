@@ -77,6 +77,17 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
     }
     return null;
   }
+
+  static RoutePredicate withPath(String path) {
+    return (Route<dynamic> route) {
+      if (route.settings is NuRouteSettings) {
+        final NuRouteSettings nuRouteSettings = route.settings;
+        return !route.willHandlePopInternally &&
+            nuRouteSettings.pathTemplate == path;
+      }
+      return false;
+    };
+  }
 }
 
 /// Class to create an anonymous [NuRoute] that can be registered in a [NuRouter]
