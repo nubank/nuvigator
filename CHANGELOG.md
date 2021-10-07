@@ -2,6 +2,7 @@
 
 ## 1.2.1
 - [FIX] Make `Nuvigator.open` propagate all options to parent when the route is not found at the current level
+- [FIX] Properly support List Query Arguments in DeepLinks, instead of picking a random one
 
 ## 1.2.0
 - Improve error message when a NuRoute is registered twice
