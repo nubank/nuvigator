@@ -437,8 +437,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
         case DeepLinkPushMethod.PushReplacement:
           return pushReplacement<R, dynamic>(route, result: result);
         case DeepLinkPushMethod.PopAndPush:
-          popAndPush(route, result: result);
-          return push<R>(route);
+          return popAndPush(route, result: result);
         default:
           return push<R>(route);
       }
@@ -450,6 +449,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
         deepLink,
         parameters: parameters,
         pushMethod: pushMethod,
+        result: result,
         screenType: screenType,
         isFromNative: isFromNative,
       );

@@ -377,5 +377,117 @@ void main() {
     // end region
   });
 
-  testWidgets('Nuvigator.open', (tester) async {});
+  testWidgets('Nuvigator.open', (tester) async {
+    final tracker = await pumpApp(tester);
+    // start region: default push method
+    unawaited(tracker.rootNuvigator.open('screen2'));
+    await tester.pumpAndSettle();
+    expectScreen('Screen2');
+    expect(tracker.rootStack.length, 2);
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen2'],
+    );
+    // end region
+
+    // start region: pushReplacement push method
+    final screen4Result = tracker.rootNuvigator.open(
+      'screen4',
+      pushMethod: DeepLinkPushMethod.PushReplacement,
+    );
+    await tester.pumpAndSettle();
+    expectScreen('Screen4');
+    expect(tracker.rootStack.length, 2);
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen4'],
+    );
+    // end region
+
+    // start region: popAndPush push method
+    unawaited(tracker.rootNuvigator.open(
+      'screen2',
+      pushMethod: DeepLinkPushMethod.PopAndPush,
+      result: 'screen4Result',
+    ));
+    await tester.pumpAndSettle();
+    expect(await screen4Result, 'screen4Result');
+    expectScreen('Screen2');
+    expect(tracker.rootStack.length, 2);
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen2'],
+    );
+    // end region
+  });
+
+  testWidgets('nested Nuvigator.open', (tester) async {
+    final tracker = await pumpApp(tester);
+    // start region: nested propagation
+    // setup
+    final screen3Result = tracker.rootNuvigator.open('screen3');
+    await tester.pumpAndSettle();
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen3'],
+    );
+    // open nested screen
+    unawaited(tracker.nestedNuvigator.open('nestedScreen2'));
+    await tester.pumpAndSettle();
+    expectScreen('NestedScreen2');
+    expect(
+      tracker.nestedStack.map((e) => e.settings.name),
+      ['nestedScreen1', 'nestedScreen2'],
+    );
+    // open root screen from nested Nuvigator
+    unawaited(tracker.nestedNuvigator.open('screen4'));
+    await tester.pumpAndSettle();
+    expectScreen('Screen4');
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen3', 'screen4'],
+    );
+    // back to nested flow
+    tracker.rootNuvigator.pop();
+    await tester.pumpAndSettle();
+    expectScreen('NestedScreen2');
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen3'],
+    );
+
+    unawaited(tracker.nestedNuvigator.open(
+      'screen4',
+      pushMethod: DeepLinkPushMethod.PopAndPush,
+      result: 'screen3Result',
+    ));
+    await tester.pumpAndSettle();
+    expectScreen('Screen4');
+    expect(await screen3Result, 'screen3Result');
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen4'],
+    );
+
+    unawaited(tracker.rootNuvigator.open(
+      'screen3',
+      pushMethod: DeepLinkPushMethod.PushReplacement,
+    ));
+    await tester.pumpAndSettle();
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen3'],
+    );
+    unawaited(tracker.nestedNuvigator.open(
+      'screen2',
+      pushMethod: DeepLinkPushMethod.PushReplacement,
+    ));
+    await tester.pumpAndSettle();
+    expectScreen('Screen2');
+    expect(
+      tracker.rootStack.map((e) => e.settings.name),
+      ['screen1', 'screen2'],
+    );
+    // end region
+  });
 }
