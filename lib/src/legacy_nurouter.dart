@@ -199,9 +199,16 @@ abstract class NuRouter implements INuRouter {
     }
     // 2. Build Settings
     final parser = DeepLinkParser(template: routeEntry.key.deepLink);
+    final params = parser.getParams(deepLink).map((key, value) {
+      if (value is List<String>) {
+        return MapEntry(key, value.first);
+      } else {
+        return MapEntry(key, value) as MapEntry<String, String>;
+      }
+    });
     final settings = RouteSettings(
       name: routeEntry.key.routeName,
-      arguments: parser.getParams(deepLink),
+      arguments: params.cast<String, String>(),
     );
     // 3. Convert ScreenRoute to Route
     final route = routeEntry
