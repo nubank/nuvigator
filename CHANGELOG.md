@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.2.2
+- [FIX] Revert support for List Query Arguments in the legacy API, and preserve previous typings
+
 ## 1.2.1
 - [FIX] Make `Nuvigator.open` propagate all options to parent when the route is not found at the current level
 - [FIX] Properly support List Query Arguments in DeepLinks, instead of picking a random one
