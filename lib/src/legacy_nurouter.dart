@@ -203,7 +203,7 @@ abstract class NuRouter implements INuRouter {
       if (value is List<String>) {
         return MapEntry(key, value.first);
       } else {
-        return MapEntry(key, value) as MapEntry<String, String>;
+        return MapEntry(key, value.toString());
       }
     });
     final settings = RouteSettings(

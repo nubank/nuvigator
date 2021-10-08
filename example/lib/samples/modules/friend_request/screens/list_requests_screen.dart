@@ -14,6 +14,8 @@ class ListRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = Provider.of<FriendRequestBloc>(context);
     final bodyStyle = Theme.of(context).textTheme.bodyText1;
+    final args =
+        ModalRoute.of(context).settings.arguments as Map<String, String>;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +33,7 @@ class ListRequestScreen extends StatelessWidget {
           if (index == 0) {
             return ListTile(
               title: Text(
-                'Received numberOfRequests: ${10} from deepLink',
+                "Received numberOfRequests: ${args['numberOfRequests']} from deepLink",
                 style: bodyStyle,
               ),
             );
