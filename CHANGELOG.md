@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.3.0
+- [ENHANCEMENT] Improvements to all `*Named` method in Nuvigator
+- [NEW] Add `NuRoute.withPath` to be used as a `RoutePredicate` matcher
+- [NEW] Add new methods in Nuvigator: `replaceNamed`, `removeByPredicate` and `popAndPush`
+- [NEW] Adds key, `inheritableObservers`, `debug`, `observers`, `shouldPopRoot` arguments to the `Nuvigator.routes` factory
+- [NEW] Adds the optional result argument to the `Nuvigator.open` method
+
 ## 1.2.2
 - [FIX] Revert support for List Query Arguments in the legacy API, and preserve previous typings
 
