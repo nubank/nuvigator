@@ -154,6 +154,8 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   NuvigatorStateTracker stateTracker;
 
+  List<Route> get stack => stateTracker.stack;
+
   R getRouter<R extends INuRouter>() => router.getRouter<R>();
 
   List<ObserverBuilder> _collectObservers() {
@@ -217,60 +219,156 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     return true;
   }
 
-  bool canOpen(String route, {Object arguments}) {
-    return router.getRoute<dynamic>(
-          deepLink: route,
-          parameters: arguments,
-          fromLegacyRouteName: true,
-          fallbackScreenType: widget.screenType,
-        ) !=
-        null;
+  Route<R> _getRoute<R>(String routeName, [Object parameters]) {
+    return router.getRoute<R>(
+      deepLink: routeName,
+      parameters: parameters,
+      isFromNative: false,
+      fromLegacyRouteName: true,
+      fallbackScreenType: widget.screenType,
+    );
+  }
+
+  Future<dynamic> _handleDeepLinkNotFound(String deepLink,
+      [Object parameters]) async {
+    return await router.onDeepLinkNotFound(
+      router,
+      Uri.parse(deepLink),
+      false,
+      parameters,
+    );
+  }
+
+  bool canOpen(String route, {Object arguments}) =>
+      _getRoute(route, arguments) != null;
+
+  Future<R> _doForDeepLink<R>(
+    String deepLink, {
+    Object parameters,
+    Future<R> Function(Route<R> route) onRouteFound,
+    Future<R> Function(NuvigatorState parent) delegateToParent,
+  }) async {
+    final route = _getRoute(deepLink, parameters);
+    if (route != null) {
+      return await onRouteFound(route);
+    } else if (router.onDeepLinkNotFound != null) {
+      return await _handleDeepLinkNotFound(deepLink, parameters);
+    } else if (isNested) {
+      return await delegateToParent(parent);
+    } else {
+      throw FlutterError(
+        'DeepLink `$deepLink` was not found, and no `onDeepLinkNotFound` was specified in the $router.',
+      );
+    }
   }
 
   @override
-  Future<R> pushNamed<R extends Object>(String routeName, {Object arguments}) {
-    if (canOpen(routeName, arguments: arguments) == null && isNested) {
-      return parent.pushNamed<R>(routeName, arguments: arguments);
-    }
-    return super.pushNamed<R>(routeName, arguments: arguments);
+  Future<R> pushNamed<R extends Object>(
+    String routeName, {
+    Object arguments,
+  }) {
+    return _doForDeepLink(
+      routeName,
+      parameters: arguments,
+      onRouteFound: (route) => super.push<R>(route),
+      delegateToParent: (parent) =>
+          parent.pushNamed<R>(routeName, arguments: arguments),
+    );
   }
 
   @override
   Future<R> pushReplacementNamed<R extends Object, TO extends Object>(
-      String routeName,
-      {Object arguments,
-      TO result}) {
-    if (canOpen(routeName, arguments: arguments) == null && isNested) {
-      return parent.pushReplacementNamed<R, TO>(routeName,
-          arguments: arguments, result: result);
-    }
-    return super.pushReplacementNamed<R, TO>(routeName,
-        arguments: arguments, result: result);
+    String routeName, {
+    Object arguments,
+    TO result,
+  }) {
+    return _doForDeepLink(
+      routeName,
+      parameters: arguments,
+      onRouteFound: (route) => super.pushReplacement<R, TO>(
+        route,
+        result: result,
+      ),
+      delegateToParent: (parent) => parent.pushReplacementNamed<R, TO>(
+        routeName,
+        arguments: arguments,
+        result: result,
+      ),
+    );
   }
 
   @override
   Future<R> pushNamedAndRemoveUntil<R extends Object>(
-      String newRouteName, RoutePredicate predicate,
-      {Object arguments}) {
-    if (canOpen(newRouteName, arguments: arguments) == null && isNested) {
-      return parent.pushNamedAndRemoveUntil<R>(newRouteName, predicate,
-          arguments: arguments);
-    }
-    return super.pushNamedAndRemoveUntil<R>(newRouteName, predicate,
-        arguments: arguments);
+    String newRouteName,
+    RoutePredicate predicate, {
+    Object arguments,
+  }) {
+    return _doForDeepLink(
+      newRouteName,
+      parameters: arguments,
+      onRouteFound: (route) => super.pushAndRemoveUntil(route, predicate),
+      delegateToParent: (parent) => parent.pushNamedAndRemoveUntil(
+          newRouteName, predicate,
+          arguments: arguments),
+    );
   }
 
   @override
   Future<R> popAndPushNamed<R extends Object, TO extends Object>(
-      String routeName,
-      {Object arguments,
-      TO result}) {
-    if (canOpen(routeName, arguments: arguments) == null && isNested) {
-      return parent.popAndPushNamed<R, TO>(routeName,
-          arguments: arguments, result: result);
+    String routeName, {
+    Object arguments,
+    TO result,
+  }) {
+    return _doForDeepLink(
+      routeName,
+      parameters: arguments,
+      onRouteFound: (route) => popAndPush(route, result: result),
+      delegateToParent: (parent) => parent.popAndPushNamed(routeName),
+    );
+  }
+
+  Future<R> popAndPush<R extends Object, TO extends Object>(
+    Route<R> newRoute, {
+    TO result,
+  }) {
+    pop(result);
+    return push(newRoute);
+  }
+
+  void replaceNamed<R extends Object>({
+    @required String oldDeepLink,
+    @required String newDeepLink,
+    Object arguments,
+  }) {
+    _doForDeepLink(
+      newDeepLink,
+      onRouteFound: (route) async {
+        final oldRoute =
+            stateTracker.stack.firstWhere(NuRoute.withPath(oldDeepLink));
+        if (oldRoute == null) {
+          throw FlutterError(
+            '`$oldDeepLink` was not found in the $router when calling replaceNamed with the newDeepLink as `$newDeepLink`',
+          );
+        }
+        replace(newRoute: route, oldRoute: oldRoute);
+      },
+      delegateToParent: (parent) async => parent.replaceNamed(
+        oldDeepLink: oldDeepLink,
+        newDeepLink: newDeepLink,
+        arguments: arguments,
+      ),
+      parameters: arguments,
+    );
+  }
+
+  /// Will try to find the first Route that matches the predicate and remove it from its Stack
+  void removeByPredicate(RoutePredicate predicate) {
+    final route = stateTracker.stack.firstWhere(predicate, orElse: () => null);
+    if (route != null) {
+      super.removeRoute(route);
+    } else if (isNested) {
+      parent.removeByPredicate(predicate);
     }
-    return super.popAndPushNamed<R, TO>(routeName,
-        arguments: arguments, result: result);
   }
 
   @override
@@ -315,12 +413,14 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// [screenType] argument can be used to override the default screenType provided by the to be opened Route
   /// [pushMethod] allows for customizing how the new Route will be pushed into the stack
   /// [parameters] is a helper to inject arguments that would be present in the DeepLink query/path parameters
+  /// [result] is optional and will be used only when the pushMethod is PopAndPush or PushReplacement
   Future<R> open<R extends Object>(
     String deepLink, {
     DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
     ScreenType screenType,
     Map<String, dynamic> parameters,
     bool isFromNative = false,
+    Object result,
   }) {
     final route = router.getRoute<R>(
       deepLink: deepLink,
@@ -335,27 +435,28 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
         case DeepLinkPushMethod.Push:
           return push<R>(route);
         case DeepLinkPushMethod.PushReplacement:
-          return pushReplacement<R, dynamic>(route);
+          return pushReplacement<R, dynamic>(route, result: result);
         case DeepLinkPushMethod.PopAndPush:
-          pop();
-          return push<R>(route);
+          return popAndPush(route, result: result);
         default:
           return push<R>(route);
       }
     } else if (router.onDeepLinkNotFound != null) {
-      return router.onDeepLinkNotFound(
-          router, Uri.parse(deepLink), false, parameters);
+      final uriDeepLink = Uri.parse(deepLink);
+      return router.onDeepLinkNotFound(router, uriDeepLink, false, parameters);
     } else if (isNested) {
       return parent.open<R>(
         deepLink,
         parameters: parameters,
         pushMethod: pushMethod,
+        result: result,
         screenType: screenType,
         isFromNative: isFromNative,
       );
     } else {
       throw FlutterError(
-          'DeepLink $deepLink was not found, and no `onDeepLinkNotFound` was specified.');
+        'DeepLink $deepLink was not found, and no `onDeepLinkNotFound` was specified.',
+      );
     }
   }
 
@@ -418,8 +519,18 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     @required String initialRoute,
     @required List<NuRoute> routes,
     ScreenType screenType,
+    List<ObserverBuilder> inheritableObservers = const [],
+    List<NavigatorObserver> observers = const [],
+    bool debug = false,
+    bool shouldPopRoot = false,
+    Key key,
   }) {
     return Nuvigator(
+      key: key,
+      inheritableObservers: inheritableObservers,
+      debug: debug,
+      observers: observers,
+      shouldPopRoot: shouldPopRoot,
       router: NuRouterBuilder(
         routes: routes,
         initialRoute: initialRoute,
