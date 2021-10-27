@@ -230,7 +230,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     stateTracker = null;
     if (isNested) {
       parent.nestedNuvigators.remove(this);
-      _presenterRoute.nestedNuvigator = null;
+      if (_presenterRoute != null) {
+        _presenterRoute.nestedNuvigator = null;
+      }
     }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
