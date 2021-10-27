@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.4.0
+- [NEW] Add `NuvigatorPageRoute.nestedNuvigator` property that is going to link to the nested Nuvigator instance that is being rendered by this Route
+- [NEW] Add `NuvigatorState.presenterRoute` that will link to the Parent Route that is rendering this Nested Nuvigator
+- [NEW] Add `NuvigatorPageRoute.of(context)` to retrieve the closest `NuvigatorPageRoute` in the Context
+
 ## 1.3.0
 - [ENHANCEMENT] Improvements to all `*Named` method in Nuvigator
 - [NEW] Add `NuRoute.withPath` to be used as a `RoutePredicate` matcher
