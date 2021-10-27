@@ -11,7 +11,19 @@ mixin NuvigatorPageRoute<T> on PageRoute<T> {
     return null;
   }
 
+  /// Returns the closest NuvigatorPageRoute
+  static NuvigatorPageRoute<R> of<R>(BuildContext context) {
+    final route = ModalRoute.of<R>(context);
+    if (route is NuvigatorPageRoute) {
+      return route;
+    }
+    return null;
+  }
+
   bool get isNested => nuvigator != null && nuvigator.isNested;
+
+  /// If this Route is rendering a nested Nuvigator, it will be registered here
+  NuvigatorState nestedNuvigator;
 
   @override
   bool get fullscreenDialog {

@@ -145,16 +145,35 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   NuvigatorState get rootNuvigator =>
       Nuvigator.of(context, rootNuvigator: true) ?? this;
 
-  @override
-  _NuvigatorInner get widget => super.widget;
-
   List<NuvigatorState> nestedNuvigators = [];
-
-  T get router => widget.router;
 
   NuvigatorStateTracker stateTracker;
 
+  NuvigatorState parent;
+
+  NuvigatorPageRoute _presenterRoute;
+
+  @override
+  _NuvigatorInner get widget => super.widget;
+
+  T get router => widget.router;
+
+  /// Returns the current Route stack that is rendered in this Nuvigator
   List<Route> get stack => stateTracker.stack;
+
+  /// If this Nuvigator is nested, return the Route that is presenting it
+  NuvigatorPageRoute get presenterRoute => _presenterRoute;
+
+  /// Returns true if this Nuvigator has a parent Nuvigator, and thus is considered nested
+  bool get isNested => parent != null;
+
+  /// Returns true if this Nuvigator is the Root one (top level)
+  bool get isRoot => this == rootNuvigator;
+
+  /// Returns the top most route of this Nuvigator
+  Route get currentRoute => stateTracker.stack.last;
+
+  INuRouter get rootRouter => rootNuvigator.router;
 
   R getRouter<R extends INuRouter>() => router.getRouter<R>();
 
@@ -180,6 +199,18 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 
   @override
+  void didChangeDependencies() {
+    if (isNested) {
+      final maybePresenterRoute = NuvigatorPageRoute.of(context);
+      if (maybePresenterRoute != null) {
+        _presenterRoute = maybePresenterRoute;
+        _presenterRoute.nestedNuvigator = this;
+      }
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   void didUpdateWidget(_NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
       widget.router.install(this);
@@ -199,6 +230,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     stateTracker = null;
     if (isNested) {
       parent.nestedNuvigators.remove(this);
+      _presenterRoute.nestedNuvigator = null;
     }
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -459,14 +491,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       );
     }
   }
-
-  NuvigatorState parent;
-
-  bool get isNested => parent != null;
-
-  bool get isRoot => this == rootNuvigator;
-
-  INuRouter get rootRouter => rootNuvigator.router;
 
   @override
   Widget build(BuildContext context) {

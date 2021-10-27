@@ -490,4 +490,15 @@ void main() {
     );
     // end region
   });
+
+  testWidgets('Nested Nuvigator presenterRoute test', (tester) async {
+    final tracker = await pumpApp(tester);
+
+    unawaited(tracker.rootNuvigator.open('screen3'));
+    await tester.pumpAndSettle();
+
+    expect(tracker.nestedNuvigator.presenterRoute.settings.name, 'screen3');
+    final NuvigatorPageRoute pageRoute = tracker.rootStack.last;
+    expect(pageRoute.nestedNuvigator, tracker.nestedNuvigator);
+  });
 }
