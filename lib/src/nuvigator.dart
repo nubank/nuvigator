@@ -201,9 +201,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   @override
   void didChangeDependencies() {
     if (isNested) {
-      final presenterRoute = ModalRoute.of(context);
-      if (presenterRoute is NuvigatorPageRoute) {
-        _presenterRoute = presenterRoute;
+      final maybePresenterRoute = NuvigatorPageRoute.of(context);;
+      if (maybePresenterRoute != null) {
+        _presenterRoute = maybePresenterRoute;
         _presenterRoute.nestedNuvigator = this;
       }
     }
