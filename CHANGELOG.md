@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.4.1
+- [FIX] Fix error when disposing a Nuvigator that was rendered in a Route that does not implement `NuvigatorPageRoute`
+
 ## 1.4.0
 - [NEW] Add `NuvigatorPageRoute.nestedNuvigator` property that is going to link to the nested Nuvigator instance that is being rendered by this Route
 - [NEW] Add `NuvigatorState.presenterRoute` that will link to the Parent Route that is rendering this Nested Nuvigator
