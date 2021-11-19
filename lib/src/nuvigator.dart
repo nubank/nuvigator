@@ -502,9 +502,11 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     }
     if (isNested) {
       child = WillPopScope(
-        onWillPop: () async {
-          return !(await maybePop());
-        },
+        onWillPop: canPop()
+            ? () async {
+                return !(await maybePop());
+              }
+            : null,
         child: child,
       );
     }
