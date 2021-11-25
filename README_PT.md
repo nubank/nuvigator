@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+```
 
 Um exemplo mais completo:
 
