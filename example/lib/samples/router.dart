@@ -1,3 +1,4 @@
+import 'package:example/samples/modules/friend_request/screens/sub_flow/sub_flow_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -62,6 +63,7 @@ class MainAppRouter extends NuRouter {
     _postInitRoutes = [
       FriendRequestRoute(),
       ComposerRoute(),
+      SubFlowRoute(),
     ];
   }
 

@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                   },
                   child: const Text('Review friend requests'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     String text;
 
@@ -60,6 +60,12 @@ class HomeScreen extends StatelessWidget {
                     }
                   },
                   child: const Text('Compose a message'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    nuvigator.open('expapp://sub_flow');
+                  },
+                  child: const Text('Open a SubFlow'),
                 ),
                 const SizedBox(height: 48),
                 const Text(
