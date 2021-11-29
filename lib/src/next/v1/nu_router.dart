@@ -329,6 +329,8 @@ abstract class NuRouter implements INuRouter {
       }
     });
   }
+
+  bool canOpen(String deeplink) => getRoute(deepLink: deeplink) != null;
 }
 
 /// Builder class for creating an anonymous [NuRouter]
