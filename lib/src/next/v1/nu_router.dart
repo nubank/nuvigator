@@ -12,6 +12,8 @@ import '../../typings.dart';
 /// Extend to create your NuRoute. Contains the configuration of a Route that is
 /// going to be presented in a [Nuvigator] by the [NuRouter]
 abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
+  NuRoute({Map<String, dynamic> metaData}) : metaData = metaData ?? {};
+
   T _router;
 
   T get router => _router;
@@ -25,6 +27,8 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   Future<bool> init(BuildContext context) {
     return SynchronousFuture(true);
   }
+
+  final Map<String, dynamic> metaData;
 
   bool get prefix => false;
 
@@ -204,6 +208,15 @@ abstract class NuRouter implements INuRouter {
   /// Backwards compatible with old routers API
   List<INuRouter> get legacyRouters => [];
 
+  /// Override if you want to wrap the ScreenRoute with another Widget
+  Widget buildWrapper(
+    BuildContext context,
+    Widget child,
+    NuRouteSettings settings,
+    NuRoute nuRoute,
+  ) =>
+      child;
+
   /// Override to false if you want a strictly sync initialization in this Router
   /// futures are not going to be awaited to complete!
   bool get awaitForInit => true;
@@ -277,7 +290,14 @@ abstract class NuRouter implements INuRouter {
         deepLink: deepLink,
         extraParameters: parameters,
       );
-      if (screenRoute != null) return screenRoute;
+      if (screenRoute != null) {
+        return screenRoute.wrapWith((context, child) => buildWrapper(
+              context,
+              child,
+              screenRoute.nuRouteSettings,
+              route,
+            ));
+      }
     }
     return null;
   }

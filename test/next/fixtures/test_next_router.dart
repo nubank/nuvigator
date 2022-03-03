@@ -6,6 +6,7 @@ class InitTestNextRouter extends NuRouter {
   InitTestNextRouter({
     @required this.routerInitFuture,
     @required this.routeInitFuture,
+    this.buildWrapperFn,
   })  : assert(routerInitFuture != null),
         assert(routeInitFuture != null);
 
@@ -13,6 +14,12 @@ class InitTestNextRouter extends NuRouter {
 
   final Future<void> Function() routerInitFuture;
   final Future<bool> Function() routeInitFuture;
+  final Widget Function(
+    BuildContext context,
+    Widget child,
+    NuRouteSettings settings,
+    NuRoute nuRoute,
+  ) buildWrapperFn;
 
   @override
   String get initialRoute => initRoute;
@@ -22,6 +29,22 @@ class InitTestNextRouter extends NuRouter {
 
   @override
   ScreenType get screenType => const MaterialScreenType();
+
+  @override
+  Widget buildWrapper(
+    BuildContext context,
+    Widget child,
+    NuRouteSettings settings,
+    NuRoute nuRoute,
+  ) =>
+      buildWrapperFn == null
+          ? child
+          : buildWrapperFn(
+              context,
+              child,
+              settings,
+              nuRoute,
+            );
 
   @override
   Future<void> init(BuildContext context) => routerInitFuture();
@@ -39,4 +62,15 @@ class InitTestNextRouter extends NuRouter {
           initializer: (context) => routeInitFuture(),
         ),
       ];
+}
+
+class FakeWrapper extends StatelessWidget {
+  const FakeWrapper(this._child);
+
+  final Widget _child;
+
+  @override
+  Widget build(BuildContext context) {
+    return _child;
+  }
 }
