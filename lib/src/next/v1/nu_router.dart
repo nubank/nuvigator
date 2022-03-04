@@ -208,7 +208,8 @@ abstract class NuRouter implements INuRouter {
   /// Backwards compatible with old routers API
   List<INuRouter> get legacyRouters => [];
 
-  /// Override if you want to wrap the ScreenRoute with another Widget
+  /// Override if you want to wrap the `builder` function of the NuRoutes
+  /// registered in this router with another Widget
   Widget buildWrapper(
     BuildContext context,
     Widget child,
