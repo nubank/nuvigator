@@ -54,7 +54,7 @@ void main() {
                 settings,
                 nuRoute,
               ) =>
-                  FakeWrapper(key , child));
+                  FakeWrapper(key, child));
 
           await pumpFakeApp(tester: tester, router: router);
 
