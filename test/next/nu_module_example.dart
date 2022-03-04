@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:nuvigator/next.dart';
-import 'package:nuvigator/src/next/v1/annotations.dart';
 
 part 'nu_module_example.g.dart';
 

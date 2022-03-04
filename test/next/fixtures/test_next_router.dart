@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
 
@@ -65,12 +64,10 @@ class InitTestNextRouter extends NuRouter {
 }
 
 class FakeWrapper extends StatelessWidget {
-  const FakeWrapper(this._child);
+  const FakeWrapper(Key key, this._child) : super(key: key);
 
   final Widget _child;
 
   @override
-  Widget build(BuildContext context) {
-    return _child;
-  }
+  Widget build(BuildContext context) => _child;
 }
