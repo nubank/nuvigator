@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
 
@@ -45,6 +44,7 @@ void main() {
       testWidgets(
         'with success and buildWrapper provided, should wrap and display success widget',
         (tester) async {
+          const key = Key('anyKey');
           final router = InitTestNextRouter(
               routerInitFuture: () => Future.value(),
               routeInitFuture: () => Future.value(true),
@@ -54,10 +54,11 @@ void main() {
                 settings,
                 nuRoute,
               ) =>
-                  FakeWrapper(child));
+                  FakeWrapper(key, child));
 
           await pumpFakeApp(tester: tester, router: router);
-          expect(router, isA<FakeWrapper>());
+
+          expect(find.byKey(key), findsOneWidget);
           expectSuccess(findsOneWidget);
         },
       );

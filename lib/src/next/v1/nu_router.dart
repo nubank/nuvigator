@@ -2,12 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nuvigator/next.dart';
-import 'package:nuvigator/src/nu_route_settings.dart';
 
 import '../../deeplink.dart';
 import '../../legacy_nurouter.dart' as legacy;
-import '../../screen_route.dart';
-import '../../typings.dart';
 
 /// Extend to create your NuRoute. Contains the configuration of a Route that is
 /// going to be presented in a [Nuvigator] by the [NuRouter]
