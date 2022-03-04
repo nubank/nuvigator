@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.4.2
+- [NEW] Add `NuRoute.metaData` to be used as a metadata dictionary for NuRoutes
+- [NEW] Add `NuRouter.buildWrapper` that can be used to wrap the `builder` function of the registered NuRoutes
+
 ## 1.4.1
 - [FIX] Fix error when disposing a Nuvigator that was rendered in a Route that does not implement `NuvigatorPageRoute`
 
