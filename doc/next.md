@@ -103,7 +103,7 @@ class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
   // Optional - converts deepLink params to MyArguments class
   @override
   ParamsParser<MyArguments> get paramsParser => _$paramsParser;
-  
+
   // Optional - The the provided path should be matched as a prefix, instead of exact
   @override
   bool get prefix => false;
