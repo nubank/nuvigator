@@ -84,6 +84,11 @@ Example:
 
 ```dart
 class MyRoute extends NuRoute<NuRouter, MyArguments, MyReturn> {
+  
+  // Optional - metaData is a `NuRoute` attribute that allows you to provide metadata to the route.   
+  // If not provided via super constructor, it will assume the default value `{}` which can receive data later.
+  MyRoute() : super(metaData: {'foo': 'bar'});
+
   // Optional - If your Router enforces a synchronous initialization this should return an instance of a SynchronousFuture
   @override
   Future<bool> init(BuildContext context) async {
@@ -217,6 +222,16 @@ class MyRouter extends NuRouter {
   Future<void> init(BuildContext context) {
     return SynchronousFuture(null);
   }
+
+  // Optional - A function to wrap the `builder` function of the NuRoutes registered in the NuRouter.
+  // This function runs one time for each route, and not one time for the entire NuRouter.
+  Widget buildWrapper(
+      BuildContext context,
+      Widget child,
+      NuRouteSettings settings,
+      NuRoute nuRoute,
+      ) =>
+      child;
 
   // Optional (defaults to true) - Enables/Disables support for asynchronous initialization (will display the loading widget)
   @override

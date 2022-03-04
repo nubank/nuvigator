@@ -95,4 +95,4 @@ class MyRoute extends NuRouter {
 
 ## ScreensWrapper
 
-ScreensWrappers were removed to simplify the API design. If you are using it, wrap you widgets in the build method directly instead.
+When using Next API you can override the `buildWrapper` method to wrap the `builder` function of the NuRoutes registered in the router with another Widget.

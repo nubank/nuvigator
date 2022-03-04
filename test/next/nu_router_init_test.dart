@@ -43,6 +43,26 @@ void main() {
       );
 
       testWidgets(
+        'with success and buildWrapper provided, should wrap and display success widget',
+        (tester) async {
+          final router = InitTestNextRouter(
+              routerInitFuture: () => Future.value(),
+              routeInitFuture: () => Future.value(true),
+              buildWrapperFn: (
+                context,
+                child,
+                settings,
+                nuRoute,
+              ) =>
+                  FakeWrapper(child));
+
+          await pumpFakeApp(tester: tester, router: router);
+          expect(router, isA<FakeWrapper>());
+          expectSuccess(findsOneWidget);
+        },
+      );
+
+      testWidgets(
         'with an exception on router init, should display the error widget',
         (tester) async {
           final exception = Exception();
