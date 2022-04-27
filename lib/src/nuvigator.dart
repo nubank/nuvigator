@@ -512,6 +512,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 }
 
+bool _defaultShouldRebuild(NuRouter previousRouter, NuRouter newRouter) =>
+    previousRouter != newRouter;
+
 /// Creates a new Nuvigator. When using the Next API, several of those options
 /// are provided by the [NuRouter]. Providing them here will thrown an assertion
 /// error.
@@ -529,6 +532,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
+    this.shouldRebuild,
   })  : _innerKey = key,
         assert(router != null),
         assert(() {
@@ -549,6 +553,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     List<NavigatorObserver> observers = const [],
     bool debug = false,
     bool shouldPopRoot = false,
+    ShouldRebuildFn shouldRebuild,
     Key key,
   }) {
     return Nuvigator(
@@ -557,6 +562,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
       debug: debug,
       observers: observers,
       shouldPopRoot: shouldPopRoot,
+      shouldRebuild: shouldRebuild,
       router: NuRouterBuilder(
         routes: routes,
         initialRoute: initialRoute,
@@ -576,6 +582,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   final String initialRoute;
   final Uri initialDeepLink;
   final Map<String, Object> initialArguments;
+  final ShouldRebuildFn shouldRebuild;
 
   static NuvigatorState ofRouter<T extends INuRouter>(BuildContext context) {
     final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();
@@ -615,6 +622,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     return NuRouterLoader(
       // ignore: avoid_as
       router: router as NuRouter,
+      shouldRebuild: shouldRebuild ?? _defaultShouldRebuild,
       builder: (moduleRouter) => _NuvigatorInner(
         router: moduleRouter,
         debug: debug,

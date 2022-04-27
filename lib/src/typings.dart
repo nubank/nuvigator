@@ -28,3 +28,8 @@ typedef NuRouteParametersParser<A> = A Function(Map<String, dynamic>);
 typedef NuInitFunction = Future<bool> Function(BuildContext context);
 
 typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
+
+typedef ShouldRebuildFn = bool Function(
+  NuRouter previousRouter,
+  NuRouter newRouter,
+);
