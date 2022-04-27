@@ -3,7 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
 import 'package:pedantic/pedantic.dart';
 
-Widget baseNuvigator(Key key, Key nestedKey) {
+Widget baseNuvigator(
+  Key key,
+  Key nestedKey,
+  Key secondNestedKey, {
+  ShouldRebuildFn shouldRebuild,
+}) {
   return MaterialApp(
     title: 'Test Nuvigator',
     builder: Nuvigator.routes(
@@ -36,6 +41,29 @@ Widget baseNuvigator(Key key, Key nestedKey) {
                 NuRouteBuilder(
                     path: 'nestedScreen3',
                     builder: (_, __, ___) => const Text('NestedScreen3')),
+                NuRouteBuilder(
+                  path: 'nestedScreen4',
+                  builder: (_, __, ___) {
+                    return Nuvigator.routes(
+                      initialRoute: 'secondNestedScreen1',
+                      key: secondNestedKey,
+                      screenType: materialScreenType,
+                      shouldRebuild: shouldRebuild,
+                      routes: [
+                        NuRouteBuilder(
+                          path: 'secondNestedScreen1',
+                          builder: (_, __, ___) =>
+                              const Text('SecondNestedScreen1'),
+                        ),
+                        NuRouteBuilder(
+                          path: 'secondNestedScreen2',
+                          builder: (_, __, ___) =>
+                              const Text('SecondNestedScreen2'),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             );
           },
@@ -50,30 +78,43 @@ Widget baseNuvigator(Key key, Key nestedKey) {
 }
 
 class NuvigatorStateTracker {
-  NuvigatorStateTracker({this.rootKey, this.nestedKey});
+  NuvigatorStateTracker({this.rootKey, this.nestedKey, this.secondNestedKey});
   final GlobalKey<NuvigatorState<INuRouter>> rootKey;
   final GlobalKey<NuvigatorState<INuRouter>> nestedKey;
+  final GlobalKey<NuvigatorState<INuRouter>> secondNestedKey;
 
   NuvigatorState get rootNuvigator => rootKey.currentState;
   NuvigatorState get nestedNuvigator => nestedKey.currentState;
+  NuvigatorState get secondNestedNuvigator => secondNestedKey.currentState;
   List<Route> get rootStack => rootNuvigator.stateTracker.stack;
   List<Route> get nestedStack => nestedNuvigator.stateTracker.stack;
+  List<Route> get secondNestedStack => secondNestedNuvigator.stateTracker.stack;
 }
 
 Future<NuvigatorStateTracker> pumpApp(
-  WidgetTester tester,
-) async {
+  WidgetTester tester, {
+  ShouldRebuildFn shouldRebuild,
+}) async {
   // ignore: omit_local_variable_types
   final GlobalKey<NuvigatorState<INuRouter>> nuvigatorKey =
       GlobalKey(debugLabel: 'NUVIGATOR_TESTER');
   // ignore: omit_local_variable_types
   final GlobalKey<NuvigatorState<INuRouter>> nestedNuvigatorKey =
       GlobalKey(debugLabel: 'NUVIGATOR_TESTER');
-  await tester.pumpWidget(baseNuvigator(nuvigatorKey, nestedNuvigatorKey));
+  // ignore: omit_local_variable_types
+  final GlobalKey<NuvigatorState<INuRouter>> secondNestedNuvigatorKey =
+      GlobalKey(debugLabel: 'NUVIGATOR_TESTER');
+  await tester.pumpWidget(baseNuvigator(
+    nuvigatorKey,
+    nestedNuvigatorKey,
+    secondNestedNuvigatorKey,
+    shouldRebuild: shouldRebuild,
+  ));
   await tester.pumpAndSettle();
   return NuvigatorStateTracker(
     rootKey: nuvigatorKey,
     nestedKey: nestedNuvigatorKey,
+    secondNestedKey: secondNestedNuvigatorKey,
   );
 }
 
@@ -501,4 +542,76 @@ void main() {
     final NuvigatorPageRoute pageRoute = tracker.rootStack.last;
     expect(pageRoute.nestedNuvigator, tracker.nestedNuvigator);
   });
+
+  testWidgets(
+    'Should rebuild Nuvigator by default when NuRouter instance changes',
+    (tester) async {
+      final tracker = await pumpApp(tester);
+
+      // Go to Screen3
+      unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+      await tester.pumpAndSettle();
+
+      // Go to NestedScreen4
+      unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen4'));
+      await tester.pumpAndSettle();
+
+      // Go to SecondNestedScreen2
+      unawaited(tracker.secondNestedNuvigator.pushNamed('secondNestedScreen2'));
+      await tester.pumpAndSettle();
+      expect(find.text('SecondNestedScreen2'), findsOneWidget);
+      expect(
+        tracker.secondNestedStack.map((e) => e.settings.name),
+        ['secondNestedScreen1', 'secondNestedScreen2'],
+      );
+
+      // Go to Screen2, registered on the rootNuvigator
+      unawaited(tracker.secondNestedNuvigator.pushNamed('screen2'));
+      await tester.pumpAndSettle();
+      expect(find.text('Screen2'), findsOneWidget);
+
+      // Pop Screen2
+      tracker.rootNuvigator.pop();
+      await tester.pumpAndSettle();
+
+      // Should rebuild NuRouter (going back to secondNestedScreen1)
+      expect(find.text('SecondNestedScreen1'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Should not rebuild Nuvigator when shouldRebuild returns false',
+    (tester) async {
+      final tracker = await pumpApp(tester, shouldRebuild: (_, __) => false);
+
+      // Go to Screen3
+      unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+      await tester.pumpAndSettle();
+
+      // Go to NestedScreen4
+      unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen4'));
+      await tester.pumpAndSettle();
+
+      // Go to SecondNestedScreen2
+      unawaited(tracker.secondNestedNuvigator.pushNamed('secondNestedScreen2'));
+      await tester.pumpAndSettle();
+      expect(find.text('SecondNestedScreen2'), findsOneWidget);
+      expect(
+        tracker.secondNestedStack.map((e) => e.settings.name),
+        ['secondNestedScreen1', 'secondNestedScreen2'],
+      );
+
+      // Go to Screen2, registered on the rootNuvigator
+      unawaited(tracker.secondNestedNuvigator.pushNamed('screen2'));
+      await tester.pumpAndSettle();
+      expect(find.text('Screen2'), findsOneWidget);
+
+      // Pop Screen2
+      tracker.rootNuvigator.pop();
+      await tester.pumpAndSettle();
+
+      // Should not rebuild NuRouter (stays on secondNestedScreen2)
+      expect(find.text('SecondNestedScreen2'), findsOneWidget);
+    },
+  );
 }

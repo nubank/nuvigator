@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.6.0
+- [ENHANCEMENT] Add `Nuvigator.shouldRebuild` property for controlling when a Nuvigator should be rebuild.
+
 ## 1.5.0
 - [NEW] Add `NuRoute.metaData` to be used as a metadata dictionary for NuRoutes
 - [NEW] Add `NuRouter.buildWrapper` that can be used to wrap the `builder` function of the registered NuRoutes

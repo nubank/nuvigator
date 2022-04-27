@@ -414,10 +414,12 @@ class NuRouterLoader extends StatefulWidget {
   const NuRouterLoader({
     Key key,
     this.router,
+    this.shouldRebuild,
     this.builder,
   }) : super(key: key);
 
   final NuRouter router;
+  final ShouldRebuildFn shouldRebuild;
   final Widget Function(NuRouter router) builder;
 
   @override
@@ -458,7 +460,7 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
 
   @override
   void didUpdateWidget(covariant NuRouterLoader oldWidget) {
-    if (oldWidget.router != widget.router) {
+    if (widget.shouldRebuild(oldWidget.router, widget.router)) {
       _initModule();
       nuvigator = widget.builder(widget.router);
     }
