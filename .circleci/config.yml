@@ -2,7 +2,7 @@ version: 2
 
 job_defaults: &defaults
     docker:
-      - image: cirrusci/flutter
+      - image: cirrusci/flutter:2.2.1
 
 jobs:
   format-check:
@@ -21,7 +21,7 @@ jobs:
     steps:
       - checkout
       - run: flutter pub get
-      - run: flutter test 
+      - run: flutter test
 
 workflows:
   version: 2

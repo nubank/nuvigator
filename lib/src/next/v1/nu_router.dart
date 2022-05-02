@@ -427,7 +427,7 @@ class NuRouterLoader extends StatefulWidget {
 }
 
 class _NuRouterLoaderState extends State<NuRouterLoader> {
-  Widget nuvigator;
+  NuRouter router;
   bool loading;
   Widget errorWidget;
 
@@ -437,15 +437,16 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
 
   Future<void> _initModule() async {
     setState(() {
-      loading = widget.router.awaitForInit;
+      router = widget.router;
+      loading = router.awaitForInit;
       errorWidget = null;
     });
     try {
-      await widget.router._init(context);
+      await router._init(context);
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace, label: error.toString());
       final errorWidget =
-          widget.router.onError(error, NuRouterController(reload: _reload));
+          router.onError(error, NuRouterController(reload: _reload));
       if (errorWidget != null) {
         setState(() {
           this.errorWidget = errorWidget;
@@ -462,7 +463,6 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   void didUpdateWidget(covariant NuRouterLoader oldWidget) {
     if (widget.shouldRebuild(oldWidget.router, widget.router)) {
       _initModule();
-      nuvigator = widget.builder(widget.router);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -476,11 +476,10 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return widget.router.loadingWidget;
+      return router.loadingWidget;
     } else if (errorWidget != null) {
       return errorWidget;
     }
-    nuvigator ??= widget.builder(widget.router);
-    return nuvigator;
+    return widget.builder(router);
   }
 }
