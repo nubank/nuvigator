@@ -42,6 +42,7 @@ class ComposerRoute extends NuRoute<NuRouter, void, String> {
   @override
   Widget build(BuildContext context, NuRouteSettings<Object> settings) {
     return Nuvigator.routes(
+      shouldRebuild: (_, __) => false,
       initialRoute: settings.name,
       routes: [
         _ComposerHelpRoute(),

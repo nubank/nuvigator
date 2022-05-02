@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.6.1
+- [FIX] Fix re-renders due to other state changes when `Nuvigator.shouldRebuild` returns false
+
 ## 1.6.0
 - [ENHANCEMENT] Add `Nuvigator.shouldRebuild` property for controlling when a Nuvigator should be rebuild.
 
