@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.6.2
+- [FIX] Revert changes from 1.6.1 due to some unexpected behaviors found
+
 ## 1.6.1
 - [FIX] Fix re-renders due to other state changes when `Nuvigator.shouldRebuild` returns false
 
