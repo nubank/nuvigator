@@ -544,9 +544,12 @@ void main() {
   });
 
   testWidgets(
-    'Should rebuild Nuvigator by default when NuRouter instance changes',
+    'Should Nuvigator when shouldRebuild is provided',
     (tester) async {
-      final tracker = await pumpApp(tester);
+      final tracker = await pumpApp(
+        tester,
+        shouldRebuild: (oldRouter, newRouter) => oldRouter != newRouter,
+      );
 
       // Go to Screen3
       unawaited(tracker.rootNuvigator.pushNamed('screen3'));
@@ -580,9 +583,9 @@ void main() {
   );
 
   testWidgets(
-    'Should not rebuild Nuvigator when shouldRebuild returns false',
+    'Should not rebuild Nuvigator by default when shouldRebuild is not provided',
     (tester) async {
-      final tracker = await pumpApp(tester, shouldRebuild: (_, __) => false);
+      final tracker = await pumpApp(tester);
 
       // Go to Screen3
       unawaited(tracker.rootNuvigator.pushNamed('screen3'));
