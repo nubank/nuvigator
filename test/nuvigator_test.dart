@@ -573,12 +573,32 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Screen2'), findsOneWidget);
 
+      expect(
+        tracker.rootStack.map((e) => e.settings.name),
+        ['screen1', 'screen3', 'screen2'],
+      );
+
       // Pop Screen2
       tracker.rootNuvigator.pop();
       await tester.pumpAndSettle();
 
-      // Should rebuild NuRouter (going back to secondNestedScreen1)
-      expect(find.text('SecondNestedScreen1'), findsOneWidget);
+      // Should rebuild NuRouter (going back to secondNestedScreen2)
+      expect(find.text('SecondNestedScreen2'), findsOneWidget);
+
+      expect(
+        tracker.rootStack.map((e) => e.settings.name),
+        ['screen1', 'screen3'],
+      );
+      
+      expect(
+        tracker.nestedStack.map((e) => e.settings.name),
+        ['nestedScreen1', 'nestedScreen4'],
+      );
+
+      expect(
+        tracker.secondNestedStack.map((e) => e.settings.name),
+        ['secondNestedScreen1', 'secondNestedScreen2'],
+      );
     },
   );
 
