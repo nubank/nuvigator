@@ -512,9 +512,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 }
 
-bool _defaultShouldRebuild(NuRouter previousRouter, NuRouter newRouter) =>
-    previousRouter != newRouter;
-
 /// Creates a new Nuvigator. When using the Next API, several of those options
 /// are provided by the [NuRouter]. Providing them here will thrown an assertion
 /// error.
@@ -622,7 +619,7 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
     return NuRouterLoader(
       // ignore: avoid_as
       router: router as NuRouter,
-      shouldRebuild: shouldRebuild ?? _defaultShouldRebuild,
+      shouldRebuild: shouldRebuild,
       builder: (moduleRouter) => _NuvigatorInner(
         router: moduleRouter,
         debug: debug,
