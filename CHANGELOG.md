@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.7.0-beta.0
+- [FIX] [POSSIBLY BREAKING] Makes the default behavior of Nuvigator to not re-build itself and it's state when the NuRouter provided instance changes. This allows for fixing some state reloads/resets and navigation lost, specially on nested flows. If for some reason you were relying in the current behavior for some feature, you can provide a `shouldRebuild` property to the `Nuvigator` that should return `true` when you wish to perform the rebuild.
+
 ## 1.6.2
 - [FIX] Revert changes from 1.6.1 due to some unexpected behaviors found
 
