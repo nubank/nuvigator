@@ -589,7 +589,7 @@ void main() {
         tracker.rootStack.map((e) => e.settings.name),
         ['screen1', 'screen3'],
       );
-      
+
       expect(
         tracker.nestedStack.map((e) => e.settings.name),
         ['nestedScreen1', 'nestedScreen4'],
