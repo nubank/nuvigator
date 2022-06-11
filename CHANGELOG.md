@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.8.0-beta.1
+- [FIX] Make Nuvigator compatible with Flutter 3.0.2
+- 
 ## 1.8.0-beta.0
 - [FIX] Make Nuvigator compatible with Flutter 2.10.5
 
