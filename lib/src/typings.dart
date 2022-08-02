@@ -1,12 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import 'next/v1/nu_router.dart';
 import 'nu_route_settings.dart';
+import 'nu_router.dart';
 import 'nuvigator.dart';
-import 'screen_route.dart';
-
-typedef ScreenRouteBuilder = ScreenRoute<dynamic> Function(
-    RouteSettings settings);
 
 typedef HandleDeepLinkFn = Future<dynamic> Function(
   INuRouter router,

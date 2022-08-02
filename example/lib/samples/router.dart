@@ -6,10 +6,7 @@ import 'package:provider/provider.dart';
 import 'modules/composer/module.dart';
 import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
-import 'modules/friend_request/navigation/friend_request_router.dart';
 import 'screens/home_screen.dart';
-
-part 'router.g.dart';
 
 class FriendRequestArgs {
   int numberOfRequests;
@@ -18,7 +15,6 @@ class FriendRequestArgs {
   int age;
 }
 
-@NuRouteParser()
 class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
@@ -41,9 +37,6 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
       ),
     );
   }
-
-// @override
-// ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
 }
 
 // MainAppModuleRouter
@@ -85,11 +78,6 @@ class MainAppRouter extends NuRouter {
           child: CircularProgressIndicator(),
         ),
       );
-
-  @override
-  List<INuRouter> get legacyRouters => [
-        OldFriendRequestRouter(),
-      ];
 
   @override
   List<NuRoute> get registerRoutes => [

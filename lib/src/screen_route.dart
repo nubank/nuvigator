@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nuvigator/nuvigator.dart';
-import 'package:nuvigator/src/nu_route_settings.dart';
+
+import './nu_route_settings.dart';
+import 'screen_type.dart';
+import 'typings.dart';
 
 class RouteDef {
   RouteDef(this.routeName, {this.deepLink});

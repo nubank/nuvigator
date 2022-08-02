@@ -10,14 +10,11 @@ environment:
 dependencies:
   analyzer: ^3.2.0
   build: ^2.0.1
-  build_config: ^1.0.0
-  code_builder: ^4.0.0
   dart_style: ^2.0.2
   flutter:
     sdk: flutter
   path_to_regexp: ^0.4.0
   recase: ^4.0.0
-  source_gen: ^1.0.0
 
 dev_dependencies:
   build_runner: ^2.0.3
