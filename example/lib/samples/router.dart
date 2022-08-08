@@ -9,10 +9,17 @@ import 'modules/friend_request/module.dart';
 import 'screens/home_screen.dart';
 
 class FriendRequestArgs {
-  int numberOfRequests;
-  double precision;
-  String name;
-  int age;
+  FriendRequestArgs({
+    this.numberOfRequests,
+  });
+
+  final int numberOfRequests;
+
+  static FriendRequestArgs fromArgs(Map<String, dynamic> args) {
+    return FriendRequestArgs(
+      numberOfRequests: int.parse(args['numberOfRequests']),
+    );
+  }
 }
 
 class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
@@ -26,6 +33,10 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
 
   @override
   ScreenType get screenType => materialScreenType;
+
+  @override
+  ParamsParser<FriendRequestArgs> get paramsParser =>
+      FriendRequestArgs.fromArgs;
 
   @override
   Widget build(
@@ -78,6 +89,16 @@ class MainAppRouter extends NuRouter {
           child: CircularProgressIndicator(),
         ),
       );
+
+  @override
+  HandleDeepLinkFn get onDeepLinkNotFound => (
+        INuRouter router,
+        Uri uri, [
+        bool isFromNative,
+        dynamic args,
+      ]) async {
+        print('DeepLink not found ${uri.toString()}');
+      };
 
   @override
   List<NuRoute> get registerRoutes => [

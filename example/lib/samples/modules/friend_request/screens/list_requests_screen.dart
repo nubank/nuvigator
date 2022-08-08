@@ -6,16 +6,16 @@ class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
     Key key,
     @required this.toSuccess,
+    @required this.numberOfRequests,
   }) : super(key: key);
 
   final VoidCallback toSuccess;
+  final int numberOfRequests;
 
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<FriendRequestBloc>(context);
     final bodyStyle = Theme.of(context).textTheme.bodyText1;
-    final args =
-        ModalRoute.of(context).settings.arguments as Map<String, String>;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +33,7 @@ class ListRequestScreen extends StatelessWidget {
           if (index == 0) {
             return ListTile(
               title: Text(
-                "Received numberOfRequests: ${args['numberOfRequests']} from deepLink",
+                'Received numberOfRequests: $numberOfRequests from deepLink',
                 style: bodyStyle,
               ),
             );
