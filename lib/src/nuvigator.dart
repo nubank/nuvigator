@@ -498,7 +498,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 /// error.
 @immutable
 class Nuvigator<T extends INuRouter> extends StatelessWidget {
-  Nuvigator({
+  const Nuvigator({
     @required this.router,
     this.initialArguments,
     Key key,

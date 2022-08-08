@@ -213,13 +213,6 @@ abstract class NuRouter implements INuRouter {
   /// futures are not going to be awaited to complete!
   bool get awaitForInit => true;
 
-  @override
-  T getRouter<T extends INuRouter>() {
-    // ignore: avoid_as
-    if (this is T) return this as T;
-    return null;
-  }
-
   /// ScreenType to be used by the [NuRoute] registered in this Module
   /// ScreenType defined on the [NuRoute] takes precedence over the default one
   /// declared in the [NuModule]
@@ -294,7 +287,6 @@ abstract class NuRouter implements INuRouter {
   Route<R> getRoute<R>({
     String deepLink,
     Object parameters,
-    @deprecated bool fromLegacyRouteName = false,
     bool isFromNative = false,
     ScreenType overrideScreenType,
     ScreenType fallbackScreenType,
