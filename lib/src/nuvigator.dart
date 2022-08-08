@@ -49,16 +49,24 @@ class NuvigatorStateTracker extends NavigatorObserver {
 }
 
 abstract class INuRouter {
+  /// When the [NuvigatorState] is initialized this method is called on the respective
+  /// [INuRouter] to register it's reference.
   void install(NuvigatorState nuvigator);
 
+  /// When the [NuvigatorState] disposes, this method is called on the respective
+  /// [INuRouter] to perform any cleanup work required.
   void dispose();
 
+  /// In case this [INuRouter] is not able to provide a [Route] for the requested
+  /// deepLink, and this property is different from null, it will be called to perform
+  /// a fallback execution
   HandleDeepLinkFn onDeepLinkNotFound;
 
+  /// When a new deepLink is requested to be opened the [Nuvigator] this method is
+  /// called in the respective [INuRouter] to retrieve the [Route] to be presented
   Route<T> getRoute<T>({
     String deepLink,
     Object parameters,
-    bool fromLegacyRouteName = false,
     bool isFromNative = false,
     ScreenType fallbackScreenType,
     ScreenType overrideScreenType,
@@ -68,8 +76,7 @@ abstract class INuRouter {
 class _NuvigatorInner<T extends INuRouter> extends Navigator {
   _NuvigatorInner({
     @required this.router,
-    String initialRoute,
-    String initialDeepLink,
+    @required String initialDeepLink,
     Map<String, Object> initialArguments,
     Key key,
     List<NavigatorObserver> observers = const [],
@@ -79,23 +86,21 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
   })  : assert(router != null),
-        assert((initialRoute == null) != (initialDeepLink == null)),
+        assert(initialDeepLink != null),
         super(
           observers: [
             HeroController(),
             ...observers,
           ],
           onGenerateInitialRoutes: (_, __) {
-            final deepLink = initialDeepLink ?? initialRoute;
             final r = router.getRoute<dynamic>(
-              deepLink: deepLink,
+              deepLink: initialDeepLink,
               parameters: initialArguments,
-              fromLegacyRouteName: initialDeepLink == null,
               fallbackScreenType: screenType,
             );
             if (r == null) {
               throw FlutterError(
-                  'No Route was found for the initialRoute provided: "$deepLink"'
+                  'No Route was found for the initialRoute provided: "$initialDeepLink"'
                   ' .Be sure that the provided initialRoute exists in this Router ($router).');
             }
             return [r];
@@ -104,7 +109,6 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
             return router.getRoute<dynamic>(
               deepLink: settings.name,
               parameters: settings.arguments,
-              fromLegacyRouteName: true,
               fallbackScreenType: screenType,
             );
           },
@@ -240,7 +244,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       deepLink: routeName,
       parameters: parameters,
       isFromNative: false,
-      fromLegacyRouteName: true,
       fallbackScreenType: widget.screenType,
     );
   }
@@ -414,7 +417,10 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   /// Prefer using [NuvigatorState.open], `.openDeepLink` does not support opening nested deepLinks
   Future<R> openDeepLink<R>(Uri deepLink, [dynamic arguments]) {
-    return rootNuvigator.open(deepLink.toString(), parameters: arguments);
+    return rootNuvigator.open(
+      deepLink.toString(),
+      parameters: arguments,
+    );
   }
 
   /// Open the requested deepLink, if the current Nuvigator is not able to handle
@@ -436,7 +442,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       deepLink: deepLink,
       parameters: parameters,
       isFromNative: isFromNative,
-      fromLegacyRouteName: false,
       fallbackScreenType: widget.screenType,
       overrideScreenType: screenType,
     );
@@ -489,30 +494,22 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 }
 
 /// Creates a new Nuvigator. When using the Next API, several of those options
-/// are provided by the [NuRouter]. Providing them here will thrown an assertion
+/// are provided by the [INuRouter]. Providing them here will thrown an assertion
 /// error.
 @immutable
 class Nuvigator<T extends INuRouter> extends StatelessWidget {
   Nuvigator({
     @required this.router,
-    this.initialRoute,
-    this.initialDeepLink,
     this.initialArguments,
     Key key,
     this.observers = const [],
-    this.screenType,
     this.wrapper,
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
     this.shouldRebuild,
   })  : _innerKey = key,
-        assert(router != null),
-        assert(() {
-          return initialDeepLink == null &&
-              initialRoute == null &&
-              screenType == null;
-        }());
+        assert(router != null);
 
   /// Creates a [Nuvigator] from a list of [NuRoute]
   static Nuvigator<NuRouterBuilder> routes({
@@ -544,13 +541,10 @@ class Nuvigator<T extends INuRouter> extends StatelessWidget {
   final T router;
   final bool debug;
   final bool shouldPopRoot;
-  final ScreenType screenType;
   final WrapperFn wrapper;
   final List<ObserverBuilder> inheritableObservers;
   final List<NavigatorObserver> observers;
   final Key _innerKey;
-  final String initialRoute;
-  final Uri initialDeepLink;
   final Map<String, Object> initialArguments;
   final ShouldRebuildFn shouldRebuild;
 
