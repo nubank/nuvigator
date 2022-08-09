@@ -3,8 +3,8 @@ import 'package:nuvigator/next.dart';
 
 class InitTestNextRouter extends NuRouter {
   InitTestNextRouter({
-    @required this.routerInitFuture,
-    @required this.routeInitFuture,
+    required this.routerInitFuture,
+    required this.routeInitFuture,
     this.buildWrapperFn,
   })  : assert(routerInitFuture != null),
         assert(routeInitFuture != null);
@@ -18,7 +18,7 @@ class InitTestNextRouter extends NuRouter {
     Widget child,
     NuRouteSettings settings,
     NuRoute nuRoute,
-  ) buildWrapperFn;
+  )? buildWrapperFn;
 
   @override
   String get initialRoute => initRoute;
@@ -38,7 +38,7 @@ class InitTestNextRouter extends NuRouter {
   ) =>
       buildWrapperFn == null
           ? child
-          : buildWrapperFn(
+          : buildWrapperFn!(
               context,
               child,
               settings,
@@ -54,7 +54,7 @@ class InitTestNextRouter extends NuRouter {
   }
 
   @override
-  List<NuRoute<NuRouter, Object, Object>> get registerRoutes => [
+  List<NuRoute<NuRouter, Object?, Object>> get registerRoutes => [
         NuRouteBuilder(
           builder: (context, route, settings) => const Text(successText),
           path: initialRoute,

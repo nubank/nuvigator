@@ -10,18 +10,21 @@ import 'typings.dart';
 
 /// Extend to create your NuRoute. Contains the configuration of a Route that is
 /// going to be presented in a [Nuvigator] by the [NuRouter]
-abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
-  NuRoute({Map<String, dynamic> metaData}) : metaData = metaData ?? {};
+abstract class NuRoute<T extends NuRouter, A extends Object?,
+    R extends Object?> {
+  NuRoute({
+    Map<String, dynamic>? metaData,
+  }) : metaData = metaData ?? {};
 
-  T _router;
+  T? _router;
 
-  T get router => _router;
+  T get router => _router!;
 
-  NuvigatorState get nuvigator => router.nuvigator;
+  NuvigatorState get nuvigator => router.nuvigator!;
 
   bool canOpen(String deepLink) => _parser.matches(deepLink);
 
-  ParamsParser<A> get paramsParser => null;
+  ParamsParser<A>? get paramsParser => null;
 
   Future<bool> init(BuildContext context) {
     return SynchronousFuture(true);
@@ -31,11 +34,11 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
 
   bool get prefix => false;
 
-  ScreenType get screenType;
+  ScreenType? get screenType;
 
   String get path;
 
-  Widget build(BuildContext context, NuRouteSettings<A> settings);
+  Widget build(BuildContext context, NuRouteSettings<A?> settings);
 
   DeepLinkParser get _parser => DeepLinkParser<A>(
         template: path,
@@ -54,23 +57,23 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
   }
 
   ScreenRoute<R> _screenRoute({
-    String deepLink,
-    Map<String, dynamic> extraParameters,
+    required String deepLink,
+    Map<String, dynamic>? extraParameters,
   }) {
     final settings = _parser.toNuRouteSettings(
       deepLink: deepLink,
       arguments: extraParameters,
     );
     return ScreenRoute(
-      builder: (context) => build(context, settings),
+      builder: (context) => build(context, settings as NuRouteSettings<A?>),
       screenType: screenType,
       nuRouteSettings: settings,
     );
   }
 
-  ScreenRoute<R> _tryGetScreenRoute({
-    String deepLink,
-    Map<String, dynamic> extraParameters,
+  ScreenRoute<R>? _tryGetScreenRoute({
+    required String deepLink,
+    Map<String, dynamic>? extraParameters,
   }) {
     if (canOpen(deepLink)) {
       return _screenRoute(
@@ -81,10 +84,10 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
     return null;
   }
 
-  static RoutePredicate withPath(String path) {
-    return (Route<dynamic> route) {
-      if (route.settings is NuRouteSettings) {
-        final NuRouteSettings nuRouteSettings = route.settings;
+  static NullableRoutePredicate withPath(String path) {
+    return (Route<dynamic>? route) {
+      if (route!.settings is NuRouteSettings) {
+        final nuRouteSettings = route.settings as NuRouteSettings;
         return !route.willHandlePopInternally &&
             nuRouteSettings.pathTemplate == path;
       }
@@ -94,42 +97,42 @@ abstract class NuRoute<T extends NuRouter, A extends Object, R extends Object> {
 }
 
 /// Class to create an anonymous [NuRoute] that can be registered in a [NuRouter]
-class NuRouteBuilder<A extends Object, R extends Object>
-    extends NuRoute<NuRouter, A, R> {
+class NuRouteBuilder<A extends Object?, R extends Object?>
+    extends NuRoute<NuRouter, A?, R> {
   NuRouteBuilder({
-    @required String path,
-    @required this.builder,
+    required String path,
+    required this.builder,
     this.initializer,
     this.parser,
-    ScreenType screenType,
+    ScreenType? screenType,
     bool prefix = false,
   })  : _path = path,
         _prefix = prefix,
         _screenType = screenType;
 
   final String _path;
-  final NuInitFunction initializer;
-  final NuRouteParametersParser<A> parser;
+  final NuInitFunction? initializer;
+  final NuRouteParametersParser<A>? parser;
   final bool _prefix;
-  final ScreenType _screenType;
-  final NuWidgetRouteBuilder<A, R> builder;
+  final ScreenType? _screenType;
+  final NuWidgetRouteBuilder<A?, R> builder;
 
   @override
   Future<bool> init(BuildContext context) {
     if (initializer != null) {
-      return initializer(context);
+      return initializer!(context);
     }
     return super.init(context);
   }
 
   @override
-  ParamsParser<A> get paramsParser => _parseParameters;
+  ParamsParser<A?> get paramsParser => _parseParameters;
 
-  A _parseParameters(Map<String, dynamic> map) =>
-      parser != null ? parser(map) : null;
+  A? _parseParameters(Map<String, dynamic> map) =>
+      parser != null ? parser!(map) : null;
 
   @override
-  Widget build(BuildContext context, NuRouteSettings<A> settings) {
+  Widget build(BuildContext context, NuRouteSettings<A?> settings) {
     return builder(context, this, settings);
   }
 
@@ -140,7 +143,7 @@ class NuRouteBuilder<A extends Object, R extends Object>
   String get path => _path;
 
   @override
-  ScreenType get screenType => _screenType;
+  ScreenType? get screenType => _screenType;
 }
 
 /// Extend to create your own NuRouter. Responsible for declaring the routes and
@@ -154,18 +157,18 @@ abstract class NuRouter implements INuRouter {
 
   /// Override to true to call and register the routes only after the NuRouter initialization has been completed
   bool lazyRouteRegister = false;
-  List<NuRoute> _routes;
-  NuvigatorState _nuvigator;
+  List<NuRoute>? _routes;
+  NuvigatorState? _nuvigator;
 
-  NuvigatorState get nuvigator => _nuvigator;
+  NuvigatorState? get nuvigator => _nuvigator;
 
   void _setupRoutes() {
     _routes = [];
     for (final route in registerRoutes) {
       route._install(this);
-      _routes.add(route);
+      _routes!.add(route);
     }
-    if (_routes.isEmpty) {
+    if (_routes!.isEmpty) {
       throw FlutterError(
         'NuRouter instance created with a empty list of NuRoutes. '
         'This is not supported, please provide at least one valid NuRoute',
@@ -182,13 +185,13 @@ abstract class NuRouter implements INuRouter {
   @override
   void dispose() {
     _nuvigator = null;
-    for (final route in _routes) {
+    for (final route in _routes!) {
       route.dispose();
     }
   }
 
   @override
-  HandleDeepLinkFn onDeepLinkNotFound;
+  HandleDeepLinkFn? onDeepLinkNotFound;
 
   /// InitialRoute that is going to be rendered
   String get initialRoute;
@@ -216,16 +219,16 @@ abstract class NuRouter implements INuRouter {
   /// ScreenType to be used by the [NuRoute] registered in this Module
   /// ScreenType defined on the [NuRoute] takes precedence over the default one
   /// declared in the [NuModule]
-  ScreenType get screenType => null;
+  ScreenType? get screenType => null;
 
-  List<NuRoute> get routes => _routes;
+  List<NuRoute> get routes => _routes!;
 
   /// While the module is initializing this Widget is going to be displayed
   Widget get loadingWidget => Container();
 
   /// In case an error happens during the NuRouter initialization, this function will be called with the error
   /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
-  Widget onError(Object error, NuRouterController controller) => null;
+  Widget? onError(Object error, NuRouterController controller) => null;
 
   /// Override to perform some processing/initialization when this module
   /// is first initialized into a [Nuvigator].
@@ -247,7 +250,7 @@ abstract class NuRouter implements INuRouter {
     if (lazyRouteRegister) {
       _setupRoutes();
     }
-    for (final route in _routes) {
+    for (final route in _routes!) {
       final routeInitResult = route.init(context);
       if (awaitForInit) {
         await routeInitResult;
@@ -264,40 +267,44 @@ abstract class NuRouter implements INuRouter {
     }
   }
 
-  ScreenRoute<R> _getScreenRoute<R>(String deepLink,
-      {Map<String, dynamic> parameters}) {
+  ScreenRoute<R>? _getScreenRoute<R>(
+    String deepLink, {
+    Map<String, dynamic>? parameters,
+  }) {
     for (final route in routes) {
       final screenRoute = route._tryGetScreenRoute(
         deepLink: deepLink,
         extraParameters: parameters,
       );
       if (screenRoute != null) {
-        return screenRoute.wrapWith((context, child) => buildWrapper(
-              context,
-              child,
-              screenRoute.nuRouteSettings,
-              route,
-            ));
+        return screenRoute.wrapWith(
+          (context, child) => buildWrapper(
+            context,
+            child,
+            screenRoute.nuRouteSettings,
+            route,
+          ),
+        ) as ScreenRoute<R>?;
       }
     }
     return null;
   }
 
   @override
-  Route<R> getRoute<R>({
-    String deepLink,
-    Object parameters,
+  Route<R>? getRoute<R>({
+    required String deepLink,
+    Object? parameters,
     bool isFromNative = false,
-    ScreenType overrideScreenType,
-    ScreenType fallbackScreenType,
+    ScreenType? overrideScreenType,
+    ScreenType? fallbackScreenType,
   }) {
     final route = _getScreenRoute<R>(
       deepLink,
-      parameters: parameters ?? <String, dynamic>{},
+      parameters: parameters as Map<String, dynamic>? ?? <String, dynamic>{},
     )
         ?.fallbackScreenType(fallbackScreenType ?? screenType)
-        ?.copyWith(screenType: overrideScreenType)
-        ?.toRoute();
+        .copyWith(screenType: overrideScreenType)
+        .toRoute();
     if (route != null) {
       if (isFromNative) {
         _addNativePopCallBack(route);
@@ -309,7 +316,7 @@ abstract class NuRouter implements INuRouter {
 
   void _addNativePopCallBack(Route route) {
     route.popped.then<dynamic>((dynamic _) async {
-      if (nuvigator.stateTracker.stack.length == 1) {
+      if (nuvigator!.stateTracker!.stack.length == 1) {
         // We only have the backdrop route in the stack
         await Future<void>.delayed(const Duration(milliseconds: 300));
         await SystemNavigator.pop();
@@ -321,12 +328,12 @@ abstract class NuRouter implements INuRouter {
 /// Builder class for creating an anonymous [NuRouter]
 class NuRouterBuilder extends NuRouter {
   NuRouterBuilder({
-    @required String initialRoute,
-    @required List<NuRoute> routes,
-    ScreenType screenType,
-    Widget loadingWidget,
+    required String initialRoute,
+    required List<NuRoute> routes,
+    ScreenType? screenType,
+    Widget? loadingWidget,
     bool awaitForInit = true,
-    NuInitFunction init,
+    NuInitFunction? init,
   })  : _initialRoute = initialRoute,
         _registerRoutes = routes,
         _screenType = screenType,
@@ -337,9 +344,9 @@ class NuRouterBuilder extends NuRouter {
   final String _initialRoute;
   final List<NuRoute> _registerRoutes;
   final bool _awaitForInit;
-  final ScreenType _screenType;
-  final Widget _loadingWidget;
-  final NuInitFunction _initFn;
+  final ScreenType? _screenType;
+  final Widget? _loadingWidget;
+  final NuInitFunction? _initFn;
 
   @override
   bool get awaitForInit => _awaitForInit;
@@ -351,12 +358,12 @@ class NuRouterBuilder extends NuRouter {
   List<NuRoute> get registerRoutes => _registerRoutes;
 
   @override
-  ScreenType get screenType => _screenType;
+  ScreenType? get screenType => _screenType;
 
   @override
   Widget get loadingWidget {
     if (_loadingWidget != null) {
-      return _loadingWidget;
+      return _loadingWidget!;
     }
     return super.loadingWidget;
   }
@@ -364,7 +371,7 @@ class NuRouterBuilder extends NuRouter {
   @override
   Future<void> init(BuildContext context) {
     if (_initFn != null) {
-      return _initFn(context);
+      return _initFn!(context);
     }
     return super.init(context);
   }
@@ -376,19 +383,19 @@ class NuRouterController {
   });
 
   /// Calling will make the [NuRouter] re-execute its initialization
-  final Future<void> Function() reload;
+  final Future<void> Function()? reload;
 }
 
 class NuRouterLoader extends StatefulWidget {
   const NuRouterLoader({
-    Key key,
-    this.router,
+    Key? key,
+    required this.router,
+    required this.builder,
     this.shouldRebuild,
-    this.builder,
   }) : super(key: key);
 
   final NuRouter router;
-  final ShouldRebuildFn shouldRebuild;
+  final ShouldRebuildFn? shouldRebuild;
   final Widget Function(NuRouter router) builder;
 
   @override
@@ -396,10 +403,10 @@ class NuRouterLoader extends StatefulWidget {
 }
 
 class _NuRouterLoaderState extends State<NuRouterLoader> {
-  Widget nuvigator;
-  NuRouter router;
-  bool loading;
-  Widget errorWidget;
+  Widget? nuvigator;
+  NuRouter? router;
+  late bool loading;
+  Widget? errorWidget;
 
   Future<void> _reload() {
     return _initModule();
@@ -408,15 +415,15 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   Future<void> _initModule() async {
     router = widget.router;
     setState(() {
-      loading = router.awaitForInit;
+      loading = router!.awaitForInit;
       errorWidget = null;
     });
     try {
-      await router._init(context);
+      await router!._init(context);
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace, label: error.toString());
       final errorWidget =
-          router.onError(error, NuRouterController(reload: _reload));
+          router!.onError(error, NuRouterController(reload: _reload));
       if (errorWidget != null) {
         setState(() {
           this.errorWidget = errorWidget;
@@ -434,9 +441,9 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   @override
   void didUpdateWidget(covariant NuRouterLoader oldWidget) {
     if (_shouldRebuildProvided &&
-        widget.shouldRebuild(oldWidget.router, widget.router)) {
+        widget.shouldRebuild!(oldWidget.router, widget.router)) {
       _initModule();
-      nuvigator = widget.builder(router);
+      nuvigator = widget.builder(router!);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -450,15 +457,15 @@ class _NuRouterLoaderState extends State<NuRouterLoader> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return router.loadingWidget;
+      return router!.loadingWidget;
     } else if (errorWidget != null) {
-      return errorWidget;
+      return errorWidget!;
     }
     if (_shouldRebuildProvided) {
-      nuvigator ??= widget.builder(router);
-      return nuvigator;
+      nuvigator ??= widget.builder(router!);
+      return nuvigator!;
     } else {
-      return widget.builder(router);
+      return widget.builder(router!);
     }
   }
 }

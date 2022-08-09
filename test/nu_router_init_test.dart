@@ -6,8 +6,8 @@ import 'fixtures/test_next_router.dart';
 
 void main() {
   Future<void> pumpFakeApp({
-    @required WidgetTester tester,
-    @required NuRouter router,
+    required WidgetTester tester,
+    required NuRouter router,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
