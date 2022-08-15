@@ -1,8 +1,11 @@
 # CHANGELOG
 
+## UNRELEASED (2.0.0)
+- [BREAKING] Remove Legacy API and Deprecated options related to it
+
 ## 1.8.0-beta.1
 - [FIX] Make Nuvigator compatible with Flutter 3.0.2
-- 
+
 ## 1.8.0-beta.0
 - [FIX] Make Nuvigator compatible with Flutter 2.10.5
 
