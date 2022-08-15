@@ -1,8 +1,13 @@
 # CHANGELOG
 
+## 1.8.0
+- [FIX] Make Nuvigator compatible with Flutter 2.10.5
+- [FIX] Make Nuvigator compatible with Flutter 3.0.2
+- [FIX] [POSSIBLY BREAKING] Makes the default behavior of Nuvigator to not re-build itself and it's state when the NuRouter provided instance changes. This allows for fixing some state reloads/resets and navigation lost, specially on nested flows. If for some reason you were relying in the current behavior for some feature, you can provide a `shouldRebuild` property to the `Nuvigator` that should return `true` when you wish to perform the rebuild.
+
 ## 1.8.0-beta.1
 - [FIX] Make Nuvigator compatible with Flutter 3.0.2
-- 
+
 ## 1.8.0-beta.0
 - [FIX] Make Nuvigator compatible with Flutter 2.10.5
 
