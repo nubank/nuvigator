@@ -35,7 +35,8 @@ class HomeScreen extends StatelessWidget {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
                     nuvigator.open<void>(
-                        'exapp://old-friend-request/list?numberOfRequests=10');
+                      'exapp://friend-requests?numberOfRequests=10',
+                    );
                   },
                   child: const Text('Review friend requests'),
                 ),

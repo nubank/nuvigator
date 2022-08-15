@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/next.dart';
-
-import '../../deeplink.dart';
-import '../../legacy_nurouter.dart' as legacy;
+import 'deeplink.dart';
+import 'nu_route_settings.dart';
+import 'nuvigator.dart';
+import 'screen_route.dart';
+import 'screen_type.dart';
+import 'typings.dart';
 
 /// Extend to create your NuRoute. Contains the configuration of a Route that is
 /// going to be presented in a [Nuvigator] by the [NuRouter]
@@ -153,13 +155,11 @@ abstract class NuRouter implements INuRouter {
   /// Override to true to call and register the routes only after the NuRouter initialization has been completed
   bool lazyRouteRegister = false;
   List<NuRoute> _routes;
-  List<legacy.NuRouter> _legacyRouters;
   NuvigatorState _nuvigator;
 
   NuvigatorState get nuvigator => _nuvigator;
 
   void _setupRoutes() {
-    _legacyRouters = legacyRouters.whereType<legacy.NuRouter>().toList();
     _routes = [];
     for (final route in registerRoutes) {
       route._install(this);
@@ -177,9 +177,6 @@ abstract class NuRouter implements INuRouter {
   void install(NuvigatorState nuvigator) {
     assert(_nuvigator == null);
     _nuvigator = nuvigator;
-    for (final legacyRouter in _legacyRouters) {
-      legacyRouter.install(nuvigator);
-    }
   }
 
   @override
@@ -187,9 +184,6 @@ abstract class NuRouter implements INuRouter {
     _nuvigator = null;
     for (final route in _routes) {
       route.dispose();
-    }
-    for (final legacyRouter in _legacyRouters) {
-      legacyRouter.dispose();
     }
   }
 
@@ -219,17 +213,6 @@ abstract class NuRouter implements INuRouter {
   /// futures are not going to be awaited to complete!
   bool get awaitForInit => true;
 
-  @override
-  T getRouter<T extends INuRouter>() {
-    // ignore: avoid_as
-    if (this is T) return this as T;
-    for (final router in _legacyRouters) {
-      final r = router.getRouter<T>();
-      if (r != null) return r;
-    }
-    return null;
-  }
-
   /// ScreenType to be used by the [NuRoute] registered in this Module
   /// ScreenType defined on the [NuRoute] takes precedence over the default one
   /// declared in the [NuModule]
@@ -240,7 +223,7 @@ abstract class NuRouter implements INuRouter {
   /// While the module is initializing this Widget is going to be displayed
   Widget get loadingWidget => Container();
 
-  /// In case an error happends during the NuRouter initialization, this function will be called with the error
+  /// In case an error happens during the NuRouter initialization, this function will be called with the error
   /// it can handle it accordingly and return a Widget that should be rendered instead of the Nuvigator.
   Widget onError(Object error, NuRouterController controller) => null;
 
@@ -304,7 +287,6 @@ abstract class NuRouter implements INuRouter {
   Route<R> getRoute<R>({
     String deepLink,
     Object parameters,
-    @deprecated bool fromLegacyRouteName = false,
     bool isFromNative = false,
     ScreenType overrideScreenType,
     ScreenType fallbackScreenType,
@@ -322,19 +304,6 @@ abstract class NuRouter implements INuRouter {
       }
       return route;
     }
-
-    // start region: Backwards Compatible Code
-    for (final legacyRouter in _legacyRouters) {
-      final r = legacyRouter.getRoute<R>(
-        deepLink: deepLink,
-        parameters: parameters,
-        isFromNative: isFromNative,
-        fromLegacyRouteName: fromLegacyRouteName,
-        fallbackScreenType: fallbackScreenType ?? screenType,
-      );
-      if (r != null) return r;
-    }
-    // end region
     return null;
   }
 

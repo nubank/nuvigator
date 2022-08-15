@@ -6,19 +6,22 @@ import 'package:provider/provider.dart';
 import 'modules/composer/module.dart';
 import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
-import 'modules/friend_request/navigation/friend_request_router.dart';
 import 'screens/home_screen.dart';
 
-part 'router.g.dart';
-
 class FriendRequestArgs {
-  int numberOfRequests;
-  double precision;
-  String name;
-  int age;
+  FriendRequestArgs({
+    this.numberOfRequests,
+  });
+
+  final int numberOfRequests;
+
+  static FriendRequestArgs fromArgs(Map<String, dynamic> args) {
+    return FriendRequestArgs(
+      numberOfRequests: int.parse(args['numberOfRequests']),
+    );
+  }
 }
 
-@NuRouteParser()
 class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
@@ -32,6 +35,10 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
+  ParamsParser<FriendRequestArgs> get paramsParser =>
+      FriendRequestArgs.fromArgs;
+
+  @override
   Widget build(
       BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
     return ChangeNotifierProvider.value(
@@ -41,9 +48,6 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
       ),
     );
   }
-
-// @override
-// ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
 }
 
 // MainAppModuleRouter
@@ -87,9 +91,14 @@ class MainAppRouter extends NuRouter {
       );
 
   @override
-  List<INuRouter> get legacyRouters => [
-        OldFriendRequestRouter(),
-      ];
+  HandleDeepLinkFn get onDeepLinkNotFound => (
+        INuRouter router,
+        Uri uri, [
+        bool isFromNative,
+        dynamic args,
+      ]) async {
+        print('DeepLink not found ${uri.toString()}');
+      };
 
   @override
   List<NuRoute> get registerRoutes => [

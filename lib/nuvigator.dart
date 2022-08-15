@@ -1,8 +1,7 @@
 library nuvigator;
 
-export 'src/annotations.dart';
-export 'src/helpers.dart';
-export 'src/legacy_nurouter.dart';
+export 'src/nu_route_settings.dart';
+export 'src/nu_router.dart';
 export 'src/nuvigator.dart';
 export 'src/screen_route.dart';
 export 'src/screen_type.dart';

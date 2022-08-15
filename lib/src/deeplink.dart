@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:nuvigator/src/nu_route_settings.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:recase/recase.dart';
+import './nu_route_settings.dart';
 
 class DeepLinkParser<A extends Object> {
   DeepLinkParser({

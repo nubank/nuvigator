@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:nuvigator/nuvigator.dart';
 
 import '../screen_type.dart';
 
