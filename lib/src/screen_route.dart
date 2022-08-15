@@ -13,7 +13,7 @@ class ScreenRoute<T extends Object?> {
     this.wrapper,
     this.screenType,
     this.debugKey,
-  }) : assert(builder != null);
+  });
 
   final WidgetBuilder builder;
   final ScreenType? screenType;
@@ -66,7 +66,6 @@ class ScreenRoute<T extends Object?> {
   }
 
   WrapperFn _getComposedWrapper(WrapperFn wrapper) {
-    if (wrapper == null) return this.wrapper!;
     return (BuildContext context, Widget child) => wrapper(
           context,
           Builder(

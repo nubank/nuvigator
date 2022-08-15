@@ -88,7 +88,8 @@ class NuvigatorStateTracker {
   NuvigatorState? get secondNestedNuvigator => secondNestedKey!.currentState;
   List<Route?> get rootStack => rootNuvigator!.stateTracker!.stack;
   List<Route?> get nestedStack => nestedNuvigator!.stateTracker!.stack;
-  List<Route?> get secondNestedStack => secondNestedNuvigator!.stateTracker!.stack;
+  List<Route?> get secondNestedStack =>
+      secondNestedNuvigator!.stateTracker!.stack;
 }
 
 Future<NuvigatorStateTracker> pumpApp(
@@ -542,7 +543,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tracker.nestedNuvigator!.presenterRoute!.settings.name, 'screen3');
-    final NuvigatorPageRoute pageRoute = tracker.rootStack.last as NuvigatorPageRoute<dynamic>;
+    final pageRoute = tracker.rootStack.last as NuvigatorPageRoute<dynamic>;
     expect(pageRoute.nestedNuvigator, tracker.nestedNuvigator);
   });
 
@@ -563,7 +564,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Go to SecondNestedScreen2
-      unawaited(tracker.secondNestedNuvigator!.pushNamed('secondNestedScreen2'));
+      unawaited(
+          tracker.secondNestedNuvigator!.pushNamed('secondNestedScreen2'));
       await tester.pumpAndSettle();
       expect(find.text('SecondNestedScreen2'), findsOneWidget);
       expect(
@@ -619,7 +621,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Go to SecondNestedScreen2
-      unawaited(tracker.secondNestedNuvigator!.pushNamed('secondNestedScreen2'));
+      unawaited(
+          tracker.secondNestedNuvigator!.pushNamed('secondNestedScreen2'));
       await tester.pumpAndSettle();
       expect(find.text('SecondNestedScreen2'), findsOneWidget);
       expect(

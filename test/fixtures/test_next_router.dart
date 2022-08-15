@@ -6,8 +6,7 @@ class InitTestNextRouter extends NuRouter {
     required this.routerInitFuture,
     required this.routeInitFuture,
     this.buildWrapperFn,
-  })  : assert(routerInitFuture != null),
-        assert(routeInitFuture != null);
+  });
 
   static const initRoute = 'foo', successText = 'Success';
 

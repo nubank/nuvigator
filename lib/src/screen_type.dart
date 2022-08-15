@@ -28,7 +28,7 @@ mixin NuvigatorPageRoute<T> on PageRoute<T> {
   @override
   bool get fullscreenDialog {
     if (isNested && isFirst && ModalRoute.of(nuvigator!.context) is PageRoute) {
-      final PageRoute? containedPageRoute =
+      final containedPageRoute =
           ModalRoute.of(nuvigator!.context) as PageRoute<dynamic>?;
       return super.fullscreenDialog || containedPageRoute!.fullscreenDialog;
     }
