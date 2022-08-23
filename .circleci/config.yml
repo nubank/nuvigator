@@ -2,7 +2,7 @@ version: 2
 
 job_defaults: &defaults
     docker:
-      - image: cirrusci/flutter:2.10.5
+      - image: cirrusci/flutter:3.0.2
 
 jobs:
   format-check:

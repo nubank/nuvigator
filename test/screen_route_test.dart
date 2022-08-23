@@ -5,8 +5,10 @@ import 'package:nuvigator/nuvigator.dart';
 void main() {
   test('ScreenRoute toRoute return a valid Route given the screenType', () {
     final screenRoute = ScreenRoute(
-      builder: (_) => null,
+      builder: (_) => Container(),
       screenType: materialScreenType,
+      nuRouteSettings:
+          const NuRouteSettings(name: 'a', pathTemplate: 'a', scheme: ''),
     );
     final route = screenRoute.toRoute(const RouteSettings());
     expect(route is MaterialPageRoute, true);
@@ -14,7 +16,9 @@ void main() {
 
   test('Adding fallback screenType to ScreenRoute', () {
     final screenRoute = ScreenRoute(
-      builder: (_) => null,
+      builder: (_) => Container(),
+      nuRouteSettings:
+          const NuRouteSettings(name: 'a', pathTemplate: 'a', scheme: ''),
     ).fallbackScreenType(materialScreenType);
     final route = screenRoute.toRoute(const RouteSettings());
     expect(route is MaterialPageRoute, true);
@@ -22,7 +26,9 @@ void main() {
 
   test('ScreenRoute wrapWith, with null', () {
     final screenRoute = ScreenRoute(
-      builder: (_) => null,
+      builder: (_) => Container(),
+      nuRouteSettings:
+          const NuRouteSettings(name: 'a', pathTemplate: 'a', scheme: ''),
     );
     expect(screenRoute.wrapWith(null), screenRoute);
   });

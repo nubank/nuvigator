@@ -7,7 +7,7 @@ import 'nuvigator.dart';
 typedef HandleDeepLinkFn = Future<dynamic> Function(
   INuRouter router,
   Uri uri, [
-  bool isFromNative,
+  bool? isFromNative,
   dynamic args,
 ]);
 
@@ -15,7 +15,7 @@ typedef ObserverBuilder = NavigatorObserver Function();
 
 typedef WrapperFn = Widget Function(BuildContext context, Widget child);
 
-typedef NuWidgetRouteBuilder<A extends Object, R extends Object>
+typedef NuWidgetRouteBuilder<A extends Object?, R extends Object?>
     = Widget Function(BuildContext context, NuRouteBuilder<A, R> nuRoute,
         NuRouteSettings<A> settings);
 
@@ -26,6 +26,8 @@ typedef NuInitFunction = Future<bool> Function(BuildContext context);
 typedef ParamsParser<T> = T Function(Map<String, dynamic> map);
 
 typedef ShouldRebuildFn = bool Function(
-  NuRouter previousRouter,
-  NuRouter newRouter,
+  NuRouter? previousRouter,
+  NuRouter? newRouter,
 );
+
+typedef NullableRoutePredicate = bool Function(Route<dynamic>?);
