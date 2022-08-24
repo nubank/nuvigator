@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## UNRELEASED (2.0.0)
+## 2.0.0-beta.3
 - [BREAKING] Add support for Sound Null Safety
 - [BREAKING] Remove Legacy API and Deprecated options related to it
 
