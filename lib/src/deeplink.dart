@@ -57,7 +57,8 @@ class DeepLinkParser<A extends Object?> {
     final parameters = <String>[];
     final deepLinkPath = getPath(deepLink);
     final regExp = pathToRegExp(template, parameters: parameters);
-    final match = regExp.matchAsPrefix(deepLinkPath)!;
+    final match = regExp.matchAsPrefix(deepLinkPath);
+    if (match == null) return {};
     final parametersMap = extract(parameters, match);
     return parametersMap.map((k, v) {
       return MapEntry(ReCase(k).camelCase, v);
