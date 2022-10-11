@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0-beta.4
+- [FIX] Fix nullability check when there are no path parameters to be extracted
+
 ## 2.0.0-beta.3
 - [BREAKING] Add support for Sound Null Safety
 - [BREAKING] Remove Legacy API and Deprecated options related to it
