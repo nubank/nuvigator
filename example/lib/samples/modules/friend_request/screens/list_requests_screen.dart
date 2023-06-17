@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 class ListRequestScreen extends StatelessWidget {
   const ListRequestScreen({
-    Key key,
-    @required this.toSuccess,
-    @required this.numberOfRequests,
-  }) : super(key: key);
+    super.key,
+    required this.toSuccess,
+    required this.numberOfRequests,
+  });
 
   final VoidCallback toSuccess;
   final int numberOfRequests;

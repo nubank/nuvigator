@@ -1,10 +1,10 @@
 name: example
 description: A new Flutter project.
 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 publish_to: none
 
@@ -18,9 +18,9 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.0.3
+  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  pedantic: ^1.11.0
 
 flutter:
   uses-material-design: true
