@@ -13,7 +13,7 @@ class FriendRequestArgs {
     this.numberOfRequests,
   });
 
-  final int numberOfRequests;
+  final int? numberOfRequests;
 
   static FriendRequestArgs fromArgs(Map<String, dynamic> args) {
     return FriendRequestArgs(
@@ -40,9 +40,9 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
 
   @override
   Widget build(
-      BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
+      BuildContext context, NuRouteSettings<FriendRequestArgs?> settings) {
     return ChangeNotifierProvider.value(
-      value: FriendRequestBloc(settings.args.numberOfRequests),
+      value: FriendRequestBloc(settings.args?.numberOfRequests ?? 0),
       child: Nuvigator(
         router: FriendRequestRouter(),
       ),
@@ -58,7 +58,7 @@ class MainAppRouter extends NuRouter {
   @override
   ScreenType get screenType => cupertinoScreenType;
 
-  List<NuRoute> _postInitRoutes;
+  late List<NuRoute> _postInitRoutes;
 
   @override
   Future<void> init(BuildContext context) async {
@@ -94,7 +94,7 @@ class MainAppRouter extends NuRouter {
   HandleDeepLinkFn get onDeepLinkNotFound => (
         INuRouter router,
         Uri uri, [
-        bool isFromNative,
+        bool? isFromNative,
         dynamic args,
       ]) async {
         print('DeepLink not found ${uri.toString()}');

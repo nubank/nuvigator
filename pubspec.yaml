@@ -1,14 +1,14 @@
 name: nuvigator
 description: A powerful routing abstraction over Flutter navigator, providing some new features and an easy way to define routers.
-version: 2.0.0-beta.4
+version: 2.0.0-beta.5
 
 homepage: https://github.com/nubank/nuvigator
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
-  analyzer: ^3.2.0
+  analyzer: ^5.2.0
   dart_style: ^2.0.2
   flutter:
     sdk: flutter
@@ -16,7 +16,7 @@ dependencies:
   recase: ^4.0.0
 
 dev_dependencies:
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
   mockito: ^5.0.8
-  pedantic: ^1.11.0

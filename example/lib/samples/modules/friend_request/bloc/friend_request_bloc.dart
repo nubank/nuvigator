@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FriendRequestBloc extends ChangeNotifier {
   FriendRequestBloc(this.numberOfRequests)
-      : _accepted = List<bool>(numberOfRequests)
+      : _accepted = List<bool>.filled(numberOfRequests, false, growable: false)
           ..fillRange(0, numberOfRequests, false);
 
   final int numberOfRequests;
