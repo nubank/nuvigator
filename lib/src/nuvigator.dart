@@ -44,8 +44,9 @@ class NuvigatorStateTracker extends NavigatorObserver {
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     final index = stack.indexOf(oldRoute);
     stack[index] = newRoute;
-    if (debug)
+    if (debug) {
       debugPrint('didReplace $oldRoute to $newRoute: $stackRouteNames');
+    }
   }
 }
 
