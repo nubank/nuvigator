@@ -5,7 +5,7 @@ import 'samples/bloc/samples_bloc.dart';
 import 'samples/modules/friend_request/bloc/friend_request_bloc.dart';
 import 'samples/router.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class TestObserver extends NavigatorObserver {
   @override
@@ -30,6 +30,8 @@ class TestObserver extends NavigatorObserver {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

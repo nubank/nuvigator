@@ -32,7 +32,7 @@ class _ComposerHelpRoute extends NuRoute {
 
   @override
   Widget build(BuildContext context, NuRouteSettings<void> settings) {
-    return HelpScreen();
+    return const HelpScreen();
   }
 }
 
