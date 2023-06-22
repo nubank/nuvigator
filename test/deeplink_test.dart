@@ -14,7 +14,7 @@ void main() {
 
     test('on getting empty path param', () {
       final result = parser.getPathParams('my-route?another-one=hello');
-      expect(result, <String,String>{});
+      expect(result, <String, String>{});
     });
 
     test('on getting the query params', () {
