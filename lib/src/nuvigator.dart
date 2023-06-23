@@ -25,26 +25,28 @@ class NuvigatorStateTracker extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     stack.add(route);
-    if (debug) print('didPush $route: $stackRouteNames');
+    if (debug) debugPrint('didPush $route: $stackRouteNames');
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     stack.remove(route);
-    if (debug) print('didPop $route: $stackRouteNames');
+    if (debug) debugPrint('didPop $route: $stackRouteNames');
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     stack.remove(route);
-    if (debug) print('didRemove $route: $stackRouteNames');
+    if (debug) debugPrint('didRemove $route: $stackRouteNames');
   }
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     final index = stack.indexOf(oldRoute);
     stack[index] = newRoute;
-    if (debug) print('didReplace $oldRoute to $newRoute: $stackRouteNames');
+    if (debug) {
+      debugPrint('didReplace $oldRoute to $newRoute: $stackRouteNames');
+    }
   }
 }
 

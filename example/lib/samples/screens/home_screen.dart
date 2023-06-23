@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    print('BUILDING HOME');
+    debugPrint('BUILDING HOME');
     final nuvigator = Nuvigator.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
 
@@ -30,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
@@ -40,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                   },
                   child: const Text('Review friend requests'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     String? text;
 
@@ -49,16 +51,13 @@ class HomeScreen extends StatelessWidget {
                       screenType: cupertinoDialogScreenType,
                     );
 
-                    if (text != null) {
-                      // ignore: unawaited_futures
-                      showDialog<void>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Composed message'),
-                          content: Text(text ?? ''),
-                        ),
-                      );
-                    }
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Composed message'),
+                        content: Text(text ?? ''),
+                      ),
+                    );
                   },
                   child: const Text('Compose a message'),
                 ),

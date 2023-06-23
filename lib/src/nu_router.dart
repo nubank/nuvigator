@@ -240,7 +240,7 @@ abstract class NuRouter implements INuRouter {
     final nuRouterInitResult = init(context);
     if (awaitForInit) {
       await nuRouterInitResult;
-    } else if (!(nuRouterInitResult is SynchronousFuture)) {
+    } else if (nuRouterInitResult is! SynchronousFuture) {
       throw FlutterError(
           '$this NuRouter initialization do not support Asynchronous initializations,'
           ' but the return type of init() is not a SynchronousFuture. Make '
@@ -254,7 +254,7 @@ abstract class NuRouter implements INuRouter {
       final routeInitResult = route.init(context);
       if (awaitForInit) {
         await routeInitResult;
-      } else if (!(routeInitResult is SynchronousFuture)) {
+      } else if (routeInitResult is! SynchronousFuture) {
         throw FlutterError(
             '$this NuRouter initialization do not support Asynchronous initializations,'
             ' but the Route $route return type of init() is not a SynchronousFuture.'

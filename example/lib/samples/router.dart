@@ -97,14 +97,14 @@ class MainAppRouter extends NuRouter {
         bool? isFromNative,
         dynamic args,
       ]) async {
-        print('DeepLink not found ${uri.toString()}');
+        debugPrint('DeepLink not found ${uri.toString()}');
       };
 
   @override
   List<NuRoute> get registerRoutes => [
         NuRouteBuilder(
           path: 'home',
-          builder: (_, __, ___) => HomeScreen(),
+          builder: (_, __, ___) => const HomeScreen(),
           screenType: ScreenTypeBuilder(
             (WidgetBuilder builder, RouteSettings settings) =>
                 CupertinoPageRoute(

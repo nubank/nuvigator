@@ -40,11 +40,11 @@ class SuccessScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: closeFlow,
                   child: const Text('Close flow'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: toComposeText,
                   child: const Text('Compose a message'),
                 ),
