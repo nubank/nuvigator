@@ -172,6 +172,10 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     return widget.inheritableObservers;
   }
 
+  void addObserver(NavigatorObserver observer) {
+    widget.observers.add(observer);
+  }
+  
   @override
   void initState() {
     parent = Nuvigator.of(context, nullOk: true);
