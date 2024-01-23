@@ -396,6 +396,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   @override
   void pop<R extends Object?>([R? result]) {
     var isPopped = false;
+
     if (canPop()) {
       isPopped = super.canPop();
       super.pop<R>(result);
@@ -451,12 +452,40 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     if (route != null) {
       switch (pushMethod) {
         case DeepLinkPushMethod.Push:
+
+          print("\n####################################################" +
+              "\n NUVIGATOR " +
+              "\n PUSH - " + deepLink +
+              "\n####################################################"
+          );
+
           return push<R>(route);
         case DeepLinkPushMethod.PushReplacement:
+
+          print("\n####################################################" +
+              "\n NUVIGATOR " +
+              "\n REPLACEMENT - " + deepLink + " - Result " + result.toString() +
+              "\n####################################################"
+          );
+
           return pushReplacement<R, dynamic>(route, result: result);
         case DeepLinkPushMethod.PopAndPush:
+
+          print("\n####################################################" +
+              "\n NUVIGATOR " +
+              "\n POP - " + deepLink +
+              "\n####################################################"
+          );
+
           return popAndPush(route, result: result);
         default:
+
+          print("\n####################################################" +
+              "\n NUVIGATOR " +
+              "\n PUSH - " + deepLink +
+              "\n####################################################"
+          );
+
           return push<R>(route);
       }
     } else if (router.onDeepLinkNotFound != null) {
