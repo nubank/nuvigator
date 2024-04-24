@@ -13,15 +13,15 @@ Nuvigator provides a powerful routing abstraction over Flutter's own Navigators.
 
 Nuvigator can help you with:
 
-- Large/Modular Apps: Where you need to have an unified API to able to register routes and design relationship between them
-- Nested Navigation: When you want to have nested/children Navigator inside your app, creating the concept of self contained flows
-  - Handles Navigation thought Nuvigator ins your Widget Tree, not need to know where your route is declared
-  - Handles pop behavior when a nested Navigator reaches it's end, is able to transparently forward pop results into underlying caller, provider helpers to deal with nested navigation
+- Large/Modular Apps: Where you need to have a unified API to be able to register routes and design relationships between them
+- Nested Navigation: When you want to have nested/children Navigator inside your app, creating the concept of self-contained flows
+  - Handles Navigation through Nuvigator ins your Widget Tree, not need to know where your route is declared
+  - Handles pop behaviour when a nested Navigator reaches it's end, is able to transparently forward pop results into underlying caller, provider helpers to deal with nested navigation
   - Handles Hero animation/transition between nested Navigators
   - Handles Android back button correctly on nested Navigators
   - Improve support for nested PageRoutes with NuvigatorPageRoute mixin
 - Using DeepLinks: You want to navigate inside your App using DeepLinks, with support for Path Parameters and Query Parameters
-- A declarative, easy to use API to declare and compose Routes together
+- A declarative, easy-to-use API to declare and compose Routes together
 
 [**API Documentation**](./doc/next.md)
 > Focus on providing a more flexible, easier and dynamic API for declaring Navigation and Routing
