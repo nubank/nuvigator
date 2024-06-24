@@ -500,14 +500,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     if (widget.wrapper != null) {
       child = widget.wrapper(context, child);
     }
-    if (isNested) {
-      child = WillPopScope(
-        onWillPop: () async {
-          return !(await maybePop());
-        },
-        child: child,
-      );
-    }
     return child;
   }
 }
