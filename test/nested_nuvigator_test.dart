@@ -11,7 +11,7 @@ class TestNextRouter extends NuRouter {
   static const successText = 'Success';
 
   final String initRoute;
-  final List<NuRoute<NuRouter, Object, Object>> extraRoutes;
+  final List<NuRoute<NuRouter, Object?, Object>>? extraRoutes;
 
   @override
   String get initialRoute => initRoute;
@@ -28,7 +28,7 @@ class TestNextRouter extends NuRouter {
   }
 
   @override
-  List<NuRoute<NuRouter, Object, Object>> get registerRoutes => [
+  List<NuRoute<NuRouter, Object?, Object>> get registerRoutes => [
         NuRouteBuilder(
           builder: (context, route, settings) => const Text(successText),
           path: 'success',
@@ -39,9 +39,9 @@ class TestNextRouter extends NuRouter {
 
 void main() {
   Future<void> pumpFakeApp({
-    Key nuvigatorKey,
-    @required WidgetTester tester,
-    @required NuRouter router,
+    Key? nuvigatorKey,
+    required WidgetTester tester,
+    required NuRouter? router,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -55,9 +55,9 @@ void main() {
   }
 
   group('when building an app with a nested Nuvigator', () {
-    GlobalKey<NuvigatorState> rootNuvigatorKey;
-    GlobalKey<NuvigatorState> nestedNuvigatorKey;
-    NuRouter routerUnderTest;
+    GlobalKey<NuvigatorState>? rootNuvigatorKey;
+    GlobalKey<NuvigatorState>? nestedNuvigatorKey;
+    NuRouter? routerUnderTest;
 
     setUp(() {
       rootNuvigatorKey = GlobalKey<NuvigatorState>();
@@ -95,7 +95,7 @@ void main() {
       );
 
       // ignore: unawaited_futures
-      nestedNuvigatorKey.currentState.open(
+      nestedNuvigatorKey!.currentState!.open(
         'second',
         pushMethod: DeepLinkPushMethod.PushReplacement,
         isFromNative: false,
@@ -106,11 +106,11 @@ void main() {
 
       expect(find.text('Second nested route'), findsOneWidget);
       expect(
-        nestedNuvigatorKey.currentState.stateTracker.stackRouteNames,
+        nestedNuvigatorKey!.currentState!.stateTracker!.stackRouteNames,
         equals(['second']),
       );
       expect(
-        rootNuvigatorKey.currentState.stateTracker.stackRouteNames,
+        rootNuvigatorKey!.currentState!.stateTracker!.stackRouteNames,
         equals(['nested']),
       );
     });
@@ -123,7 +123,7 @@ void main() {
       );
 
       // ignore: unawaited_futures
-      nestedNuvigatorKey.currentState.open(
+      nestedNuvigatorKey!.currentState!.open(
         'parent',
         pushMethod: DeepLinkPushMethod.PushReplacement,
         isFromNative: false,
@@ -134,11 +134,11 @@ void main() {
 
       expect(find.text('Parent route'), findsOneWidget);
       expect(
-        nestedNuvigatorKey.currentState,
+        nestedNuvigatorKey!.currentState,
         isNull,
       );
       expect(
-        rootNuvigatorKey.currentState.stateTracker.stackRouteNames,
+        rootNuvigatorKey!.currentState!.stateTracker!.stackRouteNames,
         equals(['parent']),
       );
     });

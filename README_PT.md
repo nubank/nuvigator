@@ -20,11 +20,8 @@ Nuvigator pode ajudar você com:
 - Usando DeepLinks: você deseja navegar dentro de seu aplicativo usando DeepLinks, com suporte para parâmetros de caminho e parâmetros de consulta
 - Uma API declarativa e fácil de usar para declarar e compor rotas juntas
 
-[**Para a documentação da NEXT API**](./doc/next.md)
+[**Documentação da API**](./doc/next.md)
 > Concentre-se em fornecer uma API mais flexível, fácil e dinâmica para declarar navegação e roteamento
-
-[**Para a documentação da API legada**](./doc/legacy.md)
-> Uma API baseada em métodos e geradores de tipo estático. É considerado obsoleto e eventualmente será removido
 
 ## Começo rápido
 
@@ -38,6 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'Nuvigator App',
       builder: Nuvigator.routes(
         initialRoute: 'home',
+        screenType: materialScreenType,
         routes: [
           NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
           NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),

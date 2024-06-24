@@ -2,14 +2,14 @@ version: 2
 
 job_defaults: &defaults
     docker:
-      - image: cirrusci/flutter:2.10.5
+      - image: ghcr.io/cirruslabs/flutter:3.10.5
 
 jobs:
   format-check:
     <<: *defaults
     steps:
       - checkout
-      - run: flutter format --dry-run --set-exit-if-changed .
+      - run: dart format -o none --set-exit-if-changed .
   analyze:
     <<: *defaults
     steps:

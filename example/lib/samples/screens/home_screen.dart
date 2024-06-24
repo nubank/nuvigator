@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nuvigator/nuvigator.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    print('BUILDING HOME');
+    debugPrint('BUILDING HOME');
     final nuvigator = Nuvigator.of(context);
     final headingStle = Theme.of(context).textTheme.headline3;
 
@@ -30,34 +32,32 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
-                    nuvigator.open<void>(
-                        'exapp://old-friend-request/list?numberOfRequests=10');
+                    nuvigator?.open<void>(
+                      'exapp://friend-requests?numberOfRequests=10',
+                    );
                   },
                   child: const Text('Review friend requests'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
-                    String text;
+                    String? text;
 
-                    text = await nuvigator.open<String>(
+                    text = await nuvigator?.open<String>(
                       'exapp://composer/text?initialText=Hello+deep+link%21',
                       screenType: cupertinoDialogScreenType,
                     );
 
-                    if (text != null) {
-                      // ignore: unawaited_futures
-                      showDialog<void>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Composed message'),
-                          content: Text(text),
-                        ),
-                      );
-                    }
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Composed message'),
+                        content: Text(text ?? ''),
+                      ),
+                    );
                   },
                   child: const Text('Compose a message'),
                 ),

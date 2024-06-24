@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({
-    Key key,
-    @required this.closeFlow,
-    @required this.toComposeText,
-  }) : super(key: key);
+    super.key,
+    required this.closeFlow,
+    required this.toComposeText,
+  });
 
   final VoidCallback closeFlow;
   final VoidCallback toComposeText;
@@ -40,11 +40,11 @@ class SuccessScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: closeFlow,
                   child: const Text('Close flow'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: toComposeText,
                   child: const Text('Compose a message'),
                 ),

@@ -23,11 +23,9 @@ Nuvigator can help you with:
 - Using DeepLinks: You want to navigate inside your App using DeepLinks, with support for Path Parameters and Query Parameters
 - A declarative, easy to use API to declare and compose Routes together
 
-[**For the NEXT API Documentation**](./doc/next.md)
+[**API Documentation**](./doc/next.md)
 > Focus on providing a more flexible, easier and dynamic API for declaring Navigation and Routing
 
-[**For the Legacy API Documentation**](./doc/legacy.md)
-> An API that is based on static typed methods and generators. It's considered deprecated and will eventually be removed
 ## Quick Start
 
 The simplest you can get:
@@ -40,6 +38,7 @@ class MyApp extends StatelessWidget {
       title: 'Nuvigator App',
       builder: Nuvigator.routes(
         initialRoute: 'home',
+        screenType: materialScreenType,
         routes: [
           NuRouteBuilder(path: 'home', builder: (_, __, ___) => HomeScreen()),
           NuRouteBuilder(path: 'second', builder: (_, __, ___) => SecondScreen()),

@@ -6,19 +6,22 @@ import 'package:provider/provider.dart';
 import 'modules/composer/module.dart';
 import 'modules/friend_request/bloc/friend_request_bloc.dart';
 import 'modules/friend_request/module.dart';
-import 'modules/friend_request/navigation/friend_request_router.dart';
 import 'screens/home_screen.dart';
 
-part 'router.g.dart';
-
 class FriendRequestArgs {
-  int numberOfRequests;
-  double precision;
-  String name;
-  int age;
+  FriendRequestArgs({
+    this.numberOfRequests,
+  });
+
+  final int? numberOfRequests;
+
+  static FriendRequestArgs fromArgs(Map<String, dynamic> args) {
+    return FriendRequestArgs(
+      numberOfRequests: int.parse(args['numberOfRequests']),
+    );
+  }
 }
 
-@NuRouteParser()
 class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   @override
   String get path => 'friend-requests';
@@ -32,18 +35,19 @@ class FriendRequestRoute extends NuRoute<NuRouter, FriendRequestArgs, void> {
   ScreenType get screenType => materialScreenType;
 
   @override
+  ParamsParser<FriendRequestArgs> get paramsParser =>
+      FriendRequestArgs.fromArgs;
+
+  @override
   Widget build(
-      BuildContext context, NuRouteSettings<FriendRequestArgs> settings) {
+      BuildContext context, NuRouteSettings<FriendRequestArgs?> settings) {
     return ChangeNotifierProvider.value(
-      value: FriendRequestBloc(settings.args.numberOfRequests),
+      value: FriendRequestBloc(settings.args?.numberOfRequests ?? 0),
       child: Nuvigator(
         router: FriendRequestRouter(),
       ),
     );
   }
-
-// @override
-// ParamsParser<FriendRequestArgs> get paramsParser => _$parseParameters;
 }
 
 // MainAppModuleRouter
@@ -54,7 +58,7 @@ class MainAppRouter extends NuRouter {
   @override
   ScreenType get screenType => cupertinoScreenType;
 
-  List<NuRoute> _postInitRoutes;
+  late List<NuRoute> _postInitRoutes;
 
   @override
   Future<void> init(BuildContext context) async {
@@ -87,15 +91,20 @@ class MainAppRouter extends NuRouter {
       );
 
   @override
-  List<INuRouter> get legacyRouters => [
-        OldFriendRequestRouter(),
-      ];
+  HandleDeepLinkFn get onDeepLinkNotFound => (
+        INuRouter router,
+        Uri uri, [
+        bool? isFromNative,
+        dynamic args,
+      ]) async {
+        debugPrint('DeepLink not found ${uri.toString()}');
+      };
 
   @override
   List<NuRoute> get registerRoutes => [
         NuRouteBuilder(
           path: 'home',
-          builder: (_, __, ___) => HomeScreen(),
+          builder: (_, __, ___) => const HomeScreen(),
           screenType: ScreenTypeBuilder(
             (WidgetBuilder builder, RouteSettings settings) =>
                 CupertinoPageRoute(

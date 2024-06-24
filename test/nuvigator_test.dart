@@ -1,13 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
-import 'package:pedantic/pedantic.dart';
 
 Widget baseNuvigator(
   Key key,
   Key nestedKey,
   Key secondNestedKey, {
-  ShouldRebuildFn shouldRebuild,
+  ShouldRebuildFn? shouldRebuild,
 }) {
   return MaterialApp(
     title: 'Test Nuvigator',
@@ -79,21 +80,22 @@ Widget baseNuvigator(
 
 class NuvigatorStateTracker {
   NuvigatorStateTracker({this.rootKey, this.nestedKey, this.secondNestedKey});
-  final GlobalKey<NuvigatorState<INuRouter>> rootKey;
-  final GlobalKey<NuvigatorState<INuRouter>> nestedKey;
-  final GlobalKey<NuvigatorState<INuRouter>> secondNestedKey;
+  final GlobalKey<NuvigatorState<INuRouter>>? rootKey;
+  final GlobalKey<NuvigatorState<INuRouter>>? nestedKey;
+  final GlobalKey<NuvigatorState<INuRouter>>? secondNestedKey;
 
-  NuvigatorState get rootNuvigator => rootKey.currentState;
-  NuvigatorState get nestedNuvigator => nestedKey.currentState;
-  NuvigatorState get secondNestedNuvigator => secondNestedKey.currentState;
-  List<Route> get rootStack => rootNuvigator.stateTracker.stack;
-  List<Route> get nestedStack => nestedNuvigator.stateTracker.stack;
-  List<Route> get secondNestedStack => secondNestedNuvigator.stateTracker.stack;
+  NuvigatorState? get rootNuvigator => rootKey!.currentState;
+  NuvigatorState? get nestedNuvigator => nestedKey!.currentState;
+  NuvigatorState? get secondNestedNuvigator => secondNestedKey!.currentState;
+  List<Route?> get rootStack => rootNuvigator!.stateTracker!.stack;
+  List<Route?> get nestedStack => nestedNuvigator!.stateTracker!.stack;
+  List<Route?> get secondNestedStack =>
+      secondNestedNuvigator!.stateTracker!.stack;
 }
 
 Future<NuvigatorStateTracker> pumpApp(
   WidgetTester tester, {
-  ShouldRebuildFn shouldRebuild,
+  ShouldRebuildFn? shouldRebuild,
 }) async {
   // ignore: omit_local_variable_types
   final GlobalKey<NuvigatorState<INuRouter>> nuvigatorKey =
@@ -137,33 +139,33 @@ void main() {
     // Opens Initial Screen
     expect(find.text('Screen1'), findsOneWidget);
     // Go to Screen2
-    unawaited(nuvigatorTracker.rootNuvigator.pushNamed('screen2'));
+    unawaited(nuvigatorTracker.rootNuvigator!.pushNamed('screen2'));
     await tester.pumpAndSettle();
     expect(find.text('Screen2'), findsOneWidget);
 
     // Go to Screen3
-    unawaited(nuvigatorTracker.rootNuvigator.pushNamed('screen3'));
+    unawaited(nuvigatorTracker.rootNuvigator!.pushNamed('screen3'));
     await tester.pumpAndSettle();
     expect(find.text('NestedScreen1'), findsOneWidget);
 
     // Root Nuvigator Stack
-    expect(nuvigatorTracker.rootNuvigator.stateTracker.stack.length, 3);
+    expect(nuvigatorTracker.rootNuvigator!.stateTracker!.stack.length, 3);
     // Nested Nuvigator Stack
-    expect(nuvigatorTracker.nestedNuvigator.stateTracker.stack.length, 1);
+    expect(nuvigatorTracker.nestedNuvigator!.stateTracker!.stack.length, 1);
 
     // Nested Navigation
-    unawaited(nuvigatorTracker.nestedNuvigator.pushNamed('nestedScreen2'));
+    unawaited(nuvigatorTracker.nestedNuvigator!.pushNamed('nestedScreen2'));
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
 
     // Nested Navigation Propagate to Root
-    unawaited(nuvigatorTracker.nestedNuvigator.pushNamed('screen4'));
+    unawaited(nuvigatorTracker.nestedNuvigator!.pushNamed('screen4'));
     await tester.pumpAndSettle();
     expectScreen('Screen4');
 
     // Trying to pushNamed non-existed deepLink
     try {
-      await nuvigatorTracker.nestedNuvigator.pushNamed('not-found');
+      await nuvigatorTracker.nestedNuvigator!.pushNamed('not-found');
     } catch (e) {
       expect(
         e is FlutterError &&
@@ -178,7 +180,7 @@ void main() {
     final nuvigatorTracker = await pumpApp(tester);
 
     final resultScreen2 =
-        nuvigatorTracker.rootNuvigator.pushReplacementNamed('screen2');
+        nuvigatorTracker.rootNuvigator!.pushReplacementNamed('screen2');
     await tester.pumpAndSettle();
     // New Route is on top
     expectScreen('Screen2');
@@ -186,7 +188,7 @@ void main() {
     expect(nuvigatorTracker.rootStack.length, 1);
 
     // Opening the Nested Flow
-    final resultScreen3 = nuvigatorTracker.rootNuvigator.pushReplacementNamed(
+    final resultScreen3 = nuvigatorTracker.rootNuvigator!.pushReplacementNamed(
       'screen3',
       result: 'return',
     );
@@ -199,14 +201,14 @@ void main() {
 
     // Replace a nested screen
     unawaited(
-      nuvigatorTracker.nestedNuvigator.pushReplacementNamed('nestedScreen2'),
+      nuvigatorTracker.nestedNuvigator!.pushReplacementNamed('nestedScreen2'),
     );
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
     expect(nuvigatorTracker.nestedStack.length, 1);
 
     // Replace the whole Flow from a nested Nuvigator
-    unawaited(nuvigatorTracker.nestedNuvigator.pushReplacementNamed(
+    unawaited(nuvigatorTracker.nestedNuvigator!.pushReplacementNamed(
       'screen4',
       result: 'return2',
     ));
@@ -219,7 +221,7 @@ void main() {
   testWidgets('Nuvigator.pushNamedAndRemoveUntil', (tester) async {
     final tracker = await pumpApp(tester);
     // Will remove no screen and push screen2
-    unawaited(tracker.rootNuvigator.pushNamedAndRemoveUntil(
+    unawaited(tracker.rootNuvigator!.pushNamedAndRemoveUntil(
       'screen2',
       (route) => true,
     ));
@@ -228,7 +230,7 @@ void main() {
     expect(tracker.rootStack.length, 2);
 
     // Push Screen3 and remove all other screens
-    unawaited(tracker.rootNuvigator.pushNamedAndRemoveUntil(
+    unawaited(tracker.rootNuvigator!.pushNamedAndRemoveUntil(
       'screen3',
       (route) => false,
     ));
@@ -237,7 +239,7 @@ void main() {
     expect(tracker.rootStack.length, 1);
 
     // Push Nested
-    unawaited(tracker.nestedNuvigator.pushNamedAndRemoveUntil(
+    unawaited(tracker.nestedNuvigator!.pushNamedAndRemoveUntil(
       'nestedScreen2',
       (route) => true,
     ));
@@ -247,7 +249,7 @@ void main() {
 
     // Push and remove until NestedScreen1
     unawaited(
-      tracker.nestedNuvigator.pushNamedAndRemoveUntil(
+      tracker.nestedNuvigator!.pushNamedAndRemoveUntil(
         'nestedScreen3',
         NuRoute.withPath('nestedScreen1'),
       ),
@@ -258,7 +260,7 @@ void main() {
 
     // Propagate to Root
     unawaited(
-      tracker.nestedNuvigator.pushNamedAndRemoveUntil(
+      tracker.nestedNuvigator!.pushNamedAndRemoveUntil(
         'screen4',
         (route) => false,
       ),
@@ -271,10 +273,10 @@ void main() {
   testWidgets('Nuvigator.popAndPushNamed', (tester) async {
     final tracker = await pumpApp(tester);
 
-    final resultScreen2 = tracker.rootNuvigator.pushNamed('screen2');
+    final resultScreen2 = tracker.rootNuvigator!.pushNamed('screen2');
     await tester.pumpAndSettle();
 
-    unawaited(tracker.rootNuvigator.popAndPushNamed(
+    unawaited(tracker.rootNuvigator!.popAndPushNamed(
       'screen4',
       result: 'result1',
     ));
@@ -286,12 +288,12 @@ void main() {
 
   testWidgets('Nuvigator.pop', (tester) async {
     final tracker = await pumpApp(tester);
-    final screen2Result = tracker.rootNuvigator.pushNamed('screen2');
+    final screen2Result = tracker.rootNuvigator!.pushNamed('screen2');
     await tester.pumpAndSettle();
     // Screen2 is pushed
     expectScreen('Screen2');
 
-    tracker.rootNuvigator.pop('screen2Result');
+    tracker.rootNuvigator!.pop('screen2Result');
     await tester.pumpAndSettle();
 
     // Screen2 is popped with success
@@ -300,20 +302,20 @@ void main() {
     expect(tracker.rootStack.length, 1);
 
     // Nested pop
-    final screen3Result = tracker.rootNuvigator.pushNamed('screen3');
+    final screen3Result = tracker.rootNuvigator!.pushNamed('screen3');
     await tester.pumpAndSettle();
     expectScreen('NestedScreen1');
     final nestedScreen2Result =
-        tracker.nestedNuvigator.pushNamed('nestedScreen2');
+        tracker.nestedNuvigator!.pushNamed('nestedScreen2');
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
-    tracker.nestedNuvigator.pop('nestedScreen2Result');
+    tracker.nestedNuvigator!.pop('nestedScreen2Result');
     await tester.pumpAndSettle();
     expect(await nestedScreen2Result, 'nestedScreen2Result');
     expectScreen('NestedScreen1');
 
     // Popping last screen of a nested Nuvigator
-    tracker.nestedNuvigator.pop('screen3Result');
+    tracker.nestedNuvigator!.pop('screen3Result');
     await tester.pumpAndSettle();
     expectScreen('Screen1');
     expect(await screen3Result, 'screen3Result');
@@ -321,15 +323,15 @@ void main() {
 
   testWidgets('Nuvigator.closeFlow', (tester) async {
     final tracker = await pumpApp(tester);
-    final nestedReturn = tracker.rootNuvigator.pushNamed('screen3');
+    final nestedReturn = tracker.rootNuvigator!.pushNamed('screen3');
     await tester.pumpAndSettle();
     expectScreen('NestedScreen1');
 
-    unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen2'));
+    unawaited(tracker.nestedNuvigator!.pushNamed('nestedScreen2'));
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
 
-    tracker.nestedNuvigator.closeFlow('nestedReturn');
+    tracker.nestedNuvigator!.closeFlow('nestedReturn');
     await tester.pumpAndSettle();
     expectScreen('Screen1');
     expect(await nestedReturn, 'nestedReturn');
@@ -338,12 +340,12 @@ void main() {
   testWidgets('Nuvigator.replaceNamed', (tester) async {
     final tracker = await pumpApp(tester);
 
-    unawaited(tracker.rootNuvigator.pushNamed('screen2'));
+    unawaited(tracker.rootNuvigator!.pushNamed('screen2'));
     await tester.pumpAndSettle();
     expectScreen('Screen2');
 
     // ReplaceNamed on the RootNuvigator
-    tracker.rootNuvigator.replaceNamed(
+    tracker.rootNuvigator!.replaceNamed(
       oldDeepLink: 'screen1',
       newDeepLink: 'screen4',
     );
@@ -351,38 +353,38 @@ void main() {
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
     // Route Below was Replaced
-    tracker.rootNuvigator.pop();
+    tracker.rootNuvigator!.pop();
     await tester.pumpAndSettle();
     expect(tracker.rootStack.length, 1);
     expectScreen('Screen4');
 
     // start region: Setup Nested Flow
-    unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+    unawaited(tracker.rootNuvigator!.pushNamed('screen3'));
     await tester.pumpAndSettle();
-    unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen2'));
+    unawaited(tracker.nestedNuvigator!.pushNamed('nestedScreen2'));
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
     // end region
 
     // start region: replace first route of the nested flow
-    tracker.nestedNuvigator.replaceNamed(
+    tracker.nestedNuvigator!.replaceNamed(
       oldDeepLink: 'nestedScreen1',
       newDeepLink: 'nestedScreen3',
     );
     await tester.pumpAndSettle();
-    tracker.nestedNuvigator.pop();
+    tracker.nestedNuvigator!.pop();
     await tester.pumpAndSettle();
     expectScreen('NestedScreen3');
     expect(tracker.nestedStack.length, 1);
     // end region
 
     // start region: propagate the replace to root nuvigator
-    tracker.nestedNuvigator.replaceNamed(
+    tracker.nestedNuvigator!.replaceNamed(
       oldDeepLink: 'screen4',
       newDeepLink: 'screen2',
     );
     await tester.pumpAndSettle();
-    tracker.nestedNuvigator.closeFlow();
+    tracker.nestedNuvigator!.closeFlow();
     await tester.pumpAndSettle();
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 1);
@@ -391,51 +393,51 @@ void main() {
 
   testWidgets('Nuvigator.removeByPredicate', (tester) async {
     final tracker = await pumpApp(tester);
-    unawaited(tracker.rootNuvigator.pushNamed('screen2'));
+    unawaited(tracker.rootNuvigator!.pushNamed('screen2'));
     await tester.pumpAndSettle();
     // start region: remove in the root Nuvigator
-    tracker.rootNuvigator.removeByPredicate(NuRoute.withPath('screen1'));
+    tracker.rootNuvigator!.removeByPredicate(NuRoute.withPath('screen1'));
     await tester.pumpAndSettle();
     expect(tracker.rootStack.length, 1);
-    expect(tracker.rootStack.first.settings.name, 'screen2');
+    expect(tracker.rootStack.first!.settings.name, 'screen2');
     // end region
 
     // start region: removing from the nested Nuvigator
-    unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+    unawaited(tracker.rootNuvigator!.pushNamed('screen3'));
     await tester.pumpAndSettle();
-    unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen2'));
+    unawaited(tracker.nestedNuvigator!.pushNamed('nestedScreen2'));
     await tester.pumpAndSettle();
-    tracker.nestedNuvigator
+    tracker.nestedNuvigator!
         .removeByPredicate(NuRoute.withPath('nestedScreen1'));
     await tester.pumpAndSettle();
     expect(tracker.nestedStack.length, 1);
-    expect(tracker.nestedStack.first.settings.name, 'nestedScreen2');
+    expect(tracker.nestedStack.first!.settings.name, 'nestedScreen2');
     // end region
 
     // start region: propagate to root Nuvigator
     expect(tracker.rootStack.length, 2);
-    tracker.nestedNuvigator.removeByPredicate(NuRoute.withPath('screen2'));
+    tracker.nestedNuvigator!.removeByPredicate(NuRoute.withPath('screen2'));
     await tester.pumpAndSettle();
     expect(tracker.rootStack.length, 1);
-    expect(tracker.rootStack.first.settings.name, 'screen3');
+    expect(tracker.rootStack.first!.settings.name, 'screen3');
     // end region
   });
 
   testWidgets('Nuvigator.open', (tester) async {
     final tracker = await pumpApp(tester);
     // start region: default push method
-    unawaited(tracker.rootNuvigator.open('screen2'));
+    unawaited(tracker.rootNuvigator!.open('screen2'));
     await tester.pumpAndSettle();
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
     );
     // end region
 
     // start region: pushReplacement push method
-    final screen4Result = tracker.rootNuvigator.open(
+    final screen4Result = tracker.rootNuvigator!.open(
       'screen4',
       pushMethod: DeepLinkPushMethod.PushReplacement,
     );
@@ -443,13 +445,13 @@ void main() {
     expectScreen('Screen4');
     expect(tracker.rootStack.length, 2);
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen4'],
     );
     // end region
 
     // start region: popAndPush push method
-    unawaited(tracker.rootNuvigator.open(
+    unawaited(tracker.rootNuvigator!.open(
       'screen2',
       pushMethod: DeepLinkPushMethod.PopAndPush,
       result: 'screen4Result',
@@ -459,7 +461,7 @@ void main() {
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
     );
     // end region
@@ -469,38 +471,38 @@ void main() {
     final tracker = await pumpApp(tester);
     // start region: nested propagation
     // setup
-    final screen3Result = tracker.rootNuvigator.open('screen3');
+    final screen3Result = tracker.rootNuvigator!.open('screen3');
     await tester.pumpAndSettle();
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen3'],
     );
     // open nested screen
-    unawaited(tracker.nestedNuvigator.open('nestedScreen2'));
+    unawaited(tracker.nestedNuvigator!.open('nestedScreen2'));
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
     expect(
-      tracker.nestedStack.map((e) => e.settings.name),
+      tracker.nestedStack.map((e) => e!.settings.name),
       ['nestedScreen1', 'nestedScreen2'],
     );
     // open root screen from nested Nuvigator
-    unawaited(tracker.nestedNuvigator.open('screen4'));
+    unawaited(tracker.nestedNuvigator!.open('screen4'));
     await tester.pumpAndSettle();
     expectScreen('Screen4');
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen3', 'screen4'],
     );
     // back to nested flow
-    tracker.rootNuvigator.pop();
+    tracker.rootNuvigator!.pop();
     await tester.pumpAndSettle();
     expectScreen('NestedScreen2');
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen3'],
     );
 
-    unawaited(tracker.nestedNuvigator.open(
+    unawaited(tracker.nestedNuvigator!.open(
       'screen4',
       pushMethod: DeepLinkPushMethod.PopAndPush,
       result: 'screen3Result',
@@ -509,27 +511,27 @@ void main() {
     expectScreen('Screen4');
     expect(await screen3Result, 'screen3Result');
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen4'],
     );
 
-    unawaited(tracker.rootNuvigator.open(
+    unawaited(tracker.rootNuvigator!.open(
       'screen3',
       pushMethod: DeepLinkPushMethod.PushReplacement,
     ));
     await tester.pumpAndSettle();
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen3'],
     );
-    unawaited(tracker.nestedNuvigator.open(
+    unawaited(tracker.nestedNuvigator!.open(
       'screen2',
       pushMethod: DeepLinkPushMethod.PushReplacement,
     ));
     await tester.pumpAndSettle();
     expectScreen('Screen2');
     expect(
-      tracker.rootStack.map((e) => e.settings.name),
+      tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
     );
     // end region
@@ -538,11 +540,11 @@ void main() {
   testWidgets('Nested Nuvigator presenterRoute test', (tester) async {
     final tracker = await pumpApp(tester);
 
-    unawaited(tracker.rootNuvigator.open('screen3'));
+    unawaited(tracker.rootNuvigator!.open('screen3'));
     await tester.pumpAndSettle();
 
-    expect(tracker.nestedNuvigator.presenterRoute.settings.name, 'screen3');
-    final NuvigatorPageRoute pageRoute = tracker.rootStack.last;
+    expect(tracker.nestedNuvigator!.presenterRoute!.settings.name, 'screen3');
+    final pageRoute = tracker.rootStack.last as NuvigatorPageRoute<dynamic>;
     expect(pageRoute.nestedNuvigator, tracker.nestedNuvigator);
   });
 
@@ -555,51 +557,52 @@ void main() {
       );
 
       // Go to Screen3
-      unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+      unawaited(tracker.rootNuvigator!.pushNamed('screen3'));
       await tester.pumpAndSettle();
 
       // Go to NestedScreen4
-      unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen4'));
+      unawaited(tracker.nestedNuvigator!.pushNamed('nestedScreen4'));
       await tester.pumpAndSettle();
 
       // Go to SecondNestedScreen2
-      unawaited(tracker.secondNestedNuvigator.pushNamed('secondNestedScreen2'));
+      unawaited(
+          tracker.secondNestedNuvigator!.pushNamed('secondNestedScreen2'));
       await tester.pumpAndSettle();
       expect(find.text('SecondNestedScreen2'), findsOneWidget);
       expect(
-        tracker.secondNestedStack.map((e) => e.settings.name),
+        tracker.secondNestedStack.map((e) => e!.settings.name),
         ['secondNestedScreen1', 'secondNestedScreen2'],
       );
 
       // Go to Screen2, registered on the rootNuvigator
-      unawaited(tracker.secondNestedNuvigator.pushNamed('screen2'));
+      unawaited(tracker.secondNestedNuvigator!.pushNamed('screen2'));
       await tester.pumpAndSettle();
       expect(find.text('Screen2'), findsOneWidget);
 
       expect(
-        tracker.rootStack.map((e) => e.settings.name),
+        tracker.rootStack.map((e) => e!.settings.name),
         ['screen1', 'screen3', 'screen2'],
       );
 
       // Pop Screen2
-      tracker.rootNuvigator.pop();
+      tracker.rootNuvigator!.pop();
       await tester.pumpAndSettle();
 
       // Should rebuild NuRouter (going back to secondNestedScreen1)
       expect(find.text('SecondNestedScreen1'), findsOneWidget);
 
       expect(
-        tracker.rootStack.map((e) => e.settings.name),
+        tracker.rootStack.map((e) => e!.settings.name),
         ['screen1', 'screen3'],
       );
 
       expect(
-        tracker.nestedStack.map((e) => e.settings.name),
+        tracker.nestedStack.map((e) => e!.settings.name),
         ['nestedScreen1', 'nestedScreen4'],
       );
 
       expect(
-        tracker.secondNestedStack.map((e) => e.settings.name),
+        tracker.secondNestedStack.map((e) => e!.settings.name),
         ['secondNestedScreen1', 'secondNestedScreen2'],
       );
     },
@@ -611,29 +614,30 @@ void main() {
       final tracker = await pumpApp(tester);
 
       // Go to Screen3
-      unawaited(tracker.rootNuvigator.pushNamed('screen3'));
+      unawaited(tracker.rootNuvigator!.pushNamed('screen3'));
       await tester.pumpAndSettle();
 
       // Go to NestedScreen4
-      unawaited(tracker.nestedNuvigator.pushNamed('nestedScreen4'));
+      unawaited(tracker.nestedNuvigator!.pushNamed('nestedScreen4'));
       await tester.pumpAndSettle();
 
       // Go to SecondNestedScreen2
-      unawaited(tracker.secondNestedNuvigator.pushNamed('secondNestedScreen2'));
+      unawaited(
+          tracker.secondNestedNuvigator!.pushNamed('secondNestedScreen2'));
       await tester.pumpAndSettle();
       expect(find.text('SecondNestedScreen2'), findsOneWidget);
       expect(
-        tracker.secondNestedStack.map((e) => e.settings.name),
+        tracker.secondNestedStack.map((e) => e!.settings.name),
         ['secondNestedScreen1', 'secondNestedScreen2'],
       );
 
       // Go to Screen2, registered on the rootNuvigator
-      unawaited(tracker.secondNestedNuvigator.pushNamed('screen2'));
+      unawaited(tracker.secondNestedNuvigator!.pushNamed('screen2'));
       await tester.pumpAndSettle();
       expect(find.text('Screen2'), findsOneWidget);
 
       // Pop Screen2
-      tracker.rootNuvigator.pop();
+      tracker.rootNuvigator!.pop();
       await tester.pumpAndSettle();
 
       // Should not rebuild NuRouter (stays on secondNestedScreen2)
