@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+import 'navigation/inu_router.dart';
 import 'nu_route_settings.dart';
 import 'nu_router.dart';
-import 'nuvigator.dart';
 
 typedef HandleDeepLinkFn = Future<dynamic> Function(
   INuRouter router,

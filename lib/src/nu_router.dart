@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/src/navigation/nuvigator_state.dart';
 import 'deeplink.dart';
+import 'navigation/inu_router.dart';
 import 'nu_route_settings.dart';
-import 'nuvigator.dart';
+
 import 'screen_route.dart';
 import 'screen_type.dart';
 import 'typings.dart';

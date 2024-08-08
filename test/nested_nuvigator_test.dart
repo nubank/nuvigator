@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
+import 'package:nuvigator/src/navigation/deep_link_push_method.dart';
+import 'package:nuvigator/src/navigation/nuvigator.dart';
+import 'package:nuvigator/src/navigation/nuvigator_state.dart';
 
 class TestNextRouter extends NuRouter {
   TestNextRouter({

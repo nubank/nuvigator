@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:nuvigator/src/navigation/nuvigator_state.dart';
 
-import 'nuvigator.dart';
+import 'navigation/inu_router.dart';
 
 /// Mixing to add Nuvigator support for custom Route.
 mixin NuvigatorPageRoute<T> on PageRoute<T> {

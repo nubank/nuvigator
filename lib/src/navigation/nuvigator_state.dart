@@ -1,134 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'nu_router.dart';
-import 'screen_type.dart';
-import 'screen_types/material_screen_type.dart';
-import 'typings.dart';
-
-enum DeepLinkPushMethod {
-  Push,
-  PushReplacement,
-  PopAndPush,
-}
-
-class NuvigatorStateTracker extends NavigatorObserver {
-  final List<Route?> stack = [];
-
-  bool get debug => nuvigator!.widget.debug;
-
-  NuvigatorState? get nuvigator => navigator as NuvigatorState<INuRouter>?;
-
-  List<String?> get stackRouteNames =>
-      stack.map((it) => it!.settings.name).toList();
-
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    stack.add(route);
-    if (debug) debugPrint('didPush $route: $stackRouteNames');
-  }
-
-  @override
-  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    stack.remove(route);
-    if (debug) debugPrint('didPop $route: $stackRouteNames');
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    stack.remove(route);
-    if (debug) debugPrint('didRemove $route: $stackRouteNames');
-  }
-
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    final index = stack.indexOf(oldRoute);
-    stack[index] = newRoute;
-    if (debug) {
-      debugPrint('didReplace $oldRoute to $newRoute: $stackRouteNames');
-    }
-  }
-}
-
-abstract class INuRouter {
-  /// When the [NuvigatorState] is initialized this method is called on the respective
-  /// [INuRouter] to register it's reference.
-  void install(NuvigatorState nuvigator);
-
-  /// When the [NuvigatorState] disposes, this method is called on the respective
-  /// [INuRouter] to perform any cleanup work required.
-  void dispose();
-
-  /// In case this [INuRouter] is not able to provide a [Route] for the requested
-  /// deepLink, and this property is different from null, it will be called to perform
-  /// a fallback execution
-  HandleDeepLinkFn? onDeepLinkNotFound;
-
-  /// When a new deepLink is requested to be opened the [Nuvigator] this method is
-  /// called in the respective [INuRouter] to retrieve the [Route] to be presented
-  Route<T>? getRoute<T>({
-    required String deepLink,
-    Object? parameters,
-    bool isFromNative = false,
-    ScreenType? fallbackScreenType,
-    ScreenType? overrideScreenType,
-  });
-}
-
-class _NuvigatorInner<T extends INuRouter> extends Navigator {
-  _NuvigatorInner({
-    required this.router,
-    required String initialDeepLink,
-    Map<String, Object>? initialArguments,
-    Key? key,
-    List<NavigatorObserver> observers = const [],
-    this.screenType = materialScreenType,
-    this.wrapper,
-    this.debug = false,
-    this.inheritableObservers = const [],
-    this.shouldPopRoot = false,
-  }) : super(
-          observers: [
-            HeroController(),
-            ...observers,
-          ],
-          onGenerateInitialRoutes: (_, __) {
-            final r = router.getRoute<dynamic>(
-              deepLink: initialDeepLink,
-              parameters: initialArguments,
-              fallbackScreenType: screenType,
-            );
-            if (r == null) {
-              throw FlutterError(
-                  'No Route was found for the initialRoute provided: "$initialDeepLink"'
-                  ' .Be sure that the provided initialRoute exists in this Router ($router).');
-            }
-            return [r];
-          },
-          onGenerateRoute: (settings) {
-            assert(
-                settings.name != null, 'RouteSettings name should not be null');
-            return router.getRoute<dynamic>(
-              deepLink: settings.name!,
-              parameters: settings.arguments,
-              fallbackScreenType: screenType,
-            );
-          },
-          key: key,
-        );
-
-  final T router;
-  final bool debug;
-  final bool shouldPopRoot;
-  final ScreenType screenType;
-  final WrapperFn? wrapper;
-  final List<ObserverBuilder> inheritableObservers;
-
-  @override
-  NavigatorState createState() {
-    return NuvigatorState<T>();
-  }
-}
+import 'package:nuvigator/next.dart';
+import 'package:nuvigator/src/navigation/deep_link_push_method.dart';
+import 'package:nuvigator/src/navigation/inu_router.dart';
+import 'package:nuvigator/src/navigation/nuvigator.dart';
+import 'package:nuvigator/src/navigation/nuvigator_inner.dart';
+import 'package:nuvigator/src/navigation/nuvigator_state_tracker.dart';
 
 class NuvigatorState<T extends INuRouter> extends NavigatorState
     with WidgetsBindingObserver {
@@ -144,7 +21,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   NuvigatorPageRoute? _presenterRoute;
 
   @override
-  _NuvigatorInner get widget => super.widget as _NuvigatorInner<INuRouter>;
+  NuvigatorInner get widget => super.widget as NuvigatorInner<INuRouter>;
 
   T get router => widget.router as T;
 
@@ -199,7 +76,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 
   @override
-  void didUpdateWidget(_NuvigatorInner oldWidget) {
+  void didUpdateWidget(NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
       widget.router.install(this);
     }
@@ -264,11 +141,11 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       _getRoute(route, arguments) != null;
 
   Future<R> _doForDeepLink<R>(
-    String deepLink, {
-    Object? parameters,
-    Future<R> Function(Route<R> route)? onRouteFound,
-    Future<R> Function(NuvigatorState? parent)? delegateToParent,
-  }) async {
+      String deepLink, {
+        Object? parameters,
+        Future<R> Function(Route<R> route)? onRouteFound,
+        Future<R> Function(NuvigatorState? parent)? delegateToParent,
+      }) async {
     final route = _getRoute(deepLink, parameters);
     if (route != null) {
       return await onRouteFound!(route as Route<R>);
@@ -285,9 +162,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   Future<R?> pushNamed<R extends Object?>(
-    String routeName, {
-    Object? arguments,
-  }) {
+      String routeName, {
+        Object? arguments,
+      }) {
     return _doForDeepLink(
       routeName,
       parameters: arguments,
@@ -299,10 +176,10 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   Future<R?> pushReplacementNamed<R extends Object?, TO extends Object?>(
-    String routeName, {
-    Object? arguments,
-    TO? result,
-  }) {
+      String routeName, {
+        Object? arguments,
+        TO? result,
+      }) {
     return _doForDeepLink(
       routeName,
       parameters: arguments,
@@ -320,10 +197,10 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   Future<R?> pushNamedAndRemoveUntil<R extends Object?>(
-    String newRouteName,
-    RoutePredicate predicate, {
-    Object? arguments,
-  }) {
+      String newRouteName,
+      RoutePredicate predicate, {
+        Object? arguments,
+      }) {
     return _doForDeepLink(
       newRouteName,
       parameters: arguments,
@@ -337,10 +214,10 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   Future<R?> popAndPushNamed<R extends Object?, TO extends Object?>(
-    String routeName, {
-    Object? arguments,
-    TO? result,
-  }) {
+      String routeName, {
+        Object? arguments,
+        TO? result,
+      }) {
     return _doForDeepLink(
       routeName,
       parameters: arguments,
@@ -350,9 +227,9 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 
   Future<R?> popAndPush<R extends Object?, TO extends Object?>(
-    Route<R> newRoute, {
-    TO? result,
-  }) {
+      Route<R> newRoute, {
+        TO? result,
+      }) {
     pop(result);
     return push(newRoute);
   }
@@ -366,7 +243,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       newDeepLink,
       onRouteFound: (route) async {
         final oldRoute =
-            stateTracker!.stack.firstWhere(NuRoute.withPath(oldDeepLink));
+        stateTracker!.stack.firstWhere(NuRoute.withPath(oldDeepLink));
         if (oldRoute == null) {
           throw FlutterError(
             '`$oldDeepLink` was not found in the $router when calling replaceNamed with the newDeepLink as `$newDeepLink`',
@@ -435,13 +312,13 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   /// [parameters] is a helper to inject arguments that would be present in the DeepLink query/path parameters
   /// [result] is optional and will be used only when the pushMethod is PopAndPush or PushReplacement
   Future<R?> open<R extends Object?>(
-    String deepLink, {
-    DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
-    ScreenType? screenType,
-    Map<String, dynamic>? parameters,
-    bool isFromNative = false,
-    Object? result,
-  }) {
+      String deepLink, {
+        DeepLinkPushMethod pushMethod = DeepLinkPushMethod.Push,
+        ScreenType? screenType,
+        Map<String, dynamic>? parameters,
+        bool isFromNative = false,
+        Object? result,
+      }) {
     final route = router.getRoute<R>(
       deepLink: deepLink,
       parameters: parameters,
@@ -495,112 +372,5 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       );
     }
     return child;
-  }
-}
-
-/// Creates a new Nuvigator. When using the Next API, several of those options
-/// are provided by the [INuRouter]. Providing them here will thrown an assertion
-/// error.
-@immutable
-class Nuvigator<T extends INuRouter?> extends StatelessWidget {
-  const Nuvigator({
-    required this.router,
-    this.initialArguments,
-    Key? key,
-    this.observers = const [],
-    this.wrapper,
-    this.debug = false,
-    this.inheritableObservers = const [],
-    this.shouldPopRoot = false,
-    this.shouldRebuild,
-  })  : _innerKey = key,
-        assert(router != null);
-
-  /// Creates a [Nuvigator] from a list of [NuRoute]
-  static Nuvigator<NuRouterBuilder> routes({
-    required String initialRoute,
-    required List<NuRoute> routes,
-    ScreenType? screenType,
-    List<ObserverBuilder> inheritableObservers = const [],
-    List<NavigatorObserver> observers = const [],
-    bool debug = false,
-    bool shouldPopRoot = false,
-    ShouldRebuildFn? shouldRebuild,
-    Key? key,
-  }) {
-    return Nuvigator(
-      key: key,
-      inheritableObservers: inheritableObservers,
-      debug: debug,
-      observers: observers,
-      shouldPopRoot: shouldPopRoot,
-      shouldRebuild: shouldRebuild,
-      router: NuRouterBuilder(
-        routes: routes,
-        initialRoute: initialRoute,
-        screenType: screenType,
-      ),
-    );
-  }
-
-  final T router;
-  final bool debug;
-  final bool shouldPopRoot;
-  final WrapperFn? wrapper;
-  final List<ObserverBuilder> inheritableObservers;
-  final List<NavigatorObserver> observers;
-  final Key? _innerKey;
-  final Map<String, Object>? initialArguments;
-  final ShouldRebuildFn? shouldRebuild;
-
-  /// Fetches a [NuvigatorState] from the current BuildContext.
-  static NuvigatorState<T>? of<T extends INuRouter>(
-    BuildContext context, {
-    bool rootNuvigator = false,
-    bool nullOk = false,
-  }) {
-    if (rootNuvigator) {
-      return context.findRootAncestorStateOfType<NuvigatorState<T>>();
-    } else {
-      final closestNuvigator =
-          context.findAncestorStateOfType<NuvigatorState<T>>();
-      if (closestNuvigator != null) return closestNuvigator;
-      assert(() {
-        if (!nullOk) {
-          throw FlutterError(
-              'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
-              'The context used to push or pop routes from the Nuvigator must be that of a '
-              'widget that is a descendant of a Nuvigator widget.'
-              'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
-        }
-        return true;
-      }());
-      return null;
-    }
-  }
-
-  /// Helper method that allows passing a Nuvigator to a builder function
-  Nuvigator call(BuildContext context, [Widget? child]) {
-    return this;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return NuRouterLoader(
-      // ignore: avoid_as
-      router: router as NuRouter,
-      shouldRebuild: shouldRebuild,
-      builder: (moduleRouter) => _NuvigatorInner(
-        router: moduleRouter,
-        debug: debug,
-        inheritableObservers: inheritableObservers,
-        observers: observers,
-        initialDeepLink: moduleRouter.initialRoute,
-        screenType: moduleRouter.screenType ?? materialScreenType,
-        key: _innerKey,
-        initialArguments: initialArguments,
-        shouldPopRoot: shouldPopRoot,
-      ),
-    );
   }
 }
