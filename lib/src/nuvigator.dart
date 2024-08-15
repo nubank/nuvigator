@@ -416,6 +416,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       SystemNavigator.pop();
     }
     if (!isPopped && this != rootNuvigator && parent != null) {
+      super.pop<R>(result);
       parentPop<R>(result);
     }
   }
