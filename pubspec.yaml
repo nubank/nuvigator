@@ -8,7 +8,8 @@ environment:
   sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
-  analyzer: ^5.2.0
+  #analyzer: ^5.2.0
+  analyzer: ^4.6.0
   dart_style: ^2.0.2
   flutter:
     sdk: flutter
