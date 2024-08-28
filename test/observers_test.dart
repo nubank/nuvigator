@@ -53,12 +53,12 @@ class MyApp extends StatelessWidget {
       NuRouteBuilder(
         path: 'home',
         builder: (_, __, ___) =>
-            DummyPage(pageName: 'home', nextRoute: 'second'),
+            const DummyPage(pageName: 'home', nextRoute: 'second'),
       ),
       NuRouteBuilder(
         path: 'second',
         builder: (_, __, ___) =>
-            DummyPage(pageName: 'second', nextRoute: 'nested'),
+            const DummyPage(pageName: 'second', nextRoute: 'nested'),
       ),
       NuRouteBuilder(
         path: 'nested',
@@ -68,12 +68,12 @@ class MyApp extends StatelessWidget {
           routes: [
             NuRouteBuilder(
               path: 'nested_home',
-              builder: (_, __, ___) => DummyPage(
+              builder: (_, __, ___) => const DummyPage(
                   pageName: 'nested_home', nextRoute: 'nested_second'),
             ),
             NuRouteBuilder(
               path: 'nested_second',
-              builder: (_, __, ___) => DummyPage(
+              builder: (_, __, ___) => const DummyPage(
                   pageName: 'nested_second', nextRoute: 'nested_home'),
             ),
           ],
