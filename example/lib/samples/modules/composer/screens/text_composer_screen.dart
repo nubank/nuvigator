@@ -55,7 +55,7 @@ class _TextComposerScreenState extends State<TextComposerScreen> {
               minLines: 5,
               maxLines: null,
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => widget.submitText(_controller.text),
               child: const Text('Publish'),
             ),

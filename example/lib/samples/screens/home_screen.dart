@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     // final r = NuRouter.of<OldFriendRequestRouter>(context);
                     // r.toListRequests();
@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                   },
                   child: const Text('Review friend requests'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     String text;
 

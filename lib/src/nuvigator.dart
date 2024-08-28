@@ -131,7 +131,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
 class NuvigatorState<T extends INuRouter> extends NavigatorState
     with WidgetsBindingObserver {
   NuvigatorState get rootNuvigator =>
-      Nuvigator.of(context, rootNuvigator: true) ?? this;
+      Nuvigator.maybeOf(context, rootNuvigator: true) ?? this;
 
   List<NuvigatorState> nestedNuvigators = [];
 
@@ -172,7 +172,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
 
   @override
   void initState() {
-    parent = Nuvigator.of(context, nullOk: true);
+    parent = Nuvigator.maybeOf(context);
     if (isNested) {
       parent!.nestedNuvigators.add(this);
     }
@@ -550,11 +550,10 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
   final Map<String, Object>? initialArguments;
   final ShouldRebuildFn? shouldRebuild;
 
-  /// Fetches a [NuvigatorState] from the current BuildContext.
-  static NuvigatorState<T>? of<T extends INuRouter>(
+  /// Maybe fetches a [NuvigatorState] from the current BuildContext.
+  static NuvigatorState<T>? maybeOf<T extends INuRouter>(
     BuildContext context, {
     bool rootNuvigator = false,
-    bool nullOk = false,
   }) {
     if (rootNuvigator) {
       return context.findRootAncestorStateOfType<NuvigatorState<T>>();
@@ -562,18 +561,18 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
       final closestNuvigator =
           context.findAncestorStateOfType<NuvigatorState<T>>();
       if (closestNuvigator != null) return closestNuvigator;
-      assert(() {
-        if (!nullOk) {
-          throw FlutterError(
-              'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
-              'The context used to push or pop routes from the Nuvigator must be that of a '
-              'widget that is a descendant of a Nuvigator widget.'
-              'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
-        }
-        return true;
-      }());
+
       return null;
     }
+  }
+
+  /// Fetches a [NuvigatorState] from the current BuildContext, or throws an
+  /// error if doesn't find it
+  static NuvigatorState<T> of<T extends INuRouter>(
+      BuildContext context, {
+        bool rootNuvigator = false,
+      }) {
+    return Nuvigator.maybeOf(context, rootNuvigator: rootNuvigator)!;
   }
 
   /// Helper method that allows passing a Nuvigator to a builder function
