@@ -31,7 +31,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({this.fakeLog});
+  const MyApp({this.fakeLog});
   final FakeLog fakeLog;
 
   @override
@@ -125,7 +125,7 @@ class DummyObservable extends NavigatorObserver {
 }
 
 class DummyPage extends StatelessWidget {
-  DummyPage({this.pageName, this.nextRoute});
+  const DummyPage({this.pageName, this.nextRoute});
   final String pageName;
   final String nextRoute;
 
