@@ -6,7 +6,6 @@ import 'package:nuvigator/next.dart';
 class MockFakeLog extends Mock implements FakeLog {}
 
 void main() {
-
   Future<void> _navigateToNextPage(WidgetTester tester, String key) async {
     await tester.tap(find.byKey(Key(key)));
     await tester.pumpAndSettle();
@@ -53,11 +52,13 @@ class MyApp extends StatelessWidget {
     return [
       NuRouteBuilder(
         path: 'home',
-        builder: (_, __, ___) => DummyPage(pageName: 'home', nextRoute: 'second'),
+        builder: (_, __, ___) =>
+            DummyPage(pageName: 'home', nextRoute: 'second'),
       ),
       NuRouteBuilder(
         path: 'second',
-        builder: (_, __, ___) => DummyPage(pageName: 'second', nextRoute: 'nested'),
+        builder: (_, __, ___) =>
+            DummyPage(pageName: 'second', nextRoute: 'nested'),
       ),
       NuRouteBuilder(
         path: 'nested',
@@ -67,11 +68,13 @@ class MyApp extends StatelessWidget {
           routes: [
             NuRouteBuilder(
               path: 'nested_home',
-              builder: (_, __, ___) => DummyPage(pageName: 'nested_home', nextRoute: 'nested_second'),
+              builder: (_, __, ___) => DummyPage(
+                  pageName: 'nested_home', nextRoute: 'nested_second'),
             ),
             NuRouteBuilder(
               path: 'nested_second',
-              builder: (_, __, ___) => DummyPage(pageName: 'nested_second', nextRoute: 'nested_home'),
+              builder: (_, __, ___) => DummyPage(
+                  pageName: 'nested_second', nextRoute: 'nested_home'),
             ),
           ],
         ),
@@ -81,7 +84,8 @@ class MyApp extends StatelessWidget {
 
   DummyObservable _createObserver() => DummyObservable(fakeLog: fakeLog);
 
-  DummyObservable Function() _createInheritableObserver() => () => DummyObservable(fakeLog: fakeLog);
+  DummyObservable Function() _createInheritableObserver() =>
+      () => DummyObservable(fakeLog: fakeLog);
 }
 
 abstract class FakeLog {
@@ -92,7 +96,6 @@ abstract class FakeLog {
 }
 
 class DummyObservable extends NavigatorObserver {
-
   DummyObservable({this.fakeLog});
   FakeLog fakeLog;
 
