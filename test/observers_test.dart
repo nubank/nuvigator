@@ -28,6 +28,16 @@ void main() {
 
     verify(mockFakeLog.sayPop()).called(2);
   });
+
+  testWidgets('push event must be called 4 times', (WidgetTester tester) async {
+    final mockFakeLog = MockFakeLog();
+    await tester.pumpWidget(MyApp(fakeLog: mockFakeLog));
+    await tester.pumpAndSettle();
+
+    await _navigateToNextPage(tester, 'second');
+
+    verify(mockFakeLog.sayPush()).called(4);
+  });
 }
 
 class MyApp extends StatelessWidget {
