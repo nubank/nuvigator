@@ -128,9 +128,9 @@ class DummyObservable extends NavigatorObserver {
   }
 
   @override
-  void didReplace({Route newRoute, Route oldRoute}) {
+  void didReplace({Route<dynamic> newRoute, Route oldRoute}) {
     fakeLog.sayReplace();
-    //super.didReplace(newRoute, oldRoute);
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
   }
 }
 
