@@ -189,6 +189,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     parent = Nuvigator.of(context, nullOk: true);
     if (isNested) {
       parent.nestedNuvigators.add(this);
+      widget.observers.addAll(parent.widget.inheritableObservers.map((f) => f()));
     }
     widget.observers.addAll(_collectObservers().map((f) => f()));
     stateTracker = NuvigatorStateTracker();
@@ -416,7 +417,6 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       SystemNavigator.pop();
     }
     if (!isPopped && this != rootNuvigator && parent != null) {
-      super.pop<R>(result);
       parentPop<R>(result);
     }
   }
