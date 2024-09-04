@@ -77,7 +77,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
   _NuvigatorInner({
     required this.router,
     required String initialDeepLink,
-    Map<String, Object>? initialArguments,
+    Map<String, dynamic>? initialArguments,
     Key? key,
     List<NavigatorObserver> observers = const [],
     this.screenType = materialScreenType,
@@ -547,7 +547,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
   final List<ObserverBuilder> inheritableObservers;
   final List<NavigatorObserver> observers;
   final Key? _innerKey;
-  final Map<String, Object>? initialArguments;
+  final Map<String, dynamic>? initialArguments;
   final ShouldRebuildFn? shouldRebuild;
 
   /// Maybe fetches a [NuvigatorState] from the current BuildContext.
@@ -569,9 +569,9 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
   /// Fetches a [NuvigatorState] from the current BuildContext, or throws an
   /// error if doesn't find it
   static NuvigatorState<T> of<T extends INuRouter>(
-      BuildContext context, {
-        bool rootNuvigator = false,
-      }) {
+    BuildContext context, {
+    bool rootNuvigator = false,
+  }) {
     return Nuvigator.maybeOf(context, rootNuvigator: rootNuvigator)!;
   }
 
