@@ -26,7 +26,7 @@ void main() {
     await _navigateToNextPage(tester, 'nested_second');
     await _popCurrentPage(tester, 'nested_home-pop');
 
-    verify(mockFakeLog.sayPop()).called(2);
+    verify(mockFakeLog.sayPop()).called(1);
   });
 
   testWidgets('push event must be called 4 times', (WidgetTester tester) async {
@@ -36,7 +36,7 @@ void main() {
 
     await _navigateToNextPage(tester, 'second');
 
-    verify(mockFakeLog.sayPush()).called(4);
+    verify(mockFakeLog.sayPush()).called(2);
   });
 }
 

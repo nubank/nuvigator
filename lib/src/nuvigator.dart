@@ -189,15 +189,29 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     parent = Nuvigator.of(context, nullOk: true);
     if (isNested) {
       parent.nestedNuvigators.add(this);
-      widget.observers
-          .addAll(parent.widget.inheritableObservers.map((f) => f()));
     }
-    widget.observers.addAll(_collectObservers().map((f) => f()));
+    final observers = _removeDuplicateObservers(_collectObservers());
+    if(observers.isNotEmpty) {
+      widget.observers.addAll(observers.map((f) => f()));
+    }
+
     stateTracker = NuvigatorStateTracker();
     widget.observers.add(stateTracker);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     widget.router.install(this);
+  }
+
+  List<NavigatorObserver Function()> _removeDuplicateObservers(List<NavigatorObserver Function()> observers) {
+    final observerTypes = widget.observers.map((e) => e.runtimeType.toString()).toSet();
+    final definitedObservers = List<NavigatorObserver Function()>.empty(growable: true);
+    for (var observer in observers) {
+      final obsType = observer.runtimeType.toString().replaceAll("() =>", "").trim();
+      if (!observerTypes.contains(obsType)) {
+        definitedObservers.add(observer);
+      }
+    }
+    return definitedObservers;
   }
 
   @override
