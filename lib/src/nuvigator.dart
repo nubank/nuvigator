@@ -191,7 +191,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       parent.nestedNuvigators.add(this);
     }
     final observers = _removeDuplicateObservers(_collectObservers());
-    if(observers.isNotEmpty) {
+    if (observers.isNotEmpty) {
       widget.observers.addAll(observers.map((f) => f()));
     }
 
@@ -202,11 +202,15 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     widget.router.install(this);
   }
 
-  List<NavigatorObserver Function()> _removeDuplicateObservers(List<NavigatorObserver Function()> observers) {
-    final observerTypes = widget.observers.map((e) => e.runtimeType.toString()).toSet();
-    final definitedObservers = List<NavigatorObserver Function()>.empty(growable: true);
+  List<NavigatorObserver Function()> _removeDuplicateObservers(
+      List<NavigatorObserver Function()> observers) {
+    final observerTypes =
+        widget.observers.map((e) => e.runtimeType.toString()).toSet();
+    final definitedObservers =
+        List<NavigatorObserver Function()>.empty(growable: true);
     for (var observer in observers) {
-      final obsType = observer.runtimeType.toString().replaceAll("() =>", "").trim();
+      final obsType =
+          observer.runtimeType.toString().replaceAll('() =>', '').trim();
       if (!observerTypes.contains(obsType)) {
         definitedObservers.add(observer);
       }
