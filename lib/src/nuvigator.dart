@@ -588,7 +588,22 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
     BuildContext context, {
     bool rootNuvigator = false,
   }) {
-    return Nuvigator.maybeOf(context, rootNuvigator: rootNuvigator)!;
+    final nuvigatorState =
+        Nuvigator.maybeOf<T>(context, rootNuvigator: rootNuvigator);
+
+    assert(() {
+      if (nuvigatorState == null) {
+        throw FlutterError(
+            'Nuvigator operation requested with a context that does not include a Nuvigator.\n'
+            'The context used to push or pop routes from the Nuvigator must be that of a '
+            'widget that is a descendant of a Nuvigator widget.'
+            'Also check if the provided Router [T] type exists withing a the Nuvigator context.');
+      }
+
+      return true;
+    }());
+
+    return nuvigatorState!;
   }
 
   /// Helper method that allows passing a Nuvigator to a builder function
