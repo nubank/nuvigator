@@ -12,17 +12,6 @@ enum DeepLinkPushMethod {
   PopAndPush,
 }
 
-NuvigatorState? _tryToFindNuvigatorForRouter<T extends INuRouter>(
-    NuvigatorState? nuvigatorState) {
-  if (nuvigatorState == null) return null;
-  if (nuvigatorState.router is T) return nuvigatorState;
-  if (nuvigatorState != nuvigatorState.parent &&
-      nuvigatorState.parent != null) {
-    return _tryToFindNuvigatorForRouter<T>(nuvigatorState.parent!);
-  }
-  return null;
-}
-
 class NuvigatorStateTracker extends NavigatorObserver {
   final List<Route?> stack = [];
 
@@ -560,11 +549,6 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
   final Key? _innerKey;
   final Map<String, dynamic>? initialArguments;
   final ShouldRebuildFn? shouldRebuild;
-
-  static NuvigatorState? ofRouter<T extends INuRouter>(BuildContext context) {
-    final closestNuvigator = context.findAncestorStateOfType<NuvigatorState>();
-    return _tryToFindNuvigatorForRouter<T>(closestNuvigator);
-  }
 
   /// Maybe fetches a [NuvigatorState] from the current BuildContext.
   static NuvigatorState<T>? maybeOf<T extends INuRouter>(
