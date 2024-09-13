@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.0-beta.5
+- [BREAKING] Update dart SDK to `>=2.17 < 4.0.0`
+- [BREAKING] Split the `Nuvigator.of` nullOk's logic in two methods: `Nuvigator.of` and `Nuvigator.maybeOf`
+- [BREAKING] Change Nuvigator's `initialArguments` type to `Map<String, dynamic>?`
+
 ## 2.0.0-beta.4
 - [FIX] Fix nullability check when there are no path parameters to be extracted
 
