@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0-beta.6
+- Revert analyzer bump from `^5.2.0` to `^3.2.0`
+
 ## 2.0.0-beta.5
 - [BREAKING] Update dart SDK to `>=2.17 < 4.0.0`
 - [BREAKING] Split the `Nuvigator.of` nullOk's logic in two methods: `Nuvigator.of` and `Nuvigator.maybeOf`
