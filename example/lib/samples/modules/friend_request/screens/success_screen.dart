@@ -15,7 +15,7 @@ class SuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<FriendRequestBloc>(context);
-    final headingStle = Theme.of(context).textTheme.headline4;
+    final headingStle = Theme.of(context).textTheme.headlineMedium;
 
     return Scaffold(
       appBar: AppBar(

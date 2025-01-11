@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-/// [name] will be the full DeepLink String
+/// [name] será a string completa do DeepLink
 class NuRouteSettings<A extends Object?> extends RouteSettings {
   const NuRouteSettings({
     required String name,
@@ -19,6 +19,7 @@ class NuRouteSettings<A extends Object?> extends RouteSettings {
   final Map<String, dynamic> pathParameters;
   final Map<String, dynamic> extraParameters;
 
+  /// Combina todos os parâmetros em um único mapa
   Map<String, dynamic> get rawParameters {
     return <String, dynamic>{
       ...queryParameters,
@@ -27,6 +28,7 @@ class NuRouteSettings<A extends Object?> extends RouteSettings {
     };
   }
 
+  /// Retorna os argumentos convertidos para o tipo A
   A? get args => arguments as A?;
 
   @override
@@ -34,7 +36,7 @@ class NuRouteSettings<A extends Object?> extends RouteSettings {
       '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParameters, $arguments)';
 
   @override
-  int get hashCode => hashList([name, rawParameters, pathTemplate]);
+  int get hashCode => Object.hash(name, pathTemplate, rawParameters);
 
   @override
   bool operator ==(Object other) {
@@ -42,6 +44,6 @@ class NuRouteSettings<A extends Object?> extends RouteSettings {
     return other is NuRouteSettings &&
         other.pathTemplate == pathTemplate &&
         other.name == name &&
-        other.rawParameters == rawParameters;
+        mapEquals(other.rawParameters, rawParameters);
   }
 }

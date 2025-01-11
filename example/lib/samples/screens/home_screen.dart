@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('BUILDING HOME');
     final nuvigator = Nuvigator.of(context);
-    final headingStle = Theme.of(context).textTheme.headline3;
+    final headingStle = Theme.of(context).textTheme.displaySmall;
 
     return Scaffold(
       appBar: AppBar(
