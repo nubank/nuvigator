@@ -34,7 +34,7 @@ class NuRouteSettings<A extends Object?> extends RouteSettings {
       '${objectRuntimeType(this, 'NuRouteSettings')}("$name", "$pathTemplate", $rawParameters, $arguments)';
 
   @override
-  int get hashCode => hashList([name, rawParameters, pathTemplate]);
+  int get hashCode => Object.hashAll([name, rawParameters, pathTemplate]);
 
   @override
   bool operator ==(Object other) {
