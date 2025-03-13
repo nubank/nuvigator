@@ -613,6 +613,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
         key: _innerKey,
         initialArguments: initialArguments,
         shouldPopRoot: shouldPopRoot,
+        wrapper: wrapper,
       ),
     );
   }
