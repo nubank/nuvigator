@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0
+- Remove deprecated hash function to support Flutter 3.27
+
 ## 2.0.0-beta.6
 - Make `analyzer` be a transitive dependency
 
