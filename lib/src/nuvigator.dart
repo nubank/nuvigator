@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/single_child_widget.dart';
 
 import 'nu_router.dart';
 import 'screen_type.dart';
@@ -72,6 +73,7 @@ abstract class INuRouter {
     bool isFromNative = false,
     ScreenType? fallbackScreenType,
     ScreenType? overrideScreenType,
+    SingleChildStatelessWidget? wrapper,
   });
 }
 
@@ -440,6 +442,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     Map<String, dynamic>? parameters,
     bool isFromNative = false,
     Object? result,
+    SingleChildStatelessWidget? wrapper,
   }) {
     final route = router.getRoute<R>(
       deepLink: deepLink,
@@ -447,6 +450,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
       isFromNative: isFromNative,
       fallbackScreenType: widget.screenType,
       overrideScreenType: screenType,
+      wrapper: wrapper,
     );
     if (route != null) {
       switch (pushMethod) {

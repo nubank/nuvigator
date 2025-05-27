@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/single_child_widget.dart';
 import 'deeplink.dart';
 import 'nu_route_settings.dart';
 import 'nuvigator.dart';
@@ -209,6 +210,7 @@ abstract class NuRouter implements INuRouter {
     Widget child,
     NuRouteSettings settings,
     NuRoute nuRoute,
+    
   ) =>
       child;
 
@@ -270,6 +272,7 @@ abstract class NuRouter implements INuRouter {
   ScreenRoute<R>? _getScreenRoute<R>(
     String deepLink, {
     Map<String, dynamic>? parameters,
+    SingleChildStatelessWidget? wrapper,
   }) {
     for (final route in routes) {
       final screenRoute = route._tryGetScreenRoute(
@@ -278,12 +281,17 @@ abstract class NuRouter implements INuRouter {
       );
       if (screenRoute != null) {
         return screenRoute.wrapWith(
-          (context, child) => buildWrapper(
-            context,
-            child,
-            screenRoute.nuRouteSettings,
-            route,
-          ),
+          (context, child) {
+            if (wrapper != null) {
+              return wrapper.buildWithChild(context, child);
+            }
+            return buildWrapper(
+              context,
+              child,
+              screenRoute.nuRouteSettings,
+              route,
+            );
+          },
         ) as ScreenRoute<R>?;
       }
     }
@@ -297,10 +305,12 @@ abstract class NuRouter implements INuRouter {
     bool isFromNative = false,
     ScreenType? overrideScreenType,
     ScreenType? fallbackScreenType,
+    SingleChildStatelessWidget? wrapper,
   }) {
     final route = _getScreenRoute<R>(
       deepLink,
       parameters: parameters as Map<String, dynamic>? ?? <String, dynamic>{},
+      wrapper: wrapper,
     )
         ?.fallbackScreenType(fallbackScreenType ?? screenType)
         .copyWith(screenType: overrideScreenType)
