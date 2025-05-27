@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 Widget baseNuvigator(
   Key key,
@@ -76,6 +78,18 @@ Widget baseNuvigator(
       ],
     ),
   );
+}
+
+class TestContextProvider extends SingleChildStatelessWidget {
+  const TestContextProvider({super.key, super.child});
+
+  @override
+  Widget buildWithChild(BuildContext context, Widget? child) {
+    return Provider<Map<String, String>>(
+      create: (context) => const {'a':'b'},
+      child: child,
+    );
+  }
 }
 
 class NuvigatorStateTracker {
@@ -426,7 +440,10 @@ void main() {
   testWidgets('Nuvigator.open', (tester) async {
     final tracker = await pumpApp(tester);
     // start region: default push method
-    unawaited(tracker.rootNuvigator!.open('screen2'));
+    unawaited(tracker.rootNuvigator!.open('screen2',
+        //Wrapper: const TestContextProvider(
+        //    key: Key('value'), child: Text('Hello World'))
+        ));
     await tester.pumpAndSettle();
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
@@ -434,6 +451,7 @@ void main() {
       tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
     );
+    // print(tracker.rootStack[2]);
     // end region
 
     // start region: pushReplacement push method
@@ -460,6 +478,7 @@ void main() {
     expect(await screen4Result, 'screen4Result');
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
+
     expect(
       tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
