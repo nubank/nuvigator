@@ -81,12 +81,14 @@ Widget baseNuvigator(
 }
 
 class TestContextProvider extends SingleChildStatelessWidget {
-  const TestContextProvider({super.key, super.child});
+  const TestContextProvider({super.key});
 
   @override
   Widget buildWithChild(BuildContext context, Widget? child) {
     return Provider<Map<String, String>>(
-      create: (context) => const {'a':'b'},
+      create: (context) {
+        return const {'a': 'b'};
+      },
       child: child,
     );
   }
@@ -441,9 +443,7 @@ void main() {
     final tracker = await pumpApp(tester);
     // start region: default push method
     unawaited(tracker.rootNuvigator!.open('screen2',
-        //Wrapper: const TestContextProvider(
-        //    key: Key('value'), child: Text('Hello World'))
-        ));
+        wrapper: const TestContextProvider(key: Key('value'))));
     await tester.pumpAndSettle();
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
@@ -451,7 +451,6 @@ void main() {
       tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
     );
-    // print(tracker.rootStack[2]);
     // end region
 
     // start region: pushReplacement push method

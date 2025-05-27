@@ -475,6 +475,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
         result: result,
         screenType: screenType,
         isFromNative: isFromNative,
+        wrapper: wrapper,
       );
     } else {
       throw FlutterError(
