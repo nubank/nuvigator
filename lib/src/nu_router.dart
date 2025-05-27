@@ -281,12 +281,9 @@ abstract class NuRouter implements INuRouter {
       if (screenRoute != null) {
         return screenRoute.wrapWith(
           (context, child) {
-            if (wrapper != null) {
-              return wrapper.buildWithChild(context, child);
-            }
             return buildWrapper(
               context,
-              child,
+              wrapper?.buildWithChild(context, child) ?? child,
               screenRoute.nuRouteSettings,
               route,
             );
