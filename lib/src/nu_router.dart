@@ -210,7 +210,6 @@ abstract class NuRouter implements INuRouter {
     Widget child,
     NuRouteSettings settings,
     NuRoute nuRoute,
-    
   ) =>
       child;
 
