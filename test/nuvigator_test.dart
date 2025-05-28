@@ -25,11 +25,11 @@ Widget baseNuvigator(
         ),
         NuRouteBuilder(
           path: 'screen2',
-          builder:(context, nuRoute, settings) => Builder(builder: (context) {
+          builder: (context, nuRoute, settings) => Builder(builder: (context) {
             try {
               final provider = context.read<TestContext>();
               return Text('Screen2, with text-context: ${provider.x}');
-            } catch (_, __) { }
+            } catch (_, __) {}
             return const Text('Screen2');
           }),
         ),
