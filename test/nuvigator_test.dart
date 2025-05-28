@@ -629,10 +629,10 @@ void main() {
       );
 
       // TODO: Fix, actually returning just ['secondNestedScreen1'] on master
-      // expect(
-      //   tracker.secondNestedStack.map((e) => e!.settings.name),
-      //   ['secondNestedScreen1', 'secondNestedScreen2'],
-      // );
+      expect(
+        tracker.secondNestedStack.map((e) => e!.settings.name),
+        ['secondNestedScreen1', 'secondNestedScreen2'],
+      );
     },
   );
 
