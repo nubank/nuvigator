@@ -2,7 +2,7 @@ version: 2
 
 job_defaults: &defaults
     docker:
-      - image: ghcr.io/cirruslabs/flutter:3.10.5
+      - image: ghcr.io/cirruslabs/flutter:3.32.0
 
 jobs:
   format-check:
