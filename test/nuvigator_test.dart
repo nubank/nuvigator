@@ -486,7 +486,6 @@ void main() {
     expect(await screen4Result, 'screen4Result');
     expectScreen('Screen2');
     expect(tracker.rootStack.length, 2);
-
     expect(
       tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
@@ -628,7 +627,6 @@ void main() {
         ['nestedScreen1', 'nestedScreen4'],
       );
 
-      // TODO: Fix, actually returning just ['secondNestedScreen1'] on master
       expect(
         tracker.secondNestedStack.map((e) => e!.settings.name),
         ['secondNestedScreen1', 'secondNestedScreen2'],
