@@ -271,7 +271,7 @@ abstract class NuRouter implements INuRouter {
   ScreenRoute<R>? _getScreenRoute<R>(
     String deepLink, {
     Map<String, dynamic>? parameters,
-    SingleChildStatelessWidget? wrapper,
+    SingleChildStatefulWidget? wrapper,
   }) {
     for (final route in routes) {
       final screenRoute = route._tryGetScreenRoute(
@@ -301,7 +301,7 @@ abstract class NuRouter implements INuRouter {
     bool isFromNative = false,
     ScreenType? overrideScreenType,
     ScreenType? fallbackScreenType,
-    SingleChildStatelessWidget? wrapper,
+    SingleChildStatefulWidget? wrapper,
   }) {
     final route = _getScreenRoute<R>(
       deepLink,

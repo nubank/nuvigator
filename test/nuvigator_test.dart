@@ -92,7 +92,7 @@ class TestContext {
   final int x, y;
 }
 
-class TestContextProvider extends SingleChildStatelessWidget {
+class TestContextProvider extends SingleChildStatefulWidget {
   const TestContextProvider({super.key});
 
   @override

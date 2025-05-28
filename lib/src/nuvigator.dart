@@ -73,7 +73,7 @@ abstract class INuRouter {
     bool isFromNative = false,
     ScreenType? fallbackScreenType,
     ScreenType? overrideScreenType,
-    SingleChildStatelessWidget? wrapper,
+    SingleChildStatefulWidget? wrapper,
   });
 }
 
@@ -442,7 +442,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
     Map<String, dynamic>? parameters,
     bool isFromNative = false,
     Object? result,
-    SingleChildStatelessWidget? wrapper,
+    SingleChildStatefulWidget? wrapper,
   }) {
     final route = router.getRoute<R>(
       deepLink: deepLink,
