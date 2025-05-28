@@ -35,7 +35,6 @@ analyzer:
     # Ignore analyzer hints for updating pubspecs when using Future or
     # Stream and not importing dart:async
     # Please see https://github.com/flutter/flutter/pull/24528 for details.
-    sdk_version_async_exported_from_core: ignore
     # Review lints ignore after migrating all to package next
     constant_identifier_names: ignore
     use_build_context_synchronously: ignore
@@ -108,12 +107,10 @@ linter:
     - hash_and_equals
     - implementation_imports
     # - invariant_booleans # too many false positives: https://github.com/dart-lang/linter/issues/811
-    - iterable_contains_unrelated_type
     # - join_return_with_assignment # not yet tested
     - library_names
     - library_prefixes
     # - lines_longer_than_80_chars # not yet tested
-    - list_remove_unrelated_type
     # - library_private_types_in_public_api
     # - literal_only_boolean_expressions # too many false positives: https://github.com/dart-lang/sdk/issues/34181
     - no_adjacent_strings_in_list
@@ -124,7 +121,6 @@ linter:
     # - one_member_abstracts # too many false positives
     # - only_throw_errors # https://github.com/flutter/flutter/issues/5792
     - overridden_fields
-    - package_api_docs
     - package_names
     - package_prefixed_library_names
     # - parameter_assignments # we do this commonly
