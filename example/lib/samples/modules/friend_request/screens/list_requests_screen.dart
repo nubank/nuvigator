@@ -15,7 +15,7 @@ class ListRequestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<FriendRequestBloc>(context);
-    final bodyStyle = Theme.of(context).textTheme.bodyLarge;
+    final bodyStyle = Theme.of(context).textTheme.bodyText1;
 
     return Scaffold(
       appBar: AppBar(
