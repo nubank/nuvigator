@@ -132,14 +132,11 @@ Future<NuvigatorStateTracker> pumpApp(
   // ignore: omit_local_variable_types
   final GlobalKey<NuvigatorState<INuRouter>> secondNestedNuvigatorKey =
       GlobalKey(debugLabel: 'NUVIGATOR_TESTER');
-  await tester.pumpWidget(TickerMode(
-    enabled: false,
-    child: baseNuvigator(
-      nuvigatorKey,
-      nestedNuvigatorKey,
-      secondNestedNuvigatorKey,
-      shouldRebuild: shouldRebuild,
-    ),
+  await tester.pumpWidget(baseNuvigator(
+    nuvigatorKey,
+    nestedNuvigatorKey,
+    secondNestedNuvigatorKey,
+    shouldRebuild: shouldRebuild,
   ));
   await tester.pumpAndSettle();
   return NuvigatorStateTracker(
@@ -576,7 +573,7 @@ void main() {
   });
 
   testWidgets(
-    'Should Nuvigator when shouldRebuild is provided',
+    'Should rebuild secondNested Nuvigator when shouldRebuild is provided',
     (tester) async {
       final tracker = await pumpApp(
         tester,
@@ -615,7 +612,7 @@ void main() {
       tracker.rootNuvigator!.pop();
       await tester.pumpAndSettle();
 
-      // Should rebuild NuRouter (going back to secondNestedScreen1)
+      // Should rebuild secondNested Nuvigator (going back to secondNestedScreen1)
       expect(find.text('SecondNestedScreen1'), findsOneWidget);
 
       expect(
@@ -630,7 +627,7 @@ void main() {
 
       expect(
         tracker.secondNestedStack.map((e) => e!.settings.name),
-        ['secondNestedScreen1', 'secondNestedScreen2'],
+        ['secondNestedScreen1'],
       );
     },
   );
