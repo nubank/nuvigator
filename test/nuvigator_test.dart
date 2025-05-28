@@ -28,7 +28,8 @@ Widget baseNuvigator(
           builder: (context, nuRoute, settings) => Builder(builder: (context) {
             try {
               final provider = context.read<TestContext>();
-              return Text('Screen2, with text-context: ${provider.x}');
+              return Text(
+                  'Screen2, with test-context: ${provider.x},${provider.y}');
             } catch (_, __) {}
             return const Text('Screen2');
           }),
@@ -454,7 +455,7 @@ void main() {
     unawaited(tracker.rootNuvigator!
         .open('screen2', wrapper: const TestContextProvider()));
     await tester.pumpAndSettle();
-    expectScreen('Screen2, with text-context: 1');
+    expectScreen('Screen2, with test-context: 1,2');
     expect(tracker.rootStack.length, 2);
     expect(
       tracker.rootStack.map((e) => e!.settings.name),
