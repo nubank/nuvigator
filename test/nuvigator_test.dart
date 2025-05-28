@@ -25,7 +25,13 @@ Widget baseNuvigator(
         ),
         NuRouteBuilder(
           path: 'screen2',
-          builder: (_, __, ___) => const Text('Screen2'),
+          builder:(context, nuRoute, settings) => Builder(builder: (context) {
+            try {
+              final provider = context.read<TestContext>();
+              return Text('Screen2, with text-context: ${provider.x}');
+            } catch (_, __) { }
+            return const Text('Screen2');
+          }),
         ),
         NuRouteBuilder(
           path: 'screen3',
@@ -445,20 +451,15 @@ void main() {
   testWidgets('Nuvigator.open', (tester) async {
     final tracker = await pumpApp(tester);
     // start region: default push method
-    unawaited(tracker.rootNuvigator!.open('screen2',
-        wrapper: const TestContextProvider(key: Key('provider1'))));
+    unawaited(tracker.rootNuvigator!
+        .open('screen2', wrapper: const TestContextProvider()));
     await tester.pumpAndSettle();
-    expectScreen('Screen2');
+    expectScreen('Screen2, with text-context: 1');
     expect(tracker.rootStack.length, 2);
     expect(
       tracker.rootStack.map((e) => e!.settings.name),
       ['screen1', 'screen2'],
     );
-
-    final testContext =
-        tracker.rootStack.last?.navigator?.context.read<TestContext>();
-    expect(testContext, const TestContext(1, 2));
-
     // end region
 
     // start region: pushReplacement push method
