@@ -9,6 +9,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: flutter pub get
       - run: dart format -o none --set-exit-if-changed .
   analyze:
     <<: *defaults
