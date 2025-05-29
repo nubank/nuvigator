@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
 import 'package:nuvigator/src/single_child_wrapper.dart';
-import 'package:provider/provider.dart';
 
 Widget baseNuvigator(
   Key key,
@@ -26,11 +25,6 @@ Widget baseNuvigator(
         NuRouteBuilder(
           path: 'screen2',
           builder: (context, nuRoute, settings) => Builder(builder: (context) {
-            try {
-              final provider = context.read<TestContext>();
-              return Text(
-                  'Screen2, with test-context: ${provider.x},${provider.y}');
-            } catch (_, __) {}
             return const Text('Screen2');
           }),
         ),
@@ -87,17 +81,14 @@ Widget baseNuvigator(
   );
 }
 
-class TestContext {
-  const TestContext(this.x, this.y);
-  final int x, y;
-}
-
-class TestContextProvider extends SingleChildWrapper {
+class TestWrapper extends SingleChildWrapper {
   @override
-  Widget buildWithChild(BuildContext context, Widget? child) {
-    return Provider<TestContext>(
-        create: (context) => const TestContext(1, 2), child: child);
-  }
+  Widget buildWithChild(BuildContext context, Widget? child) => ListView(
+        children: <Widget>[
+          const Text('TestWrapper context'),
+          child ?? const Text(''),
+        ],
+      );
 }
 
 class NuvigatorStateTracker {
@@ -445,10 +436,13 @@ void main() {
   testWidgets('Nuvigator.open', (tester) async {
     final tracker = await pumpApp(tester);
     // start region: default push method
-    unawaited(
-        tracker.rootNuvigator!.open('screen2', wrapper: TestContextProvider()));
+    unawaited(tracker.rootNuvigator!.open('screen2', wrapper: TestWrapper()));
     await tester.pumpAndSettle();
-    expectScreen('Screen2, with test-context: 1,2');
+
+    // both the wrapper context and the screen2 child are in the widget tree
+    expectScreen('TestWrapper context');
+    expectScreen('Screen2');
+
     expect(tracker.rootStack.length, 2);
     expect(
       tracker.rootStack.map((e) => e!.settings.name),
