@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
-import 'package:nuvigator/src/single_child_wrapper.dart';
 
 Widget baseNuvigator(
   Key key,
