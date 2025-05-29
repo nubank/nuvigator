@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nuvigator/next.dart';
+import 'package:nuvigator/src/single_child_wrapper.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 
 Widget baseNuvigator(
   Key key,
@@ -92,14 +92,7 @@ class TestContext {
   final int x, y;
 }
 
-class TestContextProvider extends SingleChildStatefulWidget {
-  const TestContextProvider({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _TestContextProviderState();
-}
-
-class _TestContextProviderState extends SingleChildState<TestContextProvider> {
+class TestContextProvider extends SingleChildWrapper {
   @override
   Widget buildWithChild(BuildContext context, Widget? child) {
     return Provider<TestContext>(
@@ -452,8 +445,8 @@ void main() {
   testWidgets('Nuvigator.open', (tester) async {
     final tracker = await pumpApp(tester);
     // start region: default push method
-    unawaited(tracker.rootNuvigator!
-        .open('screen2', wrapper: const TestContextProvider()));
+    unawaited(
+        tracker.rootNuvigator!.open('screen2', wrapper: TestContextProvider()));
     await tester.pumpAndSettle();
     expectScreen('Screen2, with test-context: 1,2');
     expect(tracker.rootStack.length, 2);

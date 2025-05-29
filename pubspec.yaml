@@ -12,7 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
   path_to_regexp: ^0.4.0
-  provider: 6.1.2
   recase: ^4.0.0
 
 dev_dependencies:
@@ -20,3 +19,4 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^5.0.8
+  provider: 6.1.2

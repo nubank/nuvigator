@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/single_child_widget.dart';
+import 'package:nuvigator/src/single_child_wrapper.dart';
 import 'deeplink.dart';
 import 'nu_route_settings.dart';
 import 'nuvigator.dart';
@@ -271,7 +271,7 @@ abstract class NuRouter implements INuRouter {
   ScreenRoute<R>? _getScreenRoute<R>(
     String deepLink, {
     Map<String, dynamic>? parameters,
-    SingleChildStatefulWidget? wrapper,
+    SingleChildWrapper? wrapper,
   }) {
     for (final route in routes) {
       final screenRoute = route._tryGetScreenRoute(
@@ -283,8 +283,7 @@ abstract class NuRouter implements INuRouter {
           (context, child) {
             return buildWrapper(
               context,
-              wrapper?.createElement().state.buildWithChild(context, child) ??
-                  child,
+              wrapper?.buildWithChild(context, child) ?? child,
               screenRoute.nuRouteSettings,
               route,
             );
@@ -302,7 +301,7 @@ abstract class NuRouter implements INuRouter {
     bool isFromNative = false,
     ScreenType? overrideScreenType,
     ScreenType? fallbackScreenType,
-    SingleChildStatefulWidget? wrapper,
+    SingleChildWrapper? wrapper,
   }) {
     final route = _getScreenRoute<R>(
       deepLink,
