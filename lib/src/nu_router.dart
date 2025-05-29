@@ -283,7 +283,8 @@ abstract class NuRouter implements INuRouter {
           (context, child) {
             return buildWrapper(
               context,
-              wrapper?.buildWithChild(context, child) ?? child,
+              wrapper?.createElement().state.buildWithChild(context, child) ??
+                  child,
               screenRoute.nuRouteSettings,
               route,
             );

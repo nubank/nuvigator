@@ -96,11 +96,14 @@ class TestContextProvider extends SingleChildStatefulWidget {
   const TestContextProvider({super.key});
 
   @override
+  State<StatefulWidget> createState() => _TestContextProviderState();
+}
+
+class _TestContextProviderState extends SingleChildState<TestContextProvider> {
+  @override
   Widget buildWithChild(BuildContext context, Widget? child) {
     return Provider<TestContext>(
-      create: (context) => const TestContext(1, 2),
-      child: child,
-    );
+        create: (context) => const TestContext(1, 2), child: child);
   }
 }
 
