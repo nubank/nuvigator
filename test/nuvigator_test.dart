@@ -80,10 +80,10 @@ Widget baseNuvigator(
 
 class TestWrapper extends SingleChildWrapper {
   @override
-  Widget buildWithChild(BuildContext context, Widget? child) => ListView(
+  Widget buildWithChild(BuildContext context, Widget child) => ListView(
         children: <Widget>[
           const Text('TestWrapper context'),
-          child ?? const Text(''),
+          child,
         ],
       );
 }
