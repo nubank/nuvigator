@@ -78,6 +78,9 @@ Widget baseNuvigator(
   );
 }
 
+/// Test class to demonstrate wrapping a child widget we are navigating to
+/// with some state that we have prior to triggering navigation, to ensure
+/// that this state is propagated forward and thus present after navigation
 class TestWrapper extends SingleChildWrapper {
   @override
   Widget buildWithChild(BuildContext context, Widget child) => ListView(
