@@ -23,9 +23,7 @@ Widget baseNuvigator(
         ),
         NuRouteBuilder(
           path: 'screen2',
-          builder: (context, nuRoute, settings) => Builder(builder: (context) {
-            return const Text('Screen2');
-          }),
+          builder: (_, __, ___) => const Text('Screen2'),
         ),
         NuRouteBuilder(
           path: 'screen3',
