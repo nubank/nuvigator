@@ -75,8 +75,8 @@ abstract class INuRouter {
   });
 }
 
-class _NuvigatorInner<T extends INuRouter> extends Navigator {
-  _NuvigatorInner({
+class NuvigatorInner<T extends INuRouter> extends Navigator {
+  NuvigatorInner({
     required this.router,
     required String initialDeepLink,
     Map<String, dynamic>? initialArguments,
@@ -144,7 +144,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   NuvigatorPageRoute? _presenterRoute;
 
   @override
-  _NuvigatorInner get widget => super.widget as _NuvigatorInner<INuRouter>;
+  NuvigatorInner get widget => super.widget as NuvigatorInner<INuRouter>;
 
   T get router => widget.router as T;
 
@@ -199,7 +199,7 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
   }
 
   @override
-  void didUpdateWidget(_NuvigatorInner oldWidget) {
+  void didUpdateWidget(NuvigatorInner oldWidget) {
     if (oldWidget.router != widget.router) {
       widget.router.install(this);
     }
@@ -512,7 +512,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
     this.shouldRebuild,
-  })  : _innerKey = key,
+  })  : innerKey = key,
         assert(router != null);
 
   /// Creates a [Nuvigator] from a list of [NuRoute]
@@ -548,7 +548,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
   final WrapperFn? wrapper;
   final List<ObserverBuilder> inheritableObservers;
   final List<NavigatorObserver> observers;
-  final Key? _innerKey;
+  final Key? innerKey;
   final Map<String, dynamic>? initialArguments;
   final ShouldRebuildFn? shouldRebuild;
 
@@ -603,14 +603,14 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
       // ignore: avoid_as
       router: router as NuRouter,
       shouldRebuild: shouldRebuild,
-      builder: (moduleRouter) => _NuvigatorInner(
+      builder: (moduleRouter) => NuvigatorInner(
         router: moduleRouter,
         debug: debug,
         inheritableObservers: inheritableObservers,
         observers: observers,
         initialDeepLink: moduleRouter.initialRoute,
         screenType: moduleRouter.screenType ?? materialScreenType,
-        key: _innerKey,
+        key: innerKey,
         initialArguments: initialArguments,
         shouldPopRoot: shouldPopRoot,
       ),
