@@ -87,6 +87,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
     this.debug = false,
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
+    this.builder,
   }) : super(
           observers: [
             HeroController(),
@@ -123,6 +124,7 @@ class _NuvigatorInner<T extends INuRouter> extends Navigator {
   final ScreenType screenType;
   final WrapperFn? wrapper;
   final List<ObserverBuilder> inheritableObservers;
+  final TransitionBuilder? builder;
 
   @override
   NavigatorState createState() {
@@ -493,7 +495,11 @@ class NuvigatorState<T extends INuRouter> extends NavigatorState
         child: child,
       );
     }
-    return child;
+    final builder = widget.builder;
+
+    return builder != null
+        ? Builder(builder: (context) => builder(context, child))
+        : child;
   }
 }
 
@@ -512,6 +518,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
     this.inheritableObservers = const [],
     this.shouldPopRoot = false,
     this.shouldRebuild,
+    this.builder,
   })  : _innerKey = key,
         assert(router != null);
 
@@ -551,6 +558,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
   final Key? _innerKey;
   final Map<String, dynamic>? initialArguments;
   final ShouldRebuildFn? shouldRebuild;
+  final TransitionBuilder? builder;
 
   /// Maybe fetches a [NuvigatorState] from the current BuildContext.
   static NuvigatorState<T>? maybeOf<T extends INuRouter>(
@@ -604,6 +612,7 @@ class Nuvigator<T extends INuRouter?> extends StatelessWidget {
       router: router as NuRouter,
       shouldRebuild: shouldRebuild,
       builder: (moduleRouter) => _NuvigatorInner(
+        builder: builder,
         router: moduleRouter,
         debug: debug,
         inheritableObservers: inheritableObservers,

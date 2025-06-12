@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.1
+- Add optional TransitionBuilder to Nuvigator to allow nesting additional Widgets on the tree
+
 ## 2.0.0
 - Remove deprecated hash function to support Flutter 3.27
 
