@@ -15,7 +15,7 @@ help:
 	@echo "  dry-run         Run checks and validate the package without publishing"
 	@echo "  publish         Run checks and publish version $(VERSION) to pub.dev"
 	@echo "  tag             Create and push the v$(VERSION) git tag"
-	@echo "  github-release  Create the v$(VERSION) GitHub Release"
+	@echo "  github-release  Create the v$(VERSION) GitHub Release from CHANGELOG.md"
 	@echo "  release         publish + tag + github-release"
 
 get:
@@ -46,7 +46,8 @@ tag:
 	git push origin "v$(VERSION)"
 
 github-release:
-	gh release create "v$(VERSION)" --verify-tag --title "v$(VERSION)" --notes ""
+	awk '$$0 == "## $(VERSION)" {f=1; next} /^## / {f=0} f' CHANGELOG.md | \
+		gh release create "v$(VERSION)" --verify-tag --title "v$(VERSION)" --notes-file -
 
 release: publish
 	$(MAKE) tag
