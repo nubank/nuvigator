@@ -6,6 +6,7 @@ all: release
 
 help:
 	@echo "Targets:"
+	@echo "  all           Default target, same as release"
 	@echo "  get           Install dependencies"
 	@echo "  format-check  Fail if any file is not formatted"
 	@echo "  analyze       Run static analysis"
