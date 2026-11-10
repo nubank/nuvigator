@@ -1,3 +1,6 @@
+# TODO: This Makefile is a temporary fix while we don't migrate from CircleCI.
+# Replace it with a CI/CD pipeline that publishes a new release every time a PR is merged.
+
 VERSION := $(shell sed -n 's/^version: *//p' pubspec.yaml)
 
 .PHONY: all help get format-check analyze test check dry-run publish tag github-release release
