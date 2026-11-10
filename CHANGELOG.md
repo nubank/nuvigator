@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.2
+- Make Nuvigator compatible with Flutter 3.47
+- Removing unused `dart_style` dependency
+
 ## 2.0.1
 - Add optional TransitionBuilder to Nuvigator to allow nesting additional Widgets on the tree
 
