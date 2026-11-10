@@ -46,7 +46,7 @@ tag:
 	git push origin "v$(VERSION)"
 
 github-release:
-	awk -v v="$(VERSION)" '$$0 == "## " v {f=1; next} /^## / {f=0} f' CHANGELOG.md | \
+	awk '$$0 == "## $(VERSION)" {f=1; next} /^## / {f=0} f' CHANGELOG.md | \
 		gh release create "v$(VERSION)" --verify-tag --title "v$(VERSION)" --notes-file -
 
 release: publish
