@@ -44,4 +44,5 @@ tag:
 	git tag "v$(VERSION)"
 	git push origin "v$(VERSION)"
 
-release: publish tag
+release: publish
+	$(MAKE) tag
