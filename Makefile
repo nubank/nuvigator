@@ -1,9 +1,12 @@
 VERSION := $(shell sed -n 's/^version: *//p' pubspec.yaml)
 
-.PHONY: help get format-check analyze test check dry-run publish tag release
+.PHONY: all help get format-check analyze test check dry-run publish tag release
+
+all: release
 
 help:
 	@echo "Targets:"
+	@echo "  all           Default target, same as release"
 	@echo "  get           Install dependencies"
 	@echo "  format-check  Fail if any file is not formatted"
 	@echo "  analyze       Run static analysis"
